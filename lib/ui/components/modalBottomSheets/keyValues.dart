@@ -7,8 +7,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
     MediaQueryData screenSize = MediaQuery.of(context);
     if (values.length == 1) {
       return Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.height / 10) * 0.05),
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -23,20 +22,23 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
             Flexible(
               flex: 3,
               fit: FlexFit.loose,
-              child: Center(
-                child: Container(
-                  margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
-                  child: Text(
-                    values[0] ?? "",
-                    textAlign: TextAlign.center,
-                    maxLines: 10,
-                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: Text(
+                        values[0] ?? "",
+                        textAlign: TextAlign.center,
+                        maxLines: 10,
+                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ],

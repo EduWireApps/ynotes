@@ -1,12 +1,12 @@
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsController.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
+import 'package:ynotes/ui/components/textField.dart';
 
 class PronoteGeolocationDialog extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   PronoteSchoolsController pronoteSchoolsCon = PronoteSchoolsController();
 
   Artboard? _riveArtboard;
-  RiveAnimationController? _controller;
+  RiveAnimationController? controller;
   PronoteSchool? selectedSchool;
   TextEditingController? searchCon;
   PronoteSpace? space;
@@ -36,17 +36,21 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         scrollDirection: Axis.vertical,
         child: ChangeNotifierProvider<PronoteSchoolsController>.value(
           value: pronoteSchoolsCon,
-          child: Consumer<PronoteSchoolsController>(builder: (context, _model, child) {
+          child: Consumer<PronoteSchoolsController>(
+              builder: (context, _model, child) {
             return Container(
               height: screenSize.size.height / 10 * 7,
               width: screenSize.size.width / 5 * 4,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(18)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AnimatedSwitcher(
                     duration: Duration(milliseconds: 200),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
                       return ScaleTransition(child: child, scale: animation);
                     },
                     child: getView(_model),
@@ -100,12 +104,18 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
       key: ValueKey<int>(0),
       children: [
         Container(
-          decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
+          decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(18)),
           height: screenSize.size.height / 10 * 2.5,
-          child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard!),
+          child: _riveArtboard == null
+              ? const SizedBox()
+              : Rive(artboard: _riveArtboard!),
         ),
         Text(
-          pronoteSchoolsCon.geolocating ? "Géolocalisation des établissements à proximité..." : "Recherche des status disponibles",
+          pronoteSchoolsCon.geolocating
+              ? "Géolocalisation des établissements à proximité..."
+              : "Recherche des status disponibles",
           style: TextStyle(fontFamily: "Asap", color: Colors.black),
           textAlign: TextAlign.center,
         ),
@@ -136,7 +146,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             style: TextStyle(fontFamily: "Asap"),
           ),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
-          LoginPageTextField(
+          CustomTextField(
               searchCon, "Chercher une école", false, Icons.search, false),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
           Container(
@@ -247,20 +257,29 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   }
 
   filterSchools(List<PronoteSchool>? schools) {
-    if (searchCon!.text != null && schools != null && schools.length != 0) {
-      return schools.where((element) => element.name!.toUpperCase().contains(searchCon!.text.toUpperCase())).toList();
+    if (schools != null && schools.length != 0) {
+      return schools
+          .where((element) => element.name!
+              .toUpperCase()
+              .contains(searchCon!.text.toUpperCase()))
+          .toList();
     }
     return schools;
   }
 
   getView(PronoteSchoolsController model) {
-    if (((model.school != null && model.spaces == null && !model.geolocating) || model.geolocating) &&
+    if (((model.school != null && model.spaces == null && !model.geolocating) ||
+            model.geolocating) &&
         model.error == null) {
       return buildGeolocating();
     } else if (model.school != null) {
-      return (model.error != null ? buildError(model.error) : buildStatusRequest(model.spaces));
+      return (model.error != null
+          ? buildError(model.error)
+          : buildStatusRequest(model.spaces));
     } else {
-      return (model.error != null ? buildError(model.error) : buildSchools(model.schools));
+      return (model.error != null
+          ? buildError(model.error)
+          : buildSchools(model.schools));
     }
   }
 
@@ -284,7 +303,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         final artboard = file.mainArtboard;
         // Add a controller to play back a known animation on the main/default
         // artboard.We store a reference to it so we can toggle playback.
-        artboard.addController(_controller = SimpleAnimation('Locating'));
+        artboard.addController(controller = SimpleAnimation('Locating'));
         setState(() => _riveArtboard = artboard);
       },
     );
@@ -301,7 +320,6 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         distance = "(distance non définie)";
       }
     }
-    TextStyle? textStyle = Theme.of(context).textTheme.headline4;
     return SizedBox(
       // Actual widget to display
       height: screenSize.size.height / 10 * 0.9,
@@ -316,7 +334,10 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
           child: Row(
             children: [
               SizedBox(width: screenSize.size.width / 10 * 0.1),
-              CircularCheckBox(
+              Checkbox(
+                  side: BorderSide(width: 1, color: Colors.white),
+                  fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                  shape: CircleBorder(),
                   value: selectedSchool == school,
                   onChanged: (newValue) {
                     setState(() {
@@ -356,7 +377,6 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   Widget slidingSpace(BuildContext context, PronoteSpace _space, animation) {
     var screenSize = MediaQuery.of(context);
 
-    TextStyle? textStyle = Theme.of(context).textTheme.headline4;
     return SlideTransition(
       position: Tween<Offset>(
         begin: const Offset(-1, 0),
@@ -376,7 +396,10 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             child: Row(
               children: [
                 SizedBox(width: screenSize.size.width / 10 * 0.1),
-                CircularCheckBox(
+                Checkbox(
+                    side: BorderSide(width: 1, color: Colors.white),
+                    fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                    shape: const CircleBorder(),
                     value: space == _space,
                     onChanged: (newValue) {
                       setState(() {
@@ -390,7 +413,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                     children: [
                       Text(
                         _space.name ?? "",
-                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontFamily: "Asap", fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

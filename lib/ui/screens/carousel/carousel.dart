@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:battery_optimization/battery_optimization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,10 +13,8 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 class Page1 extends StatefulWidget {
   final double? offset;
@@ -66,225 +65,172 @@ class SlidingCarousel extends StatefulWidget {
 class _Page1State extends State<Page1> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Transform.translate(
-          offset: Offset(-widget.offset! * 400 - 75 + 75 * widget.offset!, -135 + 135 * widget.offset!),
-          child: Align(
-              alignment: Alignment.center,
-              child: Transform.rotate(
-                angle: -0.4 + widget.offset! * 0.4,
-                child: Icon(
-                  Icons.star,
-                  color: Color(0xFFE7D928),
-                  size: 150.0,
+    return SafeArea(
+      child: Stack(
+        children: <Widget>[
+          Transform.translate(
+            offset: Offset(-widget.offset! * 400 - 75 + 75 * widget.offset!, -135 + 135 * widget.offset!),
+            child: Align(
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle: -0.4 + widget.offset! * 0.4,
+                  child: Icon(
+                    Icons.star,
+                    color: Color(0xFFE7D928),
+                    size: 150.0,
+                  ),
+                )),
+          ),
+          Positioned(
+            top: 20,
+            height: 90,
+            width: MediaQuery.of(context).size.width,
+            child: Transform.translate(
+                offset: Offset(-widget.offset! * 200, 0),
+                child: SizedBox(
+                    width: 50,
+                    height: 140.0,
+                    child: AutoSizeText.rich(
+                        TextSpan(
+                          text: "Bienvenue dans",
+                          children: <TextSpan>[
+                            TextSpan(text: ' yNotes !', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontFamily: "Asap", fontSize: 30.0)))),
+          ),
+          Transform.translate(
+            offset: Offset(-widget.offset! * 60, 0),
+            child: Stack(
+              children: <Widget>[
+                Transform.rotate(
+                  origin: Offset(
+                    -(MediaQuery.of(context).size.width / 5),
+                    (MediaQuery.of(context).size.width / 4),
+                  ),
+                  angle: 0.1 - (widget.offset! / 10),
+                  child: Transform.translate(
+                    offset: Offset(15, -50 + (widget.offset! * 50)),
+                    child: Stack(
+                      children: <Widget>[
+                        Align(
+                            alignment: Alignment.center,
+                            child: buildGradesBox(
+                              Color(0xFFD5B872),
+                            )),
+                      ],
+                    ),
+                  ),
                 ),
-              )),
-        ),
-        Positioned(
-          top: 20,
-          height: 90,
-          width: MediaQuery.of(context).size.width,
-          child: Transform.translate(
-              offset: Offset(-widget.offset! * 200, 0),
-              child: SizedBox(
-                  width: 50,
-                  height: 140.0,
-                  child: AutoSizeText.rich(
-                      TextSpan(
-                        text: "Bienvenue dans",
-                        children: <TextSpan>[
-                          TextSpan(text: ' yNotes !', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: "Asap", fontSize: 30.0)))),
-        ),
-        Transform.translate(
-          offset: Offset(-widget.offset! * 60, 0),
-          child: Stack(
-            children: <Widget>[
-              Transform.rotate(
-                origin: Offset(
-                  -(MediaQuery.of(context).size.width / 5),
-                  (MediaQuery.of(context).size.width / 4),
-                ),
-                angle: 0.1 - (widget.offset! / 10),
-                child: Transform.translate(
-                  offset: Offset(15, -50 + (widget.offset! * 50)),
+                Transform.rotate(
+                  origin: Offset(
+                    -(MediaQuery.of(context).size.width / 5),
+                    (MediaQuery.of(context).size.width / 4),
+                  ),
+                  angle: 0.4 - (widget.offset! / 2.5),
                   child: Stack(
                     children: <Widget>[
                       Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          height: MediaQuery.of(context).size.width / 2,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFFD5B872),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
-                            ),
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              height: MediaQuery.of(context).size.width / 2.5,
-                              decoration: ShapeDecoration(
-                                color: Color(0xFF3F3F3F),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
-                                ),
-                              ),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 22, top: 10),
-                                  width: MediaQuery.of(context).size.width / 3.5,
-                                  height: MediaQuery.of(context).size.width / 3.5,
-                                  child:
-                                      Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                          alignment: Alignment.center,
+                          child: buildGradesBox(
+                            Color(0xFFC9463C),
+                          )),
                     ],
                   ),
                 ),
-              ),
-              Transform.rotate(
-                origin: Offset(
-                  -(MediaQuery.of(context).size.width / 5),
-                  (MediaQuery.of(context).size.width / 4),
-                ),
-                angle: 0.4 - (widget.offset! / 2.5),
-                child: Stack(
-                  children: <Widget>[
-                    Align(
+                Transform.translate(
+                  offset: Offset(-widget.offset! * 300 + 125, 50),
+                  child: Align(
                       alignment: Alignment.center,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: MediaQuery.of(context).size.width / 2,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFC9463C),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
-                          ),
+                      child: Transform.rotate(
+                        angle: 0.6 - (widget.offset! / 1.6),
+                        child: Icon(
+                          Icons.book,
+                          color: Color(0xFF606060),
+                          size: 110.0,
                         ),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 2.5,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFF3F3F3F),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 22, top: 10),
-                                width: MediaQuery.of(context).size.width / 3.5,
-                                height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                      )),
                 ),
-              ),
-              Transform.translate(
-                offset: Offset(-widget.offset! * 300 + 125, 50),
-                child: Align(
-                    alignment: Alignment.center,
-                    child: Transform.rotate(
-                      angle: 0.6 - (widget.offset! / 1.6),
-                      child: Icon(
-                        Icons.book,
-                        color: Color(0xFF606060),
-                        size: 110.0,
-                      ),
-                    )),
-              ),
-              Transform.rotate(
-                origin: Offset(
-                  -(MediaQuery.of(context).size.width / 5),
-                  (MediaQuery.of(context).size.width / 4),
+                Transform.rotate(
+                  origin: Offset(
+                    -(MediaQuery.of(context).size.width / 5),
+                    (MediaQuery.of(context).size.width / 4),
+                  ),
+                  angle: -0.2 + (widget.offset! * 0.2),
+                  child: Stack(
+                    children: <Widget>[
+                      Align(alignment: Alignment.center, child: buildGradesBox(Color(0xFF1CA68A))),
+                    ],
+                  ),
                 ),
-                angle: -0.2 + (widget.offset! * 0.2),
-                child: Stack(
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: MediaQuery.of(context).size.width / 2,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFF1CA68A),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
-                          ),
+              ],
+            ),
+          ),
+          Positioned(
+            width: MediaQuery.of(context).size.width,
+            bottom: MediaQuery.of(context).size.height / 15,
+            height: 90,
+            child: Transform.translate(
+                offset: Offset(-widget.offset! * 200, 0),
+                child: Container(
+                    padding: EdgeInsets.only(left: 5, right: 5),
+                    width: 50,
+                    height: 140.0,
+                    child: AutoSizeText.rich(
+                        TextSpan(
+                          text: "Car les",
+                          children: <TextSpan>[
+                            TextSpan(text: ' outils ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: ' sont aussi importants que le'),
+                            TextSpan(text: ' travail...', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
                         ),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 2.5,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFF3F3F3F),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 22, top: 10),
-                                width: MediaQuery.of(context).size.width / 3.5,
-                                height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontFamily: "Asap", fontSize: 30.0)))),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildGradesBox(Color color) {
+    return Container(
+      width: 190,
+      height: 190,
+      decoration: ShapeDecoration(
+        color: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(35),
+        ),
+      ),
+      child: Container(
+        margin: EdgeInsets.all(15),
+        width: 120,
+        height: 120,
+        decoration: ShapeDecoration(
+          color: Color(0xFF3F3F3F),
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
           ),
         ),
-        Positioned(
-          width: MediaQuery.of(context).size.width,
-          bottom: MediaQuery.of(context).size.height / 15,
-          height: 90,
-          child: Transform.translate(
-              offset: Offset(-widget.offset! * 200, 0),
-              child: Container(
-                  padding: EdgeInsets.only(left: 5, right: 5),
-                  width: 50,
-                  height: 140.0,
-                  child: AutoSizeText.rich(
-                      TextSpan(
-                        text: "Car les",
-                        children: <TextSpan>[
-                          TextSpan(text: ' outils ', style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: ' sont aussi importants que le'),
-                          TextSpan(text: ' travail...', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: "Asap", fontSize: 30.0)))),
-        )
-      ],
+        child: Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("18",
+                style: TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold, fontSize: 46)),
+            Container(
+              width: 70,
+              height: 5,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+            ),
+            Text("20",
+                style: TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold, fontSize: 46)),
+          ],
+        )),
+      ),
     );
   }
 }
@@ -600,7 +546,9 @@ class _Page4State extends State<Page4> {
                           ),
                         ),
                         onChanged: (value) async {
-                          if (Platform.isIOS || (await Permission.ignoreBatteryOptimizations.isGranted)) {
+                          if (value == false ||
+                              (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                                  (await Permission.ignoreBatteryOptimizations.isGranted))) {
                             model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
                           } else {
                             if (await (CustomDialogs.showAuthorizationsDialog(
@@ -627,7 +575,9 @@ class _Page4State extends State<Page4> {
                             fontSize: screenSize.size.height / 10 * 0.28),
                       ),
                       onChanged: (value) async {
-                        if (Platform.isIOS || (await Permission.ignoreBatteryOptimizations.isGranted)) {
+                        if (value == false ||
+                            (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                                (await Permission.ignoreBatteryOptimizations.isGranted))) {
                           model.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
                         } else {
                           if (await (CustomDialogs.showAuthorizationsDialog(
@@ -654,7 +604,7 @@ class _Page4State extends State<Page4> {
                     ),
                     CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
                       createStorage("agreedTermsAndConfiguredApp", "true");
-                      Navigator.of(context).pushReplacement(router(homePage()));
+                      Navigator.pushReplacementNamed(context, "/summary");
                     }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: Color(0xff5DADE2))
                     /*RaisedButton(
                       color: Color(0xff5DADE2),
@@ -665,12 +615,12 @@ class _Page4State extends State<Page4> {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
                           final prefs = await (SharedPreferences.getInstance());
                           prefs.setStringList("listSpecialties", chosenSpecialties);
-                          Navigator.of(context).pushReplacement(router(homePage()));
+                          Navigator.pushReplacementNamed(context, "/summary");
                         } else if (!classe[0]) {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
                           final prefs = await (SharedPreferences.getInstance());
                           prefs.setStringList("listSpecialties", chosenSpecialties);
-                          Navigator.of(context).pushReplacement(router(homePage()));
+                          Navigator.pushReplacementNamed(context, "/summary");
                         } else {
                           CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
                         }
@@ -759,6 +709,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
                             child: Container(
                               margin: EdgeInsets.only(
                                   right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
+                              // ignore: deprecated_member_use
                               child: OutlineButton(
                                 color: Colors.transparent,
                                 highlightColor: Colors.black,

@@ -10,12 +10,16 @@ class Discipline {
   final String? generalAverage;
   @HiveField(1)
   final String? maxClassGeneralAverage;
+  @HiveField(20)
+  final String? minClassGeneralAverage;
   @HiveField(2)
   final String? classGeneralAverage;
   @HiveField(3)
   final String? disciplineCode;
   @HiveField(4)
-  final List<String?>? subdisciplineCode;
+  final List<String?>? subdisciplineCodes;
+  @HiveField(19)
+  final List<String?>? subdisciplineNames;
   @HiveField(5)
   final String? disciplineName;
   @HiveField(6)
@@ -29,7 +33,7 @@ class Discipline {
   @HiveField(10)
   final List<String?>? teachers;
   @HiveField(11)
-  String? period;
+  String? periodName;
   @HiveField(12)
   List<Grade>? gradesList;
   @HiveField(13)
@@ -42,76 +46,56 @@ class Discipline {
   final String? generalRank;
   @HiveField(17)
   final String? weight;
-  Discipline({
-    this.gradesList,
-    this.maxClassGeneralAverage,
-    this.classGeneralAverage,
-    this.generalAverage,
-    this.classAverage,
-    this.minClassAverage,
-    this.maxClassAverage,
-    this.disciplineCode,
-    this.subdisciplineCode,
-    this.average,
-    this.teachers,
-    this.disciplineName,
-    this.period,
-    this.color,
-    this.disciplineRank,
-    this.classNumber,
-    this.generalRank,
-    this.weight,
-  });
+  @HiveField(18)
+  String? periodCode;
+  Discipline(
+      {this.gradesList,
+      this.maxClassGeneralAverage,
+      this.classGeneralAverage,
+      this.generalAverage,
+      this.classAverage,
+      this.minClassAverage,
+      this.maxClassAverage,
+      this.disciplineCode,
+      this.subdisciplineCodes,
+      this.average,
+      this.teachers,
+      this.disciplineName,
+      this.periodName,
+      this.color,
+      this.disciplineRank,
+      this.classNumber,
+      this.generalRank,
+      this.weight,
+      this.periodCode,
+      this.subdisciplineNames,
+      this.minClassGeneralAverage});
 
-  factory Discipline.fromEcoleDirecteJson(
-      {required Map<String, dynamic> json,
-      required List<String?> profs,
-      required String? periode,
-      required String? moyenneG,
-      required String? bmoyenneClasse,
-      required String? moyenneClasse,
-      required Color color,
-      bool showrank = false,
-      String? effectifClasse = "0",
-      String? rangGeneral = "0"}) {
-    return Discipline(
-        subdisciplineCode: [],
-        disciplineCode: json['codeMatiere'],
-        disciplineName: json['discipline'],
-        average: json['moyenne'],
-        classAverage: json['moyenneClasse'],
-        minClassAverage: json['moyenneMin'],
-        maxClassAverage: json['moyenneMax'],
-        teachers: profs,
-        period: periode,
-        color: color.value,
-        generalAverage: moyenneG,
-        maxClassGeneralAverage: bmoyenneClasse,
-        classGeneralAverage: moyenneClasse,
-        disciplineRank: showrank ? json["rang"] : null,
-        classNumber: effectifClasse,
-        generalRank: rangGeneral,
-        weight: json["coef"].toString());
-  }
+  
+  
+
+  @override
+  int get hashCode => super.hashCode;
 
   set setcolor(Color newcolor) {
     color = newcolor.value;
   }
 
+//Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
+//disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
+
   set setGradeList(List<Grade> list) {
     gradesList = [];
   }
 
-//Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
-//disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
-
+  //overrides == operator to avoid issues in selectors
   @override
   bool operator ==(Object other) =>
       other is Discipline &&
       other.disciplineCode == disciplineCode &&
-      other.period == period &&
-      other.subdisciplineCode == subdisciplineCode;
-  //overrides == operator to avoid issues in selectors
+      other.periodName == periodName &&
+      other.subdisciplineCodes == subdisciplineCodes;
+
   double getAverage() {
     //if using Pronote
 
@@ -119,7 +103,7 @@ class Discipline {
     double counter = 0;
 
     gradesList!.forEach((Grade grade) {
-      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.period) {
+      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.periodName) {
         counter += double.parse(grade.weight!);
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
         average += double.parse(gradeStringValue.replaceAll(',', '.')) *
@@ -128,7 +112,6 @@ class Discipline {
             double.parse(grade.weight!.replaceAll(',', '.'));
       }
     });
-    print(counter);
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
@@ -238,6 +221,9 @@ class Grade {
   }
   //overrides == operator to avoid issues in selectors
   //We use the most operator possible to avoid duplicates
+  @override
+  int get hashCode => super.hashCode;
+
   @override
   bool operator ==(Object other) =>
       other is Grade &&

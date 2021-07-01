@@ -1,8 +1,8 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
+import 'package:uuid/uuid.dart';
 
 class EcoleDirecteAccountConverter {
   static AppAccount account(Map<dynamic, dynamic> accountData) {
@@ -12,7 +12,7 @@ class EcoleDirecteAccountConverter {
       var data = mapGet(accountData, ["data", "accounts", 0]);
       String? name = utf8convert(mapGet(data, ["prenom"]));
       String? surname = utf8convert(mapGet(data, ["nom"]));
-      String? id = uuid.v1();
+      String? id = Uuid().v1();
       bool isParentMainAccount = true;
       List<SchoolAccount> _schoolAccountsList = schoolAccounts(rawSchoolAccounts);
       return AppAccount(
@@ -26,7 +26,7 @@ class EcoleDirecteAccountConverter {
       SchoolAccount _account = singleSchoolAccount(accountData);
       String? name = _account.name;
       String? surname = _account.surname;
-      String? id = uuid.v1();
+      String? id = Uuid().v1();
       bool isParentMainAccount = false;
       return AppAccount(
           name: name,
@@ -45,6 +45,7 @@ class EcoleDirecteAccountConverter {
       if (element["enable"] == true) {
         switch (element["code"]) {
           case "VIE_SCOLAIRE":
+            tabs.add(appTabs.SCHOOL_LIFE);
             break;
           case "NOTES":
             tabs.add(appTabs.GRADES);

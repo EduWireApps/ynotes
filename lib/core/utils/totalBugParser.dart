@@ -1,6 +1,5 @@
 import 'package:html/parser.dart' show parse;
 import 'package:requests/requests.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 
 class TotalBug {
   static parseNumber(var data) {
@@ -11,7 +10,8 @@ class TotalBug {
   }
 
   static request(String websiteName) async {
-    var getResponse = await Requests.get("https://www.totalbug.com/$websiteName/");
+    var getResponse =
+        await Requests.get("https://www.totalbug.com/$websiteName/");
     return getResponse.content();
   }
 

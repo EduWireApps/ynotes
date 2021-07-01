@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:html/parser.dart';
@@ -11,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
@@ -27,7 +30,7 @@ class AppNotification {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? lessons = [];
     //Lock offline data
-    Offline _offline = Offline(true);
+    Offline _offline = Offline();
     API api = apiManager(_offline);
     //Login creds
     String? u = await readStorage("username");
@@ -50,7 +53,6 @@ class AppNotification {
       Hive.registerAdapter(GradeAdapter());
       Hive.registerAdapter(DisciplineAdapter());
       Hive.registerAdapter(DocumentAdapter());
-      Hive.registerAdapter(HomeworkAdapter());
       Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
@@ -86,7 +88,7 @@ class AppNotification {
       lesson = nextLesson;
       await showOngoingNotification(lesson);
     } else {
-      final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+      final prefs = await (SharedPreferences.getInstance());
       bool? value = prefs.getBool("disableAtDayEnd");
       print(value);
       print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);
@@ -154,21 +156,23 @@ class AppNotification {
   }
 
   static initNotifications(BuildContext context, Function navigatorCallback) async {
-    AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-          channelKey: 'alarm',
-          defaultPrivacy: NotificationPrivacy.Private,
-          channelName: 'Alarmes',
-          importance: NotificationImportance.High,
-          channelDescription: "Alarmes et rappels de l'application yNotes",
-          defaultColor: Color(0xFF9D50DD),
-          ledColor: Colors.white)
-    ]);
-    try {
-      AwesomeNotifications().actionStream.listen((receivedNotification) async {
-        await getRelatedAction(receivedNotification, context, navigatorCallback);
-      });
-    } catch (e) {}
+    if (!kIsWeb  && (Platform.isAndroid || Platform.isIOS)) {
+      AwesomeNotifications().initialize(null, [
+        NotificationChannel(
+            channelKey: 'alarm',
+            defaultPrivacy: NotificationPrivacy.Private,
+            channelName: 'Alarmes',
+            importance: NotificationImportance.High,
+            channelDescription: "Alarmes et rappels de l'application yNotes",
+            defaultColor: Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ]);
+      try {
+        AwesomeNotifications().actionStream.listen((receivedNotification) async {
+          await getRelatedAction(receivedNotification, context, navigatorCallback);
+        });
+      } catch (e) {}
+    }
   }
 
   static Future<void> scheduleAgendaReminders(AgendaEvent event) async {
@@ -184,23 +188,23 @@ class AppNotification {
       ]);
 
       //Unschedule existing
-      if (event.alarm == alarmType.none) {
+      if (event.alarm == AlarmType.none) {
       } else {
         //delay between task start and task end
         Duration delay = Duration();
-        if (event.alarm == alarmType.exactly) {
+        if (event.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
-        if (event.alarm == alarmType.fiveMinutes) {
+        if (event.alarm == AlarmType.fiveMinutes) {
           delay = Duration(minutes: 5);
         }
-        if (event.alarm == alarmType.fifteenMinutes) {
+        if (event.alarm == AlarmType.fifteenMinutes) {
           delay = Duration(minutes: 15);
         }
-        if (event.alarm == alarmType.thirtyMinutes) {
+        if (event.alarm == AlarmType.thirtyMinutes) {
           delay = Duration(minutes: 30);
         }
-        if (event.alarm == alarmType.oneDay) {
+        if (event.alarm == AlarmType.oneDay) {
           delay = Duration(days: 1);
         }
         String time = DateFormat("HH:mm").format(event.start!);
@@ -213,7 +217,7 @@ class AppNotification {
                 notificationLayout: parse(event.description).documentElement!.text.length < 49
                     ? NotificationLayout.Default
                     : NotificationLayout.BigText),
-            schedule: NotificationSchedule(preciseSchedules: [event.start!.subtract(delay).toUtc()]));
+            schedule: NotificationCalendar.fromDate(date: event.start!.subtract(delay).toUtc()));
         print("Scheduled an alarm" + event.start!.subtract(delay).toString() + " " + event.id.hashCode.toString());
       }
     } catch (e) {
@@ -233,27 +237,27 @@ class AppNotification {
           ledColor: Colors.white)
     ]);
     List<AgendaReminder> reminders =
-        await (appSys.offline.reminders.getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
+        await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id)) as List <AgendaReminder>;
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
-      if (rmd.alarm == alarmType.none) {
+      if (rmd.alarm == AlarmType.none) {
         await cancelNotification(event.id.hashCode);
       } else {
         //delay between task start and task end
         Duration delay = Duration();
-        if (rmd.alarm == alarmType.exactly) {
+        if (rmd.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
-        if (rmd.alarm == alarmType.fiveMinutes) {
+        if (rmd.alarm == AlarmType.fiveMinutes) {
           delay = Duration(minutes: 5);
         }
-        if (rmd.alarm == alarmType.fifteenMinutes) {
+        if (rmd.alarm == AlarmType.fifteenMinutes) {
           delay = Duration(minutes: 15);
         }
-        if (rmd.alarm == alarmType.thirtyMinutes) {
+        if (rmd.alarm == AlarmType.thirtyMinutes) {
           delay = Duration(minutes: 30);
         }
-        if (rmd.alarm == alarmType.oneDay) {
+        if (rmd.alarm == AlarmType.oneDay) {
           delay = Duration(days: 1);
         }
         String text = "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
@@ -268,7 +272,7 @@ class AppNotification {
                 body: text,
                 notificationLayout:
                     event.description!.length < 49 ? NotificationLayout.Default : NotificationLayout.BigText),
-            schedule: NotificationSchedule(preciseSchedules: [event.start!.subtract(delay).toUtc()]));
+            schedule: NotificationCalendar.fromDate(date: event.start!.subtract(delay).toUtc()));
       }
     });
   }
@@ -390,25 +394,37 @@ class AppNotification {
           channelName: 'Chargement',
           channelDescription: 'Indicateur des chargements de yNotes',
           defaultColor: ThemeUtils.spaceColor(),
-          importance: NotificationImportance.Low,
+          importance: NotificationImportance.Min,
           ledColor: Colors.white),
     ]);
-    await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: id,
-            channelKey: 'loading',
-            title: "Rafraichissement des données",
-            notificationLayout: NotificationLayout.ProgressBar,
-            progress: null));
+    /*if (Platform.isIOS) {
+      if (await Permission.notification.request().isGranted)
+        await AwesomeNotifications().createNotification(
+            content: NotificationContent(
+                id: id,
+                channelKey: 'loading',
+                title: "Rafraichissement des données",
+                notificationLayout: NotificationLayout.ProgressBar));
+    }*/
+    if (Platform.isAndroid) {
+      await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+              id: id,
+              channelKey: 'loading',
+              title: "Rafraichissement des données",
+              notificationLayout: NotificationLayout.ProgressBar,
+              progress: null));
+    }
   }
 
-  static showNewGradeNotification() async {
+  static showNewGradeNotification(Grade grade) async {
     await AwesomeNotifications().initialize('resource://drawable/newgradeicon', [
       NotificationChannel(
           channelKey: 'newgrade',
           defaultPrivacy: NotificationPrivacy.Public,
           channelName: 'Nouvelle note',
           importance: NotificationImportance.High,
+          groupKey: "gradesGroup",
           channelDescription: "Nouvelles notes",
           defaultColor: ThemeUtils.spaceColor(),
           ledColor: Colors.white)
@@ -416,10 +432,22 @@ class AppNotification {
 
     AwesomeNotifications().createNotification(
       content: NotificationContent(
-          id: 0,
+          id: grade.hashCode,
           channelKey: 'newgrade',
-          title: 'Vous avez une ou plusieurs nouvelles notes !',
-          summary: "Tapez pour consulter",
+          notificationLayout: NotificationLayout.BigText,
+          title: "Nouvelle note",
+          body: "<b>" +
+              (grade.disciplineName ?? "(non défini)") +
+              "</b><br>" +
+              "Note:" +
+              (grade.value ?? "N/A") +
+              "/" +
+              (grade.scale ?? "N/A") +
+              "<br>" +
+              "Moyenne de la classe:" +
+              (grade.classAverage ?? "N/A") +
+              "/" +
+              (grade.scale ?? "N/A"),
           showWhen: false),
     );
   }
@@ -439,18 +467,18 @@ class AppNotification {
 
     AwesomeNotifications().createNotification(
       content: NotificationContent(
-          id: int.parse(mail.id),
+          id: int.parse(mail.id ?? ""),
           notificationLayout: parse(content).documentElement!.text.length < 49 ? null : NotificationLayout.BigText,
           channelKey: 'newmail',
-          title: 'Nouveau mail de ${mail.from["name"]}',
-          summary: 'Nouveau mail de ${mail.from["name"]}',
+          title: 'Nouveau mail de ${mail.from?["name"]}',
+          summary: 'Nouveau mail de ${mail.from?["name"]}',
           body: content,
           payload: {
-            "name": mail.from["prenom"],
-            "surname": mail.from["nom"],
+            "name": mail.from?["prenom"],
+            "surname": mail.from?["nom"],
             "id": mail.id.toString(),
-            "isTeacher": (mail.from["type"] == "P").toString(),
-            "subject": mail.subject
+            "isTeacher": (mail.from?["type"] == "P").toString(),
+            "subject": mail.subject ?? ""
           }),
       actionButtons: [
         NotificationActionButton(

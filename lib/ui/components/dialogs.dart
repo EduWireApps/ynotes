@@ -3,7 +3,6 @@ import 'dart:core';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
@@ -11,51 +10,22 @@ import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/ui/components/dialogs/colorPicker.dart';
-import 'package:ynotes/ui/components/dialogs/homeworkDetails.dart';
-import 'package:ynotes/ui/components/dialogs/persistantNotificationDialog.dart';
-import 'package:ynotes/ui/components/dialogs/shareDialog.dart';
 import 'package:ynotes/ui/components/dialogs/updateNoteDialog.dart';
-import 'package:ynotes/ui/components/giffy_dialog/src/asset.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/writeMailBottomSheet.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/persistantNotificationDialog.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/shareGradeDialog.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkDetails.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteLocationDialog.dart';
-import 'package:ynotes/ui/screens/settings/settingsPage.dart';
+import 'package:ynotes/ui/screens/mail/mailPageWidgets/writeMailBottomSheet.dart';
 
 import '../../usefulMethods.dart';
-import 'dialogs/folderChoiceDialog.dart';
+import '../screens/agenda/agendaPageWidgets/recurringEventsDialog.dart';
+import '../screens/downloads/downloadsPageWidgets/folderChoiceDialog.dart';
+import '../screens/mail/mailPageWidgets/newRecipientDialog.dart';
 import 'dialogs/multipleChoicesDialog.dart';
-import 'dialogs/newRecipientDialog.dart';
 import 'dialogs/numberChoiceDialog.dart';
-import 'dialogs/recurringEventsDialog.dart';
 import 'dialogs/specialtiesDialog.dart';
 import 'dialogs/textFieldChoiceDialog.dart';
 
-List<HelpDialog> helpDialogs = [
-  HelpDialog(
-      "Bienvenue !",
-      [
-        """Bienvenue sur yNotes ! Nous sommes très content de vous voir ici ! Ceci est une fenêtre de tutoriel, d'autres apparaitront pour vous montrer les nouveautés ou les fonctionnalités utiles de l'application. Vous les avez déjà vues ? Passez le tutoriel !"""
-      ],
-      "assets/gifs/Hello720.gif",
-      0),
-  HelpDialog(
-      "QuickMenu",
-      [
-        "Glissez votre doigt vers le haut sur l'icone Space pour afficher un menu rapide.",
-      ],
-      "assets/gifs/QuickMenu720.gif",
-      1),
-  HelpDialog("Épingler", ["Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance."],
-      "assets/gifs/PinHomework720.gif", 2),
-  HelpDialog(
-      "Nouvel explorateur de téléchargements",
-      [
-        "Nous avons mis à jour votre explorateur de téléchargements ! Idéal pour mieux organiser vos fiches ou documents.",
-      ],
-      "assets/gifs/FileExplorer720.gif",
-      3)
-];
-
-//The help dialog class
 class CustomDialogs {
   static showAnyDialog(BuildContext context, String text) {
     Flushbar(
@@ -101,9 +71,9 @@ class CustomDialogs {
       {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?",
       String alternativeButtonConfirmText = "SUPPRIMER"}) {
     // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
+    var alert = AlertDialog(
+      backgroundColor: Theme.of(context).backgroundColor,
       elevation: 50,
-      backgroundColor: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Text(
         "Confirmation",
@@ -114,7 +84,7 @@ class CustomDialogs {
         style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
           onPressed: () {
             if (show != null) {
@@ -124,7 +94,7 @@ class CustomDialogs {
             Navigator.pop(context, false);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(
             alternativeButtonConfirmText.toUpperCase(),
             style: TextStyle(color: Colors.red),
@@ -150,12 +120,12 @@ class CustomDialogs {
     );
   }
 
-  static showErrorSnackBar(BuildContext context, String text, String logs) {
+  static showErrorSnackBar(BuildContext context, String text, String? logs) {
     Flushbar(
       flushbarPosition: FlushbarPosition.BOTTOM,
       backgroundColor: Colors.red,
       isDismissible: true,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 5),
       margin: EdgeInsets.all(8),
       messageText: Text(
         text,
@@ -166,54 +136,17 @@ class CustomDialogs {
         color: Colors.white,
       ),
       borderRadius: BorderRadius.circular(8),
-      mainButton: Text(
-        "Copier les logs",
-        style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
-      ),
+      mainButton: logs != null
+          ? Text(
+              "Copier les logs",
+              style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
+            )
+          : null,
     )..show(context);
   }
 
-  static void showGiffyDialog(BuildContext context, HelpDialog hd) {
-    PageController controller = PageController();
-    var screenSize = MediaQuery.of(context);
-
-    //Show a dialog with a gif
-    showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (_) => AssetGiffyDialog(
-              image: Image.asset(hd.gifPath),
-              title: Text(
-                hd.title,
-                style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3, fontWeight: FontWeight.w600),
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-              ),
-              description: Text(hd.description[0], style: TextStyle(fontSize: screenSize.size.height / 10 * 0.2)),
-              buttonOkText: Text(
-                "J'ai compris",
-                style: TextStyle(fontFamily: "Asap", color: Colors.white),
-                textScaleFactor: 1.0,
-              ),
-              buttonCancelText: Text(
-                "Passer le tutoriel",
-                style: TextStyle(fontFamily: "Asap", color: Colors.white),
-                textScaleFactor: 1.0,
-              ),
-              onlyOkButton: false,
-              onlyCancelButton: false,
-              onCancelButtonPressed: () async {
-                await hd.skipEveryHelpDialog();
-                Navigator.pop(_);
-              },
-              onOkButtonPressed: () {
-                Navigator.pop(_);
-              },
-            ));
-  }
-
   static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework? hw) async {
-    String? returnVal = await showGeneralDialog(
+    await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
         transitionDuration: Duration(milliseconds: 200),
@@ -223,8 +156,6 @@ class CustomDialogs {
           return Container();
         },
         transitionBuilder: (context, a1, a2, widget) {
-          MediaQueryData screenSize;
-          screenSize = MediaQuery.of(context);
           return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(hw)));
         });
   }
@@ -304,8 +235,6 @@ class CustomDialogs {
           return Container();
         } as Widget Function(BuildContext, Animation<double>, Animation<double>),
         transitionBuilder: (context, a1, a2, widget) {
-          MediaQueryData screenSize;
-          screenSize = MediaQuery.of(context);
           return Transform.scale(scale: a1.value, child: PronoteGeolocationDialog());
         });
   }
@@ -343,8 +272,6 @@ class CustomDialogs {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          MediaQueryData screenSize;
-          screenSize = MediaQuery.of(context);
           return Container(child: DialogSpecialties());
         });
   }
@@ -371,7 +298,7 @@ class CustomDialogs {
         "Cette fonction n'est pas encore disponible pour le moment.",
         style: TextStyle(fontFamily: "Asap"),
       ),
-      mainButton: FlatButton(
+      mainButton: TextButton(
         onPressed: () {
           const url = 'https://view.monday.com/486453658-df7d6a346f0accba2e9d6a3c45b3f7c1';
           launchURL(url);
@@ -421,56 +348,6 @@ class CustomDialogs {
       }).catchError((Object error) {
         CustomDialogs.showAnyDialog(context, "Le mail n'a pas été envoyé !");
       });
-    }
-  }
-}
-
-//Help dialogs list for the showcase
-class HelpDialog {
-  final int id;
-  final GlobalKey? key;
-  final String title;
-  final List<String> description;
-  final String gifPath;
-  HelpDialog(this.title, this.description, this.gifPath, this.id, {this.key});
-
-  ///Check if the dialog as already been watched
-  checkAlreadyViewed() async {
-    SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
-    bool? viewed = preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
-
-    return viewed != null ? viewed : false;
-  }
-
-  ///Set if the dialog as already been watched
-  setAlreadyViewed() async {
-    SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
-    await preferences.setBool("alreadyViewedHelpDialog" + this.id.toString(), true);
-  }
-
-  showDialog(BuildContext context) async {
-    var z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    //If the dialog has never been viewed
-    if (!await checkAlreadyViewed() && z != null) {
-      CustomDialogs.showGiffyDialog(context, this);
-      //Set the dialog as viewed
-      await this.setAlreadyViewed();
-    }
-  }
-
-  ///Skip every dialogs (already seen)
-  skipEveryHelpDialog() async {
-    SharedPreferences? preferences = await SharedPreferences.getInstance();
-    for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), true);
-    }
-  }
-
-  ///Skip every dialogs (already seen)
-  static resetEveryHelpDialog() async {
-    SharedPreferences? preferences = await SharedPreferences.getInstance();
-    for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), false);
     }
   }
 }

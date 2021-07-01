@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:uuid/uuid.dart';
 
+// ignore: must_be_immutable
 class LoginWebView extends StatefulWidget {
   final String? url;
   final String? spaceUrl;
@@ -107,10 +110,16 @@ class _LoginWebViewState extends State<LoginWebView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Patientez... nous vous connectons à l'ENT",
-                      style: TextStyle(fontFamily: "Asap"),
-                    ),
+                    if (!kIsWeb && Platform.isLinux)
+                      Text(
+                        "La connexion par ENT n'est pas encore supportée sur Linux...",
+                        style: TextStyle(fontFamily: "Asap", color: Colors.red),
+                      ),
+                    if (!kIsWeb && !Platform.isLinux)
+                      Text(
+                        "Patientez... nous vous connectons à l'ENT",
+                        style: TextStyle(fontFamily: "Asap"),
+                      ),
                     CustomButtons.materialButton(context, null, null, () {
                       Navigator.of(context).pop();
                     }, label: "Quitter")
@@ -130,7 +139,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       printWrapped(credsData);
       Map temp = json.decode(credsData);
       print(temp["status"]);
-      if (temp != null && temp["status"] == 0) {
+      if (temp["status"] == 0) {
         loginStatus = temp;
         Navigator.of(context).pop(loginStatus);
       } else {}
@@ -170,47 +179,12 @@ class _LoginWebViewState extends State<LoginWebView> {
           '  messageData.push({action: \'errorStatus\', msg: isError[1]});' +
           '}'*/
           ;
-      var a = await widget.controller!.evaluateJavascript(source: toexecute);
+      await widget.controller!.evaluateJavascript(source: toexecute);
       /* print("A" + a.toString());
       String toexecute3 =
           "(function(){var lMessData = window.messageData && window.messageData.length ? window.messageData.splice(0, window.messageData.length) : \'\';return lMessData ? JSON.stringify(lMessData) : \'\';})()";
       String c = await widget.controller.evaluateJavascript(source: toexecute3);*/
 
-      String joker = 'if (IE.fModule) {' +
-          '  if (GApplication.initApp) {' +
-          '    GApplication.initApp({' +
-          '      estAppliMobile : true,' +
-          '      avecExitApp : true,' +
-          '      login : \'' +
-          loginStatus!["login"].replaceAll("'", "\\'") +
-          '\',' +
-          '      mdp : \'' +
-          loginStatus!["mdp"] +
-          '\',' +
-          '      uuid : \'' +
-          appSys.settings!["system"]["uuid"] +
-          '\',' +
-          '    })' +
-          '  }' +
-          '} else {' +
-          '  Invocateur.abonner(Invocateur.events.modificationPresenceUtilisateur, function(aPresence){' +
-          '    if (!aPresence) {' +
-          '      Invocateur.evenement (Invocateur.events.modificationPresenceUtilisateur, true);' +
-          '    }' +
-          '  }, null);' +
-          '  GApplication.estAppliMobile = true;' +
-          '  GApplication.infoAppliMobile = {' +
-          '    avecExitApp:true' +
-          '  };' +
-          '  if(GApplication.smartAppBanner) \$(\'#\'+GApplication.smartAppBanner.id.escapeJQ()).remove();' +
-          '  GInterface.traiterEvenementValidation(\'' +
-          loginStatus!["login"].replaceAll("'", "\\'") +
-          '\', \'' +
-          loginStatus!["mdp"] +
-          '\', null, \'' +
-          appSys.settings!["system"]["uuid"] +
-          '\');' +
-          '}';
       /*  String amiajoketou = await widget.controller.evaluateJavascript(source: joker);
       print(amiajoketou);*/
     });
@@ -241,7 +215,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   setCookie() async {
     print("Setting cookie");
     //generate UUID
-    await appSys.updateSetting(appSys.settings!["system"], "uuid", uuid.v4());
+    await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
 
     //set cookie
     String cookieFunction = '(function(){try{' +
@@ -265,7 +239,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       setState(() {
         step = 4;
       });
-      String? authFunctionResult = await (widget.controller!.evaluateJavascript(source: authFunction));
+      await (widget.controller!.evaluateJavascript(source: authFunction));
 
       stepper();
     }
@@ -311,11 +285,13 @@ class _LoginWebViewState extends State<LoginWebView> {
         heroTag: "btn2",
         backgroundColor: Colors.transparent,
         child: Container(
-          width: screenSize.size.width / 5 * 0.8,
-          height: screenSize.size.width / 5 * 0.8,
-          child: Icon(
-            MdiIcons.exitRun,
-            size: screenSize.size.width / 5 * 0.5,
+          width: 90,
+          height: 90,
+          child: Center(
+            child: Icon(
+              MdiIcons.exitRun,
+              size: 40,
+            ),
           ),
           decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
         ),
@@ -329,8 +305,6 @@ class _LoginWebViewState extends State<LoginWebView> {
   _buildText(String text) {
     return SelectableText(text);
   }
-
-  _validateUrl() {}
 
   //I have to get an address like that
   //https://0782540m.index-education.net/pronote/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4

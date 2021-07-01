@@ -2,21 +2,20 @@ import 'package:calendar_time/calendar_time.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/agendaEventDetailsBottomSheet.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaElement.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/core/offline/data/agenda/events.dart';
+import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaElement.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaEventDetailsBottomSheet.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaEventEditBottomSheet.dart';
 
+// ignore: must_be_immutable
 class AgendaGrid extends StatefulWidget {
   List<AgendaEvent>? events;
   final bool afterSchool;
@@ -28,24 +27,52 @@ class AgendaGrid extends StatefulWidget {
 
 //final actualHourBar = new GlobalKey();
 
-class _AgendaGridState extends State<AgendaGrid> {
+class _AgendaGridState extends State<AgendaGrid> with Layout {
   ScrollController scontroller = ScrollController();
-  @override
-  void initState() {
-
-    super.initState();
-    layoutEvents();
-  }
-
   DateTime? lastEventEnding;
+
   double _scaleFactor = 1.1;
   double _baseScaleFactor = 1.1;
   var defaultGridHeight = 1.5;
   List<AgendaEvent> _events = [];
-  //The default school day length
   var minSchoolDayLength = [8, 18];
-  //The default after school day length
+  //The default school day length
   var minAfterSchoolDayLength = [18, 24];
+  //The default after school day length
+  @override
+  Widget build(BuildContext context) {
+    layoutEvents();
+    return _buildGridDateTime();
+  }
+
+  expandEvent(AgendaEvent ev, int iColumn, List<List<AgendaEvent>> columns) {
+    int colSpan = 1;
+    for (var col in columns.sublist(iColumn + 1)) {
+      for (var ev1 in col) {
+        if (ev1.collidesWith(ev)) {
+          return colSpan;
+        }
+      }
+      colSpan++;
+    }
+    return colSpan;
+  }
+
+  Future<int?> getRelatedColor(AgendaEvent event) async {
+    if (event.color != null) {
+      return event.color;
+    } else {
+      return await getColor(event.lesson!.disciplineCode);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    layoutEvents();
+  }
+
+//Calculate the top position
   void layoutEvents() {
     List<List<AgendaEvent>> columns = [];
     _events.clear();
@@ -85,8 +112,8 @@ class _AgendaGridState extends State<AgendaGrid> {
     }
   }
 
+  //Calculate the start hour
   void packEvents(List<List<AgendaEvent>> columns) {
-    int numColumns = columns.length;
     int iColumn = 0;
     for (var col in columns) {
       for (var ev in col) {
@@ -98,219 +125,16 @@ class _AgendaGridState extends State<AgendaGrid> {
     }
   }
 
-  expandEvent(AgendaEvent ev, int iColumn, List<List<AgendaEvent>> columns) {
-    int colSpan = 1;
-    for (var col in columns.sublist(iColumn + 1)) {
-      for (var ev1 in col) {
-        if (ev1.collidesWith(ev)) {
-          return colSpan;
-        }
-      }
-      colSpan++;
-    }
-    return colSpan;
-  }
-
-//Calculate the top position
-  _getPosition(TimeOfDay start, AgendaEvent event) {
-    final dt = TimeOfDay(hour: event.start!.hour, minute: event.start!.minute);
-    double diff = ((dt.hour * 60 + dt.minute) - (start.hour * 60 + start.minute)) / 60;
-
-    return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
-  }
-
-  //Calculate the start hour
-  TimeOfDay _getStartHour(List<AgendaEvent> events) {
-    if (events != null && events.length != 0) {
-      List<AgendaEvent> lessonsIList = [];
-      lessonsIList.addAll(events);
-
-      lessonsIList.removeWhere((element) => element.wholeDay!);
-      if (widget.afterSchool) {
-        lessonsIList.removeWhere((element) => !element.isLesson!);
-      }
-      if (lessonsIList.length == 0) {
-        if (widget.afterSchool) {
-          return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
-        } else {
-          return TimeOfDay(hour: minSchoolDayLength[0], minute: 0);
-        }
-      } else {
-        if (widget.afterSchool) {
-          lessonsIList.sort((a, b) => a.end!.compareTo(b.end!));
-          return TimeOfDay(hour: lessonsIList.last.end!.hour, minute: 0);
-        }
-        lessonsIList.sort((a, b) => a.start!.compareTo(b.start!));
-        return TimeOfDay(hour: lessonsIList.first.start!.hour, minute: 0);
-      }
-    } else if (widget.afterSchool) {
-      return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
-    } else {
-      return TimeOfDay(hour: minSchoolDayLength[0], minute: 0);
-    }
-  }
-
   //Calculate the end hour (end the start hour of the after school grid)
-  TimeOfDay _getEndHour(List events) {
-    if (events != null && events.length != 0) {
-      List lessonsIList = [];
-      lessonsIList.addAll(events);
-      lessonsIList.removeWhere((element) => element.wholeDay);
-      if (!this.widget.afterSchool) {
-        lessonsIList.removeWhere((element) => element.lesson == null);
-      }
-      if (lessonsIList.length == 0) {
-        if (widget.afterSchool) {
-          return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
-        } else {
-          return TimeOfDay(hour: minSchoolDayLength[1], minute: 0);
-        }
-      } else {
-        lessonsIList.sort((a, b) => a.end.compareTo(b.end));
-        return TimeOfDay(hour: lessonsIList.last.end.hour + 1, minute: 0);
-      }
-    } else if (widget.afterSchool) {
-      return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
-    } else {
-      return TimeOfDay(hour: minSchoolDayLength[1], minute: 0);
-    }
-  }
-
-  Future<int?> getRelatedColor(AgendaEvent event) async {
-    if (event != null && event.color != null) {
-      return event.color;
-    } else {
-      return await getColor(event.lesson!.disciplineCode);
-    }
-  }
-
-  ///Get actual hour position
-  _getBarPosition(TimeOfDay start) {
-    final dt = TimeOfDay.fromDateTime(DateTime.now());
-
-    double diff = ((dt.hour * 60 + dt.minute) - (start.hour * 60 + start.minute)) / 60;
-
-    return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
-  }
-
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true);
-        agendaFuture = appSys.api!.getEvents(agendaDate!, false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!);
+        agendaFuture = appSys.api!.getEvents(agendaDate!);
       });
     }
-    var realAF = await spaceAgendaFuture;
-    var realSAF = await agendaFuture;
-  }
-
-  Widget _buildHeaderAllDays() {
-    var screenSize = MediaQuery.of(context);
-
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 250),
-      decoration: BoxDecoration(
-          color: widget.afterSchool
-              ? ThemeUtils.darken(ThemeUtils.spaceColor(), forceAmount: 0.01).withOpacity(0.9)
-              : Theme.of(context).primaryColorDark.withOpacity(0.9),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(5),
-            bottomRight: Radius.circular(5),
-          )),
-      width: screenSize.size.width / 5 * 4.9,
-      height: _events.any((element) => element.wholeDay!) ? screenSize.size.height / 10 * 0.7 : 0,
-      child: Container(
-        width: screenSize.size.width / 5 * 4.5,
-        child: ListView.builder(
-            padding: EdgeInsets.symmetric(
-              vertical: screenSize.size.height / 10 * 0.1,
-            ),
-            itemCount: _events.where((element) => element.wholeDay!).length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (ctxt, index) {
-              return Container(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                child: FutureBuilder<int?>(
-                    initialData: 0,
-                    future: getRelatedColor(_events.where((element) => element.wholeDay!).toList()[index]),
-                    builder: (context, snapshot) {
-                      return Material(
-                        color: Color(snapshot.data ?? 0),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                        child: InkWell(
-                          onLongPress: () async {
-                            var _event = _events.where((element) => element.wholeDay!).toList()[index];
-                            if (_event.isLesson!) {
-                              //Getting color before
-                              _event.color = await getColor(_event.lesson!.disciplineCode);
-                            }
-                            var temp =
-                                await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
-
-                            if (temp != null) {
-                              if (temp != "removed") {
-                                if (temp != null) {
-                                  if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-                                    await appSys.offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
-
-                                    setState(() {
-                                      _event = temp;
-                                    });
-                                  } else {
-                                    await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start));
-
-                                    setState(() {
-                                      _event = temp;
-                                    });
-                                  }
-                                  await AppNotification.scheduleAgendaReminders(temp);
-                                }
-                              } else {
-                                await appSys.offline.reminders.removeAll(_event.id);
-                                await AppNotification.cancelNotification(_event.id.hashCode);
-                              }
-                              await refreshAgendaFuture();
-                              widget.setStateCallback();
-                            }
-                          },
-                          onTap: () async {
-                            var _event = _events.where((element) => element.wholeDay!).toList()[index];
-
-                            if (_event.isLesson!) {
-                              _event.color = await getColor(_event.lesson!.disciplineCode);
-                              await lessonDetails(context, _event);
-                              await refreshAgendaFuture();
-                            } else {
-                              await lessonDetails(context, _event);
-                              await refreshAgendaFuture();
-                              widget.setStateCallback();
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(11),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: screenSize.size.width / 5 * 0.12,
-                              vertical: screenSize.size.height / 10 * 0.1,
-                            ),
-                            child: Center(
-                              child: FittedBox(
-                                child: Text(
-                                  (_events.where((element) => element.wholeDay!).toList()[index].name != null &&
-                                          _events.where((element) => element.wholeDay!).toList()[index].name != "")
-                                      ? _events.where((element) => element.wholeDay!).toList()[index].name!
-                                      : "(sans nom)",
-                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-              );
-            }),
-      ),
-    );
+    await spaceAgendaFuture;
+    await agendaFuture;
   }
 
   Widget _buildGridDateTime() {
@@ -389,19 +213,24 @@ class _AgendaGridState extends State<AgendaGrid> {
                       if (!i.wholeDay! &&
                           _getPosition(_getStartHour(_events), i) != null &&
                           (this.widget.afterSchool ? !i.isLesson! : true))
-                        Positioned(
-                          left: screenSize.size.width / 5 * 0.2,
-                          top: _getPosition(_getStartHour(_events), i) +
-                              screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0),
-                          child: AgendaElement(
-                            i,
-                            defaultGridHeight * _scaleFactor * i.end!.difference(i.start!).inMinutes / 60,
-                            widget.setStateCallback,
-                            width: i.width,
-                            position: i.left,
+                        Container(
+                          child: Positioned(
+                            left: screenSize.size.width / 5 * 0.2,
+                            top: _getPosition(_getStartHour(_events), i) +
+                                screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0),
+                            child: Container(
+                              width: (isVeryLargeScreen ? (screenSize.size.width) - 390 : (screenSize.size.width)),
+                              child: AgendaElement(
+                                i,
+                                defaultGridHeight * _scaleFactor * i.end!.difference(i.start!).inMinutes / 60,
+                                widget.setStateCallback,
+                                width: i.width,
+                                position: i.left,
+                              ),
+                            ),
                           ),
                         ),
-                    if (_getStartHour(_events) != null && CalendarTime(agendaDate).isToday)
+                    if (CalendarTime(agendaDate).isToday)
                       AnimatedPositioned(
                         duration: Duration(milliseconds: 500),
                         top: _getBarPosition(_getStartHour(_events)) +
@@ -414,7 +243,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                               decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(1000)),
                             ),
                             Container(
-                                width: screenSize.size.width / 5 * 4.8,
+                                width: (screenSize.size.width / 5 * 4.8),
                                 child: Divider(
                                   color: Colors.blue,
                                   thickness: screenSize.size.height / 10 * 0.018,
@@ -437,9 +266,185 @@ class _AgendaGridState extends State<AgendaGrid> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    layoutEvents();
-    return _buildGridDateTime();
+  Widget _buildHeaderAllDays() {
+    var screenSize = MediaQuery.of(context);
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 250),
+      decoration: BoxDecoration(
+          color: widget.afterSchool
+              ? ThemeUtils.darken(ThemeUtils.spaceColor(), forceAmount: 0.01).withOpacity(0.9)
+              : Theme.of(context).primaryColorDark.withOpacity(0.9),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(5),
+            bottomRight: Radius.circular(5),
+          )),
+      width: screenSize.size.width / 5 * 4.9,
+      height: _events.any((element) => element.wholeDay!) ? screenSize.size.height / 10 * 0.7 : 0,
+      child: Container(
+        width: screenSize.size.width / 5 * 4.5,
+        child: ListView.builder(
+            padding: EdgeInsets.symmetric(
+              vertical: screenSize.size.height / 10 * 0.1,
+            ),
+            itemCount: _events.where((element) => element.wholeDay!).length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (ctxt, index) {
+              return Container(
+                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                child: FutureBuilder<int?>(
+                    initialData: 0,
+                    future: getRelatedColor(_events.where((element) => element.wholeDay!).toList()[index]),
+                    builder: (context, snapshot) {
+                      return Material(
+                        color: Color(snapshot.data ?? 0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                        child: InkWell(
+                          onLongPress: () async {
+                            var _event = _events.where((element) => element.wholeDay!).toList()[index];
+                            if (_event.isLesson!) {
+                              //Getting color before
+                              _event.color = await getColor(_event.lesson!.disciplineCode);
+                            }
+                            var temp =
+                                await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
+
+                            if (temp != null) {
+                              if (temp != "removed") {
+                                if (temp != null) {
+                                  if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
+                                    await AgendaEventsOffline(appSys.offline)
+                                        .addAgendaEvent(temp, temp.recurrenceScheme);
+
+                                    setState(() {
+                                      _event = temp;
+                                    });
+                                  } else {
+                                    await AgendaEventsOffline(appSys.offline)
+                                        .addAgendaEvent(temp, await getWeek(temp.start));
+
+                                    setState(() {
+                                      _event = temp;
+                                    });
+                                  }
+                                  await AppNotification.scheduleAgendaReminders(temp);
+                                }
+                              } else {
+                                await RemindersOffline(appSys.offline).removeAll(_event.id);
+                                await AppNotification.cancelNotification(_event.id.hashCode);
+                              }
+                              await refreshAgendaFuture();
+                              widget.setStateCallback();
+                            }
+                          },
+                          onTap: () async {
+                            var _event = _events.where((element) => element.wholeDay!).toList()[index];
+
+                            if (_event.isLesson!) {
+                              _event.color = await getColor(_event.lesson!.disciplineCode);
+                              await lessonDetails(context, _event);
+                              await refreshAgendaFuture();
+                            } else {
+                              await lessonDetails(context, _event);
+                              await refreshAgendaFuture();
+                              widget.setStateCallback();
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(11),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenSize.size.width / 5 * 0.12,
+                              vertical: screenSize.size.height / 10 * 0.1,
+                            ),
+                            child: Center(
+                              child: FittedBox(
+                                child: Text(
+                                  (_events.where((element) => element.wholeDay!).toList()[index].name != null &&
+                                          _events.where((element) => element.wholeDay!).toList()[index].name != "")
+                                      ? _events.where((element) => element.wholeDay!).toList()[index].name!
+                                      : "(sans nom)",
+                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              );
+            }),
+      ),
+    );
+  }
+
+  ///Get actual hour position
+  _getBarPosition(TimeOfDay start) {
+    final dt = TimeOfDay.fromDateTime(DateTime.now());
+
+    double diff = ((dt.hour * 60 + dt.minute) - (start.hour * 60 + start.minute)) / 60;
+
+    return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
+  }
+
+  TimeOfDay _getEndHour(List events) {
+    if (events.length != 0) {
+      List lessonsIList = [];
+      lessonsIList.addAll(events);
+      lessonsIList.removeWhere((element) => element.wholeDay);
+      if (!this.widget.afterSchool) {
+        lessonsIList.removeWhere((element) => element.lesson == null);
+      }
+      if (lessonsIList.length == 0) {
+        if (widget.afterSchool) {
+          return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
+        } else {
+          return TimeOfDay(hour: minSchoolDayLength[1], minute: 0);
+        }
+      } else {
+        lessonsIList.sort((a, b) => a.end.compareTo(b.end));
+        return TimeOfDay(hour: lessonsIList.last.end.hour + 1, minute: 0);
+      }
+    } else if (widget.afterSchool) {
+      return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
+    } else {
+      return TimeOfDay(hour: minSchoolDayLength[1], minute: 0);
+    }
+  }
+
+  _getPosition(TimeOfDay start, AgendaEvent event) {
+    final dt = TimeOfDay(hour: event.start!.hour, minute: event.start!.minute);
+    double diff = ((dt.hour * 60 + dt.minute) - (start.hour * 60 + start.minute)) / 60;
+
+    return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
+  }
+
+  TimeOfDay _getStartHour(List<AgendaEvent> events) {
+    if (events.length != 0) {
+      List<AgendaEvent> lessonsIList = [];
+      lessonsIList.addAll(events);
+
+      lessonsIList.removeWhere((element) => element.wholeDay!);
+      if (widget.afterSchool) {
+        lessonsIList.removeWhere((element) => !element.isLesson!);
+      }
+      if (lessonsIList.length == 0) {
+        if (widget.afterSchool) {
+          return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
+        } else {
+          return TimeOfDay(hour: minSchoolDayLength[0], minute: 0);
+        }
+      } else {
+        if (widget.afterSchool) {
+          lessonsIList.sort((a, b) => a.end!.compareTo(b.end!));
+          return TimeOfDay(hour: lessonsIList.last.end!.hour, minute: 0);
+        }
+        lessonsIList.sort((a, b) => a.start!.compareTo(b.start!));
+        return TimeOfDay(hour: lessonsIList.first.start!.hour, minute: 0);
+      }
+    } else if (widget.afterSchool) {
+      return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
+    } else {
+      return TimeOfDay(hour: minSchoolDayLength[0], minute: 0);
+    }
   }
 }

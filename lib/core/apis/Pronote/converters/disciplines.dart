@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 
 class PronoteDisciplineConverter {
   static disciplines(PronoteClient client, Map disciplinesData) {
@@ -33,7 +33,7 @@ class PronoteDisciplineConverter {
           classAverage: classAverage,
           generalAverage: generalAverage,
           classGeneralAverage: classGeneralAverage,
-          subdisciplineCode: subdisciplineCode,
+          subdisciplineCodes: subdisciplineCode,
           teachers: teachers));
     });
     var rawGrades = mapGet(disciplinesData, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];

@@ -1,23 +1,19 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/textField.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -35,10 +31,12 @@ class AlertBoxWidget extends StatefulWidget {
   _AlertBoxWidgetState createState() => _AlertBoxWidgetState();
 }
 
-class LoginPage extends StatefulWidget {
-  State<StatefulWidget> createState() {
-    return _LoginPageState();
-  }
+class LoginDialog extends StatefulWidget {
+  final Future<List> connectionData;
+  const LoginDialog(this.connectionData, {Key? key}) : super(key: key);
+
+  @override
+  _LoginDialogState createState() => _LoginDialogState();
 }
 
 class LoginSlider extends StatefulWidget {
@@ -72,22 +70,12 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(widget.screenSize.size.width / 5 * 0.1),
-                              child: FittedBox(
-                                child: Text(
-                                  "Conditions d’utilisation",
-                                  style: TextStyle(fontSize: 24.0, fontFamily: "Asap"),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          "Conditions d’utilisation",
+                          style: TextStyle(fontSize: 24, fontFamily: "Asap", fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       SizedBox(
@@ -117,15 +105,18 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                                   );
                                 }),
                           ))),
-                      RaisedButton(
-                        padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
-                        color: Color(0xff27AE60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
+                          primary: Color(0xff27AE60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
+                          ),
                         ),
                         onPressed: () async {
-                          Navigator.of(context).pushReplacement(router(carousel()));
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context, "/intro");
                         },
                         child: Text(
                           "J'accepte",
@@ -173,47 +164,95 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
   }
 }
 
-class _LoginPageState extends State<LoginPage> {
-  String casValue = "Aucun";
-  Future<List>? connectionData;
-  final _username = TextEditingController();
-  final _password = TextEditingController();
-  final _url = TextEditingController();
-  final _cas = TextEditingController();
-  bool _isFirstUse = true;
-  String _obligationText = "";
-  StreamSubscription? loginconnexion;
-
+class _LoginDialogState extends State<LoginDialog> {
+  @override
   Widget build(BuildContext context) {
-    return LoginSlider(
-      setupNeeded: appSys.settings!["system"]["chosenParser"] == 1,
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      contentPadding: EdgeInsets.only(top: 10.0),
+      content: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Container(
+            padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+            child: Column(
+              children: <Widget>[
+                FutureBuilder<List>(
+                  future: widget.connectionData,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.data != null &&
+                        snapshot.data!.length > 0 &&
+                        snapshot.data![0] == 1) {
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        Navigator.pop(context);
+
+                        openAlertBox();
+                      });
+                      return Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.check_circle,
+                            size: 90,
+                            color: Colors.lightGreen,
+                          ),
+                          Text(
+                            snapshot.data![1].toString(),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      );
+                    } else if (snapshot.hasData && snapshot.data![0] == 0) {
+                      print(snapshot.data);
+                      return Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.error,
+                            size: 90,
+                            color: Colors.redAccent,
+                          ),
+                          Text(
+                            snapshot.data![1].toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                          if (snapshot.data!.length > 2 && snapshot.data![2] != null && snapshot.data![2].length > 0)
+                            CustomButtons.materialButton(
+                              context,
+                              120,
+                              null,
+                              () async {
+                                List stepLogger = snapshot.data![2];
+                                try {
+                                  //add step logs to clip board
+                                  await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                  CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
+                                } catch (e) {
+                                  CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
+                                }
+                              },
+                              label: "Copier les logs",
+                            )
+                        ],
+                      );
+                    } else {
+                      return Container(
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Color(0xff444A83),
+                          ));
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  getFirstUse() async {
-    final prefs = await (SharedPreferences.getInstance());
-    if (prefs.getBool('firstUse') == true && storage.read(key: 'agreedTermsAndConfiguredApp') == null) {
-      _isFirstUse = true;
-    }
-  }
-
-  @override
-  initState() {
-    super.initState();
-
-    tryToConnect();
-
-    getFirstUse();
-  }
-
   openAlertBox() {
-    var offset = 0.0;
-
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return showDialog(
@@ -221,121 +260,6 @@ class _LoginPageState extends State<LoginPage> {
         builder: (BuildContext context) {
           return AlertBoxWidget(screenSize: screenSize);
         });
-  }
-
-  openLoadingDialog() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
-                child: Column(
-                  children: <Widget>[
-                    FutureBuilder<List>(
-                      future: connectionData,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data![0] == 1) {
-                          Future.delayed(const Duration(milliseconds: 500), () async {
-                            Navigator.pop(context);
-                            if (_isFirstUse == true) {
-                              openAlertBox();
-                            } else {
-                              Navigator.of(context).pushReplacement(router(homePage()));
-                            }
-                          });
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.check_circle,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.lightGreen,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
-                          );
-                        } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                          print(snapshot.data);
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.error,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.redAccent,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              ),
-                              if (snapshot.data!.length > 2 &&
-                                  snapshot.data![2] != null &&
-                                  snapshot.data![2].length > 0)
-                                Container(
-                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                                  child: CustomButtons.materialButton(
-                                    context,
-                                    MediaQuery.of(context).size.width / 5 * 1.5,
-                                    null,
-                                    () async {
-                                      List stepLogger = snapshot.data![2];
-                                      try {
-                                        //add step logs to clip board
-                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
-                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
-                                      } catch (e) {
-                                        CustomDialogs.showAnyDialog(
-                                            context, "Impossible de copier dans le presse papier !");
-                                      }
-                                    },
-                                    label: "Copier les logs",
-                                  ),
-                                )
-                            ],
-                          );
-                        } else {
-                          return Container(
-                              width: 50,
-                              height: 50,
-                              child: CircularProgressIndicator(
-                                backgroundColor: Color(0xff444A83),
-                              ));
-                        }
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  tryToConnect() async {
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-    String? url = await readStorage("pronoteurl");
-    String? cas = await readStorage("pronotecas");
-    String? isCas = await readStorage("pronotecas");
-
-    String? z = await storage.read(key: "agreedTermsAndConfiguredApp");
-
-    if (u != null && p != null && z != null) {
-      connectionData = appSys.api!.login(u, p, url: url, cas: cas);
-      openLoadingDialog();
-    }
-  }
-
-  static String utf8convert(String text) {
-    List<int> bytes = text.toString().codeUnits;
-    return utf8.decode(bytes);
   }
 }
 
@@ -360,30 +284,77 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     //build background
-    return Container(
-        height: screenSize.size.height,
-        width: screenSize.size.width,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xff22256A),
-            Color(0xff5C66C1),
-          ],
-        )),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(),
-            _loginTextAndHelpButton(),
-            Container(
-                height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
-            Spacer(),
-            _buildMetaPart()
-          ],
-        ));
+
+    return Material(
+      child: Container(
+          height: screenSize.size.height,
+          width: screenSize.size.width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xff22256A),
+              Color(0xff5C66C1),
+            ],
+          )),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(),
+              _loginTextAndHelpButton(),
+              Container(
+                  height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
+              Spacer(),
+              _buildMetaPart()
+            ],
+          )),
+    );
+  }
+
+  formatURL(String url) {
+    RegExp regExp = new RegExp(
+      r"(https://.*\.index-education.net/pronote)(.*)",
+      caseSensitive: false,
+      multiLine: false,
+    );
+    if (regExp.hasMatch(url) && regExp.firstMatch(url)?.groupCount == 2) {
+      String suffix = regExp.firstMatch(url)?.group(2) ?? "";
+
+      RegExp suffixMatches = new RegExp(
+        r"/?(mobile\.)?(.*)?",
+        caseSensitive: false,
+        multiLine: false,
+      );
+      //situation where nothing matches (might be pronote/)
+      if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
+        print("A");
+        suffix = "/mobile.eleve.html";
+        return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
+      }
+      //situation where only mobile. is missing
+      else if (suffixMatches.firstMatch(suffix)?.group(1) == null &&
+          suffixMatches.firstMatch(suffix)?.group(2) != null) {
+        print("B");
+
+        suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
+        return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
+      }
+
+      //situation where everything matches
+      else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
+        print("C");
+
+        suffix = "/" +
+            (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
+            (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
+
+        return [1, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
+      }
+    } else {
+      throw ("Wrong url");
+    }
   }
 
   initState() {
@@ -401,110 +372,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     iconSlideAnimationController.reverse();
   }
 
-  openAlertBox() {
-    var offset = 0.0;
-
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertBoxWidget(screenSize: screenSize);
-        });
-  }
-
   openLoadingDialog() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
-                child: Column(
-                  children: <Widget>[
-                    FutureBuilder<List>(
-                      future: connectionData,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData &&
-                            snapshot.data != null &&
-                            snapshot.data!.length > 0 &&
-                            snapshot.data![0] == 1) {
-                          Future.delayed(const Duration(milliseconds: 500), () {
-                            Navigator.pop(context);
-
-                            openAlertBox();
-                          });
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.check_circle,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.lightGreen,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
-                          );
-                        } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                          print(snapshot.data);
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.error,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.redAccent,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              ),
-                              if (snapshot.data!.length > 2 &&
-                                  snapshot.data![2] != null &&
-                                  snapshot.data![2].length > 0)
-                                Container(
-                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                                  child: CustomButtons.materialButton(
-                                    context,
-                                    MediaQuery.of(context).size.width / 5 * 1.5,
-                                    null,
-                                    () async {
-                                      List stepLogger = snapshot.data![2];
-                                      try {
-                                        //add step logs to clip board
-                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
-                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
-                                      } catch (e) {
-                                        CustomDialogs.showAnyDialog(
-                                            context, "Impossible de copier dans le presse papier !");
-                                      }
-                                    },
-                                    label: "Copier les logs",
-                                  ),
-                                )
-                            ],
-                          );
-                        } else {
-                          return Container(
-                              width: 50,
-                              height: 50,
-                              child: CircularProgressIndicator(
-                                backgroundColor: Color(0xff444A83),
-                              ));
-                        }
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
+          return LoginDialog(connectionData!);
         });
   }
 
@@ -513,11 +385,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        LoginPageTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
+        CustomTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
         SizedBox(
           height: screenSize.size.height / 10 * 0.1,
         ),
-        LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key, true),
+        CustomTextField(_password, "Mot de passe", true, MdiIcons.key, true),
         SizedBox(height: screenSize.size.height / 10 * 0.4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -528,14 +400,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
             CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
               //Actions when pressing the ok button
-              if (_username.text != "" &&
-                  (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != null : true) &&
-                  _password.text != null) {
+              if (_username.text != "" && (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != "" : true)) {
                 //Login using the chosen API
                 connectionData = appSys.api!
                     .login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), mobileCasLogin: false);
-
-                openLoadingDialog();
+                if (connectionData != null) openLoadingDialog();
               } else {
                 CustomDialogs.showAnyDialog(context, "Remplissez tous les champs.");
               }
@@ -549,39 +418,43 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   _buildMetaPart() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.4),
-      width: screenSize.size.width,
-      child: FittedBox(
-        fit: BoxFit.fitWidth,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 480),
+      child: Container(
+        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        width: screenSize.size.width,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            InkWell(
-                child: new Text(
-                  'Foire aux questions',
-                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
-                ),
-                onTap: () => launch('https://ynotes.fr/faq')),
-            SizedBox(
-              width: screenSize.size.width / 5 * 0.2,
+            Expanded(
+              child: InkWell(
+                  child: new Text(
+                    'Foire aux questions',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17),
+                  ),
+                  onTap: () => launch('https://ynotes.fr/faq')),
             ),
-            InkWell(
-                child: new Text(
-                  'PDC',
-                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
-                ),
-                onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
-            SizedBox(
-              width: screenSize.size.width / 5 * 0.2,
+            Expanded(
+              child: InkWell(
+                  child: new Text('PDC',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17)),
+                  onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
             ),
-            InkWell(
-                child: new Text(
-                  'CGU',
-                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
-                ),
-                onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
+            Expanded(
+              child: InkWell(
+                  child: new Text(
+                    'CGU',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17),
+                  ),
+                  onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
+            ),
           ],
         ),
       ),
@@ -610,17 +483,28 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                   connectionData = appSys.api!.login("demonstration", "pronotevs",
                       url: "https://demo.index-education.net/pronote/parent.html", mobileCasLogin: false);
                 }
-                openLoadingDialog();
+                if (connectionData != null) openLoadingDialog();
               },
               loginCallback: () async {
                 try {
+                  if (formatURL(_url.text)[0] == 0) {
+                    setState(() {
+                      _url.text = formatURL(_url.text)[1];
+                    });
+                    CustomDialogs.showErrorSnackBar(
+                        context,
+                        "Nous avons corrigé automatiquement l'adresse URL. Vérifiez puis appuyez à nouveau sur Se connecter",
+                        null);
+
+                    return;
+                  }
                   if (await checkPronoteURL(_url.text)) {
                     if (await testIfPronoteCas(_url.text)) {
                       var a = await Navigator.of(context)
                           .push(router(LoginWebView(url: _url.text, controller: _controller)));
                       if (a != null) {
                         connectionData = appSys.api!.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
-                        openLoadingDialog();
+                        if (connectionData != null) openLoadingDialog();
                       }
                     } else {
                       sliderController!.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
@@ -636,36 +520,6 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         _buildLoginPart(),
       ],
     );
-  }
-
-  _buildRoundedContainer(Widget child) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Container(
-        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(32.0), topRight: Radius.circular(32.0))),
-        child: child);
-  }
-
-  _buildStartingAnimation() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return AnimatedBuilder(
-        animation: iconSlideAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: 1 + 0.2 * iconSlideAnimation.value,
-            child: Transform.translate(
-              //animation goes from 1 to 0
-              offset: Offset(0, 0 + iconSlideAnimation.value * screenSize.size.height / 10 * 0.2),
-              child: Container(
-                  width: screenSize.size.width / 5 * 2.2,
-                  height: screenSize.size.width / 5 * 2.2,
-                  decoration: BoxDecoration(color: Colors.white)),
-            ),
-          );
-        });
   }
 
   _buildStepsText() {
@@ -703,7 +557,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               label: "Retourner au selecteur d'application",
               backgroundColor: Colors.white,
               icon: Icons.home,
-              textColor: Colors.black),
+              textColor: Colors.black,
+              padding: EdgeInsets.all(10)),
           Text(
             "Se connecter",
             style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold),
@@ -766,10 +621,5 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         }
         break;
     }
-  }
-
-  static String utf8convert(String text) {
-    List<int> bytes = text.toString().codeUnits;
-    return utf8.decode(bytes);
   }
 }

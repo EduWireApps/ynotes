@@ -3,10 +3,10 @@ import 'dart:core';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
 import 'package:ynotes/globals.dart';
@@ -45,7 +45,7 @@ abstract class API {
   Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date,  {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
     List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
@@ -56,53 +56,12 @@ abstract class API {
       //Add extracurricular events
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
-    if (!afterSchool) {
-      extracurricularEvents = await (appSys.offline.agendaEvents.getAgendaEvents(week));
-      if (extracurricularEvents != null) {
-        if (lessons != null && lessons.length > 0) {
-          //Last date
-          DateTime? lastLessonEnd = lessons.last.end;
-          //delete the last one
-
-          extracurricularEvents.removeWhere((event) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start!)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
-          /*if (lessons.last.end != null) {
-            extracurricularEvents.removeWhere((element) => element.start.isAfter(lastLessonEnd));
-          }*/
-        }
-        //merge
-        for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
-        }
-      }
-    } else {
-      extracurricularEvents = await (appSys.offline.agendaEvents.getAgendaEvents(week));
-
-      if (extracurricularEvents != null) {
-        //extracurricularEvents.removeWhere((element) => element.isLesson);
-        if (lessons != null && lessons.length > 0) {
-          //Last date
-          DateTime? lastLessonEnd = lessons.last.end;
-          //delete the last one
-          extracurricularEvents.removeWhere((event) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start!)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
-          //extracurricularEvents.removeWhere((event) => event.start.isBefore(lastLessonEnd));
-        }
-        //merge
-        for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
-        }
-      }
-    }
-    if (extracurricularEvents != null) {
-      events.addAll(extracurricularEvents);
-    }
+   
+    events.addAll(extracurricularEvents);
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await appSys.offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await AgendaEventsOffline(appSys.offline).getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
@@ -122,10 +81,10 @@ abstract class API {
   ///Get marks
   Future<List<Discipline>?> getGrades({bool? forceReload});
 
-  //Get a list of lessons for the agenda part
   ///Get the list of homework only for a specific day (time travel feature)
-  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework);
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload});
 
+  //Get a list of lessons for the agenda part
   ///Get the list of all the next homework (sent by specifics API).
   ///
   ///Caution : `EcoleDirecte` api returns a list of unloaded homework
@@ -133,8 +92,8 @@ abstract class API {
 
   Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload});
 
-  ///Get years periods
-  Future<List<Period>?> getPeriods();
+  ///SchoolLife
+  Future<List<SchoolLifeTicket>?> getSchoolLife({bool forceReload = false});
 
   ///Connect to the API
   ///Should return a connection status

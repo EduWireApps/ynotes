@@ -1,1 +1,1 @@
-Fix for account choice issue.
+A lot of new features are available in this version. Please check the in-app details for more informations. 

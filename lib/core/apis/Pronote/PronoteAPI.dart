@@ -16,7 +16,7 @@ import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
 
@@ -220,6 +220,7 @@ class Communication {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
+
     if (this.shouldCompressRequests) {
       print("Compress request");
       data = conv.jsonEncode(data);
@@ -234,7 +235,6 @@ class Communication {
       data = encryption.aesEncrypt(data);
       this.client.stepsLogger.add("✅ Encrypted request");
     }
-    var zlibInstance = ZLibCodec(level: 6, raw: true);
     var rNumber = encryption.aesEncrypt(conv.utf8.encode(this.requestNumber.toString()));
 
     var json = {
@@ -248,7 +248,7 @@ class Communication {
     print(pSite);
 
     this.requestNumber += 2;
-
+    print(json);
     var response = await Requests.post(pSite, json: json).catchError((onError) {
       print("Error occured during request : $onError");
     });
@@ -273,7 +273,7 @@ class Communication {
         throw errorMessages["10"];
       }
 
-      if (recursive != null && recursive) {
+      if (recursive) {
         throw "Unknown error from pronote: ${responseJson["Erreur"]["G"]} | ${responseJson["Erreur"]["Titre"]}\n$responseJson";
       }
 
@@ -500,8 +500,8 @@ class PronoteClient {
     try {
       Map data = {"N": document.id, "G": int.parse(document.type!)};
       //Used by pronote to encrypt the data (I don't know why)
-      var magicStuff = this.encryption.aesEncryptFromString(conv.jsonEncode(data));
-      String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName!));
+      var magicStuff = this.encryption.aesEncrypt(conv.utf8.encode(conv.jsonEncode(data)));
+      String libelle = document.documentName ?? "";
       String? url = this.communication!.rootSite +
           '/FichiersExternes/' +
           magicStuff +
@@ -509,119 +509,26 @@ class PronoteClient {
           libelle +
           '?Session=' +
           this.attributes['h'].toString();
-
+      print(url);
       return url;
     } catch (e) {
       print(e);
     }
   }
 
-  homework(DateTime dateFrom, {DateTime? dateTo}) async {
-    print(dateFrom);
-    if (dateTo == null) {
-      final f = new DateFormat('dd/MM/yyyy');
-      dateTo = f.parse(this.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
+  Future<bool?> init() async {
+    if (!Platform.isLinux) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+      this.stepsLogger.add("ⓘ " +
+          DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
+          " Started login - yNotes version is : " +
+          packageInfo.version +
+          "+" +
+          packageInfo.buildNumber +
+          " T" +
+          Tests.testVersion);
     }
-    var jsonData = {
-      'donnees': {
-        'domaine': {'_T': 8, 'V': "[${await getWeek(dateFrom)}..${await getWeek(dateTo)}]"}
-      },
-      '_Signature_': {'onglet': 88}
-    };
-    var response = await this.communication!.post("PageCahierDeTexte", data: jsonData);
-    var jsonDataContenu = {
-      'donnees': {
-        'domaine': {'_T': 8, 'V': "[${1}..${62}]"}
-      },
-      '_Signature_': {'onglet': 89}
-    };
-    //Get "Contenu de cours"
-    var responseContent = await this.communication!.post("PageCahierDeTexte", data: jsonDataContenu);
-
-    var cList = responseContent['donneesSec']['donnees']['ListeCahierDeTextes']['V'];
-    //Content homework
-    List<Homework> listCHW = [];
-
-    cList.forEach((h) {
-      List<Document> listDocs = [];
-      //description
-      String description = "";
-      h["listeContenus"]["V"].forEach((value) {
-        if (value["descriptif"]["V"] != null) {
-          description += value["descriptif"]["V"] + "<br>";
-        }
-        try {
-          value["ListePieceJointe"]["V"].forEach((pj) {
-            try {
-              downloadUrl(Document(pj["L"], pj["N"], pj["G"].toString(), 0));
-            } catch (e) {}
-          });
-        } catch (e) {}
-      });
-
-      listCHW.add(Homework(
-          h["Matiere"]["V"]["L"],
-          h["Matiere"]["V"]["L"].hashCode.toString(),
-          "",
-          "",
-          description,
-          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["DateFin"]["V"]),
-          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["Date"]["V"]),
-          false,
-          false,
-          false,
-          listDocs,
-          listDocs,
-          "",
-          true));
-    });
-
-    //Homework(matiere, codeMatiere, idDevoir, contenu, contenuDeSeance, date, datePost, done, rendreEnLigne, interrogation, documents, documentsContenuDeSeance, nomProf)
-    var homeworkList = response['donneesSec']['donnees']['ListeTravauxAFaire']['V'];
-    List<Homework> parsedHomeworkList = [];
-    homeworkList.forEach((h) {
-      //set a generated ID (Pronote ID is never the same)
-      String idDevoir =
-          (DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]).toString() + h["Matiere"]["V"]["L"]).hashCode.toString() +
-              h["descriptif"]["V"].hashCode.toString();
-      parsedHomeworkList.add(Homework(
-          h["Matiere"]["V"]["L"],
-          h["Matiere"]["V"]["L"].hashCode.toString(),
-          idDevoir,
-          h["descriptif"]["V"],
-          null,
-          DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]),
-          DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]),
-          h["TAFFait"] ?? false,
-          h["peuRendre"] ?? false,
-          false,
-          null,
-          null,
-          "",
-          true));
-    });
-    parsedHomeworkList.forEach((homework) {
-      try {
-        homework.sessionRawContent = listCHW
-            .firstWhere((content) => content.disciplineCode == homework.disciplineCode && content.date == homework.date)
-            .sessionRawContent;
-      } catch (e) {}
-    });
-    return parsedHomeworkList;
-  }
-
-  Future init() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-    this.stepsLogger.add("ⓘ " +
-        DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
-        " Started login - yNotes version is : " +
-        packageInfo.version +
-        "+" +
-        packageInfo.buildNumber +
-        " T" +
-        Tests.testVersion);
-
     var attributesandfunctions = await this.communication!.initialise();
     this.stepsLogger.add("✅ Initialized");
 
@@ -639,7 +546,6 @@ class PronoteClient {
     //set up encryption
     this.encryption = Encryption();
     this.encryption.aesIV = this.communication!.encryption.aesIV;
-    print("test");
     //some other attribute creation
     this.lastPing = DateTime.now().millisecondsSinceEpoch / 1000;
     this.authResponse = null;
@@ -657,7 +563,6 @@ class PronoteClient {
     this.stepsLogger.add("✅ Created attributes");
 
     this.loggedIn = await this._login();
-
     this.hourStart =
         DateFormat("hh'h'mm").parse(this.funcOptions['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
     this.hourEnd = DateFormat("hh'h'mm")
@@ -665,6 +570,7 @@ class PronoteClient {
 
     this.oneHourDuration = hourEnd.difference(hourStart).inMinutes;
     this.expired = false;
+    return loggedIn;
   }
 
   keepAlive() {
@@ -716,7 +622,6 @@ class PronoteClient {
 
   List<PronotePeriod> periods() {
     print("GETTING PERIODS");
-    //printWrapped(this.func_options['donneesSec']['donnees'].toString());
     var json;
     try {
       json = this.funcOptions['donneesSec']['donnees']['General']['ListePeriodes'];
@@ -729,48 +634,6 @@ class PronoteClient {
       toReturn.add(PronotePeriod(this, j));
     });
     return toReturn;
-  }
-
-  polls() async {
-    /* print("GETTING POLLS");
-    Map data = {
-      "_Signature_": {"onglet": 8},
-    };
-    var response = await this.communication!.post('PageActualites', data: data);
-    var listActus = response['donneesSec']['donnees']['listeActualites']["V"];
-    FileAppUtil.writeInFile(conv.jsonEncode(response['donneesSec']['donnees']['listeActualites']["V"]), "questions");
-
-    List<PollInfo> listInfosPolls = [];
-    listActus.forEach((element) {
-      List<Document> documents = [];
-      try {
-        element["listePiecesJointes"]["V"].forEach((pj) {
-          documents.add(Document(pj["L"], pj["N"], pj["G"], 0));
-        });
-      } catch (e) {}
-      try {
-        //PollInfo(this.auteur, this.datedebut, this.questions, this.read);
-
-        List<String> questions = [];
-        List<Map> choices = [];
-        FileAppUtil.writeInFile(conv.jsonEncode(element["listeQuestions"]["V"]), "questions");
-        element["listeQuestions"]["V"].forEach((question) {
-          questions.add(conv.jsonEncode(question));
-        });
-        listInfosPolls.add(PollInfo(
-            element["elmauteur"]["V"]["L"],
-            DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]),
-            questions,
-            element["lue"],
-            element["L"],
-            element["N"],
-            documents,
-            element));
-      } catch (e) {
-        print("Failed to add an element to the polls list " + e.toString());
-      }
-    });
-    return listInfosPolls;*/
   }
 
   void printWrapped(String text) {
@@ -986,6 +849,7 @@ class PronoteClient {
         if (isOldAPIUsed == false) {
           try {
             paramsUser = await this.communication!.post("ParametresUtilisateur", data: {'donnees': {}});
+            this.encryption.aesKey = this.communication?.encryption.aesKey;
 
             this.communication!.authorizedTabs =
                 prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'listeOnglets']));
