@@ -568,15 +568,21 @@ class AppNotification {
 
   static Future<void> showNewLessonCancellationNotification(Lesson? lesson) async {
     int id = 444;
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: id,
-        notificationLayout: NotificationLayout.Default,
-        channelKey: 'canceled',
-        title: 'Annulation de cours',
-        body: 'Le cours de ${lesson!.discipline} de ${lesson.start} à ${lesson.end} a été annulé !',
-        locked: false,
-      )
-    );
+    try {
+      await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: id,
+            notificationLayout: NotificationLayout.Default,
+            channelKey: 'canceled',
+            title: 'Annulation de cours',
+            body: 'Le cours de ${lesson!.discipline} de ${lesson
+                .start} à ${lesson.end} a été annulé !',
+            locked: false,
+          )
+      );
+    }catch (e){
+      CustomLogger.log("NOTIFICATIONS", "An error occurred while setting ongoin notification");
+      CustomLogger.error(e);
+    }
   }
 }

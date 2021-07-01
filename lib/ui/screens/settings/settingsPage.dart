@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/agenda/models.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
@@ -375,6 +376,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
                           await DesktopWindow.setWindowSize(Size(768, 1024));
                         }
+                        AppNotification.showNewLessonCancellationNotification(Lesson(room: '110', canceled: true, start: DateTime.now(), end: DateTime(500,500,500), discipline: 'Phusique', teachers: ['M. José']));
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(
