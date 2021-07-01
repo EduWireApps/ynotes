@@ -3,23 +3,23 @@ import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
-import 'package:ynotes/core/apis/Pronote/converters/account.dart';
-import 'package:ynotes/core/apis/Pronote/pronoteMethods.dart';
+import 'package:ynotes/core/apis/pronote/pronote_api.dart';
+import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
+import 'package:ynotes/core/apis/pronote/converters/account.dart';
+import 'package:ynotes/core/apis/pronote/pronote_methods.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
-import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/settingsPage.dart';
+import 'package:ynotes/ui/screens/settings/index.dart';
 
 class APIPronote extends API {
   bool loginLock = false;

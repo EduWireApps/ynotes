@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/apis/ecole_directe.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 //The main class for everything done in background
 class BackgroundService {

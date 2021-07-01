@@ -1,7 +1,7 @@
 import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/logic/appConfig/models.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
-import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
+import 'package:ynotes/core/logic/app_config/models.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:uuid/uuid.dart';
 
 class PronoteAccountConverter {

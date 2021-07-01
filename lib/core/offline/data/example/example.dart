@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class Example extends HiveObject {
   int id;

@@ -1,8 +1,8 @@
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
-import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
+import 'package:ynotes/core/apis/pronote/Pronote_api.dart';
+import 'package:ynotes/core/apis/pronote/converters_exporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 
 class PronoteHomeworkConverter {
   static List<Homework> homework(PronoteClient client, Map homeworkData) {
