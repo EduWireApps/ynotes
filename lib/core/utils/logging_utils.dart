@@ -1,11 +1,20 @@
 import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'file_utils.dart';
 import 'package:ynotes/extensions.dart';
+
+import 'file_utils.dart';
 
 class CustomLogger {
   CustomLogger._();
+
+  static void deleteLog() async {
+    final File f = await loadLog();
+    await f.writeAsString("");
+  }
+
+  static void error(Object? e) => log("ERROR", e.toString());
 
   static Future<File> loadLog() async {
     final directory = await FolderAppUtil.getDirectory();
@@ -16,6 +25,20 @@ class CustomLogger {
   static Future<String> loadLogAsString() async {
     final File file = await loadLog();
     return file.readAsString();
+  }
+
+  static void log(String object, dynamic text) => debugPrint('[${object.toUpperCase()}] ${text.toString()}');
+
+  static void logWrapped(String object, String description, String text) {
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    log(object, description);
+    pattern.allMatches(text).forEach((match) => debugPrint(match.group(0)));
+  }
+
+  static void saveLog({required String object, required String text}) async {
+    log(object, text);
+    final File f = await loadLog();
+    await _writeLog(object: object, text: text, file: f);
   }
 
   static Future<void> _writeLog({required String object, required String text, required File file}) async {
@@ -30,26 +53,5 @@ class CustomLogger {
     final String currentText = await file.readAsString();
 
     await file.writeAsString(date + n + '[${object.toUpperCase()}] $text' + n + n + currentText, mode: FileMode.write);
-  }
-
-  static void saveLog({required String object, required String text}) async {
-    log(object, text);
-    final File f = await loadLog();
-    await _writeLog(object: object, text: text, file: f);
-  }
-
-  static void deleteLog() async {
-    final File f = await loadLog();
-    await f.writeAsString("");
-  }
-
-  static void log(String object, String text) => debugPrint('[${object.toUpperCase()}] $text');
-
-  static void error(Object? e) => log("ERROR", e.toString());
-
-  static void logWrapped(String object, String description, String text) {
-    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
-    log(object, description);
-    pattern.allMatches(text).forEach((match) => debugPrint(match.group(0)));
   }
 }
