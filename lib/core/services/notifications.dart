@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -571,6 +572,19 @@ class AppNotification {
 
   static Future<void> showNewLessonCancellationNotification(Lesson? lesson) async {
     int id = 444;
+
+    await AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'canceled',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelName: 'Cours annulé',
+          importance: NotificationImportance.High,
+          channelDescription: "Notification d'annulation de cours",
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.red,
+          onlyAlertOnce: true)
+    ]);
+
     try {
       await AwesomeNotifications().createNotification(
           content: NotificationContent(
@@ -579,7 +593,7 @@ class AppNotification {
             channelKey: 'canceled',
             title: 'Annulation de cours',
             body: 'Le cours de ${lesson!.discipline} de ${lesson
-                .start} à ${lesson.end} a été annulé !',
+                .start!.hour}h${lesson.start!.minute} à ${lesson.end!.hour}h${lesson.end!.minute} a été annulé !',
             locked: false,
           )
       );
