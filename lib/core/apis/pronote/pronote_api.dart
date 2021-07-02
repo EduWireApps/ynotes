@@ -800,14 +800,14 @@ class PronoteClient {
       //Convert credentials to lowercase if needed (API returns 1)
       if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog'] != 0) {
         CustomLogger.log("PRONOTE", "LOWER CASE ID");
-        CustomLogger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompLog']);
+        CustomLogger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompLog'].toString());
         u = u.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased id");
       }
 
       if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
         CustomLogger.log("PRONOTE", "LOWER CASE PASSWORD");
-        CustomLogger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompMdp']);
+        CustomLogger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompMdp'].toString());
         p = p.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased password");
       }
