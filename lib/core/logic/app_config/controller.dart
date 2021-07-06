@@ -23,6 +23,8 @@ import 'package:ynotes/core/utils/settings/model.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/themes.dart';
+import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes/extensions.dart';
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
@@ -152,6 +154,7 @@ class ApplicationSystem extends ChangeNotifier {
     CustomLogger.log("APPSYS", "Updating theme to $themeName");
     theme = appThemes[themeName];
     this.themeName = themeName;
+    currentTheme.theme = themes.firstWhere((t) => t.name == themeName.capitalize()).theme;
     settings.user.global.theme = themeName;
     SystemChrome.setSystemUIOverlayStyle(
         ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
