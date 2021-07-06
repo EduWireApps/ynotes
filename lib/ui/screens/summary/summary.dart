@@ -15,7 +15,7 @@ import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
-import 'package:ynotes/ui/screens/grades/index.dart';
+import 'package:ynotes/ui/screens/grades/grades.dart';
 import 'widgets/quick_grades.dart';
 import 'widgets/quick_homework.dart';
 import 'widgets/quick_school_life.dart';

@@ -18,7 +18,7 @@ import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/login/widgets/qr_code_login.dart';
 import 'widgets/login_web_view.dart';
 import 'widgets/pronote_setup.dart';
-import 'package:ynotes/ui/screens/school_api_choice/index.dart';
+import 'package:ynotes/ui/screens/school_api_choice/chool_api_choice.dart';
 import 'package:ynotes/useful_methods.dart';
 
 Color textButtonColor = Color(0xff252B62);

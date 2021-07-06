@@ -19,7 +19,7 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/index.dart';
+import 'package:ynotes/ui/screens/settings/settings.dart';
 
 class APIPronote extends API {
   bool loginLock = false;

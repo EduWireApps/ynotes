@@ -7,7 +7,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 
-import '../index.dart';
+import '../agenda.dart';
 
 String weekName = "";
 

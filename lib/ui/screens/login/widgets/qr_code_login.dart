@@ -18,7 +18,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/login/index.dart';
+import 'package:ynotes/ui/screens/login/login.dart';
 
 export 'package:rive/src/generated/animation/state_machine_base.dart';
 

@@ -4,7 +4,7 @@ import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/agenda/index.dart';
+import 'package:ynotes/ui/screens/agenda/agenda.dart';
 import 'package:ynotes/ui/screens/agenda/widgets/agenda_event_edit_bottom_sheet.dart';
 
 addEvent(context) async {
