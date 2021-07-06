@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -16,6 +18,12 @@ import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
+import 'package:ynotes/ui/screens/summary/temp/average_chart.dart';
+import 'package:ynotes/useful_methods.dart';
+import 'package:ynotes_components/ynotes_components.dart';
+import 'temp/average.dart';
+import 'temp/constants.dart';
+import 'temp/last_grades.dart';
 import 'widgets/quick_grades.dart';
 import 'widgets/quick_homework.dart';
 import 'widgets/quick_school_life.dart';
@@ -42,6 +50,20 @@ class SummaryPageState extends State<SummaryPage> with LayoutMixin, YPageMixin {
   double? offset;
 
   @override
+  Widget build(BuildContext context) {
+    return YPage(
+        title: "Résumé",
+        body: RefreshIndicator(
+          onRefresh: () async {},
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: sidePadding),
+              child: Column(
+                children: [SummaryAverage(), SummaryLastGrades()],
+              )),
+        ));
+  }
+
+  /*@override
   Widget build(BuildContext context) {
     return YPage(
         title: "Résumé",
@@ -82,7 +104,7 @@ class SummaryPageState extends State<SummaryPage> with LayoutMixin, YPageMixin {
             ),
           ),
         ));
-  }
+  }*/
 
   initLoginController() async {
     await appSys.loginController.init();
