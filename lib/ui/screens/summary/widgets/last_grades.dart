@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/grades/models.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/summary/temp/card.dart';
-import 'package:ynotes/ui/screens/summary/temp/constants.dart';
-import 'package:ynotes/ui/screens/summary/temp/texts.dart';
+import 'package:ynotes/ui/screens/summary/widgets/card.dart';
+import 'package:ynotes/ui/screens/summary/data/constants.dart';
+import 'package:ynotes/ui/screens/summary/data/texts.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 import 'package:sizer/sizer.dart';
@@ -20,7 +20,7 @@ class SummaryLastGrades extends StatefulWidget {
 class _SummaryLastGradesState extends State<SummaryLastGrades> {
   Widget gradeCard(BuildContext context, Grade grade) {
     final TextStyle gradeStyle =
-        TextStyle(fontSize: 30, fontWeight: FontWeight.w600, color: currentTheme.colors.neutral.shade500);
+        TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w600, color: currentTheme.colors.neutral.shade500);
 
     return Padding(
         padding: EdgeInsets.only(left: sidePadding),
@@ -43,7 +43,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                           Text('/' + grade.scale!,
                               style: TextStyle(
                                   color: currentTheme.colors.neutral.shade400,
-                                  fontSize: 15,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w400)),
                           if (grade.notSignificant!) Text(")", style: gradeStyle)
                         ],
@@ -54,15 +54,15 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                 YVerticalSpacer(5),
                 Text(
                   grade.disciplineName ?? "",
-                  style:
-                      TextStyle(color: currentTheme.colors.neutral.shade400, fontSize: 12, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      color: currentTheme.colors.neutral.shade400, fontSize: 7.sp, fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 ),
                 Text(
                   grade.testName ?? "",
-                  style:
-                      TextStyle(color: currentTheme.colors.neutral.shade500, fontSize: 18, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      color: currentTheme.colors.neutral.shade500, fontSize: 13.sp, fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 )
@@ -88,12 +88,12 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(Texts.lastGrades,
+                    Text(SummaryTexts.lastGrades,
                         style: TextStyle(
-                            color: currentTheme.colors.neutral.shade500, fontSize: 20, fontWeight: FontWeight.w500)),
+                            color: currentTheme.colors.neutral.shade500, fontSize: 15.sp, fontWeight: FontWeight.w500)),
                     YButton(
                       onPressed: () => Navigator.pushNamed(context, "/grades"),
-                      text: Texts.seeAll,
+                      text: SummaryTexts.seeAll,
                       type: YColor.neutral,
                       variant: YButtonVariant.reverse,
                       icon: Icons.arrow_forward_rounded,

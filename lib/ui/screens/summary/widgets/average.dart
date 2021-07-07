@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes_components/ynotes_components.dart';
+import 'package:sizer/sizer.dart';
 
 import 'average_chart.dart';
 import 'card.dart';
-import 'constants.dart';
-import 'texts.dart';
+import '../data/constants.dart';
+import '../data/texts.dart';
 
 class SummaryAverage extends StatefulWidget {
   const SummaryAverage({Key? key}) : super(key: key);
@@ -36,10 +37,13 @@ class SummaryAverageState extends State<SummaryAverage> {
                         Text(
                           (!model.average.isNaN ? model.average.toStringAsFixed(2).replaceAll(".", ",") : "-"),
                           style: TextStyle(
-                              color: currentTheme.colors.neutral.shade500, fontSize: 35, fontWeight: FontWeight.w700),
+                              color: currentTheme.colors.neutral.shade500,
+                              fontSize: 30.sp,
+                              fontWeight: FontWeight.w700),
                         ),
                         YHorizontalSpacer(5),
-                        Text(Texts.average, style: TextStyle(color: currentTheme.colors.neutral.shade400, fontSize: 18))
+                        Text(SummaryTexts.average,
+                            style: TextStyle(color: currentTheme.colors.neutral.shade400, fontSize: 13.sp))
                       ],
                     ),
                     YVerticalSpacer(10),

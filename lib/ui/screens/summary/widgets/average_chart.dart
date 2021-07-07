@@ -1,17 +1,18 @@
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes/useful_methods.dart';
+import 'package:ynotes_components/ynotes_components.dart';
+import 'package:sizer/sizer.dart';
 
 class SummaryChart extends StatefulWidget {
-  final List<Grade>? lastGrades;
-
-  SummaryChart(
-    this.lastGrades, {
+  SummaryChart({
     Key? key,
   }) : super(key: key);
   @override
@@ -19,21 +20,30 @@ class SummaryChart extends StatefulWidget {
 }
 
 class SummaryChartState extends State<SummaryChart> with LayoutMixin {
+  List<Grade>? lastGrades;
   List<Grade>? _grades = [];
-  List<Color> gradientColors = [
-    const Color(0xff3a4398),
-    const Color(0xff5c66c1),
-  ];
   int maxGradesCount = 10;
 
   LineChartData avgData() {
-    var screenSize = MediaQuery.of(context);
     return LineChartData(
       clipData: FlClipData.horizontal(),
       backgroundColor: Colors.transparent,
       lineTouchData: LineTouchData(enabled: true),
       gridData: FlGridData(
-        show: false,
+        show: true,
+        drawVerticalLine: true,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: currentTheme.colors.neutral.shade300,
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: currentTheme.colors.neutral.shade300,
+            strokeWidth: 1,
+          );
+        },
       ),
       titlesData: FlTitlesData(
         show: true,
@@ -41,10 +51,10 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
         leftTitles: SideTitles(
           interval: 1.0,
           showTitles: true,
-          getTextStyles: (value) => const TextStyle(
-            color: Color(0xff67727d),
+          getTextStyles: (value) => TextStyle(
+            color: currentTheme.colors.neutral.shade400,
             fontWeight: FontWeight.bold,
-            fontSize: 15,
+            fontSize: 10.sp,
           ),
           getTitles: (value) {
             double max = getMax();
@@ -57,25 +67,19 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
             }
             return '';
           },
-          reservedSize: screenSize.size.width / 5 * 0.2,
-          margin: screenSize.size.width / 5 * 0.05,
         ),
       ),
-      axisTitleData: FlAxisTitleData(topTitle: AxisTitle()),
-      borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
+      borderData: FlBorderData(show: true, border: Border.all(color: currentTheme.colors.neutral.shade300, width: 1)),
       minX: 0,
-      maxX: ((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length).toDouble(),
-      minY: getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin(),
-      maxY: getMax() + 2,
+      maxX: ((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length).toDouble() - 1,
+      minY: (getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin()).round().toDouble(),
+      maxY: (getMax() + 1).round().toDouble(),
       lineBarsData: [
         LineChartBarData(
-          spots: List.generate((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length,
+          spots: List.generate(((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length),
               (index) => FlSpot(index.toDouble(), toDouble((_grades ?? [])[index]))),
           isCurved: true,
-          colors: [
-            ColorTween(begin: gradientColors[0], end: gradientColors[0]).lerp(0.2)!,
-            ColorTween(begin: gradientColors[1], end: gradientColors[1]).lerp(0.2)!,
-          ],
+          colors: [currentTheme.colors.primary.shade300],
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
@@ -88,53 +92,22 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    maxGradesCount = isLargeScreen ? 18 : 10;
+    maxGradesCount = isLargeScreen ? 12 : 6;
 
-    var screenSize = MediaQuery.of(context);
-    return Card(
-      color: Colors.transparent,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      child: (_grades != null && ((_grades ?? []).length != 0))
-          ? Container(
-              height: 250,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: screenSize.size.width / 5 * 4.2,
-                    height: 100,
-                    child: LineChart(
-                      avgData(),
-                    ),
+    return ChangeNotifierProvider<GradesController>.value(
+        value: appSys.gradesController,
+        child: Consumer<GradesController>(builder: (context, model, child) {
+          this.lastGrades =
+              getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true);
+          return (_grades != null && ((_grades ?? []).length != 0))
+              ? AspectRatio(
+                  aspectRatio: 3.5,
+                  child: LineChart(
+                    avgData(),
                   ),
-                ],
-              ),
-            )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        MdiIcons.emoticonConfused,
-                        color: Colors.white,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
-                        child: AutoSizeText(
-                          "Pas de données.",
-                          style: TextStyle(fontFamily: "Asap", color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-    );
+                )
+              : Container();
+        }));
   }
 
   @override
@@ -187,10 +160,10 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
   }
 
   initGrades() {
-    if (widget.lastGrades != null) {
+    if (this.lastGrades != null) {
       setState(() {
         (_grades ?? []).clear();
-        (_grades ?? []).addAll(widget.lastGrades!);
+        (_grades ?? []).addAll(this.lastGrades!);
         (_grades ?? []).sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
         (_grades ?? []).removeWhere(
             (element) => element.value == null || element.notSignificant! || element.simulated! || element.letters!);
