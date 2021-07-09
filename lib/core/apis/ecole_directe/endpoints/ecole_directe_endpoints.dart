@@ -11,7 +11,7 @@ class EcoleDirecteEndpoints {
   String get mails => _url(EcoleDirecteDemoEndpoints.mails, EcoleDirecteApiEndpoints.mails);
   String get nextHomework => _url(EcoleDirecteDemoEndpoints.nextHomework, EcoleDirecteApiEndpoints.nextHomework);
   String get recipients => _url(EcoleDirecteDemoEndpoints.recipients, EcoleDirecteApiEndpoints.recipients);
-  String get schoolLife => _url(EcoleDirecteDemoEndpoints.mails, EcoleDirecteApiEndpoints.mails);
+  String get schoolLife => _url(EcoleDirecteDemoEndpoints.schoollife, EcoleDirecteApiEndpoints.schoolLife);
   String get workspaces => _url(EcoleDirecteDemoEndpoints.workspaces, EcoleDirecteApiEndpoints.workspaces);
 
   String homeworkFor(String date) =>

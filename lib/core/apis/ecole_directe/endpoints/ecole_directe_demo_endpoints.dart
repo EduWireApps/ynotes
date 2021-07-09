@@ -10,7 +10,7 @@ class EcoleDirecteDemoEndpoints {
   static final Endpoint lessons = Endpoint(_rootUrl + "agenda");
   static final Endpoint mails = Endpoint(_rootUrl + "mails");
   static final Endpoint recipients = Endpoint(_rootUrl + "recipients");
-  static final Endpoint schoollife = Endpoint(_rootUrl + "recipients");
+  static final Endpoint schoollife = Endpoint(_rootUrl + "schoollife");
 
   EcoleDirecteDemoEndpoints._();
 }
