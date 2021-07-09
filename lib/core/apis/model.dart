@@ -43,8 +43,6 @@ abstract class API {
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
 
-  ///Get the dates of next homework (deprecated)
-  Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
   Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {

@@ -8,12 +8,14 @@ class LoginBox extends StatefulWidget {
   final TextEditingController passwordCon;
   final TextEditingController loginCon;
   final VoidCallback callback;
+  final VoidCallback longPressCallback;
 
   const LoginBox(
       {Key? key,
       required this.passwordCon,
       required this.loginCon,
-      required this.callback})
+      required this.callback,
+      required this.longPressCallback})
       : super(key: key);
 
   @override
@@ -47,11 +49,16 @@ class _LoginBoxState extends State<LoginBox> {
                 child: Text(
                   LoginPageTextContent.login.forgotPassword,
                   style: TextStyle(
-                      fontFamily: "Asap", color: currentTheme.colors.neutral.shade500, decoration: TextDecoration.underline),
+                      fontFamily: "Asap",
+                      color: currentTheme.colors.neutral.shade500,
+                      decoration: TextDecoration.underline),
                 ),
               ),
               Spacer(),
-              YButton(onPressed: () => widget.callback(), text: "Se connecter")
+              YButton(
+                  onPressed: () => widget.callback(),
+                  onLongPressed: () => widget.longPressCallback(),
+                  text: "Se connecter")
             ],
           )
         ],

@@ -49,12 +49,6 @@ class APIPronote extends API {
     http.Request request = http.Request('GET', Uri.parse(url));
     return request;
   }
-
-  @override
-  Future<List<DateTime>> getDatesNextHomework() {
-    throw UnimplementedError();
-  }
-
   @override
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {

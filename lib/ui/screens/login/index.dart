@@ -108,6 +108,13 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     if (connectionData != null) LoginDialog(connectionData!).show(context);
   }
 
+  Future<void> ecoleDirecteDemoLogin() async {
+    connectionData = appSys.api!.login("john.doe", "123456", additionnalSettings: {
+      "demo": true,
+    });
+    if (connectionData != null) LoginDialog(connectionData!).show(context);
+  }
+
   goToPage(availableLoginPageBoxes box, {bool back = false}) {
     if (!back) {
       setState(() {
@@ -195,6 +202,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
             child: LoginBox(
               passwordCon: _password,
               loginCon: _username,
+              longPressCallback:() => ecoleDirecteDemoLogin(),
               callback: () => simpleLogin(),
             )),
       ),
