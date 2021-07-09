@@ -1400,10 +1400,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: b7f9c4161828550f4b83632b0b5772cb1a25fdbb
+      resolved-ref: a0c008aa094e0fe6534e4b5ac2c157afba4e3317
       url: "https://github.com/EduWireApps/ynotes-components"
     source: git
-    version: "0.2.0+5"
+    version: "0.2.4"
 sdks:
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=2.0.4"

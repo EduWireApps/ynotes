@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
 
 class PronoteSchoolsController extends ChangeNotifier {
   bool geolocating = false;
@@ -12,6 +13,7 @@ class PronoteSchoolsController extends ChangeNotifier {
   String? error;
   List<PronoteSchool>? schools;
   List<PronoteSpace>? spaces;
+
   set chosenSchool(PronoteSchool? _school) {
     school = _school;
     notifyListeners();
@@ -52,7 +54,7 @@ class PronoteSchoolsController extends ChangeNotifier {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-      error = 'Les services de géolocalisation sont desactivés.';
+      error = LoginPageTextContent.pronote.geolocation.geolocationDisabled;
       geolocating = false;
       notifyListeners();
     }
@@ -62,8 +64,7 @@ class PronoteSchoolsController extends ChangeNotifier {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle appropriately.
-        error =
-            "L'accès aux services de géolocalisation est refusé de manière permanente : vous devez la réactiver depuis les paramètres.";
+        error = LoginPageTextContent.pronote.geolocation.geolocationPermissionRefused;
         geolocating = false;
         notifyListeners();
       }
@@ -74,7 +75,7 @@ class PronoteSchoolsController extends ChangeNotifier {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-        error = "L'accès aux services de géolocalisation est refusé.";
+        error = LoginPageTextContent.pronote.geolocation.geolocationPermissionPermanentlyRefused;
         geolocating = false;
         notifyListeners();
       }
