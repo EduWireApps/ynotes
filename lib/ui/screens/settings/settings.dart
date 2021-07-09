@@ -274,7 +274,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   title: 'Afficher les logs',
                   leading: Icon(MdiIcons.bug, color: ThemeUtils.textColor()),
                   onPressed: (context) {
-                    Navigator.of(context).push(router(LogsPage()));
+                    openLocalPage(YPageLocal(child: LogsPage(), title: "Logs"));
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                   subtitleTextStyle: TextStyle(

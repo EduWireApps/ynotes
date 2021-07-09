@@ -28,7 +28,7 @@ class APIPronote extends API {
 
   int loginReqNumber = 0;
 
-  APIPronote(Offline offlineController) : super(offlineController) {
+  APIPronote(Offline offlineController) : super(offlineController, apiName: "Pronote") {
     localClient = PronoteClient("");
   }
 

@@ -75,7 +75,7 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
 
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
-  APIEcoleDirecte(Offline offlineController) : super(offlineController);
+  APIEcoleDirecte(Offline offlineController) : super(offlineController, apiName: "EcoleDirecte");
 
   @override
   Future<List> apiStatus() async {

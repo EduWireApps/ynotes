@@ -1,640 +1,367 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/pronote/schools_model.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/text_field.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/login/widgets/qr_code_login.dart';
-import 'widgets/login_web_view.dart';
-import 'widgets/pronote_setup.dart';
-import 'package:ynotes/ui/screens/school_api_choice/chool_api_choice.dart';
-import 'package:ynotes/useful_methods.dart';
+import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
+import 'package:ynotes/ui/screens/login/widgets/api_choice_box.dart';
+import 'package:ynotes/ui/screens/login/widgets/contact_bottom_sheet.dart';
+import 'package:ynotes/ui/screens/login/widgets/login_box.dart';
+import 'package:ynotes/ui/screens/login/widgets/login_dialog.dart';
+import 'package:ynotes/ui/screens/login/widgets/pronote_geolocation_box.dart';
+import 'package:ynotes/ui/screens/login/widgets/pronote_login_way_box.dart';
+import 'package:ynotes/ui/screens/login/widgets/pronote_qr_box.dart';
+import 'package:ynotes/ui/screens/login/widgets/pronote_url_box.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
+import 'package:ynotes_components/ynotes_components.dart';
 
-Color textButtonColor = Color(0xff252B62);
-
-class AlertBoxWidget extends StatefulWidget {
-  final MediaQueryData screenSize;
-
-  const AlertBoxWidget({
-    Key? key,
-    required this.screenSize,
-  }) : super(key: key);
-
-  @override
-  _AlertBoxWidgetState createState() => _AlertBoxWidgetState();
+enum availableLoginPageBoxes {
+  ApiChoiceBox,
+  PronoteLoginWayBox,
+  PronoteQrCodeBox,
+  PronoteGeolocationBox,
+  PronoteUrlBox,
+  LoginBox
 }
 
-class LoginDialog extends StatefulWidget {
-  final Future<List> connectionData;
-  const LoginDialog(this.connectionData, {Key? key}) : super(key: key);
+class LoginPageBox {
+  final availableLoginPageBoxes box;
+  final Widget widget;
 
-  @override
-  _LoginDialogState createState() => _LoginDialogState();
+  LoginPageBox({required this.box, required this.widget});
 }
 
 class LoginSlider extends StatefulWidget {
-  final bool? setupNeeded;
-
-  const LoginSlider({Key? key, this.setupNeeded}) : super(key: key);
+  const LoginSlider({Key? key}) : super(key: key);
   @override
   _LoginSliderState createState() => _LoginSliderState();
 }
 
-class _AlertBoxWidgetState extends State<AlertBoxWidget> {
-  ScrollController scrollViewController = ScrollController();
-  var offset = -4000.0;
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      contentPadding: EdgeInsets.only(top: 10.0),
-      content: Container(
-        height: widget.screenSize.size.height / 10 * 6,
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(32.0)),
-          child: Stack(
-            children: <Widget>[
-              SingleChildScrollView(
-                controller: scrollViewController,
-                child: Container(
-                  width: widget.screenSize.size.width,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: Text(
-                          "Conditions d’utilisation",
-                          style: TextStyle(fontSize: 24, fontFamily: "Asap", fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                        height: 4.0,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10, bottom: 10),
-                          child: SingleChildScrollView(
-                              child: Container(
-                            child: FutureBuilder(
-                                //Read the TOS file
-                                future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) {
-                                    CustomLogger.log("LOGIN", "An error occured while getting the TOS");
-                                    CustomLogger.error(snapshot.error);
-                                  }
-                                  return Text(
-                                    snapshot.data.toString(),
-                                    style: TextStyle(
-                                      fontFamily: "Asap",
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  );
-                                }),
-                          ))),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
-                          primary: Color(0xff27AE60),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
-                          ),
-                        ),
-                        onPressed: () async {
-                          Navigator.pop(context);
-                          Navigator.pushReplacementNamed(context, "/intro");
-                        },
-                        child: Text(
-                          "J'accepte",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Visibility(
-                visible:
-                    (offset - (scrollViewController.hasClients ? scrollViewController.position.maxScrollExtent : 0) <
-                        -45),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: widget.screenSize.size.height / 10 * 0.1),
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        scrollViewController.animateTo(scrollViewController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                      },
-                      child: RotatedBox(quarterTurns: 3, child: Icon(Icons.chevron_left)),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    scrollViewController.addListener(() {
-      setState(() {
-        offset = scrollViewController.offset;
-      });
-    });
-  }
-}
-
-class _LoginDialogState extends State<LoginDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      contentPadding: EdgeInsets.only(top: 10.0),
-      content: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
-          child: Container(
-            padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
-            child: Column(
-              children: <Widget>[
-                FutureBuilder<List>(
-                  future: widget.connectionData,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData &&
-                        snapshot.data != null &&
-                        snapshot.data!.length > 0 &&
-                        snapshot.data![0] == 1) {
-                      Future.delayed(const Duration(milliseconds: 500), () {
-                        Navigator.pop(context);
-
-                        openAlertBox();
-                      });
-                      return Column(
-                        children: <Widget>[
-                          Icon(
-                            Icons.check_circle,
-                            size: 90,
-                            color: Colors.lightGreen,
-                          ),
-                          Text(
-                            snapshot.data![1].toString(),
-                            textAlign: TextAlign.center,
-                          )
-                        ],
-                      );
-                    } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                      CustomLogger.log("LOGIN", "Snapshot data: ${snapshot.data}");
-                      return Column(
-                        children: <Widget>[
-                          Icon(
-                            Icons.error,
-                            size: 90,
-                            color: Colors.redAccent,
-                          ),
-                          Text(
-                            snapshot.data![1].toString(),
-                            textAlign: TextAlign.center,
-                          ),
-                          if (snapshot.data!.length > 2 && snapshot.data![2] != null && snapshot.data![2].length > 0)
-                            CustomButtons.materialButton(
-                              context,
-                              120,
-                              null,
-                              () async {
-                                List stepCustomLogger = snapshot.data![2];
-                                try {
-                                  //add step logs to clip board
-                                  await Clipboard.setData(new ClipboardData(text: stepCustomLogger.join("\n")));
-                                  CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
-                                } catch (e) {
-                                  CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
-                                }
-                              },
-                              label: "Copier les logs",
-                            )
-                        ],
-                      );
-                    } else {
-                      return Container(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(
-                            backgroundColor: Color(0xff444A83),
-                          ));
-                    }
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  openAlertBox() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertBoxWidget(screenSize: screenSize);
-        });
-  }
-}
-
 class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin, YPageMixin {
-  PageController? sliderController;
-  Map loginHelpTexts = {
-    "pronoteSetupText":
-        """Nous avons besoin de savoir quel est votre établissement avant que vous puissiez rentrer vos identifiants.""",
-    "pronoteUrlSetupText": """Entrez ou vérifiez l'adresse URL Pronote communiquée par votre établissement."""
-  };
+  availableLoginPageBoxes previousPage = availableLoginPageBoxes.ApiChoiceBox;
+  availableLoginPageBoxes currentPage = availableLoginPageBoxes.ApiChoiceBox;
+
+  PageController? pageController;
   TextEditingController _username = TextEditingController();
   TextEditingController _password = TextEditingController();
   TextEditingController _url = TextEditingController();
-
-  late AnimationController iconSlideAnimationController;
-  late Animation<double> iconSlideAnimation;
   late PronoteSpace chosenSpace;
-  int? currentPage;
   Future<List>? connectionData;
-
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
     //build background
-
     return Material(
-      child: Container(
-          height: screenSize.size.height,
-          width: screenSize.size.width,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xff22256A),
-              Color(0xff5C66C1),
-            ],
-          )),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Spacer(),
-              _loginTextAndHelpButton(),
-              Container(
-                  height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
-              Spacer(),
-              _buildMetaPart()
-            ],
-          )),
+      color: currentTheme.colors.neutral.shade100,
+      child: SafeArea(
+        child: Stack(
+          children: [
+            //background
+            Column(
+              children: [
+                Expanded(
+                    child: Container(
+                  color: currentTheme.colors.neutral.shade100,
+                )),
+                Expanded(
+                    child: Container(
+                  color: currentTheme.colors.neutral.shade200,
+                ))
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 5,
+                ),
+                _buildTopButtons(),
+                Expanded(child: _buildPageView()),
+                _buildMetaPart()
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  formatURL(String url) {
-    RegExp regExp = new RegExp(
-      r"(.*/pronote)(.*)",
-      caseSensitive: false,
-      multiLine: false,
-    );
-    if (regExp.hasMatch(url) && regExp.firstMatch(url)?.groupCount == 2) {
-      String suffix = regExp.firstMatch(url)?.group(2) ?? "";
-
-      RegExp suffixMatches = new RegExp(
-        r"/?(mobile\.)?(.*)?",
-        caseSensitive: false,
-        multiLine: false,
-      );
-      //situation where nothing matches (might be pronote/)
-      if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
-        CustomLogger.log("LOGIN", "A");
-        suffix = "/mobile.eleve.html";
-        return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
-      }
-      //situation where only mobile. is missing
-      else if (suffixMatches.firstMatch(suffix)?.group(1) == null &&
-          suffixMatches.firstMatch(suffix)?.group(2) != null) {
-        CustomLogger.log("LOGIN", "B");
-
-        suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
-        return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
-      }
-
-      //situation where everything matches
-      else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
-        CustomLogger.log("LOGIN", "C");
-        suffix = "/" +
-            (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
-            (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
-
-        return [1, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
-      }
-    } else {
-      throw ("Wrong url");
+  ///Pronote demonstration login
+  Future<void> demoLogin() async {
+    if (appSys.settings.system.chosenParser == 1 &&
+        _url.text.length == 0 &&
+        _password.text.length == 0 &&
+        _username.text.length == 0) {
+      connectionData = appSys.api!.login("demonstration", "pronotevs", additionnalSettings: {
+        "url": "https://demo.index-education.net/pronote/parent.html",
+        "mobileCasLogin": false,
+      });
     }
+    if (connectionData != null) LoginDialog(connectionData!).show(context);
+  }
+
+  goToPage(availableLoginPageBoxes box, {bool back = false}) {
+    if (!back) {
+      setState(() {
+        previousPage = currentPage;
+        currentPage = box;
+      });
+    }
+
+    CustomLogger.log("LOGIN", [previousPage, currentPage]);
+
+    pageController?.jumpToPage(pageBoxes().indexWhere((element) => element.box == box));
   }
 
   initState() {
     super.initState();
-
-    sliderController = PageController(initialPage: widget.setupNeeded! ? 0 : 2);
-    currentPage = widget.setupNeeded! ? 0 : 2;
-    sliderController!.addListener(_pageViewPageCange);
-    iconSlideAnimationController = AnimationController(vsync: this, value: 1, duration: Duration(milliseconds: 500));
-    iconSlideAnimation = CurvedAnimation(
-      parent: iconSlideAnimationController,
-      curve: Curves.easeIn,
-      reverseCurve: Curves.easeOut,
-    );
-    iconSlideAnimationController.reverse();
+    pageController = PageController();
   }
 
-  openLoadingDialog() {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return LoginDialog(connectionData!);
-        });
+  ///All the available page boxes
+  List<LoginPageBox> pageBoxes() {
+    return [
+      LoginPageBox(
+          box: availableLoginPageBoxes.ApiChoiceBox,
+          widget: _buildSinglePage(
+              title: LoginPageTextContent.apiChoice.pageTitle,
+              description: LoginPageTextContent.apiChoice.pageDescription,
+              child: ApiChoiceBox(
+                callback: () async {
+                  await setChosenParser(appSys.settings.system.chosenParser);
+                  await appSys.initOffline();
+                  setState(() {
+                    appSys.api = apiManager(appSys.offline);
+                  });
+                  if (appSys.api?.apiName == "Pronote") {
+                    goToPage(availableLoginPageBoxes.PronoteLoginWayBox);
+                  } else {
+                    goToPage(availableLoginPageBoxes.LoginBox);
+                  }
+                },
+              ))),
+      LoginPageBox(
+        box: availableLoginPageBoxes.PronoteLoginWayBox,
+        widget: _buildSinglePage(
+            title: appSys.api?.apiName ?? "",
+            description: LoginPageTextContent.pronote.loginWays.pageDescription,
+            child: PronoteLoginWayBox(callback: (String way) {
+              _pronoteSetupPartCallback(way);
+            })),
+      ),
+      LoginPageBox(
+        box: availableLoginPageBoxes.PronoteUrlBox,
+        widget: _buildSinglePage(
+            title: appSys.api?.apiName ?? "",
+            description: LoginPageTextContent.pronote.url.pageDescription,
+            child: PronoteUrlBox(
+              urlCon: _url,
+              longPressCallBack: () => demoLogin(),
+              callback: () => goToPage(availableLoginPageBoxes.LoginBox),
+            )),
+      ),
+      LoginPageBox(
+        box: availableLoginPageBoxes.PronoteQrCodeBox,
+        widget: _buildSinglePage(
+            title: appSys.api?.apiName ?? "",
+            description: LoginPageTextContent.pronote.qrCode.pageDescription,
+            child: PronoteQrCodeBox()),
+      ),
+      LoginPageBox(
+        box: availableLoginPageBoxes.PronoteGeolocationBox,
+        widget: _buildSinglePage(
+            title: appSys.api?.apiName ?? "",
+            description: LoginPageTextContent.pronote.qrCode.pageDescription,
+            child: PronoteGeolocationBox(
+              callback: (String url) {
+                _url.text = url;
+                goToPage(availableLoginPageBoxes.PronoteUrlBox);
+              },
+            )),
+      ),
+      LoginPageBox(
+        box: availableLoginPageBoxes.LoginBox,
+        widget: _buildSinglePage(
+            title: appSys.api?.apiName ?? "",
+            description: LoginPageTextContent.login.pageDescription,
+            child: LoginBox(
+              passwordCon: _password,
+              loginCon: _username,
+              callback: () => simpleLogin(),
+            )),
+      ),
+    ];
   }
 
-  _buildLoginPart() {
-    MediaQueryData screenSize = MediaQuery.of(context);
+  Future<void> simpleLogin() async {
+    //Actions when pressing the ok button
+    if (_username.text != "" && (appSys.settings.system.chosenParser == 1 ? _url.text != "" : true)) {
+      //Login using the chosen API
+      connectionData = appSys.api!.login(_username.text.trim(), _password.text.trim(), additionnalSettings: {
+        "url": _url.text.trim(),
+        "mobileCasLogin": false,
+      });
+      if (connectionData != null) LoginDialog(connectionData!).show(context);
+    } else {
+      CustomLogger.log("LOGIN", _username.text);
+      CustomDialogs.showAnyDialog(context, "Remplissez tous les champs.");
+    }
+  }
+
+  titleAndLabel({required String name, required String label}) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
-        SizedBox(
-          height: screenSize.size.height / 10 * 0.1,
-        ),
-        CustomTextField(_password, "Mot de passe", true, MdiIcons.key, true),
-        SizedBox(height: screenSize.size.height / 10 * 0.4),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (widget.setupNeeded!)
-              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () {
-                sliderController!.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-              }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
-            CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-              //Actions when pressing the ok button
-              if (_username.text != "" && (appSys.settings.system.chosenParser == 1 ? _url.text != "" : true)) {
-                //Login using the chosen API
-                connectionData = appSys.api!.login(_username.text.trim(), _password.text.trim(), additionnalSettings: {
-                  "url": _url.text.trim(),
-                  "mobileCasLogin": false,
-                });
-                if (connectionData != null) openLoadingDialog();
-              } else {
-                CustomDialogs.showAnyDialog(context, "Remplissez tous les champs.");
-              }
-            }, backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white),
-          ],
-        )
+          children: [Spacer()],
+        ),
+        Text(name,
+            style: TextStyle(
+                fontFamily: "Asap",
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
+                color: currentTheme.colors.neutral.shade500)),
+        Text(label,
+            style: TextStyle(
+                fontFamily: "Asap",
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: currentTheme.colors.neutral.shade400)),
+        SizedBox(
+          height: 20,
+        ),
       ],
     );
   }
 
   _buildMetaPart() {
     MediaQueryData screenSize = MediaQuery.of(context);
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 480),
-      child: Container(
-        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-        padding: EdgeInsets.symmetric(horizontal: 5),
-        width: screenSize.size.width,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: InkWell(
-                  child: new Text(
-                    'Foire aux questions',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17),
-                  ),
-                  onTap: () => launch('https://ynotes.fr/faq')),
-            ),
-            Expanded(
-              child: InkWell(
-                  child: new Text('PDC',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17)),
-                  onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
-            ),
-            Expanded(
-              child: InkWell(
-                  child: new Text(
-                    'CGU',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17),
-                  ),
-                  onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _buildPageView(bool setupNeeded) {
-    InAppWebViewController? _controller;
-
-    return PageView(
-      physics: new NeverScrollableScrollPhysics(),
-      controller: sliderController,
-      children: [
-        if (setupNeeded) PronoteSetupPart(callback: _setupPartCallback),
-        if (setupNeeded)
-          PronoteUrlFieldPart(
-              pronoteUrl: _url,
-              backButton: () {
-                sliderController!.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-              },
-              onLongPressCallback: () {
-                if (appSys.settings.system.chosenParser == 1 &&
-                    _url.text.length == 0 &&
-                    _password.text.length == 0 &&
-                    _username.text.length == 0) {
-                  connectionData = appSys.api!.login("demonstration", "pronotevs", additionnalSettings: {
-                    "url": "https://demo.index-education.net/pronote/parent.html",
-                    "mobileCasLogin": false,
-                  });
-                }
-                if (connectionData != null) openLoadingDialog();
-              },
-              loginCallback: () async {
-                try {
-                  if (formatURL(_url.text)[0] == 0) {
-                    setState(() {
-                      _url.text = formatURL(_url.text)[1];
-                    });
-                    CustomDialogs.showErrorSnackBar(
-                        context,
-                        "Nous avons corrigé automatiquement l'adresse URL. Vérifiez puis appuyez à nouveau sur Se connecter",
-                        null);
-
-                    return;
-                  }
-                  if (await checkPronoteURL(_url.text)) {
-                    if (await testIfPronoteCas(_url.text)) {
-                      CustomLogger.log("LOGIN", "Is a pronote cas");
-                      var a = await Navigator.of(context)
-                          .push(router(LoginWebView(url: _url.text, controller: _controller)));
-                      if (a != null) {
-                        connectionData = appSys.api!.login(a["login"], a["mdp"], additionnalSettings: {
-                          "url": _url.text,
-                          "mobileCasLogin": true,
-                        });
-                        if (connectionData != null) openLoadingDialog();
-                      }
-                    } else {
-                      sliderController!.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-                    }
-                  } else {
-                    CustomDialogs.showErrorSnackBar(context, "Adresse invalide", "(pas de log spécifique)");
-                  }
-                } catch (e) {
-                  CustomLogger.log("LOGIN", "An error occured with the url");
-                  CustomLogger.error(e);
-                  CustomDialogs.showErrorSnackBar(context, "Impossible de se connecter à cette adresse", e.toString());
-                }
-              }),
-        _buildLoginPart(),
-      ],
-    );
-  }
-
-  _buildStepsText() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
     return Container(
-      height: screenSize.size.height / 10 * 1,
+      decoration: BoxDecoration(color: currentTheme.colors.neutral.shade100),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0.9.h),
       width: screenSize.size.width,
-      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
-      child: Text(_getStepText(currentPage),
-          textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 15)),
-    );
-  }
-
-  _getStepText(int? page) {
-    if (page == 0) {
-      return loginHelpTexts["pronoteSetupText"];
-    }
-    if (page == 1) {
-      return loginHelpTexts["pronoteUrlSetupText"];
-    }
-    if (page == 2) {
-      return "Entrez vos identifiants de connexion.";
-    }
-  }
-
-  _loginTextAndHelpButton() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-      child: Column(
-        children: [
-          CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-            Navigator.of(context).pushReplacement(router(SchoolAPIChoice()));
-          },
-              label: "Retourner au selecteur d'application",
-              backgroundColor: Colors.white,
-              icon: Icons.home,
-              textColor: Colors.black,
-              padding: EdgeInsets.all(10)),
-          Text(
-            "Se connecter",
-            style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: InkWell(
+                child: new Text(
+                  'FAQ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      fontWeight: FontWeight.normal,
+                      color: currentTheme.colors.neutral.shade400,
+                      fontSize: 17),
+                ),
+                onTap: () => launch('https://ynotes.fr/faq')),
           ),
-          GestureDetector(
-            onTap: () async {
-              launch('https://support.ynotes.fr/compte');
-            },
-            child: Text("En savoir plus sur la connexion",
+          Expanded(
+              child: InkWell(
+            child: new Text('Contact',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Asap',
-                  color: Colors.transparent,
-                  shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
-                  fontSize: 17,
-                  decorationColor: Colors.white,
-                  fontWeight: FontWeight.normal,
-                  textBaseline: TextBaseline.alphabetic,
-                  decoration: TextDecoration.underline,
-                  decorationThickness: 2,
-                  decorationStyle: TextDecorationStyle.dashed,
-                )),
+                    fontFamily: "Asap",
+                    fontWeight: FontWeight.normal,
+                    color: currentTheme.colors.neutral.shade400,
+                    fontSize: 17)),
+            onTap: () => contactBottomSheet(context),
+          )),
+          Expanded(
+            child: InkWell(
+                child: new Text(
+                  'CGU',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      fontWeight: FontWeight.normal,
+                      color: currentTheme.colors.neutral.shade400,
+                      fontSize: 17),
+                ),
+                onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
           ),
-          Container(
-              width: screenSize.size.height / 10 * 0.1,
-              height: screenSize.size.height / 10 * 0.1,
-              margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5000), color: Colors.white)),
-          _buildStepsText(),
         ],
       ),
     );
   }
 
-  _pageViewPageCange() {
-    setState(() {
-      currentPage = sliderController!.page!.round();
-    });
+  _buildPageView() {
+    return PageView(
+      physics: NeverScrollableScrollPhysics(),
+      controller: pageController,
+      children: pageBoxes().map((e) => e.widget).toList(),
+    );
   }
 
-  _setupPartCallback(String id) async {
+  Widget _buildSinglePage({required Widget child, required String title, required String description}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+            width: 90.w.clamp(0, 400),
+            child: Column(
+              children: [
+                FadeAnimation(0.2, titleAndLabel(name: title, label: description)),
+                Align(alignment: Alignment.center, child: FadeAnimation(0.2, child)),
+              ],
+            )),
+        SizedBox(
+          height: 50,
+        ),
+      ],
+    );
+  }
+
+  _buildTopButtons() {
+    return Row(
+      children: [
+        SizedBox(
+          width: 5,
+        ),
+        YButton(
+            onPressed: () {
+              goToPage(availableLoginPageBoxes.ApiChoiceBox);
+            },
+            text: "Retour",
+            icon: Icons.chevron_left),
+        Spacer(),
+        YButton(
+            onPressed: () async {
+              openLocalPage(YPageLocal(child: LogsPage(), title: "Logs"));
+            },
+            text: "Logs",
+            icon: Icons.bug_report),
+        SizedBox(
+          width: 5,
+        ),
+      ],
+    );
+  }
+
+  _pronoteSetupPartCallback(String id) async {
     switch (id) {
       case "qrcode":
         {
-          Navigator.of(context).push(router(YPageLocal(
-            child: QRCodeLoginPage(),
-            title: "Connexion par QR Code",
-            scrollable: false,
-          )));
+          goToPage(availableLoginPageBoxes.PronoteQrCodeBox);
         }
         break;
       case "location":
         {
-          var r = await CustomDialogs.showPronoteSchoolGeolocationDialog(context);
-          if (r != null) {
-            chosenSpace = r;
-            _url.text = chosenSpace.url!;
-          }
-          sliderController!.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          goToPage(availableLoginPageBoxes.PronoteGeolocationBox);
         }
         break;
       case "manual":
         {
-          sliderController!.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          goToPage(availableLoginPageBoxes.PronoteUrlBox);
         }
         break;
     }
