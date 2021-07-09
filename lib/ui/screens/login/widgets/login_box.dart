@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_text_field.dart';
 import 'package:ynotes_components/ynotes_components.dart';

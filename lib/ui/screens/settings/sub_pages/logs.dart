@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 
 class LogsPage extends StatefulWidget {
   State<StatefulWidget> createState() {
