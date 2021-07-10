@@ -20,6 +20,7 @@ class HomeworkController extends ChangeNotifier {
   int examsCount = 0;
   int tomorrowCount = 0;
   int weekCount = 0;
+  int doneThisWeek = 0;
 
   HomeworkController(API? api) {
     _api = api;
@@ -214,8 +215,9 @@ class HomeworkController extends ChangeNotifier {
   void prepareTomorrowAndWeekCount() {
     List<Homework> hwList = (getHomework ?? []);
     tomorrowCount = hwList.where((element) => CalendarTime(element.date).isTomorrow).length;
-    weekCount = hwList.where((element) => CalendarTime(element.date).isNextWeek).length;
-
+    List<Homework> _weekHw = hwList.where((element) => CalendarTime(element.date).isNextWeek).toList();
+    weekCount = _weekHw.length;
+    doneThisWeek = _weekHw.where((w) => w.done == true).length;
     notifyListeners();
   }
 

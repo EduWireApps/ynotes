@@ -4,7 +4,6 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
-import 'package:ynotes/core/apis/ecole_directe/ecole_directe_methods.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/pronote/schools_model.dart';
 import 'package:ynotes/core/utils/file_utils.dart';

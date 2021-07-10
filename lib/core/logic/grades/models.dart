@@ -71,9 +71,6 @@ class Discipline {
       this.subdisciplineNames,
       this.minClassGeneralAverage});
 
-  
-  
-
   @override
   int get hashCode => super.hashCode;
 
@@ -236,6 +233,8 @@ class Grade {
       other.testName == testName &&
       other.simulated == simulated &&
       other.scale == scale;
+
+  Iterable<Grade> average(List<Grade> eleemnt) => eleemnt;
 }
 
 class Period {
