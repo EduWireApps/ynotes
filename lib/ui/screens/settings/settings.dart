@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
-import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

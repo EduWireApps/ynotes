@@ -35,7 +35,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: sidePadding),
               child: Column(
-                children: [SummaryAverage(), SummaryLastGrades(), YVerticalSpacer(0.8.w), SummaryAdministrativeData()],
+                children: [SummaryAverage(), SummaryLastGrades(), YVerticalSpacer(1.2.h), SummaryAdministrativeData()],
               )),
         ));
   }

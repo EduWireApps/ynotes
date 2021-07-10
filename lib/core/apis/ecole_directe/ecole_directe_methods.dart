@@ -303,7 +303,6 @@ class EcoleDirecteMethod {
       await refreshToken();
       return false;
     } else {
-      String? id = appSys.currentSchoolAccount?.studentID ?? "";
       var url = endpoints.testToken;
       Map<String, String> headers = {"Content-type": "text/plain"};
       String data = 'data={"token": "$token"}';
@@ -382,7 +381,6 @@ class EcoleDirecteMethod {
       Map<String, String>? headers,
       bool getRequest = false}) async {
     try {
-      String id = appSys.currentSchoolAccount?.studentID ?? "";
 
       String finalUrl = url;
       if (headers == null) {
