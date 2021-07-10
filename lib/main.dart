@@ -19,9 +19,10 @@ import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loading.dart';
 
 import 'core/utils/theme_utils.dart';
-import 'ui/screens/school_api_choice/chool_api_choice.dart';
 
 import 'package:sizer/sizer.dart';
+
+import 'ui/screens/login/index.dart';
 
 Future main() async {
   Logger.level = Level.warning;
@@ -75,7 +76,7 @@ class Loader extends StatelessWidget {
 class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SchoolAPIChoice());
+    return Scaffold(body: LoginSlider());
   }
 }
 

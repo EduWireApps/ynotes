@@ -17,10 +17,11 @@ part 'model.g.dart';
 abstract class API {
   bool loggedIn = false;
   final Offline offlineController;
+  final String apiName;
 
   List<Grade>? gradesList;
 
-  API(this.offlineController);
+  API(this.offlineController, {required this.apiName});
 
   Future<AppAccount?> account() async {
     final storage = new FlutterSecureStorage();
@@ -42,8 +43,6 @@ abstract class API {
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
 
-  ///Get the dates of next homework (deprecated)
-  Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
   Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {

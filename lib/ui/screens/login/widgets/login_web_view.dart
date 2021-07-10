@@ -16,14 +16,15 @@ import 'package:ynotes/ui/components/buttons.dart';
 class LoginWebView extends StatefulWidget {
   final String? url;
   final String? spaceUrl;
-  InAppWebViewController? controller;
 
-  LoginWebView({Key? key, this.url, this.controller, this.spaceUrl}) : super(key: key);
+  LoginWebView({Key? key, this.url, this.spaceUrl}) : super(key: key);
   @override
   _LoginWebViewState createState() => _LoginWebViewState();
 }
 
 class _LoginWebViewState extends State<LoginWebView> {
+  InAppWebViewController? _controller;
+
   var loginData;
   late Map currentProfile;
   //locals, but shouldn't be obviously
@@ -46,7 +47,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       //We use this window function to get the credentials
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String? loginDataProcessResult = await (widget.controller!.evaluateJavascript(source: loginDataProcess));
+      String? loginDataProcessResult = await (_controller!.evaluateJavascript(source: loginDataProcess));
       //We are finally parsing the credentials, hurray !
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
@@ -55,7 +56,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         });
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
         //A weird URL
-        await widget.controller!.loadUrl(
+        await _controller!.loadUrl(
             urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
@@ -85,9 +86,9 @@ class _LoginWebViewState extends State<LoginWebView> {
                         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41",
                     allowUniversalAccessFromFileURLs: true)),
             onWebViewCreated: (InAppWebViewController controller) {
-              widget.controller = controller;
+              _controller = controller;
               //Clear cookies
-              controller.clearCache();
+              _controller!.clearCache();
             },
             onConsoleMessage: (a, b) {},
 
@@ -154,7 +155,7 @@ class _LoginWebViewState extends State<LoginWebView> {
     CustomLogger.log("LOGIN", "(Web view) Login test");
     Timer(new Duration(milliseconds: 1500), () async {
       String toexecute = 'if(!window.messageData) /*window.messageData = [];*/';
-      await widget.controller!.evaluateJavascript(source: toexecute);
+      await _controller!.evaluateJavascript(source: toexecute);
     });
   }
 
@@ -183,7 +184,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         '} catch(e){return "ko";}})();';
 
     //We evaluate the cookie function
-    String? cookieFunctionResult = await (widget.controller!.evaluateJavascript(source: cookieFunction));
+    String? cookieFunctionResult = await (_controller?.evaluateJavascript(source: cookieFunction));
     //If it contains "ok" we are logged in
     if (cookieFunctionResult == "ok") {
       //We use this window function to redirect to the special login page
@@ -192,7 +193,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       setState(() {
         step = 2;
       });
-      await (widget.controller!.evaluateJavascript(source: authFunction));
+      await (_controller!.evaluateJavascript(source: authFunction));
       stepper();
     }
   }

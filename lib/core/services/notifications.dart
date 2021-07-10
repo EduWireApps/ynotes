@@ -99,7 +99,7 @@ class AppNotification {
       CustomLogger.log("NOTIFICATIONS", "disableAtDayEnd (prefs): $value");
       CustomLogger.log(
           "NOTIFICATIONS", "disableAtDayEnd (settings): ${appSys.settings.user.agendaPage.disableAtDayEnd}");
-      appSys.saveSettings();
+
       if (appSys.settings.user.agendaPage.disableAtDayEnd) {
         await cancelOnGoingNotification();
       } else {

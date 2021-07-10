@@ -74,14 +74,13 @@ class LoginController extends ChangeNotifier {
       String? url = await readStorage("pronoteurl");
       String? cas = await readStorage("pronotecas");
       bool? iscas = (await readStorage("ispronotecas") == "true");
+      bool? demo = (await readStorage("demo") == "true");
 
       var z = await readStorage("agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await appSys.api!.login(u, p, additionnalSettings: {
-          "url": url,
-          "mobileCasLogin": iscas,
-          "cas": cas,
-        }).then((List loginValues) {
+        await appSys.api!
+            .login(u, p, additionnalSettings: {"url": url, "mobileCasLogin": iscas, "cas": cas, "demo": demo}).then(
+                (List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;

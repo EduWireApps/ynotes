@@ -82,11 +82,17 @@ class EcoleDirecteHomeworkConverter {
 
   static List<Homework> unloadedHomework(Map<String, dynamic> uhwData) {
     Map<String, dynamic> hwData = uhwData['data'];
+
     List<Homework> unloadedHWList = [];
+            CustomLogger.log("test", "a");
+
     hwData.forEach((key, value) {
+
       value.forEach((var hw) {
+
         Map mappedHomework = hw;
         bool loaded = false;
+        CustomLogger.log("test", "b");
         String discipline = mappedHomework["matiere"];
         String disciplineCode = mappedHomework["codeMatiere"].toString();
         String id = mappedHomework["idDevoir"].toString();
