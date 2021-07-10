@@ -98,9 +98,8 @@ class EcoleDirecteMethod {
   lessons(DateTime dateToUse) async {
     await testToken();
     String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
-
     String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
-    String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin", "avecTrous":false, "token": "$token"}';
+    String data = 'data={"token": "$token", "dateDebut":"$dateDebut", "dateFin":"$dateFin"}';
     try {
       List<Lesson>? lessonsList = await request(
         data: data,
@@ -109,6 +108,7 @@ class EcoleDirecteMethod {
         onErrorBody: "Lessons request returned an error:",
       );
       int week = await getWeek(dateToUse);
+      
       if (lessonsList != null) {
         await LessonsOffline(_offlineController).updateLessons(lessonsList, week);
       }
@@ -304,7 +304,7 @@ class EcoleDirecteMethod {
       return false;
     } else {
       String? id = appSys.currentSchoolAccount?.studentID ?? "";
-      var url = 'https://api.ecoledirecte.com/v3/eleves/$id/timeline.awp?verbe=get&';
+      var url = endpoints.testToken;
       Map<String, String> headers = {"Content-type": "text/plain"};
       String data = 'data={"token": "$token"}';
       //encode Map to JSON
@@ -388,13 +388,13 @@ class EcoleDirecteMethod {
       if (headers == null) {
         headers = {"Content-type": "text/plain"};
       }
-      print(url);
       var response;
       if (getRequest) {
         response = await http.get(Uri.parse(finalUrl), headers: headers);
       } else {
         response = await http.post(Uri.parse(finalUrl), headers: headers, body: data);
       }
+
       CustomLogger.logWrapped("ED", "Final url", finalUrl);
       Map<String, dynamic>? responseData = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200 &&

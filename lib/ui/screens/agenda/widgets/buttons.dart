@@ -166,7 +166,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
   getWeekName() async {
     bool isEven = (await getWeek(agendaDate!)).isEven;
     bool reverse = appSys.settings.user.agendaPage.reverseWeekNames;
-    appSys.saveSettings();
+
     if (isEven ^= reverse) {
       if (mounted) {
         setState(() {

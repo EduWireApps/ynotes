@@ -4,6 +4,7 @@ class EcoleDirecteApiEndpoints {
   static const String _rootUrl = "https://api.ecoledirecte.com/v3/";
   static final Endpoint workspaces = Endpoint(_rootUrl + "workspaces");
   static final Endpoint login = Endpoint(_rootUrl + "login.awp");
+  static final Endpoint testToken = Endpoint(_rootUrl + "eleves/timeline.awp?verbe=get&");
   static final Endpoint grades = Endpoint(_rootUrl + "eleves/grades.awp");
   static final Endpoint homeworkFor = Endpoint(_rootUrl + "Eleves/cahierdetexte/%0.awp?verbe=get&");
   static final Endpoint nextHomework = Endpoint(_rootUrl + "Eleves/cahierdetexte.awp?verbe=get&");

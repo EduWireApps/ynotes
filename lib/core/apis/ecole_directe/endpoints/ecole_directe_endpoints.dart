@@ -12,6 +12,7 @@ class EcoleDirecteEndpoints {
   String get nextHomework => _url(EcoleDirecteDemoEndpoints.nextHomework, EcoleDirecteApiEndpoints.nextHomework);
   String get recipients => _url(EcoleDirecteDemoEndpoints.recipients, EcoleDirecteApiEndpoints.recipients);
   String get schoolLife => _url(EcoleDirecteDemoEndpoints.schoollife, EcoleDirecteApiEndpoints.schoolLife);
+  String get testToken => _url(EcoleDirecteDemoEndpoints.grades, EcoleDirecteApiEndpoints.testToken);
   String get workspaces => _url(EcoleDirecteDemoEndpoints.workspaces, EcoleDirecteApiEndpoints.workspaces);
 
   String homeworkFor(String date) =>
