@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
+
 import 'package:flutter/scheduler.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -33,7 +35,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: sidePadding),
               child: Column(
-                children: [SummaryAverage(), SummaryLastGrades(), YVerticalSpacer(40), SummaryAdministrativeData()],
+                children: [SummaryAverage(), SummaryLastGrades(), YVerticalSpacer(0.8.w), SummaryAdministrativeData()],
               )),
         ));
   }

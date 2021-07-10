@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
-import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
-import 'package:sizer/sizer.dart';
 
 class SummaryChart extends StatefulWidget {
   SummaryChart({
@@ -20,8 +20,8 @@ class SummaryChart extends StatefulWidget {
 }
 
 class SummaryChartState extends State<SummaryChart> with LayoutMixin {
-  List<Grade>? lastGrades;
-  List<Grade>? _grades = [];
+  List<double>? lastAverages;
+  List<double>? _averages = [];
   int maxGradesCount = 10;
 
   LineChartData avgData() {
@@ -51,6 +51,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
         leftTitles: SideTitles(
           interval: 1.0,
           showTitles: true,
+          reservedSize: 5.w.clamp(0, 90),
           getTextStyles: (value) => TextStyle(
             color: currentTheme.colors.neutral.shade400,
             fontWeight: FontWeight.bold,
@@ -71,13 +72,13 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
       ),
       borderData: FlBorderData(show: true, border: Border.all(color: currentTheme.colors.neutral.shade300, width: 1)),
       minX: 0,
-      maxX: ((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length).toDouble() - 1,
+      maxX: ((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length).toDouble() - 1,
       minY: (getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin()).round().toDouble(),
       maxY: (getMax() + 1).round().toDouble(),
       lineBarsData: [
         LineChartBarData(
-          spots: List.generate(((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length),
-              (index) => FlSpot(index.toDouble(), toDouble((_grades ?? [])[index]))),
+          spots: List.generate(((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length),
+              (index) => FlSpot(index.toDouble(), double.parse((_averages ?? [])[index].toStringAsFixed(2)))),
           isCurved: true,
           colors: [currentTheme.colors.primary.shade300],
           barWidth: 5,
@@ -97,14 +98,13 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
     return ChangeNotifierProvider<GradesController>.value(
         value: appSys.gradesController,
         child: Consumer<GradesController>(builder: (context, model, child) {
-          this.lastGrades =
-              getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true);
-          return (_grades != null && ((_grades ?? []).length != 0))
-              ? AspectRatio(
-                  aspectRatio: 3.5,
-                  child: LineChart(
-                    avgData(),
-                  ),
+          GradesStats stats = GradesStats(
+              allGrades: getAllGrades(appSys.gradesController.disciplines(showAll: true),
+                  overrideLimit: true, sortByWritingDate: true));
+          this.lastAverages = stats.lastAverages();
+          return (_averages != null && ((_averages ?? []).length != 0))
+              ? LineChart(
+                  avgData(),
                 )
               : Container();
         }));
@@ -118,18 +118,9 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
   }
 
   getMax() {
-    List<double> values = (_grades ?? []).map((grade) {
-      double a;
-      try {
-        a = double.parse(grade.value!.replaceAll(',', '.')) * 20 / double.parse(grade.scale!.replaceAll(',', '.'));
-        return a;
-      } catch (e) {
-        //random value
-        return -1000.0;
-      }
-    }).toList();
+    List<double> values = (_averages ?? []);
     //Reduce values size
-    values = values.sublist(0, ((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length));
+    values = values.sublist(0, ((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length));
     values.removeWhere((element) => element == -1000.0);
     if (values.length > 0) {
       return (values).reduce(max);
@@ -139,18 +130,9 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
   }
 
   getMin() {
-    List<double> values = (_grades ?? []).map((grade) {
-      double a;
-      try {
-        a = double.parse(grade.value!.replaceAll(',', '.')) * 20 / double.parse(grade.scale!.replaceAll(',', '.'));
-        return a;
-      } catch (e) {
-        //random value
-        return -1000.0;
-      }
-    }).toList();
+    List<double> values = (_averages ?? []);
     //Reduce values size
-    values = values.sublist(0, ((_grades ?? []).length > maxGradesCount ? maxGradesCount : (_grades ?? []).length));
+    values = values.sublist(0, ((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length));
     values.removeWhere((element) => element == -1000.0);
     if (values.length > 0) {
       return values.reduce(min);
@@ -160,15 +142,12 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
   }
 
   initGrades() {
-    if (this.lastGrades != null) {
+    if (this.lastAverages != null) {
       setState(() {
-        (_grades ?? []).clear();
-        (_grades ?? []).addAll(this.lastGrades!);
-        (_grades ?? []).sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
-        (_grades ?? []).removeWhere(
-            (element) => element.value == null || element.notSignificant! || element.simulated! || element.letters!);
-        if ((_grades ?? []).length > maxGradesCount) {
-          _grades = (_grades ?? []).sublist((_grades ?? []).length - maxGradesCount, (_grades ?? []).length);
+        (_averages ?? []).clear();
+        (_averages ?? []).addAll(this.lastAverages!);
+        if ((_averages ?? []).length > maxGradesCount) {
+          _averages = (_averages ?? []).sublist((_averages ?? []).length - maxGradesCount, (_averages ?? []).length);
         }
       });
     }
@@ -182,17 +161,5 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
           maxGradesCount = isLargeScreen ? 18 : 10;
           initGrades();
         }));
-  }
-
-  toDouble(Grade grade) {
-    double toReturn;
-    if (!grade.letters!) {
-      try {
-        toReturn = (double.tryParse(grade.value!.replaceAll(",", "."))! *
-            20 /
-            double.tryParse(grade.scale!.replaceAll(",", "."))!);
-        return double.parse(toReturn.toStringAsFixed(2));
-      } catch (e) {}
-    }
   }
 }

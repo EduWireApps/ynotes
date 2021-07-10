@@ -28,8 +28,6 @@ TValue? case2<TOptionType, TValue>(
   return branches[selectedOption];
 }
 
-//Connectivity  classs
-
 List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (appSys.api != null) {
     List<Grade> listToReturn = [];

@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
+import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
@@ -363,9 +364,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Bouton magique',
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
-                        if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-                          await DesktopWindow.setWindowSize(Size(768, 1024));
-                        }
+                        GradesStats stats = GradesStats(
+                            allGrades: getAllGrades(appSys.gradesController.disciplines(showAll: true),
+                                overrideLimit: true, sortByWritingDate: true));
+                        stats.lastAverages();
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(

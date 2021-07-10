@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/grades/models.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/summary/widgets/card.dart';
 import 'package:ynotes/ui/screens/summary/data/constants.dart';
 import 'package:ynotes/ui/screens/summary/data/texts.dart';
+import 'package:ynotes/ui/screens/summary/widgets/card.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
-import 'package:sizer/sizer.dart';
 
 class SummaryLastGrades extends StatefulWidget {
   const SummaryLastGrades({Key? key}) : super(key: key);
@@ -18,60 +18,6 @@ class SummaryLastGrades extends StatefulWidget {
 }
 
 class _SummaryLastGradesState extends State<SummaryLastGrades> {
-  Widget gradeCard(BuildContext context, Grade grade) {
-    final TextStyle gradeStyle =
-        TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w600, color: currentTheme.colors.neutral.shade500);
-
-    return Padding(
-        padding: EdgeInsets.only(left: sidePadding),
-        child: GestureDetector(
-          onTap: () => Navigator.pushNamed(context, "/grades"),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 60.w),
-            child: SummaryCard(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text((grade.notSignificant! ? "(" + grade.value! : grade.value) ?? "", style: gradeStyle),
-                          Text('/' + grade.scale!,
-                              style: TextStyle(
-                                  color: currentTheme.colors.neutral.shade400,
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w400)),
-                          if (grade.notSignificant!) Text(")", style: gradeStyle)
-                        ],
-                      ),
-                      Expanded(child: Container()),
-                      Icon(Icons.arrow_forward_outlined, color: currentTheme.colors.neutral.shade400)
-                    ]),
-                YVerticalSpacer(5),
-                Text(
-                  grade.disciplineName ?? "",
-                  style: TextStyle(
-                      color: currentTheme.colors.neutral.shade400, fontSize: 7.sp, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  grade.testName ?? "",
-                  style: TextStyle(
-                      color: currentTheme.colors.neutral.shade500, fontSize: 13.sp, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                )
-              ],
-            )),
-          ),
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GradesController>.value(
@@ -113,5 +59,63 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
             return Container();
           }
         }));
+  }
+
+  Widget gradeCard(BuildContext context, Grade grade) {
+    final TextStyle gradeStyle = TextStyle(
+        fontSize: 25.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: currentTheme.colors.neutral.shade500);
+
+    return Padding(
+        padding: EdgeInsets.only(left: sidePadding),
+        child: GestureDetector(
+          onTap: () => Navigator.pushNamed(context, "/grades"),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 120),
+            child: SummaryCard(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text((grade.notSignificant! ? "(" + grade.value! : grade.value) ?? "", style: gradeStyle),
+                          Text('/' + grade.scale!,
+                              style: TextStyle(
+                                  color: currentTheme.colors.neutral.shade400,
+                                  fontSize: 25.sp.clamp(0, 25),
+                                  fontWeight: FontWeight.w400)),
+                          if (grade.notSignificant!) Text(")", style: gradeStyle)
+                        ],
+                      ),
+                      Expanded(child: Container()),
+                      Icon(Icons.arrow_forward_outlined, color: currentTheme.colors.neutral.shade400)
+                    ]),
+                Spacer(),
+                Text(
+                  grade.disciplineName ?? "",
+                  style: TextStyle(
+                      color: currentTheme.colors.neutral.shade400,
+                      fontSize: 9.sp.clamp(0, 15),
+                      fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                ),
+                Text(
+                  grade.testName ?? "",
+                  style: TextStyle(
+                      color: currentTheme.colors.neutral.shade500,
+                      fontSize: 13.sp.clamp(0, 25),
+                      fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                )
+              ],
+            )),
+          ),
+        ));
   }
 }

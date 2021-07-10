@@ -12,9 +12,10 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/useful_methods.dart';
+
 import 'disciplines_modal_bottom_sheet.dart';
 import 'grades_modal_bottom_sheet.dart';
-import 'package:ynotes/useful_methods.dart';
 
 class GradesGroup extends StatefulWidget {
   final Discipline? discipline;
@@ -80,7 +81,7 @@ class _GradesGroupState extends State<GradesGroup> {
         if (getGradesForDiscipline(0) != null && getGradesForDiscipline(0)!.length > 0) {
           List<Grade> grades = getGradesForDiscipline(0)!;
           grades.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
-          GradesStats stats = GradesStats(grades.first, grades);
+          GradesStats stats = GradesStats(grade: grades.first, allGrades: grades);
           impact = stats.calculateAverageImpact();
         }
         return ConstrainedBox(
@@ -356,8 +357,8 @@ class _GradesGroupState extends State<GradesGroup> {
                   },
                   onTap: () {
                     GradesStats stats = GradesStats(
-                        gradesForSelectedDiscipline![index],
-                        getAllGrades(widget.gradesController!.disciplines(),
+                       grade: gradesForSelectedDiscipline![index],
+                        allGrades:getAllGrades(widget.gradesController!.disciplines(),
                             overrideLimit: true, sortByWritingDate: false));
                     gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats, widget.discipline,
                         callback, this.widget, widget.gradesController);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/mails/models.dart';
@@ -8,11 +9,10 @@ import 'package:ynotes/core/logic/school_life/controller.dart';
 import 'package:ynotes/core/logic/school_life/models.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes_components/ynotes_components.dart';
-import 'package:sizer/sizer.dart';
 
-import 'card.dart';
 import '../data/constants.dart';
 import '../data/texts.dart';
+import 'card.dart';
 
 class SummaryAdministrativeData extends StatefulWidget {
   const SummaryAdministrativeData({Key? key}) : super(key: key);
@@ -23,65 +23,7 @@ class SummaryAdministrativeData extends StatefulWidget {
 
 class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
   final TextStyle lightTextStyle =
-      TextStyle(color: currentTheme.colors.neutral.shade400, fontSize: 11.sp, fontWeight: FontWeight.w400);
-
-  Widget card(BuildContext context,
-      {required String data,
-      String? subData,
-      required String text1,
-      required String text2,
-      required String routePath}) {
-    final TextStyle gradeStyle =
-        TextStyle(fontSize: 35.sp, fontWeight: FontWeight.w600, color: currentTheme.colors.neutral.shade500);
-
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, routePath),
-      child: SummaryCard(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(data, style: gradeStyle),
-                    if (subData != null)
-                      Text('/' + subData,
-                          style: TextStyle(
-                              color: currentTheme.colors.neutral.shade400,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w400)),
-                  ],
-                ),
-                Expanded(child: Container()),
-                Icon(Icons.arrow_forward_outlined, color: currentTheme.colors.neutral.shade400)
-              ]),
-          YVerticalSpacer(5),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                    text: text1,
-                    style: TextStyle(
-                        color: currentTheme.colors.neutral.shade500, fontSize: 15.sp, fontWeight: FontWeight.w600)),
-                TextSpan(
-                  text: " " + text2,
-                  style: lightTextStyle,
-                )
-              ],
-            ),
-            textAlign: TextAlign.left,
-          ),
-        ],
-      )),
-    );
-  }
-
-  Widget noData(BuildContext context, String text) => SummaryCard(child: Text(text, style: lightTextStyle));
+      TextStyle(color: currentTheme.colors.neutral.shade400, fontSize: 11.sp.clamp(0, 18), fontWeight: FontWeight.w400);
 
   @override
   Widget build(BuildContext context) {
@@ -148,4 +90,65 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
           staggeredTileBuilder: (int i) => StaggeredTile.fit(2),
         ));
   }
+
+  Widget card(BuildContext context,
+      {required String data,
+      String? subData,
+      required String text1,
+      required String text2,
+      required String routePath}) {
+    final TextStyle gradeStyle =
+        TextStyle(fontSize: 35.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: currentTheme.colors.neutral.shade500);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 120),
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, routePath),
+        child: SummaryCard(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(data, style: gradeStyle),
+                      if (subData != null)
+                        Text('/' + subData,
+                            style: TextStyle(
+                                color: currentTheme.colors.neutral.shade400,
+                                fontSize: 15.sp.clamp(0, 18),
+                                fontWeight: FontWeight.w400)),
+                    ],
+                  ),
+                  Expanded(child: Container()),
+                  Icon(Icons.arrow_forward_outlined, color: currentTheme.colors.neutral.shade400)
+                ]),
+            YVerticalSpacer(5),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                      text: text1,
+                      style: TextStyle(
+                          color: currentTheme.colors.neutral.shade500, fontSize: 15.sp.clamp(0, 18), fontWeight: FontWeight.w600)),
+                  TextSpan(
+                    text: " " + text2,
+                    style: lightTextStyle,
+                  )
+                ],
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ],
+        )),
+      ),
+    );
+  }
+
+  Widget noData(BuildContext context, String text) => SummaryCard(child: Text(text, style: lightTextStyle));
 }
