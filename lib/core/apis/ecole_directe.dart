@@ -169,7 +169,6 @@ class APIEcoleDirecte extends API {
 
   Future<List> login(username, password, {Map? additionnalSettings}) async {
     methods = EcoleDirecteMethod(offlineController, demo: additionnalSettings?["demo"]);
-    print("Enabling ED Demo");
 
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
@@ -219,7 +218,7 @@ class APIEcoleDirecte extends API {
           }
           //Store the token
           token = req['token'];
-          
+
           //Create secure storage for credentials
           createStorage("password", password ?? "");
           createStorage("username", username ?? "");
@@ -243,6 +242,9 @@ class APIEcoleDirecte extends API {
       //Return an error
       else {
         String? message = req['message'];
+        if (message != null) {
+          message = utf8.decode(message.codeUnits);
+        }
         return [0, "Oups ! Une erreur a eu lieu :\n$message"];
       }
     } else {

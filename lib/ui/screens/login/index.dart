@@ -214,10 +214,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     //Actions when pressing the ok button
     if (_username.text != "" && (appSys.settings.system.chosenParser == 1 ? _url.text != "" : true)) {
       //Login using the chosen API
-      connectionData = appSys.api!.login(_username.text.trim(), _password.text.trim(), additionnalSettings: {
-        "url": _url.text.trim(),
-        "mobileCasLogin": false,
-      });
+      connectionData = appSys.api!.login(_username.text.trim(), _password.text.trim(),
+          additionnalSettings: {"url": _url.text.trim(), "mobileCasLogin": false, "demo": false});
       if (connectionData != null) LoginDialog(connectionData!).show(context);
     } else {
       CustomLogger.log("LOGIN", _username.text);
