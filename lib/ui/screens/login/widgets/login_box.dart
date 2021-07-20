@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_text_field.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/components.dart';
 
 class LoginBox extends StatefulWidget {
   final TextEditingController passwordCon;
@@ -27,7 +28,7 @@ class _LoginBoxState extends State<LoginBox> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: currentTheme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
       child: Column(
         children: [
           LoginTextField(label: LoginPageTextContent.login.login, controller: widget.loginCon),
@@ -49,9 +50,7 @@ class _LoginBoxState extends State<LoginBox> {
                 child: Text(
                   LoginPageTextContent.login.forgotPassword,
                   style: TextStyle(
-                      fontFamily: "Asap",
-                      color: currentTheme.colors.neutral.shade500,
-                      decoration: TextDecoration.underline),
+                      fontFamily: "Asap", color: theme.colors.neutral.shade500, decoration: TextDecoration.underline),
                 ),
               ),
               Spacer(),

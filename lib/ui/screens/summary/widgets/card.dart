@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class SummaryCard extends StatefulWidget {
   final Widget child;
@@ -17,8 +17,8 @@ class _SummaryCardState extends State<SummaryCard> {
 
     return Container(
       padding: EdgeInsets.all(p),
-      decoration: BoxDecoration(
-          color: currentTheme.colors.neutral.shade100, borderRadius: BorderRadius.all(Radius.circular(p))),
+      decoration:
+          BoxDecoration(color: theme.colors.neutral.shade100, borderRadius: BorderRadius.all(Radius.circular(p))),
       child: widget.child,
     );
   }

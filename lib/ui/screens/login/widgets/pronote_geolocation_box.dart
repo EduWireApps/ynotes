@@ -8,7 +8,8 @@ import 'package:ynotes/core/logic/pronote/schools_controller.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_text_field.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/components.dart';
 
 class PronoteGeolocationBox extends StatefulWidget {
   final Function callback;
@@ -31,7 +32,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: currentTheme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
       child: Column(
         children: [
           ChangeNotifierProvider<PronoteSchoolsController>.value(
@@ -66,7 +67,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
           LoginPageTextContent.pronote.geolocation.error + "\n $error",
           style: TextStyle(
               fontFamily: "Asap",
-              color: currentTheme.colors.neutral.shade500,
+              color: theme.colors.neutral.shade500,
               fontWeight: FontWeight.bold,
               fontSize: 12.5.sp.clamp(0, 19)),
           textAlign: TextAlign.center,
@@ -101,7 +102,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
               : LoginPageTextContent.pronote.geolocation.statusSearchingDescription,
           style: TextStyle(
             fontFamily: "Asap",
-            color: currentTheme.colors.neutral.shade400,
+            color: theme.colors.neutral.shade400,
           ),
           textAlign: TextAlign.center,
         ),
@@ -164,7 +165,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
                   text: TextSpan(
                       text: school.postalCode,
                       style: TextStyle(
-                          color: currentTheme.colors.neutral.shade400,
+                          color: theme.colors.neutral.shade400,
                           fontFamily: "Asap",
                           fontWeight: FontWeight.bold,
                           fontSize: 16),
@@ -172,7 +173,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
                         TextSpan(
                           text: " " + distance,
                           style: TextStyle(
-                              color: currentTheme.colors.neutral.shade400,
+                              color: theme.colors.neutral.shade400,
                               fontFamily: "Asap",
                               fontWeight: FontWeight.normal,
                               fontSize: 16),
@@ -184,11 +185,11 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
                   style: TextStyle(
                     fontFamily: "Asap",
                     fontWeight: FontWeight.bold,
-                    color: currentTheme.colors.neutral.shade500,
+                    color: theme.colors.neutral.shade500,
                   ),
                 ),
                 Divider(
-                  color: currentTheme.colors.neutral.shade200,
+                  color: theme.colors.neutral.shade200,
                 )
               ],
             ),
@@ -214,11 +215,11 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
                   style: TextStyle(
                       fontFamily: "Asap",
                       fontWeight: FontWeight.bold,
-                      color: currentTheme.colors.neutral.shade500,
+                      color: theme.colors.neutral.shade500,
                       fontSize: 15.sp.clamp(0, 19)),
                 ),
                 Divider(
-                  color: currentTheme.colors.neutral.shade200,
+                  color: theme.colors.neutral.shade200,
                 )
               ],
             ),
@@ -239,7 +240,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
                     style: TextStyle(
                         fontFamily: "Asap",
                         fontWeight: FontWeight.bold,
-                        color: currentTheme.colors.neutral.shade500,
+                        color: theme.colors.neutral.shade500,
                         fontSize: 21),
                   ),
                   Text(
@@ -248,7 +249,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
                     style: TextStyle(
                         fontFamily: "Asap",
                         fontWeight: FontWeight.bold,
-                        color: currentTheme.colors.neutral.shade400,
+                        color: theme.colors.neutral.shade400,
                         fontSize: 15),
                   ),
                   SizedBox(

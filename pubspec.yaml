@@ -47,9 +47,9 @@ dependencies:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
       ref: stable
-  ynotes_components:
+  ynotes_packages:
     git:
-      url: https://github.com/EduWireApps/ynotes-components
+      url: https://github.com/EduWireApps/ynotes-packages
       ref: main
   android_alarm_manager: ^2.0.0
   another_flushbar: ^1.10.17
@@ -116,6 +116,8 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   smooth_page_indicator: ^0.3.0-nullsafety.0
   flutter_svg: ^0.22.0
+  sizer: ^2.0.13
+  flutter_responsive_breakpoints: ^0.0.3
 
   sqflite: ^2.0.0+3
   stack: ^0.2.1

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class PronoteLoginWayBox extends StatefulWidget {
   final Function callback;
@@ -20,7 +20,7 @@ class _PronoteLoginWayBoxState extends State<PronoteLoginWayBox> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: currentTheme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
       child: Column(
         children: [
           _buildPronoteLoginWay(LoginPageTextContent.pronote.loginWays.geolocation,
@@ -43,7 +43,7 @@ class _PronoteLoginWayBoxState extends State<PronoteLoginWayBox> {
   _buildPronoteLoginWay(String label, String description, IconData icon, String id) {
     return Material(
       borderRadius: BorderRadius.circular(10),
-      color: currentTheme.colors.neutral.shade200,
+      color: theme.colors.neutral.shade200,
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () {
@@ -60,7 +60,7 @@ class _PronoteLoginWayBoxState extends State<PronoteLoginWayBox> {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: currentTheme.colors.neutral.shade200,
+                    color: theme.colors.neutral.shade200,
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Row(
@@ -70,7 +70,7 @@ class _PronoteLoginWayBoxState extends State<PronoteLoginWayBox> {
                       Icon(
                         icon,
                         size: 30,
-                        color: currentTheme.colors.neutral.shade500,
+                        color: theme.colors.neutral.shade500,
                       ),
                     ],
                   )),
@@ -82,13 +82,13 @@ class _PronoteLoginWayBoxState extends State<PronoteLoginWayBox> {
                         child: Text(label,
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color: currentTheme.colors.neutral.shade500,
+                                color: theme.colors.neutral.shade500,
                                 fontWeight: FontWeight.bold))),
                     Container(
                         child: Text(description,
                             style: TextStyle(
                               fontFamily: "Asap",
-                              color: currentTheme.colors.neutral.shade400,
+                              color: theme.colors.neutral.shade400,
                             )))
                   ],
                 ),

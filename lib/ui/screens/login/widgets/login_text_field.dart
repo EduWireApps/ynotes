@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class LoginTextField extends StatefulWidget {
   final bool password;
@@ -22,15 +22,14 @@ class _LoginTextFieldState extends State<LoginTextField> {
       Text(
         widget.label.toUpperCase(),
         style: TextStyle(
-            fontFamily: "Asap", fontSize: 14, fontWeight: FontWeight.w600, color: currentTheme.colors.neutral.shade500),
+            fontFamily: "Asap", fontSize: 14, fontWeight: FontWeight.w600, color: theme.colors.neutral.shade500),
       ),
       SizedBox(
         height: 5,
       ),
       Container(
           height: 40,
-          decoration:
-              BoxDecoration(borderRadius: BorderRadius.circular(10), color: currentTheme.colors.neutral.shade200),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: theme.colors.neutral.shade200),
           padding: EdgeInsets.zero,
           child: Row(
             children: [
@@ -41,7 +40,7 @@ class _LoginTextFieldState extends State<LoginTextField> {
                     maxLines: 1,
                     controller: widget.controller,
                     obscureText: obscured,
-                    style: TextStyle(color: currentTheme.colors.neutral.shade500),
+                    style: TextStyle(color: theme.colors.neutral.shade500),
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                         border: InputBorder.none,
@@ -61,7 +60,7 @@ class _LoginTextFieldState extends State<LoginTextField> {
                     iconSize: 30,
                     icon: Center(
                         child: Icon(obscured ? MdiIcons.eye : MdiIcons.eyeOff,
-                            size: 30, color: currentTheme.colors.neutral.shade400))),
+                            size: 30, color: theme.colors.neutral.shade400))),
             ],
           ))
     ]));

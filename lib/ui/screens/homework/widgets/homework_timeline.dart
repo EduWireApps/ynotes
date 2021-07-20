@@ -557,7 +557,7 @@ class _StickyHeaderState extends State<StickyHeader> {
                         child: Material(
                           color: Colors.transparent,
                           child: Theme(
-                            data: appSys.theme!,
+                            data: appSys.themeData!,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[SizedBox(child: child)],

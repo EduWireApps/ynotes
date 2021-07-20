@@ -6,7 +6,7 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';
 import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class YPage extends StatefulWidget {
   final String title;
@@ -35,10 +35,10 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
           ),
         Expanded(
           child: Scaffold(
-            backgroundColor: currentTheme.colors.neutral.shade200,
+            backgroundColor: theme.colors.neutral.shade200,
             drawer: (screenSize.size.width < 800) ? YDrawer() : null,
             appBar: AppBar(
-                backgroundColor: currentTheme.colors.neutral.shade100,
+                backgroundColor: theme.colors.neutral.shade100,
                 centerTitle: false,
                 title: Text(widget.title, textAlign: TextAlign.start),
                 systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,

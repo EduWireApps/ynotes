@@ -9,7 +9,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/screens/summary/widgets/administrative_data.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/components.dart';
 import 'widgets/average.dart';
 import 'data/constants.dart';
 import 'widgets/last_grades.dart';

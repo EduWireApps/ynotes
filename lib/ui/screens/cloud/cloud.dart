@@ -14,7 +14,7 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/components.dart';
 
 var actualSort = sortValue.date;
 

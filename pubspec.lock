@@ -477,6 +477,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  flutter_responsive_breakpoints:
+    dependency: "direct main"
+    description:
+      name: flutter_responsive_breakpoints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -514,6 +521,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.22.0"
+  flutter_switch:
+    dependency: transitive
+    description:
+      name: flutter_switch
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -1107,7 +1121,7 @@ packages:
     source: git
     version: "3.0.0-nullsafety.5"
   sizer:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sizer
       url: "https://pub.dartlang.org"
@@ -1395,15 +1409,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
-  ynotes_components:
+  ynotes_packages:
     dependency: "direct main"
     description:
       path: "."
       ref: main
-      resolved-ref: a0c008aa094e0fe6534e4b5ac2c157afba4e3317
-      url: "https://github.com/EduWireApps/ynotes-components"
+      resolved-ref: "7f3a580994d7f970d537c1991577423ef286738b"
+      url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
-    version: "0.2.4"
+    version: "0.4.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=2.0.4"

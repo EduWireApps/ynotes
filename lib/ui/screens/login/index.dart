@@ -21,7 +21,8 @@ import 'package:ynotes/ui/screens/login/widgets/pronote_login_way_box.dart';
 import 'package:ynotes/ui/screens/login/widgets/pronote_qr_box.dart';
 import 'package:ynotes/ui/screens/login/widgets/pronote_url_box.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 enum availableLoginPageBoxes {
   ApiChoiceBox,
@@ -59,7 +60,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     //build background
     return Material(
-      color: currentTheme.colors.neutral.shade100,
+      color: theme.colors.neutral.shade100,
       child: SafeArea(
         child: Stack(
           children: [
@@ -68,11 +69,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               children: [
                 Expanded(
                     child: Container(
-                  color: currentTheme.colors.neutral.shade100,
+                  color: theme.colors.neutral.shade100,
                 )),
                 Expanded(
                     child: Container(
-                  color: currentTheme.colors.neutral.shade200,
+                  color: theme.colors.neutral.shade200,
                 ))
               ],
             ),
@@ -202,7 +203,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
             child: LoginBox(
               passwordCon: _password,
               loginCon: _username,
-              longPressCallback:() => ecoleDirecteDemoLogin(),
+              longPressCallback: () => ecoleDirecteDemoLogin(),
               callback: () => simpleLogin(),
             )),
       ),
@@ -233,16 +234,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         ),
         Text(name,
             style: TextStyle(
-                fontFamily: "Asap",
-                fontWeight: FontWeight.bold,
-                fontSize: 40,
-                color: currentTheme.colors.neutral.shade500)),
+                fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 40, color: theme.colors.neutral.shade500)),
         Text(label,
             style: TextStyle(
-                fontFamily: "Asap",
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-                color: currentTheme.colors.neutral.shade400)),
+                fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: 20, color: theme.colors.neutral.shade400)),
         SizedBox(
           height: 20,
         ),
@@ -253,7 +248,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   _buildMetaPart() {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      decoration: BoxDecoration(color: currentTheme.colors.neutral.shade100),
+      decoration: BoxDecoration(color: theme.colors.neutral.shade100),
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0.9.h),
       width: screenSize.size.width,
       child: Row(
@@ -267,7 +262,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                   style: TextStyle(
                       fontFamily: "Asap",
                       fontWeight: FontWeight.normal,
-                      color: currentTheme.colors.neutral.shade400,
+                      color: theme.colors.neutral.shade400,
                       fontSize: 17),
                 ),
                 onTap: () => launch('https://ynotes.fr/faq')),
@@ -279,7 +274,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                 style: TextStyle(
                     fontFamily: "Asap",
                     fontWeight: FontWeight.normal,
-                    color: currentTheme.colors.neutral.shade400,
+                    color: theme.colors.neutral.shade400,
                     fontSize: 17)),
             onTap: () => contactBottomSheet(context),
           )),
@@ -291,7 +286,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                   style: TextStyle(
                       fontFamily: "Asap",
                       fontWeight: FontWeight.normal,
-                      color: currentTheme.colors.neutral.shade400,
+                      color: theme.colors.neutral.shade400,
                       fontSize: 17),
                 ),
                 onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),

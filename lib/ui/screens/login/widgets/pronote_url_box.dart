@@ -11,7 +11,8 @@ import 'package:ynotes/ui/screens/login/widgets/login_dialog.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_text_field.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_web_view.dart';
 import 'package:ynotes/useful_methods.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/components.dart';
 
 class PronoteUrlBox extends StatefulWidget {
   final TextEditingController urlCon;
@@ -30,7 +31,7 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: currentTheme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
       child: Column(
         children: [
           LoginTextField(label: LoginPageTextContent.pronote.url.url, controller: widget.urlCon),
@@ -46,7 +47,7 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
                 child: Text(
                   LoginPageTextContent.pronote.url.forgotUrl,
                   style: TextStyle(
-                      fontFamily: "Asap", color: currentTheme.colors.neutral.shade500, decoration: TextDecoration.underline),
+                      fontFamily: "Asap", color: theme.colors.neutral.shade500, decoration: TextDecoration.underline),
                 ),
               ),
               Spacer(),

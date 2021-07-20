@@ -16,7 +16,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/useful_methods.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/components.dart';
 
 Future<List<FileInfo>>? filesListFuture;
 
