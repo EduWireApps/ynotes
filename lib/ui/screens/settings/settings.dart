@@ -253,6 +253,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
                     iosChevron: Icon(Icons.chevron_right),
                     onPressed: (context) {
+                      
                       CustomDialogs.showSpecialtiesChoice(context);
                     },
                   ),

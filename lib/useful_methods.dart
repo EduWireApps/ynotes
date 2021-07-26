@@ -9,13 +9,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/globals.dart';
 
-//Parsers list
-///Color theme switcher, actually 0 for darkmode and 1 for lightmode
-int colorTheme = 0;
 
-List parsers = ["EcoleDirecte", "Pronote"];
-
-List<Discipline> specialities = [];
 TValue? case2<TOptionType, TValue>(
   TOptionType selectedOption,
   Map<TOptionType, TValue> branches, [
