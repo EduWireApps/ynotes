@@ -26,7 +26,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
         child: Consumer<GradesController>(builder: (context, model, child) {
           final allGrades =
               getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true) ?? [];
-          final grades = allGrades.reversed.toList().sublist(allGrades.length - 5).reversed;
+          final grades = allGrades.reversed.toList().sublist((allGrades.length - 5).clamp(0, 10000)).reversed;
           if (grades.length != 0) {
             return Column(mainAxisSize: MainAxisSize.min, children: [
               Padding(
