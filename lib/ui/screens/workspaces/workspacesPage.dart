@@ -13,6 +13,7 @@ import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/workspaces/workspacesPageWidgets/cloudFilesList.dart';
 import 'package:ynotes/ui/screens/workspaces/workspacesPageWidgets/workspacesList.dart';
+import 'package:ynotes_packages/theme.dart';
 
 var actualSort = sortValue.date;
 
@@ -75,7 +76,7 @@ class _WorkspacesPageState extends State<WorkspacesPage> with LayoutMixin {
                           opacity: model.path == "/" ? 0.4 : 1,
                           child: Material(
                             borderRadius: BorderRadius.circular(12),
-                            color: Theme.of(context).primaryColorDark,
+                            color: theme.colors.neutral.shade300,
                             child: InkWell(
                               onTap: model.path == "/" ? null : model.back(),
                               child: Container(
@@ -88,13 +89,13 @@ class _WorkspacesPageState extends State<WorkspacesPage> with LayoutMixin {
                                     children: <Widget>[
                                       Icon(
                                         MdiIcons.arrowLeft,
-                                        color: ThemeUtils.textColor(),
+                                        color: theme.colors.neutral.shade400,
                                       ),
                                       Text("Retour",
                                           style: TextStyle(
                                             fontFamily: "Asap",
                                             fontSize: 15,
-                                            color: ThemeUtils.textColor(),
+                                            color: theme.colors.neutral.shade400,
                                           )),
                                     ],
                                   ),

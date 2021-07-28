@@ -4,7 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/ecole_directe/converters/cloud.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/ecole_directe/endpoints/ecole_directe_endpoints.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -31,9 +30,8 @@ class EcoleDirecteMethod {
   }
 
   Future<List<Workspace>> workspaces() async {
-    await this.testToken();
-    String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
-    String method = "espacestravail.awp?verbe=get&";
+    await testToken();
+
     String data = 'data={"token": "$token"}';
     List<Workspace> workspaces = await request(
       data: data,
@@ -46,19 +44,7 @@ class EcoleDirecteMethod {
     return workspaces;
   }
 
-  Future<List<CloudItem>?> cloudFolders() async {
-    await testToken();
 
-    String data = 'data={"token": "$token"}';
-    List<CloudItem>? cloudFolders = await request(
-      data: data,
-      url: endpoints.workspaces,
-      converter: EcoleDirecteCloudConverter.cloudFolders,
-      onErrorBody: "Cloud folders request returned an error:",
-    );
-
-    return cloudFolders;
-  }
 
   Future<List<Discipline>> grades() async {
     await testToken();

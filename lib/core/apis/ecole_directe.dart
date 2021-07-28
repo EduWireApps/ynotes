@@ -124,7 +124,7 @@ class APIEcoleDirecte extends API {
   ///      E.G : "PUSH" add a file to the path if it doesn't exist
   ///       E.G : "RM" remove a file to the path
   Future<List<Workspace>?> getWorkspaces() async {
-    return await EcoleDirecteMethod(appSys.offline).workspaces();
+    return await methods.workspaces();
   }
 
   Future<List> login(username, password, {Map? additionnalSettings}) async {

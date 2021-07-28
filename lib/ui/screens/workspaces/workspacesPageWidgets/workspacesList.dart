@@ -4,8 +4,11 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/workspaces/controller.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
+import 'package:sizer/sizer.dart';
+
 import 'package:ynotes/ui/components/column_generator.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class WorkSpacesList extends StatefulWidget {
   final WorkspacesController controller;
@@ -40,12 +43,10 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: screenSize.size.height / 10 * 0.1),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.1)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: theme.colors.neutral.shade300),
       child: Column(
         children: [
-          Icon(MdiIcons.accountGroup, color: ThemeUtils.textColor().withOpacity(0.7)),
+          Icon(MdiIcons.accountGroup, color: theme.colors.neutral.shade400),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 50),
             child: Text(
@@ -57,11 +58,16 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
               ),
             ),
           ),
-          CustomButtons.materialButton(context, null, null, () {
-            appSys.settings.user.workspacesPage.readExplanation = true;
-            appSys.saveSettings();
-            setState(() {});
-          }, label: "J'ai compris", padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5))
+          SizedBox(height: 0.5.h),
+          YButton(
+            onPressed: () {
+              appSys.settings.user.workspacesPage.readExplanation = true;
+              appSys.saveSettings();
+              setState(() {});
+            },
+            text: "J'ai compris",
+            type: YColor.neutral,
+          )
         ],
       ),
     );
@@ -72,7 +78,7 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: screenSize.size.height / 10 * 0.1),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Theme.of(context).primaryColor),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.transparent),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,8 +86,8 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
           Text(
             spaceName,
             textAlign: TextAlign.start,
-            style:
-                TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500, fontSize: 29, color: ThemeUtils.textColor()),
+            style: TextStyle(
+                fontFamily: "Asap", fontWeight: FontWeight.w500, fontSize: 29, color: theme.colors.neutral.shade500),
           ),
           //Do not remove (expands horizontally)
           Row(
@@ -97,7 +103,15 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
           Builder(
             builder: (context) {
               if (workspaces == null || workspaces.length == 0) {
-                return Center(child: Text("Pas d'espace de travail"));
+                return Center(
+                    child: Text(
+                  "Pas d'espace de travail",
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      fontWeight: FontWeight.w300,
+                      fontSize: 15,
+                      color: theme.colors.neutral.shade500),
+                ));
               } else {
                 return ColumnBuilder(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,13 +138,14 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
                                         children: [
                                           Text(workspace.title ?? "Espace sans titre",
                                               textAlign: TextAlign.start,
-                                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
+                                              style:
+                                                  TextStyle(fontFamily: "Asap", color: theme.colors.neutral.shade500)),
                                           if (workspace.author != null && workspace.author != "")
                                             Text(
                                               workspace.author!,
                                               textAlign: TextAlign.start,
-                                              style: TextStyle(
-                                                  fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.7)),
+                                              style:
+                                                  TextStyle(fontFamily: "Asap", color: theme.colors.neutral.shade400),
                                             )
                                         ],
                                       ),
