@@ -6,3 +6,4 @@ export 'package:ynotes/core/apis/ecole_directe/converters/lessons.dart';
 export 'package:ynotes/core/apis/ecole_directe/converters/mail.dart';
 export 'package:ynotes/core/apis/ecole_directe/converters/account.dart';
 export 'package:ynotes/core/apis/ecole_directe/converters/school_life.dart';
+export 'package:ynotes/core/apis/ecole_directe/converters/workspaces.dart';

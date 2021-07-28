@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/workspaces/controller.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/workspaces/workspacesPageWidgets/cloudFilesList.dart';
 import 'package:ynotes/ui/screens/workspaces/workspacesPageWidgets/workspacesList.dart';
 
@@ -49,7 +49,7 @@ class WorkspacesPage extends StatefulWidget {
 }
 
 //Sort in the main page
-class _WorkspacesPageState extends State<WorkspacesPage> with Layout {
+class _WorkspacesPageState extends State<WorkspacesPage> with LayoutMixin {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
