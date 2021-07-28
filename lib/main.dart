@@ -16,7 +16,6 @@ import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
-import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/themes/themes.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -24,8 +23,6 @@ import 'package:ynotes_packages/theme.dart';
 import 'core/utils/theme_utils.dart';
 
 import 'package:sizer/sizer.dart';
-
-import 'ui/screens/login/index.dart';
 
 Future main() async {
   Logger.level = Level.warning;
@@ -52,36 +49,9 @@ _headlessTask(HeadlessTask? task) async {
   }
 }
 
-class Carousel extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: SlidingCarousel(),
-    ));
-  }
-}
-
 class HomeApp extends StatefulWidget {
   @override
   _HomeAppState createState() => _HomeAppState();
-}
-
-class Loader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return Scaffold(body: LoadingPage());
-  }
-}
-
-class Login extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: LoginSlider());
-  }
 }
 
 class _HomeAppState extends State<HomeApp> {
@@ -128,7 +98,7 @@ class _HomeAppState extends State<HomeApp> {
                     theme: model.themeData,
                     title: kDebugMode ? "yNotes DEV" : "yNotes",
                     navigatorKey: _navigatorKey,
-                    home: Loader(),
+                    home: LoadingPage(),
                     themeMode: ThemeMode.light,
                     onGenerateRoute: onGenerateRoute,
                   ),

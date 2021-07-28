@@ -9,7 +9,7 @@ import 'package:ynotes/ui/screens/downloads/downloads.dart';
 import 'package:ynotes/ui/screens/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
 import 'package:ynotes/ui/screens/homework/homework.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/screens/login/login.dart';
 import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
 import 'package:ynotes/ui/screens/school_life/school_life.dart';
@@ -30,8 +30,7 @@ class CustomRoute {
 
 final List<CustomRoute> routes = [
   CustomRoute(path: "/login", page: Login(), relatedApi: -1, show: false),
-  CustomRoute(
-      path: "/intro", icon: Icons.info, title: "Introduction", page: SlidingCarousel(), relatedApi: -1, show: false),
+  CustomRoute(path: "/intro", icon: Icons.info, page: Carousel(), relatedApi: -1, show: false),
   CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: SummaryPage(), tab: appTabs.SUMMARY),
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: GradesPage(), tab: appTabs.GRADES),
   CustomRoute(
