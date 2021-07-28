@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/appConfig/models.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
+import 'package:ynotes/core/logic/app_config/models.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/ui/screens/agenda/agenda.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
-import 'package:ynotes/ui/screens/workspaces/workspacesPage.dart';
-import 'package:ynotes/ui/screens/downloads/downloadsPage.dart';
-import 'package:ynotes/ui/screens/error_page.dart';
-import 'package:ynotes/ui/screens/grades/gradesPage.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
+import 'package:ynotes/ui/screens/downloads/downloads.dart';
+import 'package:ynotes/ui/screens/error.dart';
+import 'package:ynotes/ui/screens/grades/grades.dart';
+import 'package:ynotes/ui/screens/homework/homework.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/ui/screens/mail/mailPage.dart';
-import 'package:ynotes/ui/screens/polls/pollsPage.dart';
-import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
+import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
+import 'package:ynotes/ui/screens/polls/polls.dart';
+import 'package:ynotes/ui/screens/school_life/school_life.dart';
+import 'package:ynotes/ui/screens/summary/summary.dart';
+import 'package:ynotes/ui/screens/workspaces/workspacesPage.dart';
 
 class CustomRoute {
   final String path;
@@ -62,13 +61,7 @@ final List<CustomRoute> routes = [
       relatedApi: 0,
       tab: appTabs.FILES),
   CustomRoute(
-      path: "/polls",
-      icon: MdiIcons.poll,
-      title: "Sondages",
-      page: PollsAndInfoPage(),
-      relatedApi: 1,
-      tab: appTabs.POLLS),
-  CustomRoute(path: "/account", icon: Icons.person, title: "Compte", page: AccountPage())
+      path: "/polls", icon: MdiIcons.poll, title: "Sondages", page: PollsPage(), relatedApi: 1, tab: appTabs.POLLS),
 ];
 
 PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {

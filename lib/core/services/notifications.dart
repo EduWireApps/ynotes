@@ -12,17 +12,17 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/ui/screens/agenda/widgets/agenda.dart';
+import 'package:ynotes/useful_methods.dart';
 
 ///The notifications class
 class AppNotification {
@@ -96,9 +96,10 @@ class AppNotification {
     } else {
       final prefs = await (SharedPreferences.getInstance());
       bool? value = prefs.getBool("disableAtDayEnd");
-      print(value);
-      print(appSys.settings.user.agendaPage.disableAtDayEnd);
-      appSys.saveSettings();
+      CustomLogger.log("NOTIFICATIONS", "disableAtDayEnd (prefs): $value");
+      CustomLogger.log(
+          "NOTIFICATIONS", "disableAtDayEnd (settings): ${appSys.settings.user.agendaPage.disableAtDayEnd}");
+
       if (appSys.settings.user.agendaPage.disableAtDayEnd) {
         await cancelOnGoingNotification();
       } else {

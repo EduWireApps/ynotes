@@ -1,7 +1,7 @@
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 class LessonsOffline {
@@ -32,7 +32,7 @@ class LessonsOffline {
       }
       int todayWeek = await getWeek(DateTime.now());
       bool lighteningOverride = appSys.settings.user.agendaPage.lighteningOverride;
-      appSys.saveSettings();
+
       //Remove old lessons in order to lighten the db
       //Can be overriden in settings
       if (!lighteningOverride) {

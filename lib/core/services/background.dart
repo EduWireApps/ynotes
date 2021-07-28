@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/apis/ecole_directe.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 //The main class for everything done in background
 class BackgroundService {
@@ -17,12 +17,11 @@ class BackgroundService {
       //Ensure that grades notification are enabled and battery saver disabled
       bool gradesFetchEnabled =
           ((appSys.settings.user.global.notificationNewGrade && !appSys.settings.user.global.batterySaver));
-      appSys.saveSettings();
+
       //Ensure that mails notification are enabled, battery saver disabled and parser is EcoleDirecte
       bool mailsFetchEnabled = (appSys.settings.user.global.notificationNewMail &&
           !appSys.settings.user.global.batterySaver &&
           appSys.settings.system.chosenParser == 0);
-      appSys.saveSettings();
 
       CustomLogger.log("BACKGROUND", "Starting the headless closed bakground task");
 
@@ -70,7 +69,7 @@ class BackgroundService {
         CustomLogger.log("BACKGROUND", "New mail notification disabled");
       }
       if (appSys.settings.user.agendaPage.agendaOnGoingNotification) {
-        print("Setting On going notification");
+        CustomLogger.log("BACKGROUND", "Setting On going notification");
         await AppNotification.setOnGoingNotification(dontShowActual: true);
       } else {
         CustomLogger.log("BACKGROUND", "On going notification disabled");
@@ -88,7 +87,7 @@ class BackgroundService {
     try {
       if (_appSys.settings.system.lastFetchDate != null) {
         DateTime date = DateTime.fromMillisecondsSinceEpoch(_appSys.settings.system.lastFetchDate!);
-        appSys.saveSettings();
+
         if (DateTime.now().difference(date).inMinutes >= 5) {
           return true;
         } else {
@@ -109,7 +108,6 @@ class BackgroundService {
     try {
       //Get the old number of mails
       int oldGradesLength = appSys.settings.system.lastGradeCount;
-      appSys.saveSettings();
       //Getting the offline count of grades
       //instanciate an offline controller read only
 
@@ -122,7 +120,7 @@ class BackgroundService {
           getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true, sortByWritingDate: true);
 
       CustomLogger.log("BACKGROUND", "Online grade length is ${listOnlineGrades!.length}");
-      if ( oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
+      if (oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
         int diff = (listOnlineGrades.length - (listOnlineGrades.length - oldGradesLength).clamp(0, 5));
         List<Grade> newGrades = listOnlineGrades.sublist(diff);
         return [true, newGrades];
@@ -139,11 +137,10 @@ class BackgroundService {
   static testNewMails() async {
     try {
       //Get the old number of mails
-      
-     
+
       var oldMailLength = appSys.settings.system.lastMailCount;
-      appSys.saveSettings();
-       CustomLogger.log("BACKGROUND", "Old length is $oldMailLength");
+
+      CustomLogger.log("BACKGROUND", "Old length is $oldMailLength");
       //Get new mails
       List<Mail>? mails = await (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: true);
       //filter mails by type
@@ -182,5 +179,6 @@ class BackgroundService {
     int date = DateTime.now().millisecondsSinceEpoch;
     appSys.settings.system.lastFetchDate = date;
     appSys.saveSettings();
-    CustomLogger.log("BACKGROUND", "Written last fetch status " + date.toString());  }
+    CustomLogger.log("BACKGROUND", "Written last fetch status " + date.toString());
+  }
 }

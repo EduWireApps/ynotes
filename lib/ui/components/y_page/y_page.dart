@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/logic/shared/login_controller.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';
 import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class YPage extends StatefulWidget {
   final String title;
@@ -34,11 +35,10 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
           ),
         Expanded(
           child: Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: theme.colors.neutral.shade200,
             drawer: (screenSize.size.width < 800) ? YDrawer() : null,
             appBar: AppBar(
-                backgroundColor:
-                    ThemeUtils.isThemeDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorDark,
+                backgroundColor: theme.colors.neutral.shade100,
                 centerTitle: false,
                 title: Text(widget.title, textAlign: TextAlign.start),
                 systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,

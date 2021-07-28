@@ -5,11 +5,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -17,10 +17,11 @@ part 'model.g.dart';
 abstract class API {
   bool loggedIn = false;
   final Offline offlineController;
+  final String apiName;
 
   List<Grade>? gradesList;
 
-  API(this.offlineController);
+  API(this.offlineController, {required this.apiName});
 
   Future<AppAccount?> account() async {
     final storage = new FlutterSecureStorage();
@@ -38,8 +39,6 @@ abstract class API {
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
 
-  ///Get the dates of next homework (deprecated)
-  Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
   Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {
