@@ -2,31 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/app_config/models.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/screens/agenda/agenda.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/downloads/downloads.dart';
 import 'package:ynotes/ui/screens/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
 import 'package:ynotes/ui/screens/homework/homework.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
 import 'package:ynotes/ui/screens/school_life/school_life.dart';
 import 'package:ynotes/ui/screens/summary/summary.dart';
 import 'package:ynotes/ui/screens/workspaces/workspacesPage.dart';
-
-class CustomRoute {
-  final String path;
-  final IconData? icon;
-  final String? title;
-  final Widget page;
-  final int? relatedApi;
-  final bool show;
-  final appTabs? tab;
-
-  CustomRoute(
-      {required this.path, this.icon, this.title, required this.page, this.relatedApi, this.show = true, this.tab});
-}
 
 final List<CustomRoute> routes = [
   CustomRoute(path: "/login", page: Login(), relatedApi: -1, show: false),
@@ -34,6 +21,7 @@ final List<CustomRoute> routes = [
       path: "/intro", icon: Icons.info, title: "Introduction", page: SlidingCarousel(), relatedApi: -1, show: false),
   CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: SummaryPage(), tab: appTabs.SUMMARY),
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: GradesPage(), tab: appTabs.GRADES),
+  CustomRoute(path: "/competences", icon: MdiIcons.trophy, title: "Compétences", page: GradesPage(), tab: appTabs.COMPETENCES),
   CustomRoute(
       path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.HOMEWORK),
   CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: AgendaPage(), tab: appTabs.AGENDA),
@@ -52,7 +40,12 @@ final List<CustomRoute> routes = [
       relatedApi: 0,
       tab: appTabs.SCHOOL_LIFE),
   CustomRoute(
-      path: "/workspaces", icon: MdiIcons.cloud, title: "Espaces de travail", page: WorkspacesPage(), relatedApi: 0, tab: appTabs.CLOUD),
+      path: "/workspaces",
+      icon: MdiIcons.cloud,
+      title: "Espaces de travail",
+      page: WorkspacesPage(),
+      relatedApi: 0,
+      tab: appTabs.CLOUD),
   CustomRoute(
       path: "/downloads",
       icon: MdiIcons.file,
@@ -81,4 +74,17 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
 
   CustomLogger.saveLog(object: "ROUTER", text: 'Route "${settings.name}" not found.');
   return generateRoute(ErrorPage(), settings);
+}
+
+class CustomRoute {
+  final String path;
+  final IconData? icon;
+  final String? title;
+  final Widget page;
+  final int? relatedApi;
+  final bool show;
+  final appTabs? tab;
+
+  CustomRoute(
+      {required this.path, this.icon, this.title, required this.page, this.relatedApi, this.show = true, this.tab});
 }

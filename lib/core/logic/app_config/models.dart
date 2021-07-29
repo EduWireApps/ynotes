@@ -5,6 +5,8 @@ enum appTabs {
   SUMMARY,
   @JsonValue("GRADES")
   GRADES,
+  @JsonValue("COMPETENCES")
+  COMPETENCES,
   @JsonValue("HOMEWORK")
   HOMEWORK,
   @JsonValue("AGENDA")

@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
+import 'package:ynotes/core/logic/competences/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/mails/controller.dart';
@@ -52,6 +53,7 @@ class ApplicationSystem extends ChangeNotifier {
 
   late LoginController loginController;
   late GradesController gradesController;
+  late CompetencesController competencesController;
 
   late HomeworkController homeworkController;
   late AgendaController agendaController;
