@@ -126,7 +126,7 @@ class APIEcoleDirecte extends API {
 
   @override
 //Getting grades
-  Future<List<Discipline>> getGrades({bool? forceReload}) async {
+  Future<List<Discipline>?> getGrades({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.grades, DisciplinesOffline(offlineController).getDisciplines,
         forceFetch: forceReload ?? false);
   }
