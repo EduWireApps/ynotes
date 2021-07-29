@@ -58,6 +58,8 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return ChangeNotifierProvider<ApplicationSystem>.value(
       value: appSys,
       child: Consumer<ApplicationSystem>(builder: (context, model, child) {
