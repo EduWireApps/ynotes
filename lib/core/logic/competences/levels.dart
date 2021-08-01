@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/logic/competences/model.dart';
+import 'package:ynotes/core/logic/competences/models.dart';
 
 final Map<String, CompetenceLevel> competencesLevels = {
   "verySatisfying": CompetenceLevel(name: "Très satisfaisant", defaultColor: Colors.red),

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/offline/customAdapters/colorsAdapter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -58,6 +59,7 @@ class HiveBoxProvider {
     _registerAdapter(MailAdapter());
     _registerAdapter(PollChoiceAdapter());
     _registerAdapter(PollQuestionAdapter());
+    _registerAdapter(ColorAdapter());
   }
 
   static void _registerAdapter<T>(TypeAdapter<T> adapter) {

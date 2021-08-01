@@ -7,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/core/logic/competences/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
@@ -15,6 +16,7 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes/ui/screens/competences/widgets/competences_group.dart';
 import 'package:ynotes_packages/components.dart';
 
 
@@ -29,9 +31,9 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return ChangeNotifierProvider<GradesController>.value(
-        value: appSys.gradesController,
-        child: Consumer<GradesController>(builder: (context, model, child) {
+    return ChangeNotifierProvider<CompetencesController>.value(
+        value: appSys.competencesController,
+        child: Consumer<CompetencesController>(builder: (context, model, child) {
           return YPage(
               title: "Notes",
               isScrollable: false,
@@ -54,13 +56,9 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                     },
                     icon: Icon(MdiIcons.sortVariant,
                         color: model.sorter != "all" ? Colors.green : ThemeUtils.textColor())),
-                IconButton(
-                    onPressed: () async {
-                      model.isSimulating = !model.isSimulating;
-                    },
-                    icon: Icon(MdiIcons.flask, color: model.isSimulating ? Colors.blue : ThemeUtils.textColor()))
+              
               ],
-              body: Consumer<GradesController>(builder: (context, model, child) {
+              body: Builder(builder: (context) {
                 return Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
                   Container(
                       height: screenSize.size.height / 10 * 0.7,
@@ -80,7 +78,7 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                   Expanded(
                     flex: 28,
                     child: RefreshIndicator(
-                        onRefresh: forceRefreshGrades,
+                        onRefresh: forceRefreshCompetences,
                         child: Container(
                             width: screenSize.size.width,
                             margin: EdgeInsets.only(top: 0),
@@ -95,14 +93,13 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(0),
-                                  child: Consumer<GradesController>(builder: (context, model, child) {
+                                  child: Builder(builder: (context) {
                                     if (!model.isFetching) {
                                       if (model
                                           .disciplines()!
-                                          .any((Discipline element) => (element.gradesList!.length > 0))) {
+                                          .any((CompetencesDiscipline element) => (element.assessmentsList!.length > 0))) {
                                         return Column(
                                           children: [
-                                            if (model.isSimulating) _buildResetButton(model),
                                             Expanded(
                                               child: LayoutBuilder(builder: (context, constraints) {
                                                 return YShadowScrollContainer(
@@ -114,9 +111,8 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                                                       padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 15 : 5),
                                                       crossAxisCount: 4,
                                                       itemCount: model.disciplines()!.length,
-                                                      itemBuilder: (BuildContext context, int index) => new GradesGroup(
+                                                      itemBuilder: (BuildContext context, int index) =>  CompetencesGroup(
                                                         discipline: model.disciplines()![index],
-                                                        gradesController: model,
                                                       ),
                                                       staggeredTileBuilder: (int index) =>
                                                           new StaggeredTile.fit(isLargeScreen ? 2 : 4),
@@ -164,7 +160,7 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                                                 ),
                                                 onPressed: () {
                                                   //Reload list
-                                                  forceRefreshGrades();
+                                                  forceRefreshCompetences();
                                                 },
                                                 child: !model.isFetching
                                                     ? Text("Recharger",
@@ -226,9 +222,8 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                                                   padding: EdgeInsets.symmetric(horizontal: 15),
                                                   crossAxisCount: 4,
                                                   itemCount: 18,
-                                                  itemBuilder: (BuildContext context, int index) => new GradesGroup(
+                                                  itemBuilder: (BuildContext context, int index) =>  CompetencesGroup(
                                                     discipline: null,
-                                                    gradesController: model,
                                                   ),
                                                   staggeredTileBuilder: (int index) =>
                                                       new StaggeredTile.fit(isLargeScreen ? 2 : 4),
@@ -239,32 +234,8 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                                     }
                                   }),
                                 ),
-                                if (model.isSimulating) _buildFloatingButton(context)
                               ],
                             ))),
-                  ),
-
-                  //Average section
-                  Container(
-                    width: screenSize.size.width,
-                    child: Consumer<GradesController>(builder: (context, model, child) {
-                      Discipline? lastDiscipline;
-                      if (model.disciplines()?.length != 0) {
-                        try {
-                          lastDiscipline = model
-                              .disciplines()!
-                              .lastWhere((disciplinesList) => disciplinesList.periodName == model.period);
-                        } catch (exception) {}
-
-                        //If everything is ok, show stuff
-                        return buildBottomBar(lastDiscipline, model);
-                      } else {
-                        return SpinKitFadingFour(
-                          color: Theme.of(context).primaryColorDark,
-                          size: screenSize.size.width / 5 * 0.7,
-                        );
-                      }
-                    }),
                   ),
                 ]);
               }));
@@ -297,65 +268,8 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
     );
   }
 
-  Widget buildBottomBar(Discipline? discipline, GradesController model) {
-    var screenSize = MediaQuery.of(context);
-    bool largeScreen = screenSize.size.width > 500;
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
-      color: Theme.of(context).primaryColor,
-      child: Row(
-        children: [
-          SizedBox(
-            width: screenSize.size.width / 5 * 0.15,
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    blurRadius: 2.67,
-                    color: Colors.black.withOpacity(0.2),
-                    offset: Offset(0, 2.67),
-                  ),
-                ],
-                color: (model.sorter == "all" ? Colors.white : Colors.green)),
-            child: FittedBox(
-              child: AutoSizeText(
-                (!model.average.isNaN ? model.average.toStringAsFixed(2) : "-"),
-                style: TextStyle(color: Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: screenSize.size.width / 5 * 0.3,
-          ),
-          Expanded(
-            child: Wrap(
-              direction: Axis.horizontal,
-              alignment: largeScreen ? WrapAlignment.end : WrapAlignment.start,
-              runSpacing: screenSize.size.height / 10 * 0.1,
-              spacing: screenSize.size.width / 5 * 0.1,
-              children: [
-                buildAverageContainer("MAX", discipline?.maxClassGeneralAverage ?? "N/A"),
-                buildAverageContainer("CLASSE", discipline?.classGeneralAverage ?? "N/A"),
-                buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: screenSize.size.width / 5 * 0.1,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildDefaultChoice(String name, IconData icon, GradesController con, String filterName) {
+  Widget buildDefaultChoice(String name, IconData icon, CompetencesController con, String filterName) {
     var screenSize = MediaQuery.of(context);
 
     return Material(
@@ -400,17 +314,16 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
     super.dispose();
   }
 
-  Future<void> forceRefreshGrades() async {
-    await appSys.gradesController.refresh(force: true);
+  Future<void> forceRefreshCompetences() async {
+    await appSys.competencesController.refresh(force: true);
   }
 
   void initState() {
     super.initState();
-
     initializeDateFormatting("fr_FR", null);
   }
 
-  openSortBox(GradesController gradesController) {
+  openSortBox(CompetencesController competencesController) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return showDialog(
@@ -426,16 +339,16 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, gradesController, "all"),
+                    buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, competencesController, "all"),
                     SizedBox(height: screenSize.size.height / 10 * 0.1),
-                    buildDefaultChoice("Spécialités", MdiIcons.star, gradesController, "specialties"),
+                    buildDefaultChoice("Spécialités", MdiIcons.star, competencesController, "specialties"),
                     SizedBox(height: screenSize.size.height / 10 * 0.1),
-                    buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, gradesController, "littérature"),
+                    buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, competencesController, "littérature"),
                     SizedBox(height: screenSize.size.height / 10 * 0.1),
                     buildDefaultChoice(
                       "Sciences",
                       MdiIcons.atom,
-                      gradesController,
+                      competencesController,
                       "sciences",
                     ),
                   ],
@@ -446,57 +359,7 @@ class _CompetencesPageState extends State<CompetencesPage> with LayoutMixin {
         });
   }
 
-  _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1, right: screenSize.size.width / 5 * 0.1),
-      child: Align(
-        alignment: Alignment.bottomRight,
-        child: Container(
-          child: FloatingActionButton(
-            heroTag: "simulBtn",
-            backgroundColor: Colors.transparent,
-            child: Container(
-              width: 120,
-              height: 120,
-              child: FittedBox(
-                child: Center(
-                  child: Icon(
-                    Icons.add,
-                    size: 90,
-                  ),
-                ),
-              ),
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
-            ),
-            onPressed: () async {
-              Grade? a = await simulatorModalBottomSheet(appSys.gradesController, context);
-              if (a != null) {
-                appSys.gradesController.simulationAdd(a);
-              }
-            },
-          ),
-        ),
-      ),
-    );
+  
   }
 
-  _buildResetButton(GradesController controller) {
-    var screenSize = MediaQuery.of(context);
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 400),
-      child: Container(
-        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
-        child: CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5,
-            () {
-          controller.simulationReset();
-        },
-            label: "Réinitialiser les notes",
-            textColor: Colors.white,
-            backgroundColor: Colors.blue,
-            padding: EdgeInsets.all(10),
-            borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-}
+

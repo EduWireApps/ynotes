@@ -17,3 +17,6 @@ export 'package:ynotes/core/logic/shared/models.dart';
 export 'package:ynotes/core/logic/pronote/schools_model.dart';
 
 export 'package:ynotes/core/logic/app_config/models.dart';
+
+
+export 'package:ynotes/core/logic/competences/models.dart';

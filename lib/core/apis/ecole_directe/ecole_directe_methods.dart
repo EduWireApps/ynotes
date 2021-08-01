@@ -9,6 +9,7 @@ import 'package:ynotes/core/apis/ecole_directe/endpoints/ecole_directe_endpoints
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
+import 'package:ynotes/core/offline/data/competences/competences.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/mails/mails.dart';
@@ -29,22 +30,24 @@ class EcoleDirecteMethod {
     endpoints = EcoleDirecteEndpoints(debug: demo, id: appSys.account?.id ?? "");
   }
 
-  Future<List<Workspace>> workspaces() async {
+  Future<List<CompetencesDiscipline>?> competences() async {
     await testToken();
 
     String data = 'data={"token": "$token"}';
-    List<Workspace> workspaces = await request(
+    List<CompetencesDiscipline>? disciplinesList = await request(
       data: data,
-      url: endpoints.workspaces,
-      converter: EcoleDirecteWorkspacesConverter.workspaces,
-      onErrorBody: "Cloud folders request returned an error:",
+      url: endpoints.grades,
+      converter: EcoleDirecteCompetencesConverter.competences,
+      onErrorBody: "Competences request returned an error:",
     );
-    
-   
-    return workspaces;
+
+    if (disciplinesList != null) {
+      await CompetencesOffline(_offlineController).updateCompetencesDisciplines(disciplinesList);
+      createStack();
+    }
+
+    return disciplinesList;
   }
-
-
 
   Future<List<Discipline>> grades() async {
     await testToken();
@@ -111,7 +114,7 @@ class EcoleDirecteMethod {
         onErrorBody: "Lessons request returned an error:",
       );
       int week = await getWeek(dateToUse);
-      
+
       if (lessonsList != null) {
         await LessonsOffline(_offlineController).updateLessons(lessonsList, week);
       }
@@ -201,7 +204,6 @@ class EcoleDirecteMethod {
     }
   }
 
-//Bool value and Token validity tester
   Future<List<SchoolLifeTicket>?> schoolLife() async {
     await testToken();
     String data = 'data={"token": "$token"}';
@@ -216,6 +218,7 @@ class EcoleDirecteMethod {
     return schoolLifeList;
   }
 
+//Bool value and Token validity tester
   Future sendMail(String? subject, String content, List<Recipient> recipientsList) async {
     String recipients = "";
 
@@ -329,6 +332,20 @@ class EcoleDirecteMethod {
     }
   }
 
+  Future<List<Workspace>> workspaces() async {
+    await testToken();
+
+    String data = 'data={"token": "$token"}';
+    List<Workspace> workspaces = await request(
+      data: data,
+      url: endpoints.workspaces,
+      converter: EcoleDirecteWorkspacesConverter.workspaces,
+      onErrorBody: "Cloud folders request returned an error:",
+    );
+
+    return workspaces;
+  }
+
 //Refresh the token if expired
   static fetchAnyData(dynamic onlineFetch, dynamic offlineFetch,
       {bool forceFetch = false, isOfflineLocked = false, onlineArguments, offlineArguments}) async {
@@ -384,7 +401,6 @@ class EcoleDirecteMethod {
       Map<String, String>? headers,
       bool getRequest = false}) async {
     try {
-
       String finalUrl = url;
       if (headers == null) {
         headers = {"Content-type": "text/plain"};

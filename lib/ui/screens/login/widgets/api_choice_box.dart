@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/column_generator.dart';
+import 'package:ynotes/ui/components/column_builder.dart';
 import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
 import 'package:ynotes_packages/theme.dart';
 

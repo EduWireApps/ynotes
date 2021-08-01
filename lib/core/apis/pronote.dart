@@ -9,6 +9,7 @@ import 'package:ynotes/core/apis/pronote/converters/account.dart';
 import 'package:ynotes/core/apis/pronote/pronote_methods.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/competences/models.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
@@ -357,6 +358,12 @@ class APIPronote extends API {
 
   @override
   Future uploadFile(String contexte, String id, String filepath) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<CompetencesDiscipline>?> getCompetences({bool? forceReload}) {
+    // TODO: implement getCompetences
     throw UnimplementedError();
   }
 }

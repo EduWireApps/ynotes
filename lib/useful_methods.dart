@@ -93,6 +93,14 @@ Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) asy
   return newList;
 }
 
+Future<List<CompetencesDiscipline>> refreshCompetencesDisciplinesListColors(List<CompetencesDiscipline> list) async {
+  List<CompetencesDiscipline> newList = [];
+  list.forEach((f) async {
+    f.color = Color(await getColor(f.disciplineCode));
+    newList.add(f);
+  });
+  return newList;
+}
 //Refresh colors
 Route router(Widget widget) {
   return PageRouteBuilder(

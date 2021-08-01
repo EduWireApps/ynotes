@@ -15,7 +15,7 @@ import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/extensions.dart';
-import 'package:ynotes/ui/components/column_generator.dart';
+import 'package:ynotes/ui/components/column_builder.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';

@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/competences/models.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -76,6 +77,9 @@ abstract class API {
 
   ///Get marks
   Future<List<Discipline>?> getGrades({bool? forceReload});
+
+  ///Get competences
+  Future<List<CompetencesDiscipline>?> getCompetences({bool? forceReload});
 
   ///Get the list of homework only for a specific day (time travel feature)
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload});

@@ -9,7 +9,7 @@ import 'package:ynotes/core/logic/shared/download_controller.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/column_generator.dart';
+import 'package:ynotes/ui/components/column_builder.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 
 void showFilesModalBottomSheet(context, List<Document> files) {

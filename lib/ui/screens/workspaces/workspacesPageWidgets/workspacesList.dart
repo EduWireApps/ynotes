@@ -6,7 +6,7 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:sizer/sizer.dart';
 
-import 'package:ynotes/ui/components/column_generator.dart';
+import 'package:ynotes/ui/components/column_builder.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 

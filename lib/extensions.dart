@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 
 extension StringCapitalize on String {
   String capitalize() {
@@ -12,7 +13,10 @@ extension IndexedIterable<E> on Iterable<E> {
     return map((e) => f(e, i++));
   }
 }
-
+extension CompetenceDisciplinesUtil on List<CompetencesDiscipline> {
+  List<Assessment>? get getAssessments =>
+      this.map((e) => e.assessmentsList).expand((x) => (x ?? [])).toList() as List<Assessment>?;
+}
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {

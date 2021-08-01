@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/competences/models.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
@@ -97,6 +98,7 @@ class APIEcoleDirecte extends API {
         methods.nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
         forceFetch: forceReload ?? false);
   }
+
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
@@ -291,6 +293,13 @@ class APIEcoleDirecte extends API {
           });
         }
     }
+  }
+
+  @override
+  Future<List<CompetencesDiscipline>?> getCompetences({bool? forceReload}) async{
+      return await EcoleDirecteMethod.fetchAnyData(
+        methods.nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
+        forceFetch: forceReload ?? false);
   }
 
   ///END OF THE API CLASS
