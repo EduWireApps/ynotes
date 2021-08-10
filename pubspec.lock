@@ -29,13 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.20"
-  app_settings:
-    dependency: "direct main"
-    description:
-      name: app_settings
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.0"
   args:
     dependency: "direct overridden"
     description:
@@ -78,13 +71,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0-nullsafety.2"
-  badges:
-    dependency: "direct main"
-    description:
-      name: badges
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0-nullsafety.1"
   battery_optimization:
     dependency: "direct main"
     description:
@@ -123,7 +109,7 @@ packages:
     source: hosted
     version: "3.0.0"
   build_resolvers:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: build_resolvers
       url: "https://pub.dartlang.org"
@@ -207,7 +193,7 @@ packages:
     source: hosted
     version: "4.0.0"
   collection:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -297,13 +283,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  day_night_switcher:
-    dependency: "direct main"
-    description:
-      name: day_night_switcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0+1"
   dbus:
     dependency: transitive
     description:
@@ -311,27 +290,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.2"
-  desktop_window:
-    dependency: "direct main"
+  dependency_validator:
+    dependency: "direct dev"
     description:
-      name: desktop_window
+      name: dependency_validator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0"
-  device_apps:
-    dependency: "direct main"
-    description:
-      name: device_apps
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
-  dotted_border:
-    dependency: "direct main"
-    description:
-      name: dotted_border
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0-nullsafety.0"
+    version: "3.1.0"
   dotted_line:
     dependency: "direct main"
     description:
@@ -514,13 +479,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.0"
-  flutter_svg:
-    dependency: "direct main"
-    description:
-      name: flutter_svg
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.22.0"
   flutter_switch:
     dependency: transitive
     description:
@@ -832,20 +790,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
-  path_drawing:
-    dependency: transitive
-    description:
-      name: path_drawing
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.1"
-  path_parsing:
-    dependency: transitive
-    description:
-      name: path_parsing
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.1"
   path_provider:
     dependency: "direct main"
     description:
@@ -888,13 +832,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.11.0"
-  percent_indicator:
-    dependency: "direct main"
-    description:
-      name: percent_indicator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.3.0-nullsafety.1"
   permission_handler:
     dependency: "direct main"
     description:
@@ -1023,27 +960,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.18"
-  rxdart:
-    dependency: "direct main"
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.26.0"
-  scrollable_positioned_list:
-    dependency: "direct main"
-    description:
-      name: scrollable_positioned_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0-nullsafety.0"
-  sensors:
-    dependency: transitive
-    description:
-      name: sensors
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.3"
   settings_ui:
     dependency: "direct main"
     description:
@@ -1053,13 +969,6 @@ packages:
       url: "https://github.com/EduWireApps/flutter-settings-ui"
     source: git
     version: "1.0.0-nullsafety.2"
-  shake:
-    dependency: "direct main"
-    description:
-      name: shake
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   share:
     dependency: "direct main"
     description:
@@ -1130,15 +1039,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0-nullsafety.0"
-  showcaseview:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: migrated-null-safety
-      resolved-ref: f4498b6a7ca860d1d4155e1f576d48ace6356abe
-      url: "https://github.com/nilsreichardt/flutter_showcaseview"
-    source: git
-    version: "0.2.0"
   simple_animations:
     dependency: "direct main"
     description:
@@ -1188,20 +1088,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.1"
-  sqflite:
-    dependency: "direct main"
-    description:
-      name: sqflite
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0+3"
-  sqflite_common:
-    dependency: transitive
-    description:
-      name: sqflite_common
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0+2"
   stack:
     dependency: "direct main"
     description:
@@ -1272,13 +1158,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  synchronized:
-    dependency: transitive
-    description:
-      name: synchronized
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
   term_glyph:
     dependency: transitive
     description:
@@ -1380,7 +1259,7 @@ packages:
     source: hosted
     version: "2.1.0"
   visibility_detector:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: visibility_detector
       url: "https://pub.dartlang.org"
