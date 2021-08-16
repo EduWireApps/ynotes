@@ -22,6 +22,7 @@ dependencies:
   flutter_secure_storage:
     git:
       url: https://github.com/mogol/flutter_secure_storage
+      path: flutter_secure_storage
       ref: develop
   requests:
     git:
