@@ -11,6 +11,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/competences/models.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
+import 'package:ynotes/core/offline/data/competences/competences.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/mails/mails.dart';
@@ -75,30 +76,36 @@ class APIEcoleDirecte extends API {
   }
 
   @override
+  Future<List<CompetencesDiscipline>?> getCompetences({bool? forceReload}) async {
+    return await EcoleDirecteMethod.fetchAnyData(
+        methods.competences, CompetencesOffline(this.offlineController).getCompetencesDisciplines,
+        forceFetch: forceReload ?? false);
+  }
+
+  @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.grades, DisciplinesOffline(offlineController).getDisciplines,
         forceFetch: forceReload ?? false);
   }
 
+//Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.homeworkFor, HomeworkOffline(offlineController).getHomeworkFor,
         forceFetch: forceReload ?? false, offlineArguments: dateHomework, onlineArguments: dateHomework);
   }
 
-//Get dates of the the next homework (based on the EcoleDirecte API)
+//Get homeworks for a specific date
   Future<List<Mail>>? getMails({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.mails, MailsOffline(this.offlineController).getAllMails,
         forceFetch: forceReload ?? false);
   }
 
-//Get homeworks for a specific date
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         methods.nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
         forceFetch: forceReload ?? false);
   }
-
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
@@ -293,13 +300,6 @@ class APIEcoleDirecte extends API {
           });
         }
     }
-  }
-
-  @override
-  Future<List<CompetencesDiscipline>?> getCompetences({bool? forceReload}) async{
-      return await EcoleDirecteMethod.fetchAnyData(
-        methods.nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
-        forceFetch: forceReload ?? false);
   }
 
   ///END OF THE API CLASS

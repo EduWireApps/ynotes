@@ -60,6 +60,14 @@ class HiveBoxProvider {
     _registerAdapter(PollChoiceAdapter());
     _registerAdapter(PollQuestionAdapter());
     _registerAdapter(ColorAdapter());
+    _registerAdapter(CompetencesDisciplineAdapter());
+    _registerAdapter(AssessmentAdapter());
+    _registerAdapter(CompetenceAdapter());
+    _registerAdapter(CompetenceDomainAdapter());
+    _registerAdapter(CompetenceItemAdapter());
+    _registerAdapter(CompetenceLevelAdapter());
+    _registerAdapter(CompetencePillarAdapter());
+    _registerAdapter(CompetencePillarAdapter());
   }
 
   static void _registerAdapter<T>(TypeAdapter<T> adapter) {

@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sizer/sizer.dart';
+
 import 'package:ynotes/core/logic/competences/models.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/components/column_builder.dart';
 import 'package:ynotes/ui/components/row_builder.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
-import 'package:ynotes/extensions.dart';
 
 class CompetencesGroup extends StatefulWidget {
   final CompetencesDiscipline? discipline;
@@ -35,7 +36,7 @@ class _CompetencesGroupState extends State<CompetencesGroup> with LayoutMixin {
       if (widget.discipline!.color != null) {
         colorGroup = widget.discipline?.color;
       }
-      if (widget.discipline!.teachers!.length > 0) {
+      if (widget.discipline!.teachers != null && widget.discipline!.teachers!.length > 0) {
         nomsProfesseurs = widget.discipline!.teachers![0];
         if (nomsProfesseurs != null) {
           widget.discipline!.teachers!.forEach((element) {
@@ -126,7 +127,7 @@ class _CompetencesGroupState extends State<CompetencesGroup> with LayoutMixin {
 
           //Body with columns
           Container(
-            padding: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.only(
@@ -134,21 +135,22 @@ class _CompetencesGroupState extends State<CompetencesGroup> with LayoutMixin {
                 bottomRight: Radius.circular(isLargeScreen ? 25 : 15),
               ),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(isLargeScreen ? 25 : 15),
-                bottomRight: Radius.circular(isLargeScreen ? 25 : 15),
-              ),
-              child: ColumnBuilder(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                itemCount:
-                    (widget.discipline?.subdisciplineCodes != null && widget.discipline!.subdisciplineCodes!.length > 0)
-                        ? widget.discipline!.subdisciplineCodes!.length
-                        : 1,
-                itemBuilder: (context, index) {
-                  return gradesList(index);
-                },
-              ),
+            child: ColumnBuilder(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              itemCount:
+                  (widget.discipline?.subdisciplineCodes != null && widget.discipline!.subdisciplineCodes!.length > 0)
+                      ? widget.discipline!.subdisciplineCodes!.length
+                      : 1,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    competencesList(index),
+                    SizedBox(
+                      height: 0.3.h,
+                    )
+                  ],
+                );
+              },
             ),
           )
         ],
@@ -157,12 +159,7 @@ class _CompetencesGroupState extends State<CompetencesGroup> with LayoutMixin {
   }
 
   //MARKS LIST VIEW
-  gradesList(int sousMatiereIndex) {
-    void callback() {
-      setState(() {});
-    }
-
-    bool canShow = false;
+  competencesList(int sousMatiereIndex) {
     List<Assessment> assessments = widget.discipline?.assessmentsList ?? [];
     assessments.sort((a, b) => b.assessmentDate.compareTo(a.assessmentDate));
 
@@ -191,7 +188,6 @@ class _CompetencesGroupState extends State<CompetencesGroup> with LayoutMixin {
         ),
         if (widget.discipline?.subdisciplineNames != null &&
             widget.discipline!.subdisciplineNames!.length - 1 >= sousMatiereIndex &&
-            assessments != null &&
             assessments.length > 0)
           if (sousMatiereIndex > 0)
             Divider(
@@ -199,7 +195,6 @@ class _CompetencesGroupState extends State<CompetencesGroup> with LayoutMixin {
             ),
         if (widget.discipline?.subdisciplineNames != null &&
             widget.discipline!.subdisciplineNames!.length - 1 >= sousMatiereIndex &&
-            assessments != null &&
             assessments.length > 0)
           Center(
               child: Container(
@@ -213,38 +208,43 @@ class _CompetencesGroupState extends State<CompetencesGroup> with LayoutMixin {
                   ))),
         Wrap(
           spacing: screenSize.size.width / 5 * 0.05,
+          runSpacing: 0.5.h,
           alignment: WrapAlignment.start,
           direction: Axis.horizontal,
           children: List.generate(assessments.length, (index) {
-            if (assessments != null) {
-              return Material(
+            return Material(
+              borderRadius: BorderRadius.circular(8),
+              color: colorGroup,
+              child: InkWell(
                 borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).primaryColor,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
-                  splashColor: Theme.of(context).primaryColorDark,
-                  hoverColor: Theme.of(context).primaryColorDark,
-                  highlightColor: Theme.of(context).primaryColorDark,
-                  onLongPress: () {},
-                  onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                    child: RowBuilder(
-                        itemCount: assessments[index].competences.length,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        itemBuilder: (context, index2) {
-                          return Container(
-                            decoration: BoxDecoration(color: assessments[index].competences[index2].level.defaultColor),
-                          );
-                        }),
-                  ),
+                splashColor: Theme.of(context).primaryColorDark,
+                hoverColor: Theme.of(context).primaryColorDark,
+                highlightColor: Theme.of(context).primaryColorDark,
+                onLongPress: () {},
+                onTap: () {},
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 0.6, color: Colors.black),
+                      borderRadius: BorderRadius.circular(15),
+                      color: colorGroup),
+                  padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  child: RowBuilder(
+                      itemCount: assessments[index].competences.length,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      itemBuilder: (context, index2) {
+                        return Container(
+                          margin: EdgeInsets.only(right: 5),
+                          width: 25,
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: assessments[index].competences[index2].level.defaultColor, shape: BoxShape.circle),
+                        );
+                      }),
                 ),
-              );
-            } else {
-              return Container();
-            }
+              ),
+            );
           }),
         ),
       ],

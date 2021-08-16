@@ -60,7 +60,7 @@ class _ConditionsOfUseDialogState extends State<ConditionsOfUseDialog> {
                                 builder: (context, snapshot) {
                                   if (snapshot.hasError) {
                                     CustomLogger.log("LOGIN", "An error occured while getting the TOS");
-                                    CustomLogger.error(snapshot.error);
+                                    CustomLogger.error(snapshot.error!);
                                   }
                                   return Text(
                                     snapshot.data.toString(),

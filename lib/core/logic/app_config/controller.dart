@@ -64,7 +64,7 @@ class ApplicationSystem extends ChangeNotifier {
   ///All the app controllers
 
   API? get api => _api;
-  
+
   set api(API? newAPI) {
     _api = newAPI;
     refreshControllersAPI();
@@ -82,6 +82,7 @@ class ApplicationSystem extends ChangeNotifier {
   buildControllers() {
     loginController = LoginController();
     gradesController = GradesController(this.api);
+    competencesController = CompetencesController(this.api);
     homeworkController = HomeworkController(this.api);
     agendaController = AgendaController(this.api);
     schoolLifeController = SchoolLifeController(this.api);
@@ -149,13 +150,12 @@ class ApplicationSystem extends ChangeNotifier {
   refreshControllersAPI() {
     gradesController.api = this.api;
     homeworkController.api = this.api;
+    competencesController.api = this.api;
     agendaController.api = this.api;
     schoolLifeController.api = this.api;
     mailsController.api = this.api;
     workspacesController.api = this.api;
   }
-
- 
 
 // This "Headless Task" is run when app is terminated.
   updateTheme(String themeName) {

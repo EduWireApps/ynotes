@@ -5,6 +5,7 @@ import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/screens/agenda/agenda.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
+import 'package:ynotes/ui/screens/competences/competences.dart';
 import 'package:ynotes/ui/screens/downloads/downloads.dart';
 import 'package:ynotes/ui/screens/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
@@ -21,7 +22,7 @@ final List<CustomRoute> routes = [
       path: "/intro", icon: Icons.info, title: "Introduction", page: SlidingCarousel(), relatedApi: -1, show: false),
   CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: SummaryPage(), tab: appTabs.SUMMARY),
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: GradesPage(), tab: appTabs.GRADES),
-  CustomRoute(path: "/competences", icon: MdiIcons.trophy, title: "Compétences", page: GradesPage(), tab: appTabs.COMPETENCES),
+  CustomRoute(path: "/competences", icon: MdiIcons.trophy, title: "Compétences", page: CompetencesPage(), tab: appTabs.COMPETENCES),
   CustomRoute(
       path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.HOMEWORK),
   CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: AgendaPage(), tab: appTabs.AGENDA),

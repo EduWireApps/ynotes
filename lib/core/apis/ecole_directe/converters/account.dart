@@ -1,8 +1,8 @@
+import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
-import 'package:uuid/uuid.dart';
 
 class EcoleDirecteAccountConverter {
   static AppAccount account(Map<dynamic, dynamic> accountData) {
@@ -49,6 +49,8 @@ class EcoleDirecteAccountConverter {
             break;
           case "NOTES":
             tabs.add(appTabs.GRADES);
+            tabs.add(appTabs.COMPETENCES);
+
             break;
           case "MESSAGERIE":
             tabs.add(appTabs.MESSAGING);

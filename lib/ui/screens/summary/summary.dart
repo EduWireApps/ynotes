@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
-
 import 'package:flutter/scheduler.dart';
+import 'package:sizer/sizer.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/screens/summary/widgets/administrative_data.dart';
 import 'package:ynotes_packages/components.dart';
-import 'widgets/average.dart';
+
 import 'data/constants.dart';
+import 'widgets/average.dart';
 import 'widgets/last_grades.dart';
 
 class SummaryPage extends StatefulWidget {
@@ -66,6 +66,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
   Future<void> refreshControllers({force: true}) async {
     await appSys.gradesController.refresh(force: force);
     await appSys.homeworkController.refresh(force: force);
+    await appSys.competencesController.refresh(force: force);
   }
 
   showUpdateNote() async {

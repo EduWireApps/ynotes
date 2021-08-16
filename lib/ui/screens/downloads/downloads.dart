@@ -600,7 +600,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                   } else {
                     if (snapshot.hasError) {
                       CustomLogger.log("DOWNLOADS", "An error occured while fetching files");
-                      CustomLogger.error(snapshot.error);
+                      CustomLogger.error(snapshot.error!);
                     }
                     return Center(
                       child: CustomLoader(500, screenSize.size.height / 10 * 2.4, Theme.of(context).primaryColorDark),

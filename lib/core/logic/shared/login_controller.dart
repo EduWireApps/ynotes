@@ -83,8 +83,8 @@ class LoginController extends ChangeNotifier {
                 (List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
-            _actualState = loginStatus.loggedOff;
-            _details = "Connexion à l'API...";
+            _actualState = loginStatus.error;
+            _details = "Erreur de connexion.";
             notifyListeners();
           }
           if (loginValues[0] == 1) {

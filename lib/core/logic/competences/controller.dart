@@ -39,7 +39,7 @@ class CompetencesController extends ChangeNotifier {
       _filterDisciplinesForPeriod(_disciplines ?? [], showAll: showAll);
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    CustomLogger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
+    CustomLogger.log("GRADES", "Refreshing competences " + (refreshFromOffline ? "from offline" : "online"));
 
     notifyListeners();
     //ED
@@ -151,6 +151,12 @@ class CompetencesController extends ChangeNotifier {
     return toReturn;
   }
 
+  void _setDefaultPeriod() {
+    if (_disciplines != null && _disciplines!.length != 0 && _period == "") {
+      _period = (_disciplines ?? []).lastWhere((list) => list.assessmentsList!.length > 0).periodName;
+    }
+  }
+
   //Removed "real" grades
   _refreshPeriods() async {
     List<Period> temp = this.disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
@@ -158,5 +164,6 @@ class CompetencesController extends ChangeNotifier {
     temp.retainWhere((x) => ids.remove(x.name));
     List<Period> unicalPeriods = temp.toSet().toList();
     _schoolPeriods = unicalPeriods;
+    _setDefaultPeriod();
   }
 }

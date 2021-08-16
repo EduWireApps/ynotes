@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/competences/levels.dart';
+part 'models.g.dart';
 
 final CompetenceLevels levels = CompetenceLevels(
   verySatisfying: competencesLevels["verySatisfying"]!,
@@ -112,13 +113,13 @@ class CompetencesDiscipline {
   @HiveField(1)
   final String? disciplineCode;
   @HiveField(2)
-  final List<String?>? subdisciplineCodes;
+  List<String?>? subdisciplineCodes;
   @HiveField(4)
-  final List<String?>? subdisciplineNames;
+  List<String?>? subdisciplineNames;
   @HiveField(5)
   final String periodCode;
   @HiveField(6)
-  final String periodName;
+  String periodName;
   @HiveField(7)
   final List<String?>? teachers;
   @HiveField(8)
