@@ -71,7 +71,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
         child: GestureDetector(
           onTap: () => Navigator.pushNamed(context, "/grades"),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 120),
+            constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 100),
             child: SummaryCard(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,6 +103,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 ),
+                if( (grade.testName ??"") != "")
                 Text(
                   grade.testName ?? "",
                   style: TextStyle(

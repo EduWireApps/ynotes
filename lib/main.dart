@@ -16,28 +16,24 @@ import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
-import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/themes/themes.dart';
 import 'package:ynotes_packages/theme.dart';
-
-import 'core/utils/theme_utils.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 import 'package:sizer/sizer.dart';
-
-import 'ui/screens/login/index.dart';
 
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
-  theme = YCurrentTheme(currentTheme: 1, themes: themes);
+  theme = YCurrentTheme(currentTheme: 1, themes: themes, fontFamily: "Asap");
 
   appSys = ApplicationSystem();
   await appSys.initApp();
   if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
   runZoned<Future<Null>>(() async {
-    runApp(Phoenix(child: HomeApp()));
+    runApp(Phoenix(child: App()));
   });
 }
 
@@ -52,43 +48,18 @@ _headlessTask(HeadlessTask? task) async {
   }
 }
 
-class Carousel extends StatelessWidget {
+class App extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: SlidingCarousel(),
-    ));
-  }
+  _AppState createState() => _AppState();
 }
 
-class HomeApp extends StatefulWidget {
-  @override
-  _HomeAppState createState() => _HomeAppState();
-}
-
-class Loader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return Scaffold(body: LoadingPage());
-  }
-}
-
-class Login extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: LoginSlider());
-  }
-}
-
-class _HomeAppState extends State<HomeApp> {
+class _AppState extends State<App> {
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return ChangeNotifierProvider<ApplicationSystem>.value(
       value: appSys,
       child: Consumer<ApplicationSystem>(builder: (context, model, child) {
@@ -97,14 +68,23 @@ class _HomeAppState extends State<HomeApp> {
             secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
             navigatorKey: _navigatorKey,
             theme: WiredashThemeData(
-                backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
-                primaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
-                secondaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
-                secondaryColor: Theme.of(context).primaryColorDark,
-                primaryColor: Theme.of(context).primaryColor,
-                primaryTextColor: ThemeUtils.textColor(),
                 brightness: Brightness.dark,
-                secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
+                primaryColor: theme.colors.primary.shade300,
+                secondaryColor: theme.colors.primary.shade300,
+                primaryTextColor: theme.colors.neutral.shade500,
+                secondaryTextColor: theme.colors.neutral.shade400,
+                tertiaryTextColor: theme.colors.neutral.shade400,
+                primaryBackgroundColor: theme.colors.neutral.shade200,
+                secondaryBackgroundColor: theme.colors.neutral.shade100,
+                backgroundColor: theme.colors.neutral.shade200,
+                dividerColor: theme.variableStyles.primary.plain.text,
+                errorColor: theme.colors.danger.shade300,
+                firstPenColor: theme.colors.danger.shade300,
+                secondPenColor: theme.colors.success.shade300,
+                thirdPenColor: theme.colors.warning.shade300,
+                fourthPenColor: theme.colors.primary.shade300,
+                sheetBorderRadius: BorderRadius.vertical(top: Radius.circular(YScale.s6)),
+                fontFamily: theme.fontFamily),
             options: WiredashOptionsData(
               /// You can set your own locale to override device default (`window.locale` by default)
               locale: const Locale.fromSubtags(languageCode: 'fr'),
@@ -120,15 +100,13 @@ class _HomeAppState extends State<HomeApp> {
                       GlobalCupertinoLocalizations.delegate,
                     ],
                     supportedLocales: [
-                      const Locale('en'), // English (could be useless ?)
                       const Locale('fr'), //French
-                      // ... other locales the app supports
                     ],
                     debugShowCheckedModeBanner: false,
                     theme: model.themeData,
                     title: kDebugMode ? "yNotes DEV" : "yNotes",
                     navigatorKey: _navigatorKey,
-                    home: Loader(),
+                    home: LoadingPage(),
                     themeMode: ThemeMode.light,
                     onGenerateRoute: onGenerateRoute,
                   ),

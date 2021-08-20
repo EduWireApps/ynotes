@@ -56,9 +56,9 @@ class PageInfo {
 }
 
 //PAGE1 STATE
-class SlidingCarousel extends StatefulWidget {
-  SlidingCarousel({Key? key}) : super(key: key);
-  _SlidingCarouselState createState() => _SlidingCarouselState();
+class Carousel extends StatefulWidget {
+  Carousel({Key? key}) : super(key: key);
+  _CarouselState createState() => _CarouselState();
 }
 
 //PAGE2 STATE
@@ -670,7 +670,7 @@ class _Page4State extends State<Page4> {
   }
 }
 
-class _SlidingCarouselState extends State<SlidingCarousel> {
+class _CarouselState extends State<Carousel> {
   late List<PageInfo> _pageInfoList;
 
   PageController? _pageController;
@@ -684,77 +684,79 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
     return Scaffold(
       backgroundColor: _pageOffset!.toInt() == 3 ? Theme.of(context).backgroundColor : _getBGColor(),
       body: //Disable back button
-          WillPopScope(
-        onWillPop: () async {
-          Future.value(false);
-          return false;
-        },
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: screenSize.size.height / 10 * 8.5,
-                    child: PageView.builder(
-                        controller: _pageController,
-                        itemCount: _pageInfoList.length,
-                        itemBuilder: (context, idx) {
-                          return Container(
-                              height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
-                        }),
-                  ),
-                  Container(
-                    width: screenSize.size.width,
-                    height: screenSize.size.height / 10 * 0.5,
-                    child: Stack(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Visibility(
-                            visible: _pageController!.hasClients ? (_pageIndex != 3) : true,
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
-                              // ignore: deprecated_member_use
-                              child: OutlineButton(
-                                color: Colors.transparent,
-                                highlightColor: Colors.black,
-                                focusColor: Colors.black,
-                                borderSide: BorderSide(color: Colors.indigo),
-                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                                highlightedBorderColor: Colors.black,
-                                onPressed: () async {
-                                  _pageController!
-                                      .animateToPage(3, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                                },
-                                child: AutoSizeText(
-                                  "Passer",
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      fontSize: screenSize.size.width / 5 * 0.3,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.indigo),
+          SafeArea(
+        child: WillPopScope(
+          onWillPop: () async {
+            Future.value(false);
+            return false;
+          },
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: screenSize.size.height / 10 * 8.5,
+                      child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: _pageInfoList.length,
+                          itemBuilder: (context, idx) {
+                            return Container(
+                                height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
+                          }),
+                    ),
+                    Container(
+                      width: screenSize.size.width,
+                      height: screenSize.size.height / 10 * 0.5,
+                      child: Stack(
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Visibility(
+                              visible: _pageController!.hasClients ? (_pageIndex != 3) : true,
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
+                                // ignore: deprecated_member_use
+                                child: OutlineButton(
+                                  color: Colors.transparent,
+                                  highlightColor: Colors.black,
+                                  focusColor: Colors.black,
+                                  borderSide: BorderSide(color: Colors.indigo),
+                                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                                  highlightedBorderColor: Colors.black,
+                                  onPressed: () async {
+                                    _pageController!
+                                        .animateToPage(3, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                                  },
+                                  child: AutoSizeText(
+                                    "Passer",
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        fontSize: screenSize.size.width / 5 * 0.3,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.indigo),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: SmoothPageIndicator(
-                            controller: _pageController!, // PageController
-                            count: 4,
-                            effect: WormEffect(), // your preferred effect
+                          Align(
+                            alignment: Alignment.center,
+                            child: SmoothPageIndicator(
+                              controller: _pageController!, // PageController
+                              count: 4,
+                              effect: WormEffect(), // your preferred effect
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

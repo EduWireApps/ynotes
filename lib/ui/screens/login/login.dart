@@ -40,13 +40,13 @@ class LoginPageBox {
   LoginPageBox({required this.box, required this.widget});
 }
 
-class LoginSlider extends StatefulWidget {
-  const LoginSlider({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
   @override
-  _LoginSliderState createState() => _LoginSliderState();
+  _LoginState createState() => _LoginState();
 }
 
-class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin, YPageMixin {
+class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin {
   availableLoginPageBoxes previousPage = availableLoginPageBoxes.ApiChoiceBox;
   availableLoginPageBoxes currentPage = availableLoginPageBoxes.ApiChoiceBox;
 
@@ -59,37 +59,39 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     //build background
-    return Material(
-      color: theme.colors.neutral.shade100,
-      child: SafeArea(
-        child: Stack(
-          children: [
-            //background
-            Column(
-              children: [
-                Expanded(
-                    child: Container(
-                  color: theme.colors.neutral.shade100,
-                )),
-                Expanded(
-                    child: Container(
-                  color: theme.colors.neutral.shade200,
-                ))
-              ],
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 5,
-                ),
-                _buildTopButtons(),
-                Expanded(child: _buildPageView()),
-                _buildMetaPart()
-              ],
-            ),
-          ],
+    return Scaffold(
+      body: Material(
+        color: theme.colors.neutral.shade100,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              //background
+              Column(
+                children: [
+                  Expanded(
+                      child: Container(
+                    color: theme.colors.neutral.shade100,
+                  )),
+                  Expanded(
+                      child: Container(
+                    color: theme.colors.neutral.shade200,
+                  ))
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  _buildTopButtons(),
+                  Expanded(child: _buildPageView()),
+                  _buildMetaPart()
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

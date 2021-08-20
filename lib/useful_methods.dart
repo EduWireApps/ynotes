@@ -80,7 +80,6 @@ launchURL(url) async {
 //Redefine the switch statement
 Future<String?> readStorage(_key) async {
   String? u = await storage.read(key: _key);
-
   return u;
 }
 

@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
@@ -12,6 +11,7 @@ import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/settings.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class YDrawer extends StatefulWidget {
   const YDrawer({Key? key}) : super(key: key);
@@ -29,6 +29,12 @@ class _SpecialRoute {
 }
 
 class _YDrawerState extends State<YDrawer> with YPageMixin {
+  Widget divider(BuildContext context) => Divider(
+        color: theme.colors.neutral.shade400,
+        thickness: 0.5,
+        height: 0,
+      );
+
   @override
   Widget build(BuildContext context) {
     bool availableRoute(CustomRoute route) {
@@ -60,11 +66,13 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];
 
+    final Color backgroundColor = theme.colors.neutral.shade200;
+
     return Drawer(
       child: Container(
-        color: Theme.of(context).primaryColorLight,
+        color: backgroundColor,
         child: SafeArea(
-          child: YShadowScrollContainer(color: Theme.of(context).primaryColorLight, children: [
+          child: YShadowScrollContainer(color: backgroundColor, children: [
             AccountHeader(),
             ListView.builder(
                 shrinkWrap: true,
@@ -76,16 +84,18 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                   if (!availableRoute(route)) {
                     return Container();
                   }
+
+                  final bool isCurrent = ModalRoute.of(context)!.settings.name == route.path;
+                  final Color textColor = isCurrent ? theme.colors.neutral.shade500 : theme.colors.neutral.shade400;
+
                   return Container(
-                    color: ModalRoute.of(context)!.settings.name == route.path ? Theme.of(context).primaryColor : null,
+                    color: isCurrent ? theme.colors.neutral.shade300 : null,
                     child: ListTile(
                       leading: Icon(
                         route.icon,
-                        color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                        color: textColor,
                       ),
-                      title: Text(route.title ?? "",
-                          style:
-                              TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87, fontSize: 18)),
+                      title: Text(route.title ?? "", style: TextStyle(color: textColor, fontSize: 18)),
                       onTap: () {
                         if (ModalRoute.of(context)!.settings.name == route.path) {
                           return;
@@ -97,11 +107,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     ),
                   );
                 }),
-            Divider(
-              color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
-              thickness: 0.5,
-              height: 0,
-            ),
+            divider(context),
             ListView.builder(
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
@@ -112,25 +118,20 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                   return ListTile(
                     leading: Icon(
                       route.icon,
-                      color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                      color: theme.colors.neutral.shade400,
                     ),
-                    title: Text(route.title,
-                        style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87, fontSize: 18)),
+                    title: Text(route.title, style: TextStyle(color: theme.colors.neutral.shade400, fontSize: 18)),
                     onTap: route.onTap,
                   );
                 }),
-            Divider(
-              color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
-              thickness: 0.5,
-              height: 0,
-            ),
+            divider(context),
             Row(
               children: [
                 for (final e in specialIcons)
                   Expanded(
                       child: IconButton(
                     icon: Icon(e.icon),
-                    color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                    color: theme.colors.neutral.shade400,
                     onPressed: e.onTap,
                   ))
               ],
