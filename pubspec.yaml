@@ -19,7 +19,11 @@ dependencies:
     git:
       url: https://github.com/GitJournal/ext_storage
       ref: master
-  flutter_secure_storage: ^4.2.1
+  flutter_secure_storage:
+    git:
+      url: https://github.com/mogol/flutter_secure_storage
+      path: flutter_secure_storage
+      ref: develop
   requests:
     git:
       url: https://github.com/ianmaciel/requests
