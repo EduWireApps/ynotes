@@ -16,6 +16,7 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
+import 'package:ynotes/core/utils/secure_storage.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -30,7 +31,7 @@ import '../../../useful_methods.dart';
 
 bool? isFirstAvatarSelected;
 
-final storage = new FlutterSecureStorage();
+final storage = new CustomSecureStorage();
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);

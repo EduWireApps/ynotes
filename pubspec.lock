@@ -454,7 +454,7 @@ packages:
     description:
       path: flutter_secure_storage
       ref: develop
-      resolved-ref: "7eea4e06025e2361c2cec58ea7b3da1020a2dfb3"
+      resolved-ref: b2f11263a4cca504dc327eaa57bff60db50c63d5
       url: "https://github.com/mogol/flutter_secure_storage"
     source: git
     version: "5.0.0-beta.3"

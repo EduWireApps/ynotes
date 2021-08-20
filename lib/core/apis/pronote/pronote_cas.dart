@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/secure_storage.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map
 callCas(String? cas, String username, String? password, String url) async {
-  final storage = new FlutterSecureStorage();
+  final storage = new CustomSecureStorage();
   await storage.write(key: "pronotecas", value: cas);
   if (cas == null) {
     cas = "aucun";
@@ -45,11 +45,13 @@ atriumSud(String username, String? password) async {
   //Login payload
   var parsed = parse(response.content());
   // CustomLogger.log("PRONOTE", parsed.outerHtml);
-  var input = parsed.getElementsByTagName("input").firstWhere(
-      (element) => element.attributes.toString().contains("hidden") && element.attributes.toString().contains("lt"));
+  var input = parsed.getElementsByTagName("input").firstWhere((element) =>
+      element.attributes.toString().contains("hidden") &&
+      element.attributes.toString().contains("lt"));
   var lt = input.attributes["value"];
   input = parsed.getElementsByTagName("input").firstWhere((element) =>
-      element.attributes.toString().contains("hidden") && element.attributes.toString().contains("execution"));
+      element.attributes.toString().contains("hidden") &&
+      element.attributes.toString().contains("execution"));
   var execution = input.attributes["value"];
   var payload = {
     'execution': execution,
@@ -60,7 +62,9 @@ atriumSud(String username, String? password) async {
     'password': password
   };
   var response2 = await Requests.post(entLogin,
-      body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+      body: payload,
+      persistCookies: true,
+      bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
   var cookies = await Requests.getStoredCookies(Requests.getHostname(entLogin));
   CustomLogger.logWrapped("PRONOTE", "Cookies", cookies.toString());
@@ -90,14 +94,19 @@ idf(String username, String? password, String url) async {
   String entLogin = "https://ent.iledefrance.fr/auth/login";
 //remove old cookies
   await Requests.clearStoredCookies(Requests.getHostname(entLogin));
-  String callback = Uri.encodeComponent(Uri.encodeComponent("/cas/login?service=$service"));
+  String callback =
+      Uri.encodeComponent(Uri.encodeComponent("/cas/login?service=$service"));
   //payload to send
   var payload = {"email": username, "password": password, "callback": callback};
   CustomLogger.log("PRONOTE", payload.toString());
   var response2 = await Requests.post(entLogin,
-      body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+      body: payload,
+      persistCookies: true,
+      bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
-  if (response2.content().contains("identifiant ou le mot de passe est incorrect.")) {
+  if (response2
+      .content()
+      .contains("identifiant ou le mot de passe est incorrect.")) {
     throw "runes";
   }
   var cookies = await Requests.getStoredCookies(Requests.getHostname(entLogin));
@@ -116,7 +125,8 @@ class Session {
 
   Future post(String url, dynamic data) async {
     CustomLogger.log("PRONOTE", "Session post headers: $headers");
-    http.Response response = await http.post(Uri.parse(url), body: data, headers: headers);
+    http.Response response =
+        await http.post(Uri.parse(url), body: data, headers: headers);
     updateCookie(response);
     return response.body;
   }
@@ -125,7 +135,8 @@ class Session {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
-      headers['cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+      headers['cookie'] =
+          (index == -1) ? rawCookie : rawCookie.substring(0, index);
     }
   }
 }

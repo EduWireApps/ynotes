@@ -18,6 +18,7 @@ import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/secure_storage.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
@@ -39,7 +40,7 @@ List<String> colorList = [
   "#8ac6d1"
 ];
 
-final storage = new FlutterSecureStorage();
+final storage = new CustomSecureStorage();
 
 String? token;
 

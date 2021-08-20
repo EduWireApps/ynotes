@@ -25,6 +25,12 @@ class SummaryPage extends StatefulWidget {
 
 class SummaryPageState extends State<SummaryPage> with YPageMixin {
   bool firstStart = true;
+  List<Widget> pages = [
+    SummaryAverage(),
+    SummaryLastGrades(),
+    YVerticalSpacer(1.2.h),
+    SummaryAdministrativeData()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +40,16 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           onRefresh: () async {},
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: sidePadding),
-              child: Column(
-                children: [SummaryAverage(), SummaryLastGrades(), YVerticalSpacer(1.2.h), SummaryAdministrativeData()],
+              child: Container(
+                height: 100.h,
+                child: ReorderableList(
+                  itemCount: pages.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                        key: Key(index.toString()), leading: Text("test"));
+                  },
+                  onReorder: (startindex, newindex) {},
+                ),
               )),
         ));
   }

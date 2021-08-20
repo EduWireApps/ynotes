@@ -18,6 +18,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
+import 'package:ynotes/core/utils/secure_storage.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
 
@@ -562,7 +563,7 @@ class PronoteClient {
 
     this.startDay = inputFormat.parse(this.funcOptions['donneesSec']['donnees']['General']['PremierLundi']['V']);
 
-    final storage = new FlutterSecureStorage();
+    final storage = new CustomSecureStorage();
     await storage.write(key: "startday", value: this.startDay.toString());
     this.week = await getWeek(DateTime.now());
 
