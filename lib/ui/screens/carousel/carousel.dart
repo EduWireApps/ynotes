@@ -524,39 +524,73 @@ class _Page4State extends State<Page4> {
                         color: ThemeUtils.textColor(),
                       ),
                     ),
-                    SizedBox(
-                      height: screenSize.size.height / 10 * 0.1,
-                    ),
-                    Text(
-                      "Notifications",
-                      style: TextStyle(
-                          fontFamily: "Asap",
-                          fontSize: screenSize.size.height / 10 * 0.3,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeUtils.textColor()),
-                      textAlign: TextAlign.center,
-                    ),
-                    SwitchListTile(
-                        value: model.settings.user.global.notificationNewGrade,
+                    if (Platform.isAndroid || Platform.isIOS)
+                      SizedBox(
+                        height: screenSize.size.height / 10 * 0.1,
+                      ),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      Text(
+                        "Notifications",
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            fontSize: screenSize.size.height / 10 * 0.3,
+                            fontWeight: FontWeight.w500,
+                            color: ThemeUtils.textColor()),
+                        textAlign: TextAlign.center,
+                      ),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      SwitchListTile(
+                          value: model.settings.user.global.notificationNewGrade,
+                          title: Text(
+                            "Notification de nouvelle note",
+                            style: TextStyle(
+                                fontFamily: "Asap",
+                                color: ThemeUtils.textColor(),
+                                fontSize: screenSize.size.height / 10 * 0.28),
+                          ),
+                          secondary: Transform.rotate(
+                            angle: -25,
+                            child: Icon(
+                              MdiIcons.bellRing,
+                              color: ThemeUtils.textColor(),
+                            ),
+                          ),
+                          onChanged: (value) async {
+                            if (value == false ||
+                                (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                                    (await Permission.ignoreBatteryOptimizations.isGranted))) {
+                              model.settings.user.global.notificationNewGrade = value;
+                            } else {
+                              if (await (CustomDialogs.showAuthorizationsDialog(
+                                      context,
+                                      "la configuration d'optimisation de batterie",
+                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
+                                  false) {
+                                if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                                  model.settings.user.global.notificationNewGrade = value;
+                                }
+                              }
+                            }
+                          }),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      Divider(
+                        color: ThemeUtils.textColor().withOpacity(0.4),
+                      ),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      SwitchListTile(
+                        value: model.settings.user.global.notificationNewMail,
                         title: Text(
-                          "Notification de nouvelle note",
+                          "Notification de nouveau mail",
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
                               fontSize: screenSize.size.height / 10 * 0.28),
                         ),
-                        secondary: Transform.rotate(
-                          angle: -25,
-                          child: Icon(
-                            MdiIcons.bellRing,
-                            color: ThemeUtils.textColor(),
-                          ),
-                        ),
                         onChanged: (value) async {
                           if (value == false ||
                               (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
                                   (await Permission.ignoreBatteryOptimizations.isGranted))) {
-                            model.settings.user.global.notificationNewGrade = value;
+                            model.settings.user.global.notificationNewMail = value;
                           } else {
                             if (await (CustomDialogs.showAuthorizationsDialog(
                                     context,
@@ -564,48 +598,19 @@ class _Page4State extends State<Page4> {
                                     "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                model.settings.user.global.notificationNewGrade = value;
+                                model.settings.user.global.notificationNewMail = value;
                               }
                             }
                           }
-                        }),
-                    Divider(
-                      color: ThemeUtils.textColor().withOpacity(0.4),
-                    ),
-                    SwitchListTile(
-                      value: model.settings.user.global.notificationNewMail,
-                      title: Text(
-                        "Notification de nouveau mail",
-                        style: TextStyle(
-                            fontFamily: "Asap",
+                        },
+                        secondary: Transform.rotate(
+                          angle: -25,
+                          child: Icon(
+                            MdiIcons.bellRing,
                             color: ThemeUtils.textColor(),
-                            fontSize: screenSize.size.height / 10 * 0.28),
-                      ),
-                      onChanged: (value) async {
-                        if (value == false ||
-                            (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
-                                (await Permission.ignoreBatteryOptimizations.isGranted))) {
-                          model.settings.user.global.notificationNewMail = value;
-                        } else {
-                          if (await (CustomDialogs.showAuthorizationsDialog(
-                                  context,
-                                  "la configuration d'optimisation de batterie",
-                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
-                              false) {
-                            if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              model.settings.user.global.notificationNewMail = value;
-                            }
-                          }
-                        }
-                      },
-                      secondary: Transform.rotate(
-                        angle: -25,
-                        child: Icon(
-                          MdiIcons.bellRing,
-                          color: ThemeUtils.textColor(),
+                          ),
                         ),
                       ),
-                    ),
                     SizedBox(
                       height: screenSize.size.height / 10 * 0.1,
                     ),
@@ -645,6 +650,7 @@ class _Page4State extends State<Page4> {
   }
 
   void getAuth() async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
     if ((await BatteryOptimization.isIgnoringBatteryOptimizations()) ?? false) {
       setState(() {
         isIgnoringBatteryOptimization = true;
