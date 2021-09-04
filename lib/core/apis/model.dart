@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -43,7 +42,6 @@ abstract class API {
 
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
-
 
   ///All events
   Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {
