@@ -47,7 +47,8 @@ class _LoginWebViewState extends State<LoginWebView> {
       //We use this window function to get the credentials
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String? loginDataProcessResult = await (_controller!.evaluateJavascript(source: loginDataProcess));
+      String? loginDataProcessResult =
+          await (_controller!.evaluateJavascript(source: loginDataProcess));
       //We are finally parsing the credentials, hurray !
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
@@ -57,9 +58,22 @@ class _LoginWebViewState extends State<LoginWebView> {
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
         //A weird URL
         await _controller!.loadUrl(
-            urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+            urlRequest: URLRequest(
+                url: Uri.parse(widget.url! +
+                    "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
+  }
+
+  Uri address() {
+    CustomLogger.log(
+        "WEBVIEW",
+        getRootAddress(widget.url)[0] +
+            (widget.url![widget.url!.length - 1] == "/" ? "" : "/") +
+            "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4");
+    return Uri.parse(getRootAddress(widget.url)[0] +
+        (widget.url![widget.url!.length - 1] == "/" ? "" : "/") +
+        "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4");
   }
 
   @override
@@ -71,9 +85,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         children: [
           InAppWebView(
             initialUrlRequest: URLRequest(
-                url: Uri.parse(getRootAddress(widget.url)[0] +
-                    (widget.url![widget.url!.length - 1] == "/" ? "" : "/") +
-                    "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4")),
+                url: address()),
 
             ///1) We open a page with the serverUrl + weird string hardcoded
             initialOptions: InAppWebViewGroupOptions(
@@ -97,7 +109,8 @@ class _LoginWebViewState extends State<LoginWebView> {
             onLoadStop: (controller, url) async {
               await stepper();
             },
-            onProgressChanged: (InAppWebViewController controller, int progress) {},
+            onProgressChanged:
+                (InAppWebViewController controller, int progress) {},
           ),
           Align(
             alignment: Alignment.bottomRight,
@@ -184,7 +197,8 @@ class _LoginWebViewState extends State<LoginWebView> {
         '} catch(e){return "ko";}})();';
 
     //We evaluate the cookie function
-    String? cookieFunctionResult = await (_controller?.evaluateJavascript(source: cookieFunction));
+    String? cookieFunctionResult =
+        await (_controller?.evaluateJavascript(source: cookieFunction));
     //If it contains "ok" we are logged in
     if (cookieFunctionResult == "ok") {
       //We use this window function to redirect to the special login page
@@ -235,7 +249,8 @@ class _LoginWebViewState extends State<LoginWebView> {
               size: 40,
             ),
           ),
-          decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+          decoration:
+              BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
         ),
         onPressed: () async {
           Navigator.of(context).pop();

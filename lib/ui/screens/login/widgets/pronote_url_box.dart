@@ -19,22 +19,31 @@ class PronoteUrlBox extends StatefulWidget {
   final VoidCallback callback;
   final VoidCallback longPressCallBack;
 
-  const PronoteUrlBox({Key? key, required this.urlCon, required this.callback, required this.longPressCallBack})
+  const PronoteUrlBox(
+      {Key? key,
+      required this.urlCon,
+      required this.callback,
+      required this.longPressCallBack})
       : super(key: key);
 
   @override
   _PronoteUrlBoxState createState() => _PronoteUrlBoxState();
 }
 
-class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMixin {
+class _PronoteUrlBoxState extends State<PronoteUrlBox>
+    with LayoutMixin, YPageMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(11),
+          color: theme.colors.neutral.shade300),
       child: Column(
         children: [
-          LoginTextField(label: LoginPageTextContent.pronote.url.url, controller: widget.urlCon),
+          LoginTextField(
+              label: LoginPageTextContent.pronote.url.url,
+              controller: widget.urlCon),
           SizedBox(
             height: 5,
           ),
@@ -47,7 +56,9 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
                 child: Text(
                   LoginPageTextContent.pronote.url.forgotUrl,
                   style: TextStyle(
-                      fontFamily: "Asap", color: theme.colors.neutral.shade500, decoration: TextDecoration.underline),
+                      fontFamily: "Asap",
+                      color: theme.colors.neutral.shade500,
+                      decoration: TextDecoration.underline),
                 ),
               ),
               Spacer(),
@@ -78,7 +89,10 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
         multiLine: false,
       );
       //situation where nothing matches (might be pronote/)
-      if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
+      if (suffixMatches
+              .firstMatch(suffix)
+              ?.groups([1, 2]).every((element) => element == null) ??
+          true) {
         CustomLogger.log("LOGIN", "A");
         suffix = "/mobile.eleve.html";
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
@@ -88,12 +102,16 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
           suffixMatches.firstMatch(suffix)?.group(2) != null) {
         CustomLogger.log("LOGIN", "B");
 
-        suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
+        suffix =
+            "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
       }
 
       //situation where everything matches
-      else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
+      else if (suffixMatches
+              .firstMatch(suffix)
+              ?.groups([1, 2]).every((element) => element != null) ??
+          false) {
         CustomLogger.log("LOGIN", "C");
         suffix = "/" +
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
@@ -112,7 +130,8 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
         setState(() {
           widget.urlCon.text = formatURL(widget.urlCon.text)[1];
         });
-        CustomDialogs.showErrorSnackBar(context, LoginPageTextContent.pronote.url.reformatting, null);
+        CustomDialogs.showErrorSnackBar(
+            context, LoginPageTextContent.pronote.url.reformatting, null);
 
         return;
       }
@@ -120,10 +139,12 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
         if (await testIfPronoteCas(widget.urlCon.text)) {
           CustomLogger.log("LOGIN", "Is a pronote cas");
           //openLocalPage(YPageLocal(title: "Connexion à un ENT", child: LoginWebView(url: widget.urlCon.text)));
-          var a = await Navigator.of(context).push(router(LoginWebView(url: widget.urlCon.text)));
+          var a = await Navigator.of(context)
+              .push(router(LoginWebView(url: widget.urlCon.text)));
           if (a != null) {
-            Future<List> connectionData = appSys.api!.login(a["login"], a["mdp"], additionnalSettings: {
-              "url": widget.urlCon.text,
+            Future<List> connectionData =
+                appSys.api!.login(a["login"], a["mdp"], additionnalSettings: {
+              "url": widget.urlCon.text.trim(),
               "mobileCasLogin": true,
             });
             LoginDialog(connectionData).show(context);
@@ -132,12 +153,14 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
           widget.callback();
         }
       } else {
-        CustomDialogs.showErrorSnackBar(context, "Adresse invalide", "(pas de log spécifique)");
+        CustomDialogs.showErrorSnackBar(
+            context, "Adresse invalide", "(pas de log spécifique)");
       }
     } catch (e) {
       CustomLogger.log("LOGIN", "An error occured with the url");
       CustomLogger.error(e);
-      CustomDialogs.showErrorSnackBar(context, LoginPageTextContent.pronote.url.impossibleToConnect, e.toString());
+      CustomDialogs.showErrorSnackBar(context,
+          LoginPageTextContent.pronote.url.impossibleToConnect, e.toString());
     }
   }
 }
