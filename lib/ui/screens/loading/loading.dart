@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes/useful_methods.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/components.dart';
 
 testIfExistingAccount() async {
   var u = await storage.read(key: "username");
@@ -26,13 +29,21 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff252B62),
+      backgroundColor: theme.colors.backgroundColor,
       body: FadeAnimation(
         0.2,
         Center(
-            child: Image(
-          image: AssetImage('assets/images/icons/app/AppIcon.png'),
-          width: 110,
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image(
+              image: AssetImage('assets/images/icons/app/AppIcon.png'),
+              width: 100,
+              color: theme.colors.primary.backgroundColor,
+            ),
+            YVerticalSpacer(50),
+            SizedBox(width: 200, child: YLinearProgressBar())
+          ],
         )),
       ),
     );
@@ -49,12 +60,7 @@ class _LoadingPageState extends State<LoadingPage> {
     String? u = await readStorage("username");
     String? p = await readStorage("password");
     String? z = await readStorage("agreedTermsAndConfiguredApp");
-
     CustomLogger.log("LOADING", "${[u, p, z]}");
-    if (u != null && p != null && z != null) {
-      Navigator.pushReplacementNamed(context, "/summary");
-    } else {
-      Navigator.pushReplacementNamed(context, "/login");
-    }
+    Navigator.pushReplacementNamed(context, u != null && p != null && z != null ? "/summary" : "/login");
   }
 }

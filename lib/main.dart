@@ -26,7 +26,7 @@ import 'package:sizer/sizer.dart';
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
-  theme = YCurrentTheme(currentTheme: 0, themes: themes);
+  theme = YCurrentTheme(currentTheme: 1, themes: themes);
 
   appSys = ApplicationSystem();
   await appSys.initApp();
