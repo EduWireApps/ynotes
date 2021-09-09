@@ -18,7 +18,7 @@ class _SummaryCardState extends State<SummaryCard> {
     return Container(
       padding: EdgeInsets.all(p),
       decoration:
-          BoxDecoration(color: theme.colors.neutral.shade100, borderRadius: BorderRadius.all(Radius.circular(p))),
+          BoxDecoration(color: theme.colors.backgroundColor, borderRadius: BorderRadius.all(Radius.circular(p))),
       child: widget.child,
     );
   }

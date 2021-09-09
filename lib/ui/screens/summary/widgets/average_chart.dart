@@ -34,13 +34,13 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
         drawVerticalLine: true,
         getDrawingHorizontalLine: (value) {
           return FlLine(
-            color: theme.colors.neutral.shade300,
+            color: theme.colors.foregroundLightColor,
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
           return FlLine(
-            color: theme.colors.neutral.shade300,
+            color: theme.colors.foregroundLightColor,
             strokeWidth: 1,
           );
         },
@@ -53,7 +53,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
           showTitles: true,
           reservedSize: 5.w.clamp(0, 90),
           getTextStyles: (value) => TextStyle(
-            color: theme.colors.neutral.shade400,
+            color: theme.colors.foregroundLightColor,
             fontWeight: FontWeight.bold,
             fontSize: 10.sp,
           ),
@@ -70,7 +70,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
           },
         ),
       ),
-      borderData: FlBorderData(show: true, border: Border.all(color: theme.colors.neutral.shade300, width: 1)),
+      borderData: FlBorderData(show: true, border: Border.all(color: theme.colors.foregroundLightColor, width: 1)),
       minX: 0,
       maxX: ((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length).toDouble() - 1,
       minY: (getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin()).round().toDouble(),
@@ -80,7 +80,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
           spots: List.generate(((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length),
               (index) => FlSpot(index.toDouble(), double.parse((_averages ?? [])[index].toStringAsFixed(2)))),
           isCurved: true,
-          colors: [theme.colors.primary.shade300],
+          colors: [theme.colors.primary.backgroundColor],
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(

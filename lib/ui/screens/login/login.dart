@@ -61,7 +61,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
     //build background
     return Scaffold(
       body: Material(
-        color: theme.colors.neutral.shade100,
+        color: theme.colors.backgroundColor,
         child: SafeArea(
           child: Stack(
             children: [
@@ -70,11 +70,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                 children: [
                   Expanded(
                       child: Container(
-                    color: theme.colors.neutral.shade100,
+                    color: theme.colors.backgroundColor,
                   )),
                   Expanded(
                       child: Container(
-                    color: theme.colors.neutral.shade200,
+                    color: theme.colors.backgroundLightColor,
                   ))
                 ],
               ),
@@ -234,10 +234,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
         ),
         Text(name,
             style: TextStyle(
-                fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 40, color: theme.colors.neutral.shade500)),
+                fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 40, color: theme.colors.foregroundColor)),
         Text(label,
             style: TextStyle(
-                fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: 20, color: theme.colors.neutral.shade400)),
+                fontFamily: "Asap",
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: theme.colors.foregroundLightColor)),
         SizedBox(
           height: 20,
         ),
@@ -248,7 +251,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
   _buildMetaPart() {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      decoration: BoxDecoration(color: theme.colors.neutral.shade100),
+      decoration: BoxDecoration(color: theme.colors.backgroundColor),
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0.9.h),
       width: screenSize.size.width,
       child: Row(
@@ -262,7 +265,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                   style: TextStyle(
                       fontFamily: "Asap",
                       fontWeight: FontWeight.normal,
-                      color: theme.colors.neutral.shade400,
+                      color: theme.colors.foregroundLightColor,
                       fontSize: 17),
                 ),
                 onTap: () => launch('https://ynotes.fr/faq')),
@@ -274,7 +277,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                 style: TextStyle(
                     fontFamily: "Asap",
                     fontWeight: FontWeight.normal,
-                    color: theme.colors.neutral.shade400,
+                    color: theme.colors.foregroundLightColor,
                     fontSize: 17)),
             onTap: () => contactBottomSheet(context),
           )),
@@ -286,7 +289,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                   style: TextStyle(
                       fontFamily: "Asap",
                       fontWeight: FontWeight.normal,
-                      color: theme.colors.neutral.shade400,
+                      color: theme.colors.foregroundLightColor,
                       fontSize: 17),
                 ),
                 onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),

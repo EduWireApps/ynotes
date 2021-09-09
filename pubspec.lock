@@ -1369,8 +1369,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: "7a32f0528cc72ea7f947971fecfc0558d94f9c26"
+      ref: rework
+      resolved-ref: "4f71fed756958d9bc203f2bc5a17562603daf185"
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
     version: "0.4.3"

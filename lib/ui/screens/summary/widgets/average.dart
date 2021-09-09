@@ -40,7 +40,7 @@ class SummaryAverageState extends State<SummaryAverage> {
                         Text(
                           (!model.average.isNaN ? model.average.toStringAsFixed(2).replaceAll(".", ",") : "-"),
                           style: TextStyle(
-                              color: theme.colors.neutral.shade500,
+                              color: theme.colors.foregroundColor,
                               fontSize: 28.sp.clamp(0, 45),
                               height: .4,
                               fontWeight: FontWeight.w700),
@@ -48,7 +48,7 @@ class SummaryAverageState extends State<SummaryAverage> {
                         YHorizontalSpacer(.2.h),
                         Expanded(
                           child: Text(SummaryTexts.average,
-                              style: TextStyle(color: theme.colors.neutral.shade400, fontSize: 13.sp.clamp(0, 25))),
+                              style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 13.sp.clamp(0, 25))),
                         )
                       ],
                     ),

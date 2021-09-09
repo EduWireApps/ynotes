@@ -31,7 +31,7 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.foregroundLightColor),
       child: Column(
         children: [
           LoginTextField(label: LoginPageTextContent.pronote.url.url, controller: widget.urlCon),
@@ -47,13 +47,13 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
                 child: Text(
                   LoginPageTextContent.pronote.url.forgotUrl,
                   style: TextStyle(
-                      fontFamily: "Asap", color: theme.colors.neutral.shade500, decoration: TextDecoration.underline),
+                      fontFamily: "Asap", color: theme.colors.foregroundColor, decoration: TextDecoration.underline),
                 ),
               ),
               Spacer(),
               YButton(
                   onPressed: () => processUrl(),
-                  onLongPressed: widget.longPressCallBack,
+                  onLongPress: widget.longPressCallBack,
                   text: LoginPageTextContent.pronote.url.buttonLabel)
             ],
           )

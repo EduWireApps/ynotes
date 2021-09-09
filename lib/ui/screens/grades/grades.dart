@@ -17,7 +17,7 @@ import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'widgets/grades_group.dart';
 import 'widgets/simulator_modal_bottom_sheet.dart';
-import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/components.dart' hide YPage;
 
 bool firstStart = true;
 

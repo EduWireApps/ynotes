@@ -9,7 +9,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/screens/summary/widgets/administrative_data.dart';
-import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/components.dart' hide YPage;
 import 'widgets/average.dart';
 import 'data/constants.dart';
 import 'widgets/last_grades.dart';
@@ -25,12 +25,7 @@ class SummaryPage extends StatefulWidget {
 
 class SummaryPageState extends State<SummaryPage> with YPageMixin {
   bool firstStart = true;
-  List<Widget> pages = [
-    SummaryAverage(),
-    SummaryLastGrades(),
-    YVerticalSpacer(1.2.h),
-    SummaryAdministrativeData()
-  ];
+  List<Widget> pages = [SummaryAverage(), SummaryLastGrades(), YVerticalSpacer(1.2.h), SummaryAdministrativeData()];
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +40,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
                 child: ReorderableList(
                   itemCount: pages.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                        key: Key(index.toString()), leading: Text("test"));
+                    return ListTile(key: Key(index.toString()), leading: Text("test"));
                   },
                   onReorder: (startindex, newindex) {},
                 ),

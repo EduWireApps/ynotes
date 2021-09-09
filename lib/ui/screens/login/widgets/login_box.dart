@@ -28,7 +28,7 @@ class _LoginBoxState extends State<LoginBox> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.foregroundLightColor),
       child: Column(
         children: [
           LoginTextField(label: LoginPageTextContent.login.login, controller: widget.loginCon),
@@ -50,13 +50,13 @@ class _LoginBoxState extends State<LoginBox> {
                 child: Text(
                   LoginPageTextContent.login.forgotPassword,
                   style: TextStyle(
-                      fontFamily: "Asap", color: theme.colors.neutral.shade500, decoration: TextDecoration.underline),
+                      fontFamily: "Asap", color: theme.colors.foregroundColor, decoration: TextDecoration.underline),
                 ),
               ),
               Spacer(),
               YButton(
                   onPressed: () => widget.callback(),
-                  onLongPressed: () => widget.longPressCallback(),
+                  onLongPress: () => widget.longPressCallback(),
                   text: "Se connecter")
             ],
           )

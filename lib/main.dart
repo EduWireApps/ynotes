@@ -26,7 +26,7 @@ import 'package:sizer/sizer.dart';
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
-  theme = YCurrentTheme(currentTheme: 1, themes: themes, fontFamily: "Asap");
+  theme = YCurrentTheme(currentTheme: 0, themes: themes);
 
   appSys = ApplicationSystem();
   await appSys.initApp();
@@ -69,22 +69,22 @@ class _AppState extends State<App> {
             navigatorKey: _navigatorKey,
             theme: WiredashThemeData(
                 brightness: Brightness.dark,
-                primaryColor: theme.colors.primary.shade300,
-                secondaryColor: theme.colors.primary.shade300,
-                primaryTextColor: theme.colors.neutral.shade500,
-                secondaryTextColor: theme.colors.neutral.shade400,
-                tertiaryTextColor: theme.colors.neutral.shade400,
-                primaryBackgroundColor: theme.colors.neutral.shade200,
-                secondaryBackgroundColor: theme.colors.neutral.shade100,
-                backgroundColor: theme.colors.neutral.shade200,
-                dividerColor: theme.variableStyles.primary.plain.text,
-                errorColor: theme.colors.danger.shade300,
-                firstPenColor: theme.colors.danger.shade300,
-                secondPenColor: theme.colors.success.shade300,
-                thirdPenColor: theme.colors.warning.shade300,
-                fourthPenColor: theme.colors.primary.shade300,
+                primaryColor: theme.colors.primary.backgroundColor,
+                secondaryColor: theme.colors.primary.backgroundColor,
+                primaryTextColor: theme.colors.foregroundColor,
+                secondaryTextColor: theme.colors.foregroundLightColor,
+                tertiaryTextColor: theme.colors.foregroundLightColor,
+                primaryBackgroundColor: theme.colors.backgroundLightColor,
+                secondaryBackgroundColor: theme.colors.backgroundColor,
+                backgroundColor: theme.colors.backgroundColor,
+                dividerColor: theme.colors.backgroundLightColor,
+                errorColor: theme.colors.danger.backgroundColor,
+                firstPenColor: theme.colors.danger.backgroundColor,
+                secondPenColor: theme.colors.success.backgroundColor,
+                thirdPenColor: theme.colors.warning.backgroundColor,
+                fourthPenColor: theme.colors.primary.backgroundColor,
                 sheetBorderRadius: BorderRadius.vertical(top: Radius.circular(YScale.s6)),
-                fontFamily: theme.fontFamily),
+                fontFamily: theme.fonts.primary),
             options: WiredashOptionsData(
               /// You can set your own locale to override device default (`window.locale` by default)
               locale: const Locale.fromSubtags(languageCode: 'fr'),

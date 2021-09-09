@@ -41,7 +41,7 @@ class _PronoteQrCodeBoxState extends State<PronoteQrCodeBox> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.foregroundLightColor),
       child: Column(
         children: [
           Container(
@@ -76,8 +76,8 @@ class _PronoteQrCodeBoxState extends State<PronoteQrCodeBox> {
                                   return Container(
                                     decoration: BoxDecoration(
                                         color: (flashFuture.data ?? false)
-                                            ? theme.colors.primary.shade300
-                                            : theme.colors.neutral.shade200,
+                                            ? theme.colors.primary.backgroundColor
+                                            : theme.colors.backgroundLightColor,
                                         shape: BoxShape.circle),
                                     child: IconButton(
                                       onPressed: () {
@@ -87,7 +87,7 @@ class _PronoteQrCodeBoxState extends State<PronoteQrCodeBox> {
                                       icon: Icon(MdiIcons.flashlight,
                                           color: (flashFuture.data ?? false)
                                               ? Colors.white
-                                              : theme.colors.neutral.shade500),
+                                              : theme.colors.foregroundColor),
                                     ),
                                   );
                                 }),
@@ -95,14 +95,15 @@ class _PronoteQrCodeBoxState extends State<PronoteQrCodeBox> {
                               width: 8,
                             ),
                             Container(
-                              decoration: BoxDecoration(color: theme.colors.neutral.shade200, shape: BoxShape.circle),
+                              decoration:
+                                  BoxDecoration(color: theme.colors.backgroundLightColor, shape: BoxShape.circle),
                               child: IconButton(
                                 onPressed: () {
                                   controller?.flipCamera();
                                 },
                                 icon: Icon(
                                   MdiIcons.cameraFlip,
-                                  color: theme.colors.neutral.shade500,
+                                  color: theme.colors.foregroundColor,
                                 ),
                               ),
                             ),

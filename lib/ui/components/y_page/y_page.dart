@@ -35,10 +35,10 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
           ),
         Expanded(
           child: Scaffold(
-            backgroundColor: theme.colors.neutral.shade200,
+            backgroundColor: theme.colors.backgroundLightColor,
             drawer: (screenSize.size.width < 800) ? YDrawer() : null,
             appBar: AppBar(
-                backgroundColor: theme.colors.neutral.shade100,
+                backgroundColor: theme.colors.backgroundColor,
                 centerTitle: false,
                 title: Text(widget.title, textAlign: TextAlign.start),
                 systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,

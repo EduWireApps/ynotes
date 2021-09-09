@@ -24,7 +24,7 @@ class SummaryAdministrativeData extends StatefulWidget {
 
 class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
   final TextStyle lightTextStyle =
-      TextStyle(color: theme.colors.neutral.shade400, fontSize: 11.sp.clamp(0, 18), fontWeight: FontWeight.w400);
+      TextStyle(color: theme.colors.foregroundLightColor, fontSize: 11.sp.clamp(0, 18), fontWeight: FontWeight.w400);
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +99,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
       required String text2,
       required String routePath}) {
     final TextStyle gradeStyle =
-        TextStyle(fontSize: 35.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: theme.colors.neutral.shade500);
+        TextStyle(fontSize: 35.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: theme.colors.foregroundColor);
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 120),
@@ -121,13 +121,13 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
                       if (subData != null)
                         Text('/' + subData,
                             style: TextStyle(
-                                color: theme.colors.neutral.shade400,
+                                color: theme.colors.foregroundLightColor,
                                 fontSize: 15.sp.clamp(0, 18),
                                 fontWeight: FontWeight.w400)),
                     ],
                   ),
                   Expanded(child: Container()),
-                  Icon(Icons.arrow_forward_outlined, color: theme.colors.neutral.shade400)
+                  Icon(Icons.arrow_forward_outlined, color: theme.colors.foregroundLightColor)
                 ]),
             YVerticalSpacer(5),
             RichText(
@@ -136,7 +136,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
                   TextSpan(
                       text: text1,
                       style: TextStyle(
-                          color: theme.colors.neutral.shade500,
+                          color: theme.colors.foregroundColor,
                           fontSize: 15.sp.clamp(0, 18),
                           fontWeight: FontWeight.w600)),
                   TextSpan(

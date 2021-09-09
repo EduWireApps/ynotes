@@ -37,12 +37,11 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                   children: [
                     Text(SummaryTexts.lastGrades,
                         style: TextStyle(
-                            color: theme.colors.neutral.shade500, fontSize: 15.sp, fontWeight: FontWeight.w500)),
+                            color: theme.colors.foregroundColor, fontSize: 15.sp, fontWeight: FontWeight.w500)),
                     YButton(
                       onPressed: () => Navigator.pushNamed(context, "/grades"),
                       text: SummaryTexts.seeAll,
-                      type: YColor.neutral,
-                      variant: YVariant.reverse,
+                      color: YColor.secondary,
                       icon: Icons.arrow_forward_rounded,
                       isIconReversed: true,
                     )
@@ -64,7 +63,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
 
   Widget gradeCard(BuildContext context, Grade grade) {
     final TextStyle gradeStyle =
-        TextStyle(fontSize: 25.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: theme.colors.neutral.shade500);
+        TextStyle(fontSize: 25.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: theme.colors.foregroundColor);
 
     return Padding(
         padding: EdgeInsets.only(left: sidePadding),
@@ -86,31 +85,33 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                           Text((grade.notSignificant! ? "(" + grade.value! : grade.value) ?? "", style: gradeStyle),
                           Text('/' + grade.scale!,
                               style: TextStyle(
-                                  color: theme.colors.neutral.shade400,
+                                  color: theme.colors.foregroundLightColor,
                                   fontSize: 25.sp.clamp(0, 25),
                                   fontWeight: FontWeight.w400)),
                           if (grade.notSignificant!) Text(")", style: gradeStyle)
                         ],
                       ),
                       Expanded(child: Container()),
-                      Icon(Icons.arrow_forward_outlined, color: theme.colors.neutral.shade400)
+                      Icon(Icons.arrow_forward_outlined, color: theme.colors.foregroundLightColor)
                     ]),
                 Spacer(),
                 Text(
                   grade.disciplineName ?? "",
                   style: TextStyle(
-                      color: theme.colors.neutral.shade400, fontSize: 9.sp.clamp(0, 15), fontWeight: FontWeight.w600),
+                      color: theme.colors.foregroundLightColor,
+                      fontSize: 9.sp.clamp(0, 15),
+                      fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 ),
-                if( (grade.testName ??"") != "")
-                Text(
-                  grade.testName ?? "",
-                  style: TextStyle(
-                      color: theme.colors.neutral.shade500, fontSize: 13.sp.clamp(0, 25), fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                )
+                if ((grade.testName ?? "") != "")
+                  Text(
+                    grade.testName ?? "",
+                    style: TextStyle(
+                        color: theme.colors.foregroundColor, fontSize: 13.sp.clamp(0, 25), fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.left,
+                  )
               ],
             )),
           ),

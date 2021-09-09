@@ -39,7 +39,7 @@ class _ApiChoiceBoxState extends State<ApiChoiceBox> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11, vertical: 1.1.h),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: theme.colors.neutral.shade300),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: theme.colors.foregroundLightColor),
       child: Column(
         children: [
           ColumnBuilder(
@@ -97,7 +97,7 @@ class _ApiChoiceBoxState extends State<ApiChoiceBox> with TickerProviderStateMix
               Text(
                 LoginPageTextContent.login.unavailableService,
                 style: TextStyle(
-                    fontFamily: "Asap", color: theme.colors.neutral.shade400, decoration: TextDecoration.underline),
+                    fontFamily: "Asap", color: theme.colors.foregroundLightColor, decoration: TextDecoration.underline),
               )
             ],
           )
