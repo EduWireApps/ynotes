@@ -5,54 +5,53 @@ import 'package:ynotes_packages/utilities.dart';
 
 class LoginPageStructure extends StatelessWidget {
   final String? backRouteName;
+  final Widget body;
 
-  const LoginPageStructure({Key? key, this.backRouteName}) : super(key: key);
-
-  BoxConstraints _heightBoxConstraints(BuildContext context) =>
-      BoxConstraints(minHeight: MediaQuery.of(context).size.height, maxHeight: MediaQuery.of(context).size.height);
+  const LoginPageStructure({Key? key, this.backRouteName, required this.body}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: theme.colors.backgroundColor,
         body: SafeArea(
+            child: SingleChildScrollView(
+          child: Center(
             child: ConstrainedBox(
-          constraints: _heightBoxConstraints(context),
-          child: SingleChildScrollView(
-            child: Center(
+              constraints: BoxConstraints(maxWidth: 600),
               child: ConstrainedBox(
-                constraints: _heightBoxConstraints(context).copyWith(maxWidth: 600),
-                child: Padding(
-                  padding: YPadding.px(YScale.s2),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: YPadding.py(YScale.s2),
-                        child: Row(
-                          mainAxisAlignment:
-                              backRouteName != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
-                          children: [
-                            if (backRouteName != null)
-                              YButton(
-                                  text: "Retour",
-                                  onPressed: () {},
-                                  color: YColor.secondary,
-                                  icon: Icons.arrow_back_ios_new_rounded),
+                constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: YPadding.p(YScale.s2),
+                      child: Row(
+                        mainAxisAlignment:
+                            backRouteName != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+                        children: [
+                          if (backRouteName != null)
                             YButton(
-                              text: "Logs",
-                              onPressed: () {},
-                              color: YColor.secondary,
-                            ),
-                          ],
-                        ),
+                                text: "Retour",
+                                onPressed: () {},
+                                color: YColor.secondaryDark,
+                                icon: Icons.arrow_back_ios_new_rounded),
+                          YButton(
+                            text: "Logs",
+                            onPressed: () {},
+                            color: YColor.secondaryDark,
+                          ),
+                        ],
                       ),
-                      Container(
-                        width: double.infinity,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Column(
+                    ),
+                    YVerticalSpacer(YScale.s16),
+                    Container(
+                      width: double.infinity,
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Padding(
+                          padding: YPadding.px(YScale.s2),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Connexion",
@@ -67,21 +66,22 @@ class LoginPageStructure extends StatelessWidget {
                                       color: theme.colors.foregroundLightColor))
                             ],
                           ),
-                          YVerticalSpacer(YScale.s12),
-                          Column(
-                            children: [Text("boxes")],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [Text("help + legal")],
-                          ),
-                        ]),
-                      ),
-                      Row(
-                        children: [Text("Contact")],
-                      )
-                    ],
-                  ),
+                        ),
+                        YVerticalSpacer(YScale.s10),
+                        body,
+                        YVerticalSpacer(YScale.s6),
+                        YButton(
+                            text: "Mentions légales",
+                            onPressed: () {},
+                            variant: YButtonVariant.text,
+                            color: YColor.secondaryLight),
+                      ]),
+                    ),
+                    YVerticalSpacer(YScale.s16),
+                    Row(
+                      children: [Text("Contact", style: theme.texts.body1)],
+                    )
+                  ],
                 ),
               ),
             ),

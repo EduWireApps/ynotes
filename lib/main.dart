@@ -18,6 +18,7 @@ import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
 import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/themes/themes.dart';
+import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
@@ -90,25 +91,34 @@ class _AppState extends State<App> {
               locale: const Locale.fromSubtags(languageCode: 'fr'),
             ),
             child: HiveLifecycleManager(
-              child: Responsive(
-                builder: (context) => Sizer(
-                  builder: (context, orientation, deviceType) => MaterialApp(
-                    localizationsDelegates: [
-                      // ... app-specific localization delegate[s] here
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    supportedLocales: [
-                      const Locale('fr'), //French
-                    ],
-                    debugShowCheckedModeBanner: false,
-                    theme: model.themeData,
-                    title: kDebugMode ? "yNotes DEV" : "yNotes",
-                    navigatorKey: _navigatorKey,
-                    home: LoadingPage(),
-                    themeMode: ThemeMode.light,
-                    onGenerateRoute: onGenerateRoute,
+              child: YApp(
+                initialTheme: 1,
+                themes: themes,
+                builder: (context) => Responsive(
+                  builder: (context) => Sizer(
+                    builder: (context, orientation, deviceType) => MaterialApp(
+                      localizationsDelegates: [
+                        // ... app-specific localization delegate[s] here
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                      ],
+                      supportedLocales: [
+                        const Locale('fr'), //French
+                      ],
+                      debugShowCheckedModeBanner: false,
+                      theme: model.themeData?.copyWith(
+                        accentColor: theme.themeData.accentColor,
+                        splashColor: theme.themeData.splashColor,
+                        highlightColor: theme.themeData.highlightColor,
+                        splashFactory: theme.themeData.splashFactory,
+                      ),
+                      title: kDebugMode ? "yNotes DEV" : "yNotes",
+                      navigatorKey: _navigatorKey,
+                      home: LoadingPage(),
+                      themeMode: ThemeMode.light,
+                      onGenerateRoute: onGenerateRoute,
+                    ),
                   ),
                 ),
               ),
