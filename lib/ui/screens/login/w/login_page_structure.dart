@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/ui/screens/login/w/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class LoginPageStructure extends StatelessWidget {
-  final String? backRouteName;
+  final bool backButton;
   final Widget body;
+  final String subtitle;
 
-  const LoginPageStructure({Key? key, this.backRouteName, required this.body}) : super(key: key);
+  const LoginPageStructure({Key? key, this.backButton = true, required this.body, required this.subtitle})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +32,12 @@ class LoginPageStructure extends StatelessWidget {
                     Padding(
                       padding: YPadding.p(YScale.s2),
                       child: Row(
-                        mainAxisAlignment:
-                            backRouteName != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+                        mainAxisAlignment: backButton ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
                         children: [
-                          if (backRouteName != null)
+                          if (backButton)
                             YButton(
                                 text: "Retour",
-                                onPressed: () {},
+                                onPressed: () => Navigator.pop(context),
                                 color: YColor.secondaryDark,
                                 icon: Icons.arrow_back_ios_new_rounded),
                           YButton(
@@ -63,7 +63,7 @@ class LoginPageStructure extends StatelessWidget {
                                       fontSize: YFontSize.xl6,
                                       fontWeight: YFontWeight.bold,
                                       color: theme.colors.foregroundColor)),
-                              Text("Choisis ton service scolaire",
+                              Text(subtitle,
                                   style: TextStyle(
                                       fontSize: YFontSize.xl,
                                       fontWeight: YFontWeight.semibold,
@@ -79,7 +79,7 @@ class LoginPageStructure extends StatelessWidget {
                           child: YButton(
                               text: "Mentions légales",
                               onPressed: () async {
-                                await showDialog(context: context, builder: (_) => LoginLegalLinksDialog());
+                                await showDialog(context: context, builder: (_) => _LoginLegalLinksDialog());
                               },
                               variant: YButtonVariant.text,
                               color: YColor.secondaryLight),
@@ -95,6 +95,42 @@ class LoginPageStructure extends StatelessWidget {
           ),
         )));
   }
+}
+
+class _LoginLegalLinksDialog extends StatelessWidget {
+  const _LoginLegalLinksDialog({Key? key}) : super(key: key);
+
+  static const List<_LegalLink> _legalLinks = [
+    _LegalLink(
+      text: "Politique de confidentialité",
+      url: "https://ynotes.fr/legal/CGUYNotes.pdf",
+    ),
+    _LegalLink(text: "Conditions d'utilisation", url: "https://ynotes.fr/legal/CGUYNotes.pdf")
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return YDialogBase(
+      title: 'Mentions légales',
+      body: Column(children: [
+        for (final link in _legalLinks)
+          YButton(
+              text: link.text,
+              onPressed: () => launch(link.url),
+              block: true,
+              color: YColor.secondaryLight,
+              variant: YButtonVariant.text),
+      ]),
+      actions: [YButton(text: "FERMER", onPressed: () => Navigator.pop(context))],
+    );
+  }
+}
+
+class _LegalLink {
+  final String text;
+  final String url;
+
+  const _LegalLink({required this.text, required this.url});
 }
 
 class _Contact extends StatelessWidget {

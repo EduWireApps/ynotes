@@ -4,15 +4,10 @@ import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final List<_SchoolServiceBox> _services = [
+  static final List<_SchoolServiceBox> _services = [
     _SchoolServiceBox(
         image: AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
         imageColor: theme.colors.foregroundColor,
@@ -40,30 +35,32 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return LoginPageStructure(
+        backButton: false,
+        subtitle: "Choisis ton service scolaire",
         body: Padding(
-      padding: YPadding.px(YScale.s2),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ..._children,
-        Padding(
-          padding: YPadding.pt(YScale.s2),
-          child: YButton(
-            text: "Je ne vois pas mon service",
-            variant: YButtonVariant.text,
-            onPressed: () async {
-              await YDialogs.showInfo(
-                  context,
-                  YInfoDialog(
-                    title: "Je ne vois pas mon service",
-                    body: Text(
-                        "Si tu ne vois pas ton service scolaire dans la liste, c'est que yNotes ne le prend pas en charge. Mais si tu sais coder et que tu as envie de l'ajouter, nous t'invitons à prendre contact avec nous sur Github ou Discord.",
-                        style: theme.texts.body1),
-                    confirmLabel: "OK",
-                  ));
-            },
-          ),
-        )
-      ]),
-    ));
+          padding: YPadding.px(YScale.s2),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            ..._children,
+            Padding(
+              padding: YPadding.pt(YScale.s2),
+              child: YButton(
+                text: "Je ne vois pas mon service",
+                variant: YButtonVariant.text,
+                onPressed: () async {
+                  await YDialogs.showInfo(
+                      context,
+                      YInfoDialog(
+                        title: "Je ne vois pas mon service",
+                        body: Text(
+                            "Si tu ne vois pas ton service scolaire dans la liste, c'est que yNotes ne le prend pas en charge. Mais si tu sais coder et que tu as envie de l'ajouter, nous t'invitons à prendre contact avec nous sur Github ou Discord.",
+                            style: theme.texts.body1),
+                        confirmLabel: "OK",
+                      ));
+                },
+              ),
+            )
+          ]),
+        ));
   }
 }
 
