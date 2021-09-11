@@ -19,37 +19,51 @@ class _LoginPageState extends State<LoginPage> {
         name: 'Ecole Directe',
         route: '/login/ecoledirecte'),
     _SchoolServiceBox(
-        image: AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
-        name: 'Pronote',
-        route: '/login/pronote',
-        beta: true),
+      image: AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
+      name: 'Pronote',
+      route: '/login/pronote',
+    ),
+    // LA VIE SCOLAIRE, beta = true
   ];
+
+  List<Widget> get _children {
+    List<Widget> _els = [];
+    final int _length = _services.length;
+
+    for (int i = 0; i < _length + _length - 1; i++) {
+      _els.add(i % 2 == 0 ? _services[i ~/ 2] : YVerticalSpacer(YScale.s2));
+    }
+
+    return _els;
+  }
 
   @override
   Widget build(BuildContext context) {
     return LoginPageStructure(
-        backRouteName: "/",
-        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ..._services,
-          Padding(
-            padding: YPadding.p(YScale.s2),
-            child: YButton(
-              text: "Je ne vois pas mon service",
-              variant: YButtonVariant.text,
-              onPressed: () async {
-                await YDialogs.showInfo(
-                    context,
-                    YInfoDialog(
-                      title: "Je ne vois pas mon service",
-                      body: Text(
-                          "Si tu ne vois pas ton service scolaire dans la liste, c'est que yNotes ne le prend pas en charge. Mais si tu sais coder et que tu as envie de l'ajouter, nous t'invitons à prendre contact avec nous sur Github ou Discord.",
-                          style: theme.texts.body1),
-                      confirmLabel: "OK",
-                    ));
-              },
-            ),
-          )
-        ]));
+        body: Padding(
+      padding: YPadding.px(YScale.s2),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ..._children,
+        Padding(
+          padding: YPadding.pt(YScale.s2),
+          child: YButton(
+            text: "Je ne vois pas mon service",
+            variant: YButtonVariant.text,
+            onPressed: () async {
+              await YDialogs.showInfo(
+                  context,
+                  YInfoDialog(
+                    title: "Je ne vois pas mon service",
+                    body: Text(
+                        "Si tu ne vois pas ton service scolaire dans la liste, c'est que yNotes ne le prend pas en charge. Mais si tu sais coder et que tu as envie de l'ajouter, nous t'invitons à prendre contact avec nous sur Github ou Discord.",
+                        style: theme.texts.body1),
+                    confirmLabel: "OK",
+                  ));
+            },
+          ),
+        )
+      ]),
+    ));
   }
 }
 
@@ -67,8 +81,13 @@ class _SchoolServiceBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: YBorderRadius.xl,
       onTap: () => Navigator.pushNamed(context, route),
       child: Ink(
+        decoration: BoxDecoration(
+          color: theme.colors.backgroundLightColor,
+          borderRadius: YBorderRadius.xl,
+        ),
         padding: EdgeInsets.symmetric(vertical: YScale.s2, horizontal: YScale.s4),
         child: Row(
           children: [
@@ -93,15 +112,7 @@ class _SchoolServiceBox extends StatelessWidget {
             if (beta)
               Padding(
                 padding: YPadding.pl(YScale.s4),
-                child: Container(
-                    padding: EdgeInsets.symmetric(vertical: YScale.s1, horizontal: YScale.s2),
-                    decoration:
-                        BoxDecoration(color: theme.colors.primary.backgroundColor, borderRadius: YBorderRadius.full),
-                    child: Text("En bêta",
-                        style: TextStyle(
-                            color: theme.colors.primary.foregroundColor,
-                            fontWeight: YFontWeight.semibold,
-                            fontSize: YFontSize.sm))),
+                child: YBadge(text: "En bêta"),
               )
           ],
         ),
