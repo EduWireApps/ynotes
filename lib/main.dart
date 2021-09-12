@@ -112,6 +112,7 @@ class _AppState extends State<App> {
                         splashColor: theme.themeData.splashColor,
                         highlightColor: theme.themeData.highlightColor,
                         splashFactory: theme.themeData.splashFactory,
+                        textSelectionTheme: theme.themeData.textSelectionTheme,
                       ),
                       title: kDebugMode ? "yNotes DEV" : "yNotes",
                       navigatorKey: _navigatorKey,

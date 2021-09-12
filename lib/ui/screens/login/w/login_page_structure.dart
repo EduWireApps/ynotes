@@ -15,85 +15,92 @@ class LoginPageStructure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: theme.colors.backgroundColor,
-        body: SafeArea(
-            child: SingleChildScrollView(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 500),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+          backgroundColor: theme.colors.backgroundColor,
+          body: SafeArea(
+              child: SingleChildScrollView(
+            child: Center(
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: YPadding.p(YScale.s2),
-                      child: Row(
-                        mainAxisAlignment: backButton ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
-                        children: [
-                          if (backButton)
+                constraints: BoxConstraints(maxWidth: 500),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height -
+                          MediaQuery.of(context).padding.top -
+                          MediaQuery.of(context).padding.bottom),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: YPadding.p(YScale.s2),
+                        child: Row(
+                          mainAxisAlignment: backButton ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+                          children: [
+                            if (backButton)
+                              YButton(
+                                  text: "Retour",
+                                  onPressed: () => Navigator.pop(context),
+                                  color: YColor.secondaryLight,
+                                  icon: Icons.arrow_back_ios_new_rounded),
                             YButton(
-                                text: "Retour",
-                                onPressed: () => Navigator.pop(context),
-                                color: YColor.secondaryDark,
-                                icon: Icons.arrow_back_ios_new_rounded),
-                          YButton(
-                            text: "Logs",
-                            onPressed: () {},
-                            variant: YButtonVariant.text,
-                            color: YColor.secondaryLight,
-                          ),
-                        ],
-                      ),
-                    ),
-                    YVerticalSpacer(YScale.s16),
-                    Container(
-                      width: double.infinity,
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Padding(
-                          padding: YPadding.px(YScale.s2),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Connexion",
-                                  style: TextStyle(
-                                      fontSize: YFontSize.xl6,
-                                      fontWeight: YFontWeight.bold,
-                                      color: theme.colors.foregroundColor)),
-                              Text(subtitle,
-                                  style: TextStyle(
-                                      fontSize: YFontSize.xl,
-                                      fontWeight: YFontWeight.semibold,
-                                      color: theme.colors.foregroundLightColor))
-                            ],
-                          ),
-                        ),
-                        YVerticalSpacer(YScale.s10),
-                        body,
-                        YVerticalSpacer(YScale.s6),
-                        Padding(
-                          padding: YPadding.px(YScale.s2),
-                          child: YButton(
-                              text: "Mentions légales",
-                              onPressed: () async {
-                                await showDialog(context: context, builder: (_) => _LoginLegalLinksDialog());
-                              },
+                              text: "Logs",
+                              onPressed: () {},
                               variant: YButtonVariant.text,
-                              color: YColor.secondaryLight),
+                              color: YColor.secondaryDark,
+                            ),
+                          ],
                         ),
-                      ]),
-                    ),
-                    YVerticalSpacer(YScale.s16),
-                    _Contact()
-                  ],
+                      ),
+                      YVerticalSpacer(YScale.s8),
+                      Container(
+                        width: double.infinity,
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Padding(
+                            padding: YPadding.px(YScale.s2),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Connexion",
+                                    style: TextStyle(
+                                        fontSize: YFontSize.xl6,
+                                        fontWeight: YFontWeight.bold,
+                                        color: theme.colors.foregroundColor)),
+                                Text(subtitle,
+                                    style: TextStyle(
+                                        fontSize: YFontSize.xl,
+                                        fontWeight: YFontWeight.semibold,
+                                        color: theme.colors.foregroundLightColor))
+                              ],
+                            ),
+                          ),
+                          YVerticalSpacer(YScale.s5),
+                          body,
+                          YVerticalSpacer(YScale.s3),
+                          Padding(
+                            padding: YPadding.px(YScale.s2),
+                            child: YButton(
+                                text: "Mentions légales",
+                                block: true,
+                                onPressed: () async {
+                                  await showDialog(context: context, builder: (_) => _LoginLegalLinksDialog());
+                                },
+                                variant: YButtonVariant.text,
+                                color: YColor.secondaryDark),
+                          ),
+                        ]),
+                      ),
+                      YVerticalSpacer(YScale.s8),
+                      _Contact()
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        )));
+          ))),
+    );
   }
 }
 
@@ -118,7 +125,7 @@ class _LoginLegalLinksDialog extends StatelessWidget {
               text: link.text,
               onPressed: () => launch(link.url),
               block: true,
-              color: YColor.secondaryLight,
+              color: YColor.secondaryDark,
               variant: YButtonVariant.text),
       ]),
       actions: [YButton(text: "FERMER", onPressed: () => Navigator.pop(context))],

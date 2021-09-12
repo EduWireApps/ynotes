@@ -5,44 +5,44 @@ import 'package:ynotes_packages/theme.dart';
 
 final YTColor _primary = YTColor(
   foregroundColor: Colors.white,
-  lightColor: Colors.indigo[600]!.withOpacity(.2),
+  lightColor: Colors.indigo[300]!.withOpacity(.5),
   backgroundColor: Colors.indigo[600]!,
 );
 
 final YTColor _secondaryDark = YTColor(
+  foregroundColor: Colors.grey[50]!,
+  lightColor: Colors.grey[300]!.withOpacity(.2),
+  backgroundColor: Colors.grey[600]!,
+);
+
+final YTColor _secondaryLight = YTColor(
   foregroundColor: Colors.grey[700]!,
   lightColor: Colors.grey[300]!.withOpacity(.2),
   backgroundColor: Colors.grey[300]!,
 );
 
-final YTColor _secondaryLight = YTColor(
-  foregroundColor: Colors.white,
-  lightColor: Colors.grey[600]!.withOpacity(.2),
-  backgroundColor: Colors.grey[600]!,
-);
-
 final YTColor _success = YTColor(
   foregroundColor: Colors.white,
-  lightColor: Colors.green[500]!.withOpacity(.2),
-  backgroundColor: Colors.green[500]!,
+  lightColor: Colors.green[300]!.withOpacity(.5),
+  backgroundColor: Colors.green[600]!,
 );
 
 final YTColor _warning = YTColor(
   foregroundColor: Colors.white,
-  lightColor: Colors.amber[600]!.withOpacity(.2),
+  lightColor: Colors.amber[300]!.withOpacity(.5),
   backgroundColor: Colors.amber[600]!,
 );
 
 final YTColor _danger = YTColor(
   foregroundColor: Colors.white,
-  lightColor: Colors.red[500]!.withOpacity(.2),
-  backgroundColor: Colors.red[500]!,
+  lightColor: Colors.red[300]!.withOpacity(.5),
+  backgroundColor: Colors.red[600]!,
 );
 
 final YTColors _colors = YTColors(
     backgroundColor: Colors.white,
     backgroundLightColor: Colors.grey[200]!,
-    foregroundColor: Colors.grey[800]!,
+    foregroundColor: Colors.grey[850]!,
     foregroundLightColor: Colors.grey[700]!,
     primary: _primary,
     secondaryDark: _secondaryDark,

@@ -245,7 +245,7 @@ class APIEcoleDirecte extends API {
         if (message != null) {
           message = utf8.decode(message.codeUnits);
         }
-        return [0, "Oups ! Une erreur a eu lieu :\n$message"];
+        return [0, "Oups ! Une erreur a eu lieu : $message"];
       }
     } else {
       return [0, "Erreur"];
