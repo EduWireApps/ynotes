@@ -41,7 +41,7 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
         print(appSys.settings.system.chosenParser);
         print(data.toString());
         CustomDialogs.showAnyDialog(context, data[1]);
-        Navigator.pushNamed(context, "/summary");
+        Navigator.pushReplacementNamed(context, "/summary");
         // success
       } else {
         CustomDialogs.showAnyDialog(context, data![1]);
