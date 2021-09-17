@@ -40,11 +40,12 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
       if (data != null && data[0] == 1) {
         print(appSys.settings.system.chosenParser);
         print(data.toString());
-        CustomDialogs.showAnyDialog(context, data[1]);
+        YSnackbars.success(context, title: "Connecté !", message: data[1]);
         Navigator.pushReplacementNamed(context, "/summary");
         // success
       } else {
-        CustomDialogs.showAnyDialog(context, data![1]);
+        YSnackbars.error(context, title: "Erreur", message: data![1]);
+        // CustomDialogs.showAnyDialog(context, data![1]);
         print("error");
         // error
       }

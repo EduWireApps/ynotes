@@ -41,7 +41,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                     YButton(
                       onPressed: () => Navigator.pushNamed(context, "/grades"),
                       text: SummaryTexts.seeAll,
-                      color: YColor.secondaryLight,
+                      color: YColor.secondary,
                       icon: Icons.arrow_forward_rounded,
                       isIconReversed: true,
                     )

@@ -108,7 +108,7 @@ class _AppState extends State<App> {
                       ],
                       debugShowCheckedModeBanner: false,
                       theme: model.themeData?.copyWith(
-                        accentColor: theme.themeData.accentColor,
+                        colorScheme: theme.themeData.colorScheme,
                         splashColor: theme.themeData.splashColor,
                         highlightColor: theme.themeData.highlightColor,
                         splashFactory: theme.themeData.splashFactory,
