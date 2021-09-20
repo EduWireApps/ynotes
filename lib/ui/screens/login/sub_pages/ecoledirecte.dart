@@ -23,6 +23,7 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _loading = false;
   _Credentials _credentials = _Credentials();
+  bool _canNavigate = true;
 
   Future<void> submit(bool b) async {
     print("valid: $b");
@@ -40,14 +41,16 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
       if (data != null && data[0] == 1) {
         print(appSys.settings.system.chosenParser);
         print(data.toString());
+        setState(() {
+          _canNavigate = false;
+        });
         YSnackbars.success(context, title: "Connecté !", message: data[1]);
+        await Future.delayed(Duration(seconds: 3));
+        // TODO: redirect to intro
         Navigator.pushReplacementNamed(context, "/summary");
         // success
       } else {
         YSnackbars.error(context, title: "Erreur", message: data![1]);
-        // CustomDialogs.showAnyDialog(context, data![1]);
-        print("error");
-        // error
       }
     }
     setState(() {
@@ -58,6 +61,7 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
   @override
   Widget build(BuildContext context) {
     return LoginPageStructure(
+        backButton: _canNavigate,
         subtitle: "EcoleDirecte",
         body: Padding(
           padding: YPadding.px(YScale.s2),
@@ -97,6 +101,7 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
                 },
                 block: true,
                 isLoading: _loading,
+                isDisabled: !_canNavigate,
               )
             ],
           ),
