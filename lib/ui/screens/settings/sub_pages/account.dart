@@ -16,11 +16,15 @@ import 'package:ynotes/ui/components/modal_bottom_sheets/key_values.dart';
 import 'package:ynotes/useful_methods.dart';
 
 class AccountPage extends StatefulWidget {
+  const AccountPage({Key? key}) : super(key: key);
+
   @override
   _AccountPageState createState() => _AccountPageState();
 }
 
 class LoginStatus extends StatefulWidget {
+  const LoginStatus({Key? key}) : super(key: key);
+
   @override
   _LoginStatusState createState() => _LoginStatusState();
 }
@@ -37,9 +41,9 @@ class _AccountPageState extends State<AccountPage> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: LoginStatus()),
+          ConstrainedBox(constraints: const BoxConstraints(maxWidth: 500), child: const LoginStatus()),
           ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 500),
+            constraints: const BoxConstraints(maxWidth: 500),
             child: Card(
               color: Theme.of(context).primaryColorLight,
               child: Container(
@@ -76,7 +80,7 @@ class _AccountPageState extends State<AccountPage> {
                         Phoenix.rebirth(context);
                       }
                     },
-                        padding: EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
                         backgroundColor: Colors.red,
                         icon: MdiIcons.logout,
                         iconColor: Colors.white,
@@ -98,7 +102,7 @@ class _AccountPageState extends State<AccountPage> {
                 style: TextStyle(
                   fontFamily: 'Asap',
                   color: Colors.transparent,
-                  shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
+                  shadows: [Shadow(color: ThemeUtils.textColor(), offset: const Offset(0, -5))],
                   fontSize: 14,
                   decorationColor: ThemeUtils.textColor(),
                   fontWeight: FontWeight.normal,
@@ -122,7 +126,7 @@ class _AccountPageState extends State<AccountPage> {
         canTapOnHeader: true,
         headerBuilder: (context, index) {
           return Center(
-            child: Container(
+            child: SizedBox(
               width: screenSize.size.width,
               child: Wrap(
                 alignment: WrapAlignment.start,
@@ -131,34 +135,33 @@ class _AccountPageState extends State<AccountPage> {
                 spacing: screenSize.size.width / 5 * 0.1,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(left: 15),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    margin: const EdgeInsets.only(left: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                         color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (appSys.currentSchoolAccount == account)
-                          Container(
-                              child: Icon(
+                          Icon(
                             Icons.power,
                             color: ThemeUtils.textColor(),
-                          )),
+                          ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
                           child: Image(
-                            width: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 50),
-                            height: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 20),
-                            image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
+                            width: (appSys.account?.apiType == API_TYPE.ecoleDirecte ? 30 : 50),
+                            height: (appSys.account?.apiType == API_TYPE.ecoleDirecte ? 30 : 20),
+                            image: AssetImage(appSys.account?.apiType == API_TYPE.ecoleDirecte
                                 ? 'assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'
                                 : 'assets/images/icons/pronote/PronoteIcon.png'),
-                            color: appSys.account?.apiType == API_TYPE.EcoleDirecte ? ThemeUtils.textColor() : null,
+                            color: appSys.account?.apiType == API_TYPE.ecoleDirecte ? ThemeUtils.textColor() : null,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 15,
                   ),
                   Text(
@@ -195,7 +198,7 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
-              Container(
+              SizedBox(
                 width: screenSize.size.width,
                 child: buildKeyValuesInfo(context, "Etablissement scolaire", [(account.schoolName ?? "")]),
               ),
@@ -224,15 +227,15 @@ class _AccountPageState extends State<AccountPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Card(
-              color: (snapshot.data?[0] == 0) ? Color(0xffFEF08A) : Color(0xff99F6E4),
+              color: (snapshot.data?[0] == 0) ? const Color(0xffFEF08A) : const Color(0xff99F6E4),
               child: Container(
                 width: screenSize.size.width,
                 padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Etat des serveurs", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap")),
-                    Text(snapshot.data?[1], style: TextStyle(fontFamily: "Asap")),
+                    const Text("Etat des serveurs", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap")),
+                    Text(snapshot.data?[1], style: const TextStyle(fontFamily: "Asap")),
                   ],
                 ),
               ),
@@ -244,7 +247,7 @@ class _AccountPageState extends State<AccountPage> {
                 width: screenSize.size.width,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     Text("Etat des serveurs en cours de chargement...",
                         style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap")),
                   ],
@@ -329,13 +332,13 @@ class _LoginStatusState extends State<LoginStatus> {
       child: (Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             "Que dois-je faire ?",
             textAlign: TextAlign.justify,
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
           Text(errorExplanation, textAlign: TextAlign.justify),
-          Text(
+          const Text(
             "Erreur retournée par l'application :",
             textAlign: TextAlign.justify,
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
@@ -366,29 +369,29 @@ class _LoginStatusState extends State<LoginStatus> {
     return case2(
       _loginController.actualState,
       {
-        loginStatus.loggedOff: SpinKitThreeBounce(
+        loginStatus.loggedOff: const SpinKitThreeBounce(
           size: 50,
           color: Colors.black38,
         ),
-        loginStatus.offline: Icon(
+        loginStatus.offline: const Icon(
           MdiIcons.networkStrengthOff,
           size: 50,
           color: Colors.black38,
         ),
         loginStatus.error: GestureDetector(
-          child: Icon(
+          child: const Icon(
             MdiIcons.exclamation,
             size: 50,
             color: Colors.black38,
           ),
         ),
-        loginStatus.loggedIn: Icon(
+        loginStatus.loggedIn: const Icon(
           MdiIcons.check,
           size: 50,
           color: Colors.black38,
         )
       },
-      SpinKitThreeBounce(
+      const SpinKitThreeBounce(
         size: 40,
         color: Colors.black38,
       ),
@@ -415,10 +418,10 @@ class _LoginStatusState extends State<LoginStatus> {
 
     return Card(
       color: case2(model.actualState, {
-        loginStatus.loggedIn: Color(0xff4ADE80),
-        loginStatus.loggedOff: Color(0xffA8A29E),
-        loginStatus.error: Color(0xffF87171),
-        loginStatus.offline: Color(0xffFCD34D),
+        loginStatus.loggedIn: const Color(0xff4ADE80),
+        loginStatus.loggedOff: const Color(0xffA8A29E),
+        loginStatus.error: const Color(0xffF87171),
+        loginStatus.offline: const Color(0xffFCD34D),
       }),
       child: Column(
         children: [
@@ -435,15 +438,15 @@ class _LoginStatusState extends State<LoginStatus> {
                   child: Container(
                     height: 50,
                     width: 50,
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: ThemeUtils.darken(
                             case2(model.actualState, {
-                              loginStatus.loggedIn: Color(0xff4ADE80),
-                              loginStatus.loggedOff: Color(0xffA8A29E),
-                              loginStatus.error: Color(0xffF87171),
-                              loginStatus.offline: Color(0xffFCD34D),
+                              loginStatus.loggedIn: const Color(0xff4ADE80),
+                              loginStatus.loggedOff: const Color(0xffA8A29E),
+                              loginStatus.error: const Color(0xffF87171),
+                              loginStatus.offline: const Color(0xffFCD34D),
                             }) as Color,
                             forceAmount: 0.15)),
                     child: FittedBox(child: buildIcon(model)),
@@ -461,13 +464,13 @@ class _LoginStatusState extends State<LoginStatus> {
                         choseDetails(model)[0],
                         maxLines: 100,
                         textAlign: TextAlign.start,
-                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
                       ),
                       Text(
                         choseDetails(model)[1],
                         maxLines: 100,
                         textAlign: TextAlign.start,
-                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w200),
+                        style: const TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w200),
                       )
                     ],
                   ),

@@ -23,7 +23,7 @@ import 'package:ynotes/useful_methods.dart';
 import '../ecole_directe.dart';
 
 class EcoleDirecteMethod {
-  Offline _offlineController;
+  final Offline _offlineController;
   late EcoleDirecteEndpoints endpoints;
 
   EcoleDirecteMethod(this._offlineController, {bool demo = false}) {
@@ -108,7 +108,7 @@ class EcoleDirecteMethod {
         onErrorBody: "Lessons request returned an error:",
       );
       int week = await getWeek(dateToUse);
-      
+
       if (lessonsList != null) {
         await LessonsOffline(_offlineController).updateLessons(lessonsList, week);
       }
@@ -218,7 +218,7 @@ class EcoleDirecteMethod {
 
     String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content,
         characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
-    recipientsList.forEach((element) {
+    for (var element in recipientsList) {
       String eOrp = element.isTeacher! ? "P" : "E";
       int? id = int.tryParse(element.id!);
       String? surname = element.surname;
@@ -248,7 +248,7 @@ class EcoleDirecteMethod {
                             "contacts": []
                         }
                     },""";
-    });
+    }
 
     await testToken();
     String? id = appSys.currentSchoolAccount?.studentID ?? "";
@@ -344,7 +344,7 @@ class EcoleDirecteMethod {
       }
     } else {
       //Offline data;
-      var data;
+      dynamic data;
       if (!isOfflineLocked) {
         try {
           data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
@@ -370,7 +370,7 @@ class EcoleDirecteMethod {
   }
 
   static getNextSunday(DateTime date) {
-    return date.subtract(Duration(days: date.weekday - 1)).add(Duration(days: 6));
+    return date.subtract(Duration(days: date.weekday - 1)).add(const Duration(days: 6));
   }
 
   static Future<dynamic> request(
@@ -381,12 +381,9 @@ class EcoleDirecteMethod {
       Map<String, String>? headers,
       bool getRequest = false}) async {
     try {
-
       String finalUrl = url;
-      if (headers == null) {
-        headers = {"Content-type": "text/plain"};
-      }
-      var response;
+      headers ??= {"Content-type": "text/plain"};
+      dynamic response;
       if (getRequest) {
         response = await http.get(Uri.parse(finalUrl), headers: headers);
       } else {
@@ -399,7 +396,7 @@ class EcoleDirecteMethod {
           responseData != null &&
           responseData['code'] != null &&
           responseData['code'] == 200) {
-        var parsedData;
+        dynamic parsedData;
         try {
           parsedData = await converter(responseData);
         } catch (e) {

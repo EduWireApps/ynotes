@@ -38,15 +38,15 @@ class PronoteDisciplineConverter {
     var rawGrades = mapGet(disciplinesData, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
     //get grades
     List<Grade> _grades = grades(client, rawGrades);
-    disciplines.forEach((element) {
+    for (var element in disciplines) {
       (element.gradesList ?? []).addAll(_grades.where((grade) => grade.disciplineName == element.disciplineName));
-    });
+    }
     return disciplines;
   }
 
   static List<Grade> grades(PronoteClient client, List gradesData) {
     List<Grade> grades = [];
-    gradesData.forEach((gradeData) {
+    for (var gradeData in gradesData) {
       String value = client.utils.gradeTranslate(mapGet(gradeData, ["note", "V"]) ?? "");
       String testName = mapGet(gradeData, ["commentaire"]) ?? "";
       String periodCode = mapGet(gradeData, ["periode", "V", "N"]) ?? "";
@@ -90,7 +90,7 @@ class PronoteDisciplineConverter {
           testType: testType,
           entryDate: entryDate,
           countAsZero: countAsZero));
-    });
+    }
     return grades;
   }
 }

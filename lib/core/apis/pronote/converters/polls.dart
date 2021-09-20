@@ -20,7 +20,7 @@ class PronotePollsConverter {
   static List<PollQuestion>? pollQuestions(PronoteClient client, List<Map>? pollsQuestionsData) {
     List<Map>? rawQuestions = pollsQuestionsData;
     List<PollQuestion> pollQuestions = [];
-    (rawQuestions ?? []).forEach((questionData) {
+    for (var questionData in (rawQuestions ?? [])) {
       String? questionName = mapGet(questionData, ["L"]);
       String? question = mapGet(questionData, ["texte", "V"]);
       String? id = mapGet(questionData, ["N"]);
@@ -36,7 +36,7 @@ class PronotePollsConverter {
           choices: choices,
           answers: answer,
           answerID: answerID));
-    });
+    }
     return pollQuestions;
   }
 

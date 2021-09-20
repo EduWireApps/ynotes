@@ -36,10 +36,10 @@ class EcoleDirecteMailConverter {
         rawMailsList.add(e);
       });
     });
-    rawMailsList.forEach((element) {
+    for (var element in rawMailsList) {
       Map<String, dynamic> mailData = element;
       mails.add(EcoleDirecteMailConverter.mail(mailData));
-    });
+    }
     return mails;
   }
 

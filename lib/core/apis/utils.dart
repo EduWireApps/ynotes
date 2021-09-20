@@ -54,9 +54,9 @@ checkPronoteURL(String url) async {
 }
 
 void createStack() {
-  colorList.forEach((color) {
+  for (var color in colorList) {
     colorStack.push(color);
-  });
+  }
 }
 
 Future<int> getColor(String? disciplineCode) async {
@@ -103,7 +103,7 @@ getRootAddress(addr) {
 }
 
 getWeek(DateTime date) async {
-  final storage = new FlutterSecureStorage();
+  const storage = FlutterSecureStorage();
   if (await (storage.read(key: "startday")) != null) {
     return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
         .round();
@@ -113,7 +113,7 @@ getWeek(DateTime date) async {
 }
 
 String linkify(String link) {
-  return link.replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+  return link.replaceAllMapped(RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
     return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
   });
 }

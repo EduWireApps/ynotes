@@ -39,7 +39,7 @@ List<String> colorList = [
   "#8ac6d1"
 ];
 
-final storage = new CustomSecureStorage();
+final storage = CustomSecureStorage();
 
 String? token;
 
@@ -77,7 +77,7 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
 class APIEcoleDirecte extends API {
   late EcoleDirecteMethod methods;
   APIEcoleDirecte(Offline offlineController) : super(offlineController, apiName: "EcoleDirecte") {
-    this.methods = EcoleDirecteMethod(offlineController);
+    methods = EcoleDirecteMethod(offlineController);
   }
 
   @override
@@ -110,6 +110,7 @@ class APIEcoleDirecte extends API {
     }
   }
 
+  @override
   Future<http.Request> downloadRequest(Document document) async {
     String? type = document.type;
     String? id = document.id;
@@ -131,6 +132,7 @@ class APIEcoleDirecte extends API {
         forceFetch: forceReload ?? false);
   }
 
+  @override
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.homeworkFor, HomeworkOffline(offlineController).getHomeworkFor,
         forceFetch: forceReload ?? false, offlineArguments: dateHomework, onlineArguments: dateHomework);
@@ -138,48 +140,47 @@ class APIEcoleDirecte extends API {
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Mail>>? getMails({bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(methods.mails, MailsOffline(this.offlineController).getAllMails,
+    return await EcoleDirecteMethod.fetchAnyData(methods.mails, MailsOffline(offlineController).getAllMails,
         forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
+  @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        methods.nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
+        methods.nextHomework, HomeworkOffline(offlineController).getAllHomework,
         forceFetch: forceReload ?? false);
   }
 
   @override
-  Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
+  Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload = false}) async {
     List<Lesson>? lessons = await EcoleDirecteMethod.fetchAnyData(
         methods.lessons, LessonsOffline(offlineController).get,
-        forceFetch: forceReload ?? false, onlineArguments: dateToUse, offlineArguments: await getWeek(dateToUse));
+        forceFetch: forceReload ?? false, onlineArguments: from, offlineArguments: await getWeek(from));
 
     return (lessons ?? [])
         .where((lesson) =>
             DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(from)))
         .toList();
   }
 
+  @override
   Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.schoolLife, SchoolLifeOffline(offlineController).get,
         forceFetch: forceReload);
   }
 
+  @override
   Future<List> login(username, password, {Map? additionnalSettings}) async {
     methods = EcoleDirecteMethod(offlineController, demo: additionnalSettings?["demo"]);
 
     final prefs = await SharedPreferences.getInstance();
-    if (username == null) {
-      username = "";
-    }
-    if (password == null) {
-      password = "";
-    }
+    username ??= "";
+    password ??= "";
 
     var url = methods.endpoints.login;
-    print(["", ""]);
+    CustomLogger.log("ED LOGIN", ["", ""]);
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
@@ -236,7 +237,7 @@ class APIEcoleDirecte extends API {
           //log in file
           CustomLogger.saveLog(object: "ERROR", text: "Ecole Directe: " + e.toString());
         }
-        this.loggedIn = true;
+        loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
       }
       //Return an error
@@ -312,8 +313,8 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future uploadFile(String contexte, String id, String filepath) async {
-    switch (contexte) {
+  Future uploadFile(String context, String id, String filepath) async {
+    switch (context) {
       case ("CDT"):
         {
           //Ensure that token is refreshed

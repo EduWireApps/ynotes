@@ -20,8 +20,7 @@ AppAccount _$AppAccountFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$AppAccountToJson(AppAccount instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$AppAccountToJson(AppAccount instance) => <String, dynamic>{
       'name': instance.name,
       'surname': instance.surname,
       'id': instance.id,
@@ -57,9 +56,10 @@ K _$enumDecode<K, V>(
   ).key;
 }
 
+// ignore: constant_identifier_names
 const _$API_TYPEEnumMap = {
-  API_TYPE.EcoleDirecte: 'EcoleDirecte',
-  API_TYPE.Pronote: 'Pronote',
+  API_TYPE.ecoleDirecte: 'ecoleDirecte',
+  API_TYPE.pronote: 'pronote',
 };
 
 SchoolAccount _$SchoolAccountFromJson(Map<String, dynamic> json) {
@@ -67,25 +67,21 @@ SchoolAccount _$SchoolAccountFromJson(Map<String, dynamic> json) {
     name: json['name'] as String?,
     studentClass: json['studentClass'] as String?,
     studentID: json['studentID'] as String?,
-    availableTabs: (json['availableTabs'] as List<dynamic>)
-        .map((e) => _$enumDecode(_$appTabsEnumMap, e))
-        .toList(),
+    availableTabs: (json['availableTabs'] as List<dynamic>).map((e) => _$enumDecode(_$appTabsEnumMap, e)).toList(),
     surname: json['surname'] as String?,
     schoolName: json['schoolName'] as String?,
     profilePicture: json['profilePicture'] as String?,
   )..credentials = json['credentials'] as Map<String, dynamic>?;
 }
 
-Map<String, dynamic> _$SchoolAccountToJson(SchoolAccount instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SchoolAccountToJson(SchoolAccount instance) => <String, dynamic>{
       'name': instance.name,
       'surname': instance.surname,
       'schoolName': instance.schoolName,
       'studentClass': instance.studentClass,
       'studentID': instance.studentID,
       'profilePicture': instance.profilePicture,
-      'availableTabs':
-          instance.availableTabs.map((e) => _$appTabsEnumMap[e]).toList(),
+      'availableTabs': instance.availableTabs.map((e) => _$appTabsEnumMap[e]).toList(),
       'credentials': instance.credentials,
     };
 

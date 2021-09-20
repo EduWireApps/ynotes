@@ -8,7 +8,7 @@ class PronoteHomeworkConverter {
   static List<Homework> homework(PronoteClient client, Map homeworkData) {
     List<Homework> hwList = [];
     List data = mapGet(homeworkData, ['donneesSec', 'donnees', 'ListeTravauxAFaire', 'V']) ?? [];
-    data.forEach((singleHomeworkData) {
+    for (var singleHomeworkData in data) {
       String discipline = mapGet(singleHomeworkData, ["Matiere", "V", "L"]);
       String disciplineCode = mapGet(singleHomeworkData, ["Matiere", "V", "L"]).hashCode.toString();
       String id = DateFormat("dd/MM/yyyy").parse(singleHomeworkData["PourLe"]["V"]).toString() +
@@ -45,7 +45,7 @@ class PronoteHomeworkConverter {
       hw.files.addAll(documents);
       hw.sessionFiles.addAll(sessionFiles);
       hwList.add(hw);
-    });
+    }
     return hwList;
   }
 }

@@ -14,9 +14,9 @@ Future<List<CloudItem>?> changeFolder(String path) async {
 
   var concatenate = StringBuffer();
 
-  finalPath.forEach((item) {
+  for (var item in finalPath) {
     concatenate.write(r'\' + item);
-  });
+  }
   var url = 'https://api.ecoledirecte.com/v3/cloud/W/$cloudUsedFolder.awp?verbe=get&idFolder=$concatenate';
   url = Uri.encodeFull(url);
   CustomLogger.log("ED", "Cloud url: $url");
@@ -35,7 +35,7 @@ Future<List<CloudItem>?> changeFolder(String path) async {
     if (req['code'] == 200) {
       List items = req["data"][0]["children"];
 
-      items.forEach((element) {
+      for (var element in items) {
         if (element["taille"] != 0) {
           toReturn.add(CloudItem(
               element["libelle"],
@@ -47,7 +47,7 @@ Future<List<CloudItem>?> changeFolder(String path) async {
               element["date"],
               id: element["id"]));
         }
-      });
+      }
     } else {
       throw "Erreur durant la récupération des  éléments du cloud";
     }

@@ -81,13 +81,13 @@ class PronoteLessonsConverter {
     List<Lesson> lessonsList = [];
     List<Map> lessonsListRaw = (mapGet(lessonsData, ['donneesSec', 'donnees', 'ListeCours']) ?? []).cast<Map>();
 
-    lessonsListRaw.forEach((lesson) {
+    for (var lesson in lessonsListRaw) {
       try {
         lessonsList.add(PronoteLessonsConverter.lesson(client, lesson));
       } catch (e) {
         CustomLogger.error(e);
       }
-    });
+    }
     return lessonsList;
   }
 }
