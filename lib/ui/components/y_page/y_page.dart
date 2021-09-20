@@ -28,15 +28,15 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
     return Row(
       children: [
         if (screenSize.size.width > 800)
-          Container(
+          SizedBox(
             height: screenSize.size.height,
             width: 310,
-            child: YDrawer(),
+            child: const YDrawer(),
           ),
         Expanded(
           child: Scaffold(
             backgroundColor: theme.colors.backgroundLightColor,
-            drawer: (screenSize.size.width < 800) ? YDrawer() : null,
+            drawer: (screenSize.size.width < 800) ? const YDrawer() : null,
             appBar: AppBar(
                 backgroundColor: theme.colors.backgroundColor,
                 centerTitle: false,
@@ -46,7 +46,7 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
                 actions: widget.actions),
             body: widget.isScrollable
                 ? SingleChildScrollView(child: _page(context))
-                : Container(height: screenSize.size.height, child: _page(context)),
+                : SizedBox(height: screenSize.size.height, child: _page(context)),
           ),
         ),
       ],
@@ -57,12 +57,12 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
     late Animation<double> showLoginControllerStatus;
     late AnimationController showLoginControllerStatusController;
 
-    showLoginControllerStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    showLoginControllerStatus = new Tween(
+    showLoginControllerStatusController = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    showLoginControllerStatus = Tween(
       begin: 1.0,
       end: 0.0,
-    ).animate(new CurvedAnimation(
-        parent: showLoginControllerStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
+    ).animate(CurvedAnimation(
+        parent: showLoginControllerStatusController, curve: const Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
     return ChangeNotifierProvider<LoginController>.value(
       value: appSys.loginController,
       child: Consumer<LoginController>(builder: (context, model, child) {

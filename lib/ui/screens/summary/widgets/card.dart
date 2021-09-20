@@ -13,12 +13,12 @@ class SummaryCard extends StatefulWidget {
 class _SummaryCardState extends State<SummaryCard> {
   @override
   Widget build(BuildContext context) {
-    final double p = 16;
+    const double p = 16;
 
     return Container(
-      padding: EdgeInsets.all(p),
+      padding: const EdgeInsets.all(p),
       decoration:
-          BoxDecoration(color: theme.colors.backgroundColor, borderRadius: BorderRadius.all(Radius.circular(p))),
+          BoxDecoration(color: theme.colors.backgroundColor, borderRadius: const BorderRadius.all(Radius.circular(p))),
       child: widget.child,
     );
   }

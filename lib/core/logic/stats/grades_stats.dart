@@ -1,4 +1,5 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class GradesStats {
   final Grade? grade;
@@ -144,7 +145,9 @@ class GradesStats {
               double.parse(_grade.scale!.replaceAll(',', '.')) *
               double.parse(_grade.weight!.replaceAll(',', '.'));
           counter += double.parse(_grade.weight!);
-        } catch (e) {}
+        } catch (e) {
+          CustomLogger.error(e);
+        }
       }
       average = average / counter;
       averages.add(average);

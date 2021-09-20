@@ -6,6 +6,8 @@ import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 
 class UpdateNoteDialog extends StatefulWidget {
+  const UpdateNoteDialog({Key? key}) : super(key: key);
+
   @override
   _UpdateNoteDialogState createState() => _UpdateNoteDialogState();
 }
@@ -20,29 +22,29 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
     var screenSize = MediaQuery.of(context);
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.all(0.0),
+      contentPadding: const EdgeInsets.all(0.0),
       backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
       content: Container(
         width: screenSize.size.width / 5 * 4.7,
         height: screenSize.size.height / 10 * 7,
         padding: EdgeInsets.zero,
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(15.0)),
           child: Column(
             children: [
               Container(
-                decoration: BoxDecoration(color: Colors.black),
+                decoration: const BoxDecoration(color: Colors.black),
                 width: screenSize.size.width / 5 * 4.7,
                 height: MediaQuery.of(context).size.height / 10 * 1.7,
-                child: Image(
+                child: const Image(
                   image: AssetImage(
                     'assets/$thumbnail',
                   ),
                   fit: BoxFit.fitWidth,
                 ),
               ),
-              Container(
+              SizedBox(
                 height: MediaQuery.of(context).size.height / 10 * 5.3,
                 child: Markdown(
                     selectable: true,

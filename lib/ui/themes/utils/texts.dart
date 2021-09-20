@@ -32,8 +32,8 @@ YTTexts texts(YTColors colors, YTFonts fonts) => YTTexts(
               height: 1.2,
               color: colors.foregroundLightColor),
           fonts: fonts),
-      data1: TextStyle(),
-      data2: TextStyle(),
+      data1: const TextStyle(),
+      data2: const TextStyle(),
       button: YTextStyle(
           TextStyle(fontWeight: YFontWeight.medium, fontSize: YFontSize.sm, letterSpacing: YLetterSpacing.wide),
           primaryfontFamily: true,

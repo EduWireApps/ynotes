@@ -1,4 +1,5 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class GradesUtils {
   //Get average
@@ -22,7 +23,9 @@ class GradesUtils {
         if (!_average.isNaN) {
           averages.add(_average);
         }
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
     });
     double sum = 0.0;
     for (var element in averages) {

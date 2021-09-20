@@ -29,10 +29,10 @@ class _AgendaButtonsState extends State<AgendaButtons> {
 
     var screenSize = MediaQuery.of(context);
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 500),
+      constraints: const BoxConstraints(maxWidth: 500),
       child: Container(
         width: screenSize.size.width / 5 * 3.7,
-        padding: EdgeInsets.symmetric(vertical: 2, horizontal: 15),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 15),
         decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(12)),
         child: Column(
           children: [
@@ -40,14 +40,14 @@ class _AgendaButtonsState extends State<AgendaButtons> {
               weekName,
               style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     height: screenSize.size.height / 10 * 0.5,
                     child: Material(
                       color: Theme.of(context).primaryColor,
@@ -56,7 +56,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           setState(() {
-                            agendaDate = CalendarTime(agendaDate).startOfDay.subtract(Duration(hours: 24));
+                            agendaDate = CalendarTime(agendaDate).startOfDay.subtract(const Duration(hours: 24));
                           });
                           await widget.getLessons!(agendaDate);
                         },
@@ -71,8 +71,8 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                 Expanded(
                   child: Container(
                     height: screenSize.size.height / 10 * 0.5,
-                    margin: EdgeInsets.only(left: 10),
-                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    margin: const EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: Material(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(8),
@@ -80,7 +80,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           DateTime? someDate = await showDatePicker(
-                            locale: Locale('fr', 'FR'),
+                            locale: const Locale('fr', 'FR'),
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2018),
@@ -132,7 +132,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                 Expanded(
                   child: Container(
                     height: screenSize.size.height / 10 * 0.5,
-                    margin: EdgeInsets.only(left: 10),
+                    margin: const EdgeInsets.only(left: 10),
                     child: Material(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(8),
@@ -140,7 +140,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           setState(() {
-                            agendaDate = CalendarTime(agendaDate).startOfDay.add(Duration(hours: 25));
+                            agendaDate = CalendarTime(agendaDate).startOfDay.add(const Duration(hours: 25));
                           });
                           await widget.getLessons!(agendaDate);
                         },
@@ -154,7 +154,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             )
           ],
@@ -182,6 +182,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     getWeekName();

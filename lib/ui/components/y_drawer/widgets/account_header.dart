@@ -19,9 +19,9 @@ class _AccountHeaderState extends State<AccountHeader> with YPageMixin {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => openLocalPage(YPageLocal(child: AccountPage(), title: "Compte")),
+      onTap: () => openLocalPage(const YPageLocal(child: AccountPage(), title: "Compte")),
       child: Container(
-          padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
           color: theme.colors.primary.backgroundColor,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

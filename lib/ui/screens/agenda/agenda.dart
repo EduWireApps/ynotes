@@ -10,7 +10,7 @@ import 'widgets/agenda_settings.dart';
 DateTime? agendaDate;
 
 class AgendaPage extends StatefulWidget {
-  AgendaPage({Key? key}) : super(key: key);
+  const AgendaPage({Key? key}) : super(key: key);
 
   @override
   AgendaPageState createState() => AgendaPageState();
@@ -23,9 +23,9 @@ class AgendaPageState extends State<AgendaPage> with LayoutMixin, YPageMixin {
         title: "Agenda",
         actions: [
           IconButton(
-              onPressed: () => openLocalPage(YPageLocal(title: "Options", child: AgendaSettings())),
-              icon: Icon(MdiIcons.wrench))
+              onPressed: () => openLocalPage(const YPageLocal(title: "Options", child: AgendaSettings())),
+              icon: const Icon(MdiIcons.wrench))
         ],
-        body: Agenda());
+        body: const Agenda());
   }
 }

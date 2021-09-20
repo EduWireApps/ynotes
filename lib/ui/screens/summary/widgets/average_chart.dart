@@ -12,7 +12,7 @@ import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_packages/theme.dart';
 
 class SummaryChart extends StatefulWidget {
-  SummaryChart({
+  const SummaryChart({
     Key? key,
   }) : super(key: key);
   @override
@@ -101,8 +101,8 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
           GradesStats stats = GradesStats(
               allGrades: getAllGrades(appSys.gradesController.disciplines(showAll: true),
                   overrideLimit: true, sortByWritingDate: true));
-          this.lastAverages = stats.lastAverages();
-          return (_averages != null && ((_averages ?? []).length != 0))
+          lastAverages = stats.lastAverages();
+          return (_averages != null && ((_averages ?? []).isNotEmpty))
               ? LineChart(
                   avgData(),
                 )
@@ -111,8 +111,8 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
   }
 
   @override
-  void didUpdateWidget(SummaryChart old) {
-    super.didUpdateWidget(old);
+  void didUpdateWidget(SummaryChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
     initGrades();
   }
@@ -122,7 +122,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
     //Reduce values size
     values = values.sublist(0, ((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length));
     values.removeWhere((element) => element == -1000.0);
-    if (values.length > 0) {
+    if (values.isNotEmpty) {
       return (values).reduce(max);
     } else {
       return 20;
@@ -134,7 +134,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
     //Reduce values size
     values = values.sublist(0, ((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length));
     values.removeWhere((element) => element == -1000.0);
-    if (values.length > 0) {
+    if (values.isNotEmpty) {
       return values.reduce(min);
     } else {
       return 0;
@@ -142,10 +142,10 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
   }
 
   initGrades() {
-    if (this.lastAverages != null) {
+    if (lastAverages != null) {
       setState(() {
         (_averages ?? []).clear();
-        (_averages ?? []).addAll(this.lastAverages!);
+        (_averages ?? []).addAll(lastAverages!);
         if ((_averages ?? []).length > maxGradesCount) {
           _averages = (_averages ?? []).sublist((_averages ?? []).length - maxGradesCount, (_averages ?? []).length);
         }
@@ -153,6 +153,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     initGrades();

@@ -7,7 +7,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
     MediaQueryData screenSize = MediaQuery.of(context);
     if (values.length == 1) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,8 +28,9 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
                   Flexible(
                     child: Container(
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                          borderRadius: const BorderRadius.all(Radius.circular(15)),
+                          color: Theme.of(context).primaryColor),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                       child: Text(
                         values[0] ?? "",
                         textAlign: TextAlign.center,
@@ -45,7 +46,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
         ),
       );
     } else {
-      return Container(
+      return SizedBox(
         height: screenSize.size.height / 10 * 0.7,
         width: screenSize.size.width,
         child: FittedBox(
@@ -56,7 +57,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
               SizedBox(
                 height: screenSize.size.height / 10 * 0.05,
               ),
-              Container(
+              SizedBox(
                 height: screenSize.size.height / 10 * 0.4,
                 child: Center(
                   child: ListView.builder(
@@ -67,7 +68,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
                         return Container(
                           margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderRadius: const BorderRadius.all(Radius.circular(15)),
                               color: Theme.of(context).primaryColor),
                           padding: EdgeInsets.symmetric(
                               horizontal: (screenSize.size.width / 5) * 0.2,

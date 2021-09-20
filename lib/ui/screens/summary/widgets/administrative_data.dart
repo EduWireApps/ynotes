@@ -56,7 +56,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
             child: Consumer<SchoolLifeController>(builder: (context, model, child) {
               final List<SchoolLifeTicket> unjustifiedTickets =
                   model.tickets?.where((t) => t.isJustified == false).toList() ?? [];
-              if (unjustifiedTickets.length == 0) return noData(context, SummaryTexts.noTickets);
+              if (unjustifiedTickets.isEmpty) return noData(context, SummaryTexts.noTickets);
               return card(context,
                   data: unjustifiedTickets.length.toString(),
                   text1: unjustifiedTickets.length == 1 ? SummaryTexts.ticket : SummaryTexts.ticketPlural,
@@ -68,7 +68,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
             value: appSys.mailsController,
             child: Consumer<MailsController>(builder: (context, model, child) {
               final List<Mail> unreadMails = model.mails?.where((m) => m.read == false).toList() ?? [];
-              if (unreadMails.length == 0) return noData(context, SummaryTexts.noMails);
+              if (unreadMails.isEmpty) return noData(context, SummaryTexts.noMails);
               return card(context,
                   data: unreadMails.length.toString(),
                   text1: unreadMails.length == 1 ? SummaryTexts.mail : SummaryTexts.mailPlural,
@@ -82,13 +82,13 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
         child: StaggeredGridView.countBuilder(
           primary: false,
           shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           crossAxisSpacing: sidePadding,
           mainAxisSpacing: sidePadding,
           crossAxisCount: 4,
           itemCount: cards.length,
           itemBuilder: (BuildContext context, int i) => cards[i],
-          staggeredTileBuilder: (int i) => StaggeredTile.fit(2),
+          staggeredTileBuilder: (int i) => const StaggeredTile.fit(2),
         ));
   }
 
@@ -129,7 +129,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
                   Expanded(child: Container()),
                   Icon(Icons.arrow_forward_outlined, color: theme.colors.foregroundLightColor)
                 ]),
-            YVerticalSpacer(5),
+            const YVerticalSpacer(5),
             RichText(
               text: TextSpan(
                 children: [

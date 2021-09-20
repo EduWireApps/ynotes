@@ -162,7 +162,9 @@ class HomeworkController extends ChangeNotifier {
         await _api!.getHomeworkFor(hw.date, forceReload: true);
         try {
           unloadedHW.remove(hw);
-        } catch (e) {}
+        } catch (e) {
+          CustomLogger.error(e);
+        }
         await refresh(refreshFromOffline: true);
 
         notifyListeners();
@@ -205,7 +207,9 @@ class HomeworkController extends ChangeNotifier {
         //Add element at the end of the task
         try {
           unloadedHW.add(element);
-        } catch (e) {}
+        } catch (e) {
+          CustomLogger.error(e);
+        }
       }
     });
     CustomLogger.log("HOMEWORK", unloadedHW.toString());
@@ -248,7 +252,9 @@ class HomeworkController extends ChangeNotifier {
         unloadedHW.insert(0, hw);
         notifyListeners();
       }
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e);
+    }
   }
 }
 

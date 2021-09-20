@@ -27,7 +27,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
           final allGrades =
               getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true) ?? [];
           final grades = allGrades.reversed.toList().sublist((allGrades.length - 5).clamp(0, 10000)).reversed;
-          if (grades.length != 0) {
+          if (grades.isNotEmpty) {
             return Column(mainAxisSize: MainAxisSize.min, children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: sidePadding),
@@ -48,7 +48,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                   ],
                 ),
               ),
-              YVerticalSpacer(10),
+              const YVerticalSpacer(10),
               SingleChildScrollView(
                 padding: EdgeInsets.only(right: sidePadding),
                 scrollDirection: Axis.horizontal,
@@ -94,7 +94,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                       Expanded(child: Container()),
                       Icon(Icons.arrow_forward_outlined, color: theme.colors.foregroundLightColor)
                     ]),
-                Spacer(),
+                const Spacer(),
                 Text(
                   grade.disciplineName ?? "",
                   style: TextStyle(

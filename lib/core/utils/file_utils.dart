@@ -105,7 +105,9 @@ class FileAppUtil {
       } else {
         return null;
       }
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e);
+    }
   }
 
   static Future<String> loadAsset(path) async {

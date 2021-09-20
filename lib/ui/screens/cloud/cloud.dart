@@ -30,28 +30,29 @@ sortByGroupMainPage(List<CloudItem> list) {
   List<CloudItem> toReturn = [];
   //Make two groups of member of and not member of
 
-  list.forEach((element) {
+  for (var element in list) {
     if (element.isMemberOf != null && element.isMemberOf!) {
       toReturn.add(element);
     }
-  });
-  list.forEach((element) {
+  }
+  for (var element in list) {
     if (element.isMemberOf == null || !element.isMemberOf!) {
       toReturn.add(element);
     }
-  });
+  }
   return toReturn;
 }
 
 class CloudPage extends StatefulWidget {
   const CloudPage({Key? key}) : super(key: key);
 
+  @override
   State<StatefulWidget> createState() {
     return _CloudPageState();
   }
 }
 
-enum sortValue { date, reversed_date, author }
+enum sortValue { date, reversedDate, author }
 
 //Sort in the main page
 class _CloudPageState extends State<CloudPage> with LayoutMixin {
@@ -63,13 +64,13 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
         title: "Cloud",
         isScrollable: false,
         body: Padding(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               AnimatedContainer(
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                duration: Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 250),
                 height: screenSize.size.height / 10 * 0.5,
                 width: screenSize.size.width,
                 child: Opacity(
@@ -88,9 +89,9 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                   var finalList = splits.sublist(1, splits.length - 2);
                                   var concatenate = StringBuffer();
 
-                                  finalList.forEach((item) {
+                                  for (var item in finalList) {
                                     concatenate.write(r'/' + item);
-                                  });
+                                  }
                                   CustomLogger.log("CLOUD", "Concatenate: $concatenate");
                                   setState(() {
                                     path = concatenate.toString() + '/';
@@ -105,7 +106,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                             },
                       child: Container(
                         height: screenSize.size.height / 10 * 0.5,
-                        padding: EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
                         child: FittedBox(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,7 +130,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Expanded(
@@ -151,7 +152,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                               children: [
                                 ListView.builder(
                                     shrinkWrap: true,
-                                    physics: ClampingScrollPhysics(),
+                                    physics: const ClampingScrollPhysics(),
                                     addRepaintBoundaries: false,
                                     itemCount: localFoldersList!.length,
                                     itemBuilder: (context, index) {
@@ -169,7 +170,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                               !localFoldersList![index].isMemberOf!)
                                             Row(children: <Widget>[
                                               Expanded(
-                                                child: new Container(
+                                                child: Container(
                                                     margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                                                     child: Divider(
                                                       color: ThemeUtils.textColor(),
@@ -181,7 +182,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                                 style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                                               ),
                                               Expanded(
-                                                child: new Container(
+                                                child: Container(
                                                     margin: const EdgeInsets.only(left: 20.0, right: 10.0),
                                                     child: Divider(
                                                       color: ThemeUtils.textColor(),
@@ -222,7 +223,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                                     child: Container(
                                                       padding: EdgeInsets.symmetric(
                                                           vertical: screenSize.size.height / 10 * 0.1),
-                                                      margin: EdgeInsets.all(0),
+                                                      margin: const EdgeInsets.all(0),
                                                       child: Row(
                                                         children: <Widget>[
                                                           FutureBuilder<bool>(
@@ -255,17 +256,15 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: <Widget>[
-                                                                  Container(
-                                                                    child: Text(
-                                                                      localFoldersList![index].title!,
-                                                                      textAlign: TextAlign.start,
-                                                                      style: TextStyle(
-                                                                        fontFamily: "Asap",
-                                                                        fontSize: screenSize.size.height / 10 * 0.25,
-                                                                        color: ThemeUtils.textColor(),
-                                                                      ),
-                                                                      overflow: TextOverflow.ellipsis,
+                                                                  Text(
+                                                                    localFoldersList![index].title!,
+                                                                    textAlign: TextAlign.start,
+                                                                    style: TextStyle(
+                                                                      fontFamily: "Asap",
+                                                                      fontSize: screenSize.size.height / 10 * 0.25,
+                                                                      color: ThemeUtils.textColor(),
                                                                     ),
+                                                                    overflow: TextOverflow.ellipsis,
                                                                   ),
                                                                   if (localFoldersList![index].author != "")
                                                                     Text(
@@ -302,7 +301,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                                                   if (model.isDownloading &&
                                                                       model.downloadProgress != null &&
                                                                       model.downloadProgress < 100)
-                                                                    Container(
+                                                                    SizedBox(
                                                                         width: screenSize.size.width / 5 * 4,
                                                                         child: LinearProgressIndicator(
                                                                           value: model.downloadProgress,
@@ -317,12 +316,10 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                                   ),
                                                 );
                                               }),
-                                          Container(
-                                            child: Divider(
-                                              color: Colors.black45,
-                                              height: screenSize.size.height / 10 * 0.005,
-                                              thickness: screenSize.size.height / 10 * 0.005,
-                                            ),
+                                          Divider(
+                                            color: Colors.black45,
+                                            height: screenSize.size.height / 10 * 0.005,
+                                            thickness: screenSize.size.height / 10 * 0.005,
                                           )
                                         ],
                                       );
@@ -346,7 +343,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                   child: TextButton(
                                     style: TextButton.styleFrom(
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: new BorderRadius.circular(18.0),
+                                          borderRadius: BorderRadius.circular(18.0),
                                           side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                     ),
                                     onPressed: () {
@@ -398,6 +395,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
   }
 
   //Change directory action
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
@@ -412,9 +410,10 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
       isLoading = true;
     });
     await cloudFolderFuture;
-    if (mounted)
+    if (mounted) {
       setState(() {
         isLoading = false;
       });
+    }
   }
 }

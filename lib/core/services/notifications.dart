@@ -182,7 +182,9 @@ class AppNotification {
         AwesomeNotifications().actionStream.listen((receivedNotification) async {
           await getRelatedAction(receivedNotification, context, navigatorCallback);
         });
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
     }
   }
 
@@ -542,7 +544,9 @@ class AppNotification {
         if (lesson!.canceled!) {
           sentence = "Votre cours a été annulé.";
         }
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
       try {
         CustomLogger.log(
             "NOTIFICATIONS", "Ongoing notification text length is ${parse(sentence).documentElement!.text.length}");

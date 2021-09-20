@@ -72,7 +72,6 @@ atriumSud(String username, String? password) async {
 
 idf(String username, String? password, String url) async {
   final client = HttpClient();
-// ignore: close_sinks
   final request = await client.getUrl(Uri.parse(url));
   request.headers.set(HttpHeaders.contentTypeHeader, "plain/text");
   request.followRedirects = false;

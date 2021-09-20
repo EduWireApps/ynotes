@@ -1,5 +1,4 @@
 include: package:flutter_lints/flutter.yaml
 
-linter:
-  rules:
-    empty_catches: false
+# linter:
+  # rules:

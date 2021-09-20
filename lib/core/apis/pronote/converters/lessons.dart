@@ -35,7 +35,9 @@ class PronoteLessonsConverter {
     }
 
     //Sort of null aware
-    catch (e) {}
+    catch (e) {
+      CustomLogger.error(e);
+    }
     List<String?> teachers = [];
     try {
       mapGet(lessonData, ["ListeContenus", "V"]).forEach((element) {
@@ -43,7 +45,9 @@ class PronoteLessonsConverter {
           teachers.add(element["L"]);
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e);
+    }
 
     //Some attributes
     String codeMatiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]).hashCode.toString();

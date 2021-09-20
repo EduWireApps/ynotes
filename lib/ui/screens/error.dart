@@ -18,12 +18,12 @@ class _ErrorPageState extends State<ErrorPage> {
         Center(
             child: Column(
           children: [
-            Icon(
+            const Icon(
               Icons.error,
               color: Colors.white,
             ),
             TextButton(
-              child: Text("Go to safe area", style: TextStyle(color: Colors.white)),
+              child: const Text("Go to safe area", style: TextStyle(color: Colors.white)),
               onPressed: () => Navigator.pushReplacementNamed(context, "/summary"),
             )
           ],

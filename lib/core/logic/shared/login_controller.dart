@@ -119,7 +119,9 @@ class LoginController extends ChangeNotifier {
         _actualState = loginStatus.error;
         notifyListeners();
       }
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e);
+    }
   }
 }
 

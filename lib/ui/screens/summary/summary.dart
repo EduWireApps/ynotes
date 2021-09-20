@@ -18,6 +18,7 @@ class SummaryPage extends StatefulWidget {
   const SummaryPage({
     Key? key,
   }) : super(key: key);
+  @override
   State<StatefulWidget> createState() {
     return SummaryPageState();
   }
@@ -25,7 +26,12 @@ class SummaryPage extends StatefulWidget {
 
 class SummaryPageState extends State<SummaryPage> with YPageMixin {
   bool firstStart = true;
-  List<Widget> pages = [SummaryAverage(), SummaryLastGrades(), YVerticalSpacer(1.2.h), SummaryAdministrativeData()];
+  List<Widget> pages = [
+    const SummaryAverage(),
+    const SummaryLastGrades(),
+    YVerticalSpacer(1.2.h),
+    const SummaryAdministrativeData()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +41,13 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           onRefresh: () async {},
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: sidePadding),
-              child: Container(
+              // TODO: display the content instead of "test"
+              child: SizedBox(
                 height: 100.h,
                 child: ReorderableList(
                   itemCount: pages.length,
                   itemBuilder: (context, index) {
-                    return ListTile(key: Key(index.toString()), leading: Text("test"));
+                    return ListTile(key: Key(index.toString()), leading: const Text("test"));
                   },
                   onReorder: (startindex, newindex) {},
                 ),
@@ -52,6 +59,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
     await appSys.loginController.init();
   }
 
+  @override
   initState() {
     super.initState();
 
@@ -60,10 +68,10 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
         ? null
         : (_) {
             refreshControllers(force: false);
-            if (this.firstStart) {
+            if (firstStart) {
               initLoginController().then((var f) {
-                if (this.firstStart) {
-                  this.firstStart = false;
+                if (firstStart) {
+                  firstStart = false;
                 }
                 refreshControllers();
               });
@@ -71,7 +79,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           })!);
   }
 
-  Future<void> refreshControllers({force: true}) async {
+  Future<void> refreshControllers({force = true}) async {
     await appSys.gradesController.refresh(force: force);
     await appSys.homeworkController.refresh(force: force);
   }

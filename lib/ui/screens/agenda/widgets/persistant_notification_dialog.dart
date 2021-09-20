@@ -10,6 +10,8 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 
 class PersistantNotificationConfigDialog extends StatefulWidget {
+  const PersistantNotificationConfigDialog({Key? key}) : super(key: key);
+
   @override
   _PersistantNotificationConfigDialogState createState() => _PersistantNotificationConfigDialogState();
 }
@@ -23,16 +25,16 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-      contentPadding: EdgeInsets.only(top: 0.0),
-      content: Container(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+      contentPadding: const EdgeInsets.only(top: 0.0),
+      content: SizedBox(
         height: screenSize.size.height / 10 * 7,
         width: screenSize.size.width / 5 * 4.7,
         child: Column(
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(15.0),
                   topRight: Radius.circular(15.0),
                 ),
@@ -50,10 +52,10 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           fit: BoxFit.scaleDown,
                           image: AssetImage(
                               'assets/images/persistantNotification/persisIllu${appSys.themeName == "sombre" ? "Dark" : "Light"}.png'))),
-                  Container(
+                  SizedBox(
                     width: screenSize.size.width / 5 * 4.4,
                     child: AutoSizeText.rich(
-                      TextSpan(
+                      const TextSpan(
                         text: "Soyez averti des cours en cours grâce à une",
                         children: <TextSpan>[
                           TextSpan(
@@ -108,7 +110,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                 color: ThemeUtils.textColor(),
               ),
             ),
-            Divider(
+            const Divider(
               thickness: 1,
             ),
             SwitchListTile(
@@ -188,6 +190,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
     });
   }
 
+  @override
   void initState() {
     super.initState();
     getAuth();

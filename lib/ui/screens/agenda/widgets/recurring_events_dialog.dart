@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
@@ -9,7 +11,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 // ignore: must_be_immutable
 class RecurringEventsDialog extends StatefulWidget {
   String? scheme;
-  RecurringEventsDialog(this.scheme);
+  RecurringEventsDialog(this.scheme, {Key? key}) : super(key: key);
   @override
   _RecurringEventsDialogState createState() => _RecurringEventsDialogState();
 }
@@ -34,11 +36,11 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
     screenSize = MediaQuery.of(context);
     return AlertDialog(
         backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-        contentPadding: EdgeInsets.only(top: 0.0),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        contentPadding: const EdgeInsets.only(top: 0.0),
         content: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
-          child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: SizedBox(
             width: screenSize.size.width,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -257,7 +259,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   @override
   void initState() {
     super.initState();
-    _scheme = this.widget.scheme;
+    _scheme = widget.scheme;
     getReverseAB();
   }
 }

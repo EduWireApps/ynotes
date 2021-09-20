@@ -24,7 +24,7 @@ class _YPageLocalState extends State<YPageLocal> {
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
             leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: closePage,
             ),
             backgroundColor:

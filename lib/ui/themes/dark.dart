@@ -40,7 +40,7 @@ final YTColor _info = YTColor(
 );
 
 final YTColors _colors = YTColors(
-    backgroundColor: Color(0xff121212),
+    backgroundColor: const Color(0xff121212),
     backgroundLightColor: Colors.grey[850]!,
     foregroundColor: Colors.grey[50]!,
     foregroundLightColor: Colors.grey[500]!,

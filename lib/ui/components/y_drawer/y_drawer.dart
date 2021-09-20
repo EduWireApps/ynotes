@@ -42,7 +42,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
       _SpecialRoute(
           title: "Paramètres",
           icon: Icons.settings,
-          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
+          onTap: () => openLocalPage(const YPageLocal(title: "Paramètres", child: SettingsPage()))),
     ];
 
     final List<_SpecialRoute> specialIcons = [
@@ -67,10 +67,10 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
         color: backgroundColor,
         child: SafeArea(
           child: YShadowScrollContainer(color: backgroundColor, children: [
-            AccountHeader(),
+            const AccountHeader(),
             ListView.builder(
                 shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 itemCount: routes.length,
                 itemBuilder: (context, i) {
                   final route = routes[i];
@@ -101,10 +101,10 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     ),
                   );
                 }),
-            YDivider(),
+            const YDivider(),
             ListView.builder(
                 shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 itemCount: specialRoutes.length,
                 itemBuilder: (context, i) {
                   final _SpecialRoute route = specialRoutes[i];
@@ -118,7 +118,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     onTap: route.onTap,
                   );
                 }),
-            YDivider(),
+            const YDivider(),
             Row(
               children: [
                 for (final e in specialIcons)

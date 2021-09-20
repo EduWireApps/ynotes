@@ -186,7 +186,13 @@ class CustomDialogs {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return FolderChoiceDialog(context, path, files, selectionMode, callback);
+        return FolderChoiceDialog(
+          context,
+          path,
+          selectionMode,
+          callback,
+          files: files,
+        );
       },
     );
   }
@@ -220,7 +226,7 @@ class CustomDialogs {
       barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
-        return PersistantNotificationConfigDialog();
+        return const PersistantNotificationConfigDialog();
       },
     );
   }
@@ -321,7 +327,7 @@ class CustomDialogs {
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(
             scale: a1.value,
-            child: Opacity(opacity: a1.value, child: UpdateNoteDialog()),
+            child: Opacity(opacity: a1.value, child: const UpdateNoteDialog()),
           );
         },
         transitionDuration: const Duration(milliseconds: 200),

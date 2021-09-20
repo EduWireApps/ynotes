@@ -310,7 +310,9 @@ class GradesController extends ChangeNotifier {
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
     }
 
     double sum = 0.0;

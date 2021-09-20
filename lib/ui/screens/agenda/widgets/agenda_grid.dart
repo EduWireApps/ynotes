@@ -20,7 +20,7 @@ class AgendaGrid extends StatefulWidget {
   List<AgendaEvent>? events;
   final bool afterSchool;
   Function setStateCallback;
-  AgendaGrid(this.events, this.setStateCallback, {this.afterSchool = false});
+  AgendaGrid(this.events, this.setStateCallback, {Key? key, this.afterSchool = false}) : super(key: key);
   @override
   _AgendaGridState createState() => _AgendaGridState();
 }
@@ -34,7 +34,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
   double _scaleFactor = 1.1;
   double _baseScaleFactor = 1.1;
   var defaultGridHeight = 1.5;
-  List<AgendaEvent> _events = [];
+  final List<AgendaEvent> _events = [];
   var minSchoolDayLength = [8, 18];
   //The default school day length
   var minAfterSchoolDayLength = [18, 24];
@@ -106,7 +106,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
           lastEventEnding = ev.end;
         }
       }
-      if (columns.length > 0) {
+      if (columns.isNotEmpty) {
         packEvents(columns);
       } else {}
     }
@@ -161,7 +161,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
             ClipRRect(
               borderRadius: BorderRadius.circular(11),
               child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 controller: scontroller,
                 child: Stack(
                   children: [
@@ -180,7 +180,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
                                   slidableController.activeState!.close();
                                 } else {}
                               },
-                              child: Container(
+                              child: SizedBox(
                                 height: screenSize.size.height / 10 * defaultGridHeight * _scaleFactor,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,27 +212,25 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
                     for (AgendaEvent i in _events)
                       if (!i.wholeDay! &&
                           _getPosition(_getStartHour(_events), i) != null &&
-                          (this.widget.afterSchool ? !i.isLesson! : true))
-                        Container(
-                          child: Positioned(
-                            left: screenSize.size.width / 5 * 0.2,
-                            top: _getPosition(_getStartHour(_events), i) +
-                                screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0),
-                            child: Container(
-                              width: (isVeryLargeScreen ? (screenSize.size.width) - 390 : (screenSize.size.width)),
-                              child: AgendaElement(
-                                i,
-                                defaultGridHeight * _scaleFactor * i.end!.difference(i.start!).inMinutes / 60,
-                                widget.setStateCallback,
-                                width: i.width,
-                                position: i.left,
-                              ),
+                          (widget.afterSchool ? !i.isLesson! : true))
+                        Positioned(
+                          left: screenSize.size.width / 5 * 0.2,
+                          top: _getPosition(_getStartHour(_events), i) +
+                              screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0),
+                          child: SizedBox(
+                            width: (isVeryLargeScreen ? (screenSize.size.width) - 390 : (screenSize.size.width)),
+                            child: AgendaElement(
+                              i,
+                              defaultGridHeight * _scaleFactor * i.end!.difference(i.start!).inMinutes / 60,
+                              widget.setStateCallback,
+                              width: i.width,
+                              position: i.left,
                             ),
                           ),
                         ),
                     if (CalendarTime(agendaDate).isToday)
                       AnimatedPositioned(
-                        duration: Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 500),
                         top: _getBarPosition(_getStartHour(_events)) +
                             screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0),
                         child: Row(
@@ -242,7 +240,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
                               height: screenSize.size.width / 5 * 0.2,
                               decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(1000)),
                             ),
-                            Container(
+                            SizedBox(
                                 width: (screenSize.size.width / 5 * 4.8),
                                 child: Divider(
                                   color: Colors.blue,
@@ -270,18 +268,18 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
     var screenSize = MediaQuery.of(context);
 
     return AnimatedContainer(
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
       decoration: BoxDecoration(
           color: widget.afterSchool
               ? ThemeUtils.darken(ThemeUtils.spaceColor(), forceAmount: 0.01).withOpacity(0.9)
               : Theme.of(context).primaryColorDark.withOpacity(0.9),
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(5),
             bottomRight: Radius.circular(5),
           )),
       width: screenSize.size.width / 5 * 4.9,
       height: _events.any((element) => element.wholeDay!) ? screenSize.size.height / 10 * 0.7 : 0,
-      child: Container(
+      child: SizedBox(
         width: screenSize.size.width / 5 * 4.5,
         child: ListView.builder(
             padding: EdgeInsets.symmetric(
@@ -387,14 +385,14 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
   }
 
   TimeOfDay _getEndHour(List events) {
-    if (events.length != 0) {
+    if (events.isNotEmpty) {
       List lessonsIList = [];
       lessonsIList.addAll(events);
       lessonsIList.removeWhere((element) => element.wholeDay);
-      if (!this.widget.afterSchool) {
+      if (!widget.afterSchool) {
         lessonsIList.removeWhere((element) => element.lesson == null);
       }
-      if (lessonsIList.length == 0) {
+      if (lessonsIList.isEmpty) {
         if (widget.afterSchool) {
           return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
         } else {
@@ -419,7 +417,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
   }
 
   TimeOfDay _getStartHour(List<AgendaEvent> events) {
-    if (events.length != 0) {
+    if (events.isNotEmpty) {
       List<AgendaEvent> lessonsIList = [];
       lessonsIList.addAll(events);
 
@@ -427,7 +425,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
       if (widget.afterSchool) {
         lessonsIList.removeWhere((element) => !element.isLesson!);
       }
-      if (lessonsIList.length == 0) {
+      if (lessonsIList.isEmpty) {
         if (widget.afterSchool) {
           return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
         } else {

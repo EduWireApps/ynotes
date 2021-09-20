@@ -27,7 +27,7 @@ class SummaryAverageState extends State<SummaryAverage> {
           value: appSys.gradesController,
           child: Consumer<GradesController>(builder: (context, model, child) {
             return SummaryCard(
-                child: Container(
+                child: SizedBox(
               height: 12.h,
               child: Column(
                 children: [
@@ -54,7 +54,7 @@ class SummaryAverageState extends State<SummaryAverage> {
                     ),
                   ),
                   YVerticalSpacer(0.3.h),
-                  Container(height: 8.h, child: SummaryChart())
+                  SizedBox(height: 8.h, child: const SummaryChart())
                 ],
               ),
             ));

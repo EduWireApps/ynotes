@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 
-final Color darkBlue = Color.fromARGB(255, 18, 32, 47);
+const Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
 //Lowest, avg, highest, personal
 List val = [8, 12, 13.8, 18];
@@ -50,17 +50,17 @@ class GradesChart extends StatelessWidget {
                     if (val[0] != val[3])
                       Container(
                           margin: EdgeInsets.only(left: getMargin(val[0], barLength)),
-                          child: Point(Colors.red, Icons.arrow_downward, 0, true)),
+                          child: const Point(Colors.red, Icons.arrow_downward, 0, true)),
                     Container(
                         margin: EdgeInsets.only(left: getMargin(val[1], barLength)),
-                        child: Point(Colors.grey, null, 1, true)),
+                        child: const Point(Colors.grey, null, 1, true)),
                     if (val[2] != val[3])
                       Container(
                           margin: EdgeInsets.only(left: getMargin(val[2], barLength)),
-                          child: Point(Colors.green, MdiIcons.arrowUpThick, 2, true)),
+                          child: const Point(Colors.green, MdiIcons.arrowUpThick, 2, true)),
                     Container(
                         margin: EdgeInsets.only(left: getMargin(val[3], barLength)),
-                        child: Point(Colors.blue, Icons.person, 3, false)),
+                        child: const Point(Colors.blue, Icons.person, 3, false)),
                   ],
                 ),
               ),
@@ -116,11 +116,12 @@ class Point extends StatefulWidget {
   final int index;
   final bool isGradeBelow;
 
+  @override
   State<StatefulWidget> createState() {
     return _PointState();
   }
 
-  Point(this.color, this.icon, this.index, this.isGradeBelow);
+  const Point(this.color, this.icon, this.index, this.isGradeBelow, {Key? key}) : super(key: key);
 }
 
 class _PointState extends State<Point> {
@@ -128,29 +129,28 @@ class _PointState extends State<Point> {
     var screenSize = MediaQuery.of(context);
     return Column(
       children: [
-        if (this.widget.isGradeBelow)
+        if (widget.isGradeBelow)
           Container(
-              color: this.widget.color,
+              color: widget.color,
               height: getHeight(
-                  val, this.widget.index, screenSize, screenSize.size.width * 0.25, screenSize.size.width / 5 * 0.8),
+                  val, widget.index, screenSize, screenSize.size.width * 0.25, screenSize.size.width / 5 * 0.8),
               width: screenSize.size.width / 5 * 0.01),
         Container(
-            child: Center(child: FittedBox(child: Text(val[this.widget.index].toString()))),
+            child: Center(child: FittedBox(child: Text(val[widget.index].toString()))),
             width: screenSize.size.width / 5 * 0.8,
             height: screenSize.size.height / 10 * 0.4,
             decoration: BoxDecoration(
-                border: Border.all(width: 2, color: this.widget.color),
-                color: this.widget.color,
+                border: Border.all(width: 2, color: widget.color),
+                color: widget.color,
                 borderRadius: BorderRadius.circular(15))),
-        if (!this.widget.isGradeBelow)
+        if (!widget.isGradeBelow)
           Container(
-              color: this.widget.color,
-              height: screenSize.size.height / 10 * 0.4,
-              width: screenSize.size.width / 5 * 0.01),
+              color: widget.color, height: screenSize.size.height / 10 * 0.4, width: screenSize.size.width / 5 * 0.01),
       ],
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     getBorderColor(int index) {
       if (index == 3) {
@@ -160,10 +160,10 @@ class _PointState extends State<Point> {
         if (val[2] == val[3]) {
           return Colors.green;
         } else {
-          return this.widget.color;
+          return widget.color;
         }
       } else {
-        return this.widget.color;
+        return widget.color;
       }
     }
 
@@ -171,29 +171,26 @@ class _PointState extends State<Point> {
     return Transform.translate(
       offset: Offset(
           0,
-          (this.widget.isGradeBelow
-              ? (getHeight(val, this.widget.index, screenSize, screenSize.size.width * 0.25,
+          (widget.isGradeBelow
+              ? (getHeight(val, widget.index, screenSize, screenSize.size.width * 0.25,
                           screenSize.size.width / 5 * 0.3) -
                       screenSize.size.height / 10 * 0.5) *
                   0.5
               : -(screenSize.size.height / 10 * 0.85))),
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!this.widget.isGradeBelow) buildBubble(),
-            Container(
-                width: screenSize.size.width / 5 * 0.35,
-                height: screenSize.size.width / 5 * 0.35,
-                decoration:
-                    BoxDecoration(color: getBorderColor(this.widget.index), borderRadius: BorderRadius.circular(50)),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[Center(child: FittedBox(child: Icon(this.widget.icon)))])),
-            if (this.widget.isGradeBelow) buildBubble(),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (!widget.isGradeBelow) buildBubble(),
+          Container(
+              width: screenSize.size.width / 5 * 0.35,
+              height: screenSize.size.width / 5 * 0.35,
+              decoration: BoxDecoration(color: getBorderColor(widget.index), borderRadius: BorderRadius.circular(50)),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[Center(child: FittedBox(child: Icon(widget.icon)))])),
+          if (widget.isGradeBelow) buildBubble(),
+        ],
       ),
     );
   }
