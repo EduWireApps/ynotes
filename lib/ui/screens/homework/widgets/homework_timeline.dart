@@ -79,113 +79,109 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
               builder: (buildContext, child) {
                 return Transform.translate(
                   offset: Offset(offsetAnimation.value, 0),
-                  child: Container(
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      color: widget.homework[widget.index].editable
-                          ? Theme.of(context).primaryColor
-                          : Color(snapshot.data ?? 0),
-                      margin: EdgeInsets.zero,
-                      child: InkWell(
+                  child: Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    color: widget.homework[widget.index].editable
+                        ? Theme.of(context).primaryColor
+                        : Color(snapshot.data ?? 0),
+                    margin: EdgeInsets.zero,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(5),
+                      onTap: () async {
+                        if (!(widget.homework[widget.index].loaded ?? true)) {
+                          appSys.homeworkController.ugradePriority(widget.homework[widget.index]);
+                          controller.forward();
+                        } else {
+                          await Navigator.of(context).push(router(HomeworkDayViewPage(
+                            widget.homework,
+                            defaultPage: widget.index,
+                          )));
+                        }
+                        appSys.homeworkController.refresh();
+                      },
+                      onLongPress: () async {
+                        await CustomDialogs.showHomeworkDetailsDialog(context, widget.homework[widget.index]);
+                      },
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
-                        onTap: () async {
-                          if (!(widget.homework[widget.index].loaded ?? true)) {
-                            appSys.homeworkController.ugradePriority(widget.homework[widget.index]);
-                            controller.forward();
-                          } else {
-                            await Navigator.of(context).push(router(HomeworkDayViewPage(
-                              widget.homework,
-                              defaultPage: widget.index,
-                            )));
-                          }
-                          appSys.homeworkController.refresh();
-                        },
-                        onLongPress: () async {
-                          await CustomDialogs.showHomeworkDetailsDialog(context, widget.homework[widget.index]);
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Container(
-                            width: screenSize.size.width / 5 * 4.1,
-                            height: screenSize.size.height / 10 * 0.6,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                            width: screenSize.size.width / 5 * 0.4,
-                                            height: screenSize.size.width / 5 * 0.4,
-                                            child: Checkbox(
-                                              side: BorderSide(width: 1, color: Colors.white),
-                                              fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
-                                              shape: const CircleBorder(),
-                                              activeColor: Colors.blue,
-                                              value: widget.homework[widget.index].done ?? false,
-                                              materialTapTargetSize: MaterialTapTargetSize.padded,
-                                              onChanged: (bool? x) async {
-                                                widget.homework[widget.index].done = x;
-                                                setState(() {});
-                                                await HomeworkOffline(appSys.offline)
-                                                    .updateSingleHW(widget.homework[widget.index]);
-                                                widget.con.refresh();
-                                              },
-                                            )),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Flexible(
-                                                flex: 8,
-                                                child: Container(
-                                                  child: AutoSizeText(
-                                                    widget.homework[widget.index].discipline ?? "",
-                                                    textAlign: TextAlign.start,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
+                        child: SizedBox(
+                          width: screenSize.size.width / 5 * 4.1,
+                          height: screenSize.size.height / 10 * 0.6,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                          width: screenSize.size.width / 5 * 0.4,
+                                          height: screenSize.size.width / 5 * 0.4,
+                                          child: Checkbox(
+                                            side: const BorderSide(width: 1, color: Colors.white),
+                                            fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                            shape: const CircleBorder(),
+                                            activeColor: Colors.blue,
+                                            value: widget.homework[widget.index].done ?? false,
+                                            materialTapTargetSize: MaterialTapTargetSize.padded,
+                                            onChanged: (bool? x) async {
+                                              widget.homework[widget.index].done = x;
+                                              setState(() {});
+                                              await HomeworkOffline(appSys.offline)
+                                                  .updateSingleHW(widget.homework[widget.index]);
+                                              widget.con.refresh();
+                                            },
+                                          )),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Flexible(
+                                              flex: 8,
+                                              child: AutoSizeText(
+                                                widget.homework[widget.index].discipline ?? "",
+                                                textAlign: TextAlign.start,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontFamily: "Asap",
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              if (widget.homework[widget.index].teacherName?.trimLeft() != null &&
-                                                  widget.homework[widget.index].teacherName != "")
-                                                Flexible(
-                                                    flex: 7,
-                                                    child: AutoSizeText(
-                                                        widget.homework[widget.index].teacherName?.trimLeft() ?? "",
-                                                        overflow: TextOverflow.ellipsis,
-                                                        textAlign: TextAlign.start,
-                                                        style: TextStyle(fontFamily: "Asap"))),
+                                            ),
+                                            if (widget.homework[widget.index].teacherName?.trimLeft() != null &&
+                                                widget.homework[widget.index].teacherName != "")
                                               Flexible(
                                                   flex: 7,
                                                   child: AutoSizeText(
-                                                      parse(widget.homework[widget.index].rawContent ?? "")
-                                                          .documentElement!
-                                                          .text,
+                                                      widget.homework[widget.index].teacherName?.trimLeft() ?? "",
                                                       overflow: TextOverflow.ellipsis,
                                                       textAlign: TextAlign.start,
-                                                      style: TextStyle(fontFamily: "Asap")))
-                                            ],
-                                          ),
+                                                      style: const TextStyle(fontFamily: "Asap"))),
+                                            Flexible(
+                                                flex: 7,
+                                                child: AutoSizeText(
+                                                    parse(widget.homework[widget.index].rawContent ?? "")
+                                                        .documentElement!
+                                                        .text,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.start,
+                                                    style: const TextStyle(fontFamily: "Asap")))
+                                          ],
                                         ),
-                                        if (widget.homework[widget.index].toReturn ?? false)
-                                          Icon(MdiIcons.uploadOutline),
-                                        if (widget.homework[widget.index].isATest ?? false)
-                                          Icon(MdiIcons.bookEditOutline),
-                                      ],
-                                    ),
+                                      ),
+                                      if (widget.homework[widget.index].toReturn ?? false)
+                                        const Icon(MdiIcons.uploadOutline),
+                                      if (widget.homework[widget.index].isATest ?? false)
+                                        const Icon(MdiIcons.bookEditOutline),
+                                    ],
                                   ),
                                 ),
-                                if (!(widget.homework[widget.index].loaded ?? true)) LinearProgressIndicator()
-                              ],
-                            ),
+                              ),
+                              if (!(widget.homework[widget.index].loaded ?? true)) const LinearProgressIndicator()
+                            ],
                           ),
                         ),
                       ),
@@ -206,6 +202,7 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
 class _HomeworkTimelineState extends State<HomeworkTimeline> {
   bool loading = false;
 
+  @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
 
@@ -218,7 +215,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
             child: Consumer<HomeworkController>(builder: (context, model, child) {
               return RefreshIndicator(
                 onRefresh: refresh,
-                child: Container(
+                child: SizedBox(
                     height: screenSize.size.height,
                     width: screenSize.size.width,
                     child: Column(
@@ -227,10 +224,10 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                         SizedBox(
                           height: screenSize.size.height / 10 * 0.1,
                         ),
-                        groupHomeworkByDate(model.homework() ?? []).length > 0
+                        groupHomeworkByDate(model.homework() ?? []).isNotEmpty
                             ? Expanded(
                                 child: ListView.builder(
-                                    physics: AlwaysScrollableScrollPhysics(),
+                                    physics: const AlwaysScrollableScrollPhysics(),
                                     itemCount: groupHomeworkByDate(
                                       model.homework() ?? [],
                                     ).length,
@@ -298,7 +295,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     String number = date.day.toString();
     String month = DateFormat("MMMM", "fr_FR").format(date);
 
-    return Container(
+    return SizedBox(
       height: screenSize.size.height / 10 * 1,
       width: screenSize.size.width / 5 * 0.8,
       child: Column(
@@ -338,15 +335,15 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
+        SizedBox(
           height: screenSize.size.height / 10 * 7.5,
           width: screenSize.size.width / 5 * 4.7,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
+              SizedBox(
                   height: screenSize.size.height / 10 * 5,
-                  child: Image(
+                  child: const Image(
                       fit: BoxFit.fitWidth, image: AssetImage('assets/images/pageItems/homework/noHomework.png'))),
               Text(
                 "Pas de devoirs à l'horizon... \non se détend ?",
@@ -362,7 +359,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                 child: TextButton(
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(18.0),
+                        borderRadius: BorderRadius.circular(18.0),
                         side: BorderSide(color: Theme.of(context).primaryColorDark)),
                   ),
                   onPressed: () {
@@ -393,20 +390,20 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     List<DateTime> formattedDates = [];
 
     List<List<Homework>> subList = [];
-    homeworkList.forEach((hw) {
+    for (var hw in homeworkList) {
       //add dates once
       if (!dates.contains(hw.date) && hw.date != null) {
         dates.add(hw.date!);
       }
-    });
-    dates.forEach((element) {
+    }
+    for (var element in dates) {
       formattedDates.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(element)));
-    });
+    }
 
     formattedDates = formattedDates.toSet().toList();
-    formattedDates.forEach((date) {
+    for (var date in formattedDates) {
       subList.add(homeworkList.where((element) => CalendarTime(element.date).isSameDayAs(date)).toList());
-    });
+    }
     return subList;
   }
 
@@ -427,7 +424,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
       child: Container(
         width: 120,
         height: 120,
-        child: FittedBox(
+        child: const FittedBox(
           child: Center(
             child: Icon(
               Icons.add,
@@ -435,7 +432,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
             ),
           ),
         ),
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+        decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
         Homework? temp = await showAddHomeworkBottomSheet(context);
@@ -472,7 +469,7 @@ class _StickyHeaderState extends State<StickyHeader> {
           Expanded(
             flex: 8,
             child: Material(
-              color: appSys.homeworkController.currentFilter != homeworkFilter.ALL
+              color: appSys.homeworkController.currentFilter != homeworkFilter.all
                   ? Colors.green
                   : Theme.of(context).primaryColorLight,
               child: InkWell(
@@ -480,19 +477,19 @@ class _StickyHeaderState extends State<StickyHeader> {
                   await showDialog(
                       context: context,
                       builder: (context) {
-                        return HomeworkFilterDialog();
+                        return const HomeworkFilterDialog();
                       });
-                  if (appSys.homeworkController.currentFilter == homeworkFilter.CUSTOM) {
+                  if (appSys.homeworkController.currentFilter == homeworkFilter.custom) {
                     List disciplines =
                         appSys.homeworkController.homework(showAll: true)?.map((e) => e.discipline).toList() ?? [];
                     List<int> indexes = [];
-                    disciplines.forEach((element) {
+                    for (var element in disciplines) {
                       (jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? []).forEach((saved) {
                         if (element == saved) {
                           indexes.add(disciplines.indexOf(saved));
                         }
                       });
-                    });
+                    }
                     List? temp = await CustomDialogs.showMultipleChoicesDialog(context, disciplines, indexes,
                         label: "Choisissez une matière parmi les suivantes :");
                     if (temp != null) {
@@ -507,13 +504,13 @@ class _StickyHeaderState extends State<StickyHeader> {
                           .toList());
                       setState(() {});
                     } else {
-                      appSys.homeworkController.currentFilter = homeworkFilter.ALL;
+                      appSys.homeworkController.currentFilter = homeworkFilter.all;
                     }
                   }
                   appSys.homeworkController.refresh();
                   setState(() {});
                 },
-                child: Container(
+                child: SizedBox(
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -524,11 +521,11 @@ class _StickyHeaderState extends State<StickyHeader> {
                       ),
                       Text(
                           case2(appSys.homeworkController.currentFilter, {
-                            homeworkFilter.ALL: "Filtrer",
-                            homeworkFilter.SPECIALTIES: "Spécialités",
-                            homeworkFilter.CUSTOM: "Personnalisé",
-                            homeworkFilter.SCIENCES: "Sciences",
-                            homeworkFilter.LITERARY: "Littérature",
+                            homeworkFilter.all: "Filtrer",
+                            homeworkFilter.specialties: "Spécialités",
+                            homeworkFilter.custom: "Personnalisé",
+                            homeworkFilter.sciences: "Sciences",
+                            homeworkFilter.literacy: "Littérature",
                           }) as String,
                           style: TextStyle(
                               fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
@@ -546,7 +543,7 @@ class _StickyHeaderState extends State<StickyHeader> {
                 onTap: () async {
                   widget.setLoader();
                   DateTime? someDate = await showDatePicker(
-                    locale: Locale('fr', 'FR'),
+                    locale: const Locale('fr', 'FR'),
                     context: context,
                     initialDate: DateTime.now(),
                     firstDate: DateTime(2018),
@@ -583,7 +580,7 @@ class _StickyHeaderState extends State<StickyHeader> {
                     widget.setLoader();
                   }
                 },
-                child: Container(
+                child: SizedBox(
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -626,7 +623,7 @@ class _StickyHeaderState extends State<StickyHeader> {
           color: Colors.transparent,
           child: Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: SizedBox(),
                 flex: 1,
               ),

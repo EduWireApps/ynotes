@@ -175,7 +175,7 @@ class AppNotification {
             channelName: 'Alarmes',
             importance: NotificationImportance.High,
             channelDescription: "Alarmes et rappels de l'application yNotes",
-            defaultColor: Color(0xFF9D50DD),
+            defaultColor: const Color(0xFF9D50DD),
             ledColor: Colors.white)
       ]);
       try {
@@ -202,21 +202,21 @@ class AppNotification {
       if (event.alarm == AlarmType.none) {
       } else {
         //delay between task start and task end
-        Duration delay = Duration();
+        Duration delay = const Duration();
         if (event.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
         if (event.alarm == AlarmType.fiveMinutes) {
-          delay = Duration(minutes: 5);
+          delay = const Duration(minutes: 5);
         }
         if (event.alarm == AlarmType.fifteenMinutes) {
-          delay = Duration(minutes: 15);
+          delay = const Duration(minutes: 15);
         }
         if (event.alarm == AlarmType.thirtyMinutes) {
-          delay = Duration(minutes: 30);
+          delay = const Duration(minutes: 30);
         }
         if (event.alarm == AlarmType.oneDay) {
-          delay = Duration(days: 1);
+          delay = const Duration(days: 1);
         }
         String time = DateFormat("HH:mm").format(event.start!);
         await AwesomeNotifications().createNotification(
@@ -257,21 +257,21 @@ class AppNotification {
         await cancelNotification(event.id.hashCode);
       } else {
         //delay between task start and task end
-        Duration delay = Duration();
+        Duration delay = const Duration();
         if (rmd.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
         if (rmd.alarm == AlarmType.fiveMinutes) {
-          delay = Duration(minutes: 5);
+          delay = const Duration(minutes: 5);
         }
         if (rmd.alarm == AlarmType.fifteenMinutes) {
-          delay = Duration(minutes: 15);
+          delay = const Duration(minutes: 15);
         }
         if (rmd.alarm == AlarmType.thirtyMinutes) {
-          delay = Duration(minutes: 30);
+          delay = const Duration(minutes: 30);
         }
         if (rmd.alarm == AlarmType.oneDay) {
-          delay = Duration(days: 1);
+          delay = const Duration(days: 1);
         }
         String text = "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
         CustomLogger.log("NOTIFICATIONS", "Event will start in ${event.start!.subtract(delay)}");
@@ -365,9 +365,10 @@ class AppNotification {
           try {
             if (await AndroidAlarmManager.oneShotAt(
                 lesson.start!.subtract(Duration(minutes: minutes ?? 15)), lesson.start.hashCode, callback,
-                allowWhileIdle: true, rescheduleOnReboot: true))
+                allowWhileIdle: true, rescheduleOnReboot: true)) {
               CustomLogger.log(
                   "NOTIFICATIONS", "Scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+            }
           } catch (e) {
             CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling lesson notification");
             CustomLogger.error(e);

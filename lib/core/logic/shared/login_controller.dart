@@ -13,7 +13,7 @@ class LoginController extends ChangeNotifier {
   //Error logs
   String logs = "";
   //getters
-  Connectivity _connectivity = Connectivity();
+  final Connectivity _connectivity = Connectivity();
 
   bool attemptedToRelogin = false;
   LoginController() {
@@ -21,9 +21,9 @@ class LoginController extends ChangeNotifier {
     _connectivity.onConnectivityChanged.listen(connectionChanged);
   }
 
-  get actualState => _actualState;
-  set actualState(loginStatus) {
-    _actualState = loginStatus;
+  loginStatus get actualState => _actualState;
+  set actualState(loginStatus status) {
+    _actualState = status;
     notifyListeners();
   }
 

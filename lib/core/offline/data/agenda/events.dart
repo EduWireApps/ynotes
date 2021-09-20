@@ -11,7 +11,7 @@ class AgendaEventsOffline {
   ///Update existing agenda events with passed data
   addAgendaEvent(AgendaEvent newData, var id) async {
     try {
-      Map<dynamic, dynamic> timeTable = Map();
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("agendaEvents");
       List<AgendaEvent> events = [];
       if (offline != null) {
@@ -50,7 +50,7 @@ class AgendaEventsOffline {
   ///Remove an agenda event with a given `id` and at a given `week`
   removeAgendaEvent(String? id, var fetchID) async {
     try {
-      Map<dynamic, dynamic> timeTable = Map();
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("agendaEvents");
       List<AgendaEvent> events = [];
       if (offline != null) {

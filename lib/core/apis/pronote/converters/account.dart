@@ -64,23 +64,23 @@ class PronoteAccountConverter {
     for (var tabNumber in tabsNumbers) {
       switch (tabNumber) {
         case 16:
-          tabs.add(appTabs.AGENDA);
+          tabs.add(appTabs.agenda);
           break;
         case 8:
-          tabs.add(appTabs.POLLS);
+          tabs.add(appTabs.polls);
           break;
         case 198:
-          tabs.add(appTabs.GRADES);
+          tabs.add(appTabs.grades);
 
           break;
         case 88:
-          tabs.add(appTabs.HOMEWORK);
+          tabs.add(appTabs.homework);
           break;
         default:
       }
     }
-    tabs.add(appTabs.SUMMARY);
-    tabs.add(appTabs.FILES);
+    tabs.add(appTabs.summary);
+    tabs.add(appTabs.files);
     return tabs;
   }
 

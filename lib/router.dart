@@ -31,36 +31,41 @@ class CustomRoute {
 final List<CustomRoute> routes = [
   ...loginRoutes,
   CustomRoute(path: "/intro", icon: Icons.info, page: Carousel(), relatedApi: -1, show: false),
-  CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: SummaryPage(), tab: appTabs.SUMMARY),
-  CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: GradesPage(), tab: appTabs.GRADES),
+  CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: const SummaryPage(), tab: appTabs.summary),
+  CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
-      path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.HOMEWORK),
-  CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: AgendaPage(), tab: appTabs.AGENDA),
+      path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
+  CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: AgendaPage(), tab: appTabs.agenda),
   CustomRoute(
       path: "/mailbox",
       icon: MdiIcons.mail,
       title: "Messagerie",
-      page: MailPage(),
+      page: const MailPage(),
       relatedApi: 0,
-      tab: appTabs.MESSAGING),
+      tab: appTabs.messaging),
   CustomRoute(
       path: "/school_life",
       icon: MdiIcons.stamper,
       title: "Vie scolaire",
-      page: SchoolLifePage(),
+      page: const SchoolLifePage(),
       relatedApi: 0,
-      tab: appTabs.SCHOOL_LIFE),
+      tab: appTabs.schoolLife),
   CustomRoute(
-      path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: CloudPage(), relatedApi: 0, tab: appTabs.CLOUD),
+      path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: const CloudPage(), relatedApi: 0, tab: appTabs.cloud),
   CustomRoute(
       path: "/downloads",
       icon: MdiIcons.file,
       title: "Téléchargements",
-      page: DownloadsExplorer(),
+      page: const DownloadsExplorer(),
       relatedApi: 0,
-      tab: appTabs.FILES),
+      tab: appTabs.files),
   CustomRoute(
-      path: "/polls", icon: MdiIcons.poll, title: "Sondages", page: PollsPage(), relatedApi: 1, tab: appTabs.POLLS),
+      path: "/polls",
+      icon: MdiIcons.poll,
+      title: "Sondages",
+      page: const PollsPage(),
+      relatedApi: 1,
+      tab: appTabs.polls),
 ];
 
 PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {
@@ -79,5 +84,5 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   }
 
   CustomLogger.saveLog(object: "ROUTER", text: 'Route "${settings.name}" not found.');
-  return generateRoute(ErrorPage(), settings);
+  return generateRoute(const ErrorPage(), settings);
 }

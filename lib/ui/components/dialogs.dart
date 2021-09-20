@@ -34,14 +34,14 @@ class CustomDialogs {
       flushbarPosition: FlushbarPosition.BOTTOM,
       backgroundColor: Colors.green.shade200,
       isDismissible: true,
-      duration: Duration(seconds: 2),
-      margin: EdgeInsets.all(8),
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(8),
       messageText: Text(
         text,
-        style: TextStyle(fontFamily: "Asap"),
+        style: const TextStyle(fontFamily: "Asap"),
       ),
       borderRadius: BorderRadius.circular(8),
-    )..show(context);
+    ).show(context);
   }
 
   static Future showAuthorizationsDialog(BuildContext context, String authName, String goal) {
@@ -99,7 +99,7 @@ class CustomDialogs {
         TextButton(
           child: Text(
             alternativeButtonConfirmText.toUpperCase(),
-            style: TextStyle(color: Colors.red),
+            style: const TextStyle(color: Colors.red),
             textScaleFactor: 1.0,
           ),
           onPressed: () {
@@ -127,38 +127,38 @@ class CustomDialogs {
       flushbarPosition: FlushbarPosition.BOTTOM,
       backgroundColor: Colors.red,
       isDismissible: true,
-      duration: Duration(seconds: 5),
-      margin: EdgeInsets.all(8),
+      duration: const Duration(seconds: 5),
+      margin: const EdgeInsets.all(8),
       messageText: Text(
         text,
-        style: TextStyle(fontFamily: "Asap", color: Colors.white),
+        style: const TextStyle(fontFamily: "Asap", color: Colors.white),
       ),
-      icon: Icon(
+      icon: const Icon(
         Icons.error,
         color: Colors.white,
       ),
       borderRadius: BorderRadius.circular(8),
       mainButton: logs != null
-          ? Text(
+          ? const Text(
               "Copier les logs",
               style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
             )
           : null,
-    )..show(context);
+    ).show(context);
   }
 
   static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework? hw) async {
     await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
-        transitionDuration: Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
         pageBuilder: (context, animation1, animation2) {
           return Container();
         },
         transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(hw)));
+          return Transform.scale(scale: a1.value, child: DialogHomework(hw));
         });
   }
 
@@ -229,7 +229,7 @@ class CustomDialogs {
     return await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
-        transitionDuration: Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
         // ignore: unnecessary_cast
@@ -262,7 +262,7 @@ class CustomDialogs {
             child: Opacity(opacity: a1.value, child: ShareBox(grade)),
           );
         },
-        transitionDuration: Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
         pageBuilder: (context, animation1, animation2) {
@@ -274,7 +274,7 @@ class CustomDialogs {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Container(child: DialogSpecialties());
+          return const DialogSpecialties();
         });
   }
 
@@ -294,9 +294,9 @@ class CustomDialogs {
       flushbarPosition: FlushbarPosition.BOTTOM,
       backgroundColor: Colors.orange.shade200,
       isDismissible: true,
-      duration: Duration(seconds: 2),
-      margin: EdgeInsets.all(8),
-      messageText: Text(
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(8),
+      messageText: const Text(
         "Cette fonction n'est pas encore disponible pour le moment.",
         style: TextStyle(fontFamily: "Asap"),
       ),
@@ -305,13 +305,13 @@ class CustomDialogs {
           const url = 'https://view.monday.com/486453658-df7d6a346f0accba2e9d6a3c45b3f7c1';
           launchURL(url);
         },
-        child: Text(
+        child: const Text(
           "En savoir plus",
           style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
         ),
       ),
       borderRadius: BorderRadius.circular(8),
-    )..show(context);
+    ).show(context);
   }
 
   static showUpdateNoteDialog(BuildContext context) {
@@ -324,7 +324,7 @@ class CustomDialogs {
             child: Opacity(opacity: a1.value, child: UpdateNoteDialog()),
           );
         },
-        transitionDuration: Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
         pageBuilder: (context, animation1, animation2) {
@@ -334,10 +334,10 @@ class CustomDialogs {
 
   static Future writeModalBottomSheet(context, {List<Recipient>? defaultListRecipients, defaultSubject}) async {
     var mailData = await showModalBottomSheet(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
         ),
-        backgroundColor: Color(0xffDCDCDC),
+        backgroundColor: const Color(0xffDCDCDC),
         context: context,
         isScrollControlled: true,
         builder: (BuildContext bc) {

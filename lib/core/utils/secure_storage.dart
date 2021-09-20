@@ -4,7 +4,7 @@ class CustomSecureStorage {
   late FlutterSecureStorage secureStorage;
 
   CustomSecureStorage() {
-    secureStorage = FlutterSecureStorage();
+    secureStorage = const FlutterSecureStorage();
   }
 
   Future<String?> read({required key}) async {

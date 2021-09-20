@@ -71,9 +71,6 @@ class Discipline {
       this.subdisciplineNames,
       this.minClassGeneralAverage});
 
-  @override
-  int get hashCode => super.hashCode;
-
   set setcolor(Color newcolor) {
     color = newcolor.value;
   }
@@ -87,6 +84,7 @@ class Discipline {
 
   //overrides == operator to avoid issues in selectors
   @override
+  // ignore: hash_and_equals
   bool operator ==(Object other) =>
       other is Discipline &&
       other.disciplineCode == disciplineCode &&
@@ -99,8 +97,8 @@ class Discipline {
     double average = 0.0;
     double counter = 0;
 
-    gradesList!.forEach((Grade grade) {
-      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.periodName) {
+    for (var grade in gradesList!) {
+      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == periodName) {
         counter += double.parse(grade.weight!);
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
         average += double.parse(gradeStringValue.replaceAll(',', '.')) *
@@ -108,7 +106,7 @@ class Discipline {
             double.parse(grade.scale!.replaceAll(',', '.')) *
             double.parse(grade.weight!.replaceAll(',', '.'));
       }
-    });
+    }
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
@@ -218,10 +216,9 @@ class Grade {
   }
   //overrides == operator to avoid issues in selectors
   //We use the most operator possible to avoid duplicates
-  @override
-  int get hashCode => super.hashCode;
 
   @override
+  // ignore: hash_and_equals
   bool operator ==(Object other) =>
       other is Grade &&
       other.disciplineName == disciplineName &&

@@ -33,8 +33,8 @@ Future main() async {
   await appSys.initApp();
   if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
-  runZoned<Future<Null>>(() async {
-    runApp(Phoenix(child: App()));
+  runZoned<Future<void>>(() async {
+    runApp(Phoenix(child: const App()));
   });
 }
 
@@ -50,6 +50,8 @@ _headlessTask(HeadlessTask? task) async {
 }
 
 class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   _AppState createState() => _AppState();
 }
@@ -97,14 +99,14 @@ class _AppState extends State<App> {
                 builder: (context) => Responsive(
                   builder: (context) => Sizer(
                     builder: (context, orientation, deviceType) => MaterialApp(
-                      localizationsDelegates: [
+                      localizationsDelegates: const [
                         // ... app-specific localization delegate[s] here
                         GlobalMaterialLocalizations.delegate,
                         GlobalWidgetsLocalizations.delegate,
                         GlobalCupertinoLocalizations.delegate,
                       ],
-                      supportedLocales: [
-                        const Locale('fr'), //French
+                      supportedLocales: const [
+                        Locale('fr'), //French
                       ],
                       debugShowCheckedModeBanner: false,
                       theme: model.themeData?.copyWith(
@@ -116,7 +118,7 @@ class _AppState extends State<App> {
                       ),
                       title: kDebugMode ? "yNotes DEV" : "yNotes",
                       navigatorKey: _navigatorKey,
-                      home: LoadingPage(),
+                      home: const LoadingPage(),
                       themeMode: ThemeMode.light,
                       onGenerateRoute: onGenerateRoute,
                     ),
@@ -128,6 +130,7 @@ class _AppState extends State<App> {
     );
   }
 
+  @override
   initState() {
     super.initState();
   }

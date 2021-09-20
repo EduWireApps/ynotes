@@ -111,11 +111,12 @@ class PronoteSchoolsController extends ChangeNotifier {
         var data = json.decode(response.body);
         data["espaces"].forEach((space) {
           CustomLogger.log("PRONOTE", "(Schools) Space name: ${space["nom"].toUpperCase()}");
-          if (space["nom"].toUpperCase().contains("ÉLÈVES"))
+          if (space["nom"].toUpperCase().contains("ÉLÈVES")) {
             _spaces.add(PronoteSpace(
                 name: space["nom"],
                 url: school!.url! + (school!.url![school!.url!.length - 1] == "/" ? "" : "/") + space["URL"],
                 originUrl: school!.url));
+          }
         });
         spaces = _spaces;
         notifyListeners();

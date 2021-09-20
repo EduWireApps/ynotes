@@ -3,7 +3,7 @@
 //
 // example: mapGet(map, ["foo", 9, 'c'])
 dynamic mapGet(var map, List path) {
-  assert(path.length > 0);
+  assert(path.isNotEmpty);
   var m = map ?? {};
   for (int i = 0; i < path.length - 1; i++) {
     m = m[path[i]] ?? {};

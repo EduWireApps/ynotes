@@ -20,9 +20,9 @@ class RecipientsOffline {
   updateRecipients(List<Recipient> newData) async {
     try {
       var old = await getRecipients();
-      newData.forEach((recipient) {
+      for (var recipient in newData) {
         (old ?? []).removeWhere((a) => a.id == recipient.id);
-      });
+      }
 
       await parent.offlineBox!.put("recipients", newData);
     } catch (e) {

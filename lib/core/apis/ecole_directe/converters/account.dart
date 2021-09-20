@@ -45,32 +45,32 @@ class EcoleDirecteAccountConverter {
       if (element["enable"] == true) {
         switch (element["code"]) {
           case "VIE_SCOLAIRE":
-            tabs.add(appTabs.SCHOOL_LIFE);
+            tabs.add(appTabs.schoolLife);
             break;
           case "NOTES":
-            tabs.add(appTabs.GRADES);
+            tabs.add(appTabs.grades);
             break;
           case "MESSAGERIE":
-            tabs.add(appTabs.MESSAGING);
+            tabs.add(appTabs.messaging);
 
             break;
           case "EDT":
-            tabs.add(appTabs.AGENDA);
+            tabs.add(appTabs.agenda);
 
             break;
           case "CLOUD":
-            tabs.add(appTabs.CLOUD);
+            tabs.add(appTabs.cloud);
 
             break;
           case "CAHIER_DE_TEXTES":
-            tabs.add(appTabs.HOMEWORK);
+            tabs.add(appTabs.homework);
             break;
           default:
         }
       }
       //always available tabs
-      tabs.add(appTabs.FILES);
-      tabs.add(appTabs.SUMMARY);
+      tabs.add(appTabs.files);
+      tabs.add(appTabs.summary);
     }
     return tabs;
   }

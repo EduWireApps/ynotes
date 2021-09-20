@@ -86,13 +86,13 @@ Map<String, dynamic> _$SchoolAccountToJson(SchoolAccount instance) => <String, d
     };
 
 const _$appTabsEnumMap = {
-  appTabs.SUMMARY: 'SUMMARY',
-  appTabs.GRADES: 'GRADES',
-  appTabs.HOMEWORK: 'HOMEWORK',
-  appTabs.AGENDA: 'AGENDA',
-  appTabs.POLLS: 'POLLS',
-  appTabs.MESSAGING: 'MESSAGING',
-  appTabs.CLOUD: 'CLOUD',
-  appTabs.FILES: 'FILES',
-  appTabs.SCHOOL_LIFE: 'SCHOOL_LIFE',
+  appTabs.summary: 'SUMMARY',
+  appTabs.grades: 'GRADES',
+  appTabs.homework: 'HOMEWORK',
+  appTabs.agenda: 'AGENDA',
+  appTabs.polls: 'POLLS',
+  appTabs.messaging: 'MESSAGING',
+  appTabs.cloud: 'CLOUD',
+  appTabs.files: 'FILES',
+  appTabs.schoolLife: 'SCHOOL_LIFE',
 };

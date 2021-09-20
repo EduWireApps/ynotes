@@ -10,6 +10,9 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 
 class DialogSpecialties extends StatefulWidget {
+  const DialogSpecialties({Key? key}) : super(key: key);
+
+  @override
   State<StatefulWidget> createState() {
     return _DialogSpecialtiesState();
   }
@@ -17,15 +20,16 @@ class DialogSpecialties extends StatefulWidget {
 
 class _DialogSpecialtiesState extends State<DialogSpecialties> {
   List<String?>? chosenSpecialties = [];
-  var classe;
+  dynamic classe;
   late Future<List<Discipline>?> disciplinesFuture;
 
+  @override
   Widget build(BuildContext context) {
     List disciplines = [];
 
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
-    return Container(
+    return SizedBox(
       height: screenSize.size.height / 10 * 4,
       child: FutureBuilder<List<Discipline>?>(
           future: disciplinesFuture,
@@ -34,22 +38,22 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
               return Container();
             }
             if (snapshot.hasData) {
-              (snapshot.data ?? []).forEach((element) {
+              for (var element in (snapshot.data ?? [])) {
                 if (!disciplines.contains(element.disciplineName)) {
                   disciplines.add(element.disciplineName);
                 }
-              });
+              }
 
               return AlertDialog(
                   backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                  contentPadding: EdgeInsets.only(top: 10.0),
-                  content: Container(
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                  contentPadding: const EdgeInsets.only(top: 10.0),
+                  content: SizedBox(
                       height: screenSize.size.height / 10 * 4,
                       width: screenSize.size.width / 5 * 4,
                       child: ShaderMask(
                         shaderCallback: (Rect rect) {
-                          return LinearGradient(
+                          return const LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
@@ -58,7 +62,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                         },
                         blendMode: BlendMode.dstOut,
                         child: Center(
-                            child: (disciplines.length > 0)
+                            child: (disciplines.isNotEmpty)
                                 ? ListView.builder(
                                     padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.35),
                                     itemCount: disciplines.length,
@@ -92,7 +96,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                             child: Row(
                                               children: <Widget>[
                                                 Checkbox(
-                                                  side: BorderSide(width: 1, color: Colors.white),
+                                                  side: const BorderSide(width: 1, color: Colors.white),
                                                   fillColor:
                                                       MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                                   onChanged: (value) {
@@ -116,7 +120,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                                   shape: const CircleBorder(),
                                                   value: chosenSpecialties!.contains(disciplines[index]),
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: screenSize.size.width / 5 * 3,
                                                   child: AutoSizeText(
                                                     disciplines[index],
@@ -162,6 +166,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
     }
   }
 
+  @override
   initState() {
     super.initState();
     getChosenSpecialties();

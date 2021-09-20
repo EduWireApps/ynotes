@@ -7,7 +7,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/services/space/recurringEvents.dart';
+import 'package:ynotes/core/services/space/recurring_events.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/secure_storage.dart';
 import 'package:ynotes/globals.dart';

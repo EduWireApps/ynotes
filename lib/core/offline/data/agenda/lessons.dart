@@ -25,7 +25,7 @@ class LessonsOffline {
   updateLessons(List<Lesson> newData, int week) async {
     try {
       CustomLogger.log("LESSONS", "Update offline lessons (week : $week, length : ${newData.length})");
-      Map<dynamic, dynamic> timeTable = Map();
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("lessons");
       if (offline != null) {
         timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("lessons"));

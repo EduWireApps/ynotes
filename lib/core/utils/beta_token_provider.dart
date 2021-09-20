@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:supabase/supabase.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 
-
-
 ///Useful to get access to any beta feature using a SupaBase db.
 ///This table should contain a 'token' column, and an 'id' column.
 ///Just instanciate it providing SupaBase configuration variables
@@ -15,6 +13,7 @@ class BetaTokenProviderUtil {
 
   final String url;
   final String apiKey;
+
   ///Used to save the token in secure storage, use a different one each time you need a token
   final String tokenName;
   final String tableName;
@@ -42,7 +41,7 @@ class BetaTokenProviderUtil {
 
   Future<bool> _assignToken(Token token) async {
     try {
-      final response = await client?.from(this.tableName).update({"used": true}).eq('id', token.id).execute();
+      final response = await client?.from(tableName).update({"used": true}).eq('id', token.id).execute();
       if (response?.status == 200) {
         await _saveToken(token);
         return true;
@@ -55,8 +54,8 @@ class BetaTokenProviderUtil {
   }
 
   Future<Token?> _availableTokens() async {
-    client = SupabaseClient(this.url, this.apiKey);
-    final response = await client?.from(this.tableName).select().filter('used', 'eq', 'false').execute();
+    client = SupabaseClient(url, apiKey);
+    final response = await client?.from(tableName).select().filter('used', 'eq', 'false').execute();
     if (response?.data?.length != 0) {
       return Token(token: response?.data[0]["token"], id: response?.data[0]["id"]);
     }
@@ -96,7 +95,7 @@ class BetaTokenProviderUtil {
   ///To check if a token exists
   Future<bool> _tokenExists(Token token) async {
     try {
-      final response = await client?.from(this.tableName).select().filter("token", 'eq', token.token).execute();
+      final response = await client?.from(tableName).select().filter("token", 'eq', token.token).execute();
       if (response?.data?.length != 0 && response?.data[0]["used"] == true) {
         return true;
       } else {

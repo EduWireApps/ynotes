@@ -114,7 +114,7 @@ class SettingsUtils {
 
   static Map getOldSettingsOld() {
     Map _settings = json.decode(json.encode(settingsForm));
-    (_settings["user"] as Map).keys.forEach((key1) {
+    for (var key1 in (_settings["user"] as Map).keys) {
       (_settings["user"][key1] as Map).forEach((key2, value) {
         if (value.runtimeType == int) {
           value = getIntSetting(key2);
@@ -123,7 +123,7 @@ class SettingsUtils {
           value = getBoolSetting(key2);
         }
       });
-    });
+    }
     (_settings["user"] as Map).forEach((key, value) {
       if (value.runtimeType == int) {
         value = getIntSetting(key);
@@ -139,9 +139,7 @@ class SettingsUtils {
   static Future<Map<String, dynamic>?> getSavedSettings() async {
     final prefs = await SharedPreferences.getInstance();
     String? settings = prefs.getString("settings");
-    if (settings == null) {
-      settings = json.encode(settingsForm);
-    }
+    settings ??= json.encode(settingsForm);
     Map<String, dynamic>? _settings = json.decode(settings);
     return _settings;
   }

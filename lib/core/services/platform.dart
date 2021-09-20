@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 class AndroidPlatformChannel {
-  static const platform = const MethodChannel('fr.ynotes/funcs');
+  static const platform = MethodChannel('fr.ynotes/funcs');
   static enableDND() async {
     await platform.invokeMethod('enableDND');
   }

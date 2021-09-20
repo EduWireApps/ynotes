@@ -14,7 +14,7 @@ class HomeworkController extends ChangeNotifier {
   List<Homework>? _old = [];
   List _hwCompletion = [100, 0, 0];
   List<Homework> unloadedHW = [];
-  homeworkFilter currentFilter = homeworkFilter.ALL;
+  homeworkFilter currentFilter = homeworkFilter.all;
   API? _api;
   bool isFetching = false;
   int examsCount = 0;
@@ -37,16 +37,16 @@ class HomeworkController extends ChangeNotifier {
 
   List<Homework>? get pinned => _old?.where((element) => ((element.pinned ?? false))).toList();
   filterHW(List<Homework>? homeworkToFilter, showAll) {
-    if (showAll == true || currentFilter == homeworkFilter.ALL) {
+    if (showAll == true || currentFilter == homeworkFilter.all) {
       return homeworkToFilter;
     }
     List<Homework> toReturn = [];
-    (homeworkToFilter ?? []).forEach((f) {
+    for (var f in (homeworkToFilter ?? [])) {
       switch (currentFilter) {
-        case homeworkFilter.ALL:
+        case homeworkFilter.all:
           toReturn.add(f);
           break;
-        case homeworkFilter.LITERARY:
+        case homeworkFilter.literacy:
           if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["literary"]["ED"];
             if (codeMatiere.any((test) {
@@ -73,7 +73,7 @@ class HomeworkController extends ChangeNotifier {
           }
 
           break;
-        case homeworkFilter.SCIENCES:
+        case homeworkFilter.sciences:
           if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["sciences"]["ED"];
             if (codeMatiere.any((test) {
@@ -99,10 +99,10 @@ class HomeworkController extends ChangeNotifier {
             }
           }
           break;
-        case homeworkFilter.SPECIALTIES:
+        case homeworkFilter.specialties:
           break;
 
-        case homeworkFilter.CUSTOM:
+        case homeworkFilter.custom:
           List codeMatiere = jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? [];
           appSys.saveSettings();
           if (codeMatiere.any((test) {
@@ -116,7 +116,7 @@ class HomeworkController extends ChangeNotifier {
           }
           break;
       }
-    });
+    }
     return toReturn;
   }
 
@@ -252,4 +252,4 @@ class HomeworkController extends ChangeNotifier {
   }
 }
 
-enum homeworkFilter { CUSTOM, SPECIALTIES, LITERARY, SCIENCES, ALL }
+enum homeworkFilter { custom, specialties, literacy, sciences, all }

@@ -43,7 +43,7 @@ class RecurringEventSchemes {
   }
 
   String toCron(int scheme) {
-    TimeOfDay tod = TimeOfDay.fromDateTime(this.date!);
+    TimeOfDay tod = TimeOfDay.fromDateTime(date!);
     late List selectedDays;
     var stringScheme = scheme.toString();
     for (int i = 2; i < stringScheme.runes.length; i++) {
@@ -84,10 +84,10 @@ class RecurringEventSchemes {
 
     switch (parsed[1]) {
       case "0":
-        end = " " + "tous les" + " " + days.join(", ") + ".";
+        end = " tous les ${days.join(", ")}.";
         break;
       case "1":
-        end = " " + "tous les jours.";
+        end = " tous les jours.";
         break;
     }
     return weekRoot + end;
