@@ -3,12 +3,16 @@ import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 
 class LogsPage extends StatefulWidget {
+  const LogsPage({Key? key}) : super(key: key);
+
+  @override
   State<StatefulWidget> createState() {
     return _LogsPageState();
   }
 }
 
 class _LogsPageState extends State<LogsPage> {
+  @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return FutureBuilder<String>(

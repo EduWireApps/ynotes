@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
-import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
+import 'package:ynotes/ui/screens/login/content/login_text_content.dart';
 
 class PronoteSchoolsController extends ChangeNotifier {
   bool geolocating = false;

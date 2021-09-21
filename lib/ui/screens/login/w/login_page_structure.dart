@@ -23,7 +23,7 @@ class LoginPageStructure extends StatelessWidget {
               child: SingleChildScrollView(
             child: Center(
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 500),
+                constraints: const BoxConstraints(maxWidth: 500),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                       minHeight: MediaQuery.of(context).size.height -
@@ -56,7 +56,7 @@ class LoginPageStructure extends StatelessWidget {
                         ),
                       ),
                       YVerticalSpacer(YScale.s8),
-                      Container(
+                      SizedBox(
                         width: double.infinity,
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Padding(
@@ -86,7 +86,7 @@ class LoginPageStructure extends StatelessWidget {
                                 text: "Mentions légales",
                                 block: true,
                                 onPressed: () async {
-                                  await showDialog(context: context, builder: (_) => _LoginLegalLinksDialog());
+                                  await showDialog(context: context, builder: (_) => const _LoginLegalLinksDialog());
                                 },
                                 variant: YButtonVariant.text,
                                 invertColors: true,
@@ -95,7 +95,7 @@ class LoginPageStructure extends StatelessWidget {
                         ]),
                       ),
                       YVerticalSpacer(YScale.s8),
-                      _Contact()
+                      const _Contact()
                     ],
                   ),
                 ),

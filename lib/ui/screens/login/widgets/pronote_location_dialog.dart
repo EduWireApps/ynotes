@@ -9,6 +9,8 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/text_field.dart';
 
 class PronoteGeolocationDialog extends StatefulWidget {
+  const PronoteGeolocationDialog({Key? key}) : super(key: key);
+
   @override
   _PronoteGeolocationDialogState createState() => _PronoteGeolocationDialogState();
 }
@@ -30,7 +32,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     return AlertDialog(
       elevation: 50,
       backgroundColor: Theme.of(context).primaryColor,
-      insetPadding: EdgeInsets.all(0),
+      insetPadding: const EdgeInsets.all(0),
       content: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: ChangeNotifierProvider<PronoteSchoolsController>.value(
@@ -44,7 +46,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AnimatedSwitcher(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     transitionBuilder: (Widget child, Animation<double> animation) {
                       return ScaleTransition(child: child, scale: animation);
                     },
@@ -63,12 +65,12 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     var screenSize = MediaQuery.of(context);
 
     return Column(
-      key: ValueKey<int>(1),
+      key: const ValueKey<int>(1),
       children: [
         Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
           height: screenSize.size.height / 10 * 1.5,
-          child: FittedBox(
+          child: const FittedBox(
             child: Icon(
               Icons.error,
               color: Colors.red,
@@ -77,7 +79,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         ),
         Text(
           "Hum... quelque chose ne s'est pas passé comme prévu ! \n $error",
-          style: TextStyle(fontFamily: "Asap", color: Colors.black),
+          style: const TextStyle(fontFamily: "Asap", color: Colors.black),
           textAlign: TextAlign.center,
         ),
         Container(
@@ -94,7 +96,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     var screenSize = MediaQuery.of(context);
 
     return Column(
-      key: ValueKey<int>(0),
+      key: const ValueKey<int>(0),
       children: [
         Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
@@ -105,7 +107,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
           pronoteSchoolsCon.geolocating
               ? "Géolocalisation des établissements à proximité..."
               : "Recherche des status disponibles",
-          style: TextStyle(fontFamily: "Asap", color: Colors.black),
+          style: const TextStyle(fontFamily: "Asap", color: Colors.black),
           textAlign: TextAlign.center,
         ),
       ],
@@ -113,12 +115,10 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   }
 
   Widget buildNoSchoolFound() {
-    return Container(
-      child: Center(
-        child: Text(
-          "Aucun établissement trouvé...",
-          style: TextStyle(fontFamily: "Asap"),
-        ),
+    return const Center(
+      child: Text(
+        "Aucun établissement trouvé...",
+        style: TextStyle(fontFamily: "Asap"),
       ),
     );
   }
@@ -126,18 +126,18 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   Widget buildSchools(List? schools) {
     var screenSize = MediaQuery.of(context);
 
-    return Container(
+    return SizedBox(
       width: screenSize.size.width / 5 * 4,
       child: Column(
         children: [
-          Text(
+          const Text(
             "Choisissez votre école :",
             style: TextStyle(fontFamily: "Asap"),
           ),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
           CustomTextField(searchCon, "Chercher une école", false, Icons.search, false),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
-          Container(
+          SizedBox(
               height: screenSize.size.height / 10 * 5,
               child: filterSchools(schools as List<PronoteSchool>?).length != 0
                   ? ListView.builder(
@@ -149,7 +149,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                     )
                   : buildNoSchoolFound()),
           SizedBox(height: screenSize.size.height / 10 * 0.3),
-          Container(
+          SizedBox(
             height: screenSize.size.height / 10 * 0.4,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -185,15 +185,15 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   Widget buildStatusRequest(List<PronoteSpace>? spaces) {
     var screenSize = MediaQuery.of(context);
 
-    return Container(
+    return SizedBox(
       width: screenSize.size.width / 5 * 4,
       child: Column(
         children: [
-          Text(
+          const Text(
             "Choisissez votre statut :",
             style: TextStyle(fontFamily: "Asap"),
           ),
-          Container(
+          SizedBox(
             height: screenSize.size.height / 10 * 5,
             child: AnimatedList(
               initialItemCount: spaces != null ? spaces.length : 0,
@@ -203,7 +203,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             ),
           ),
           SizedBox(height: screenSize.size.height / 10 * 0.3),
-          Container(
+          SizedBox(
             height: screenSize.size.height / 10 * 0.4,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -236,7 +236,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   }
 
   filterSchools(List<PronoteSchool>? schools) {
-    if (schools != null && schools.length != 0) {
+    if (schools != null && schools.isNotEmpty) {
       return schools.where((element) => element.name!.toUpperCase().contains(searchCon!.text.toUpperCase())).toList();
     }
     return schools;
@@ -305,9 +305,9 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             children: [
               SizedBox(width: screenSize.size.width / 10 * 0.1),
               Checkbox(
-                  side: BorderSide(width: 1, color: Colors.white),
+                  side: const BorderSide(width: 1, color: Colors.white),
                   fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                   value: selectedSchool == school,
                   onChanged: (newValue) {
                     setState(() {
@@ -321,14 +321,14 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                   children: [
                     Text(
                       school.name ?? "",
-                      style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
                     ),
-                    Text(
+                    const Text(
                       "-",
                     ),
                     Text(
                       school.postalCode ?? "",
-                      style: TextStyle(fontFamily: "Asap", fontStyle: FontStyle.italic),
+                      style: const TextStyle(fontFamily: "Asap", fontStyle: FontStyle.italic),
                     ),
                     Text(distance),
                   ],
@@ -348,7 +348,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     return SlideTransition(
       position: Tween<Offset>(
         begin: const Offset(-1, 0),
-        end: Offset(0, 0),
+        end: const Offset(0, 0),
       ).animate(animation),
       child: SizedBox(
         // Actual widget to display
@@ -365,7 +365,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
               children: [
                 SizedBox(width: screenSize.size.width / 10 * 0.1),
                 Checkbox(
-                    side: BorderSide(width: 1, color: Colors.white),
+                    side: const BorderSide(width: 1, color: Colors.white),
                     fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                     shape: const CircleBorder(),
                     value: space == _space,
@@ -381,7 +381,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                     children: [
                       Text(
                         _space.name ?? "",
-                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

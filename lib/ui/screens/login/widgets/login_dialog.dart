@@ -23,13 +23,13 @@ class _LoginDialogState extends State<LoginDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      contentPadding: EdgeInsets.only(top: 10.0),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      contentPadding: const EdgeInsets.only(top: 10.0),
       content: SingleChildScrollView(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Container(
-            padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+            padding: const EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
             child: Column(
               children: <Widget>[
                 FutureBuilder<List>(
@@ -37,7 +37,7 @@ class _LoginDialogState extends State<LoginDialog> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData &&
                         snapshot.data != null &&
-                        snapshot.data!.length > 0 &&
+                        snapshot.data!.isNotEmpty &&
                         snapshot.data![0] == 1) {
                       Future.delayed(const Duration(milliseconds: 500), () {
                         Navigator.pop(context);
@@ -46,7 +46,7 @@ class _LoginDialogState extends State<LoginDialog> {
                       });
                       return Column(
                         children: <Widget>[
-                          Icon(
+                          const Icon(
                             Icons.check_circle,
                             size: 90,
                             color: Colors.lightGreen,
@@ -61,7 +61,7 @@ class _LoginDialogState extends State<LoginDialog> {
                       CustomLogger.log("LOGIN", "Snapshot data: ${snapshot.data}");
                       return Column(
                         children: <Widget>[
-                          Icon(
+                          const Icon(
                             Icons.error,
                             size: 90,
                             color: Colors.redAccent,
@@ -79,7 +79,7 @@ class _LoginDialogState extends State<LoginDialog> {
                                 List stepCustomLogger = snapshot.data![2];
                                 try {
                                   //add step logs to clip board
-                                  await Clipboard.setData(new ClipboardData(text: stepCustomLogger.join("\n")));
+                                  await Clipboard.setData(ClipboardData(text: stepCustomLogger.join("\n")));
                                   CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                 } catch (e) {
                                   CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
@@ -90,7 +90,7 @@ class _LoginDialogState extends State<LoginDialog> {
                         ],
                       );
                     } else {
-                      return Container(
+                      return const SizedBox(
                           width: 50,
                           height: 50,
                           child: CircularProgressIndicator(
@@ -111,7 +111,7 @@ class _LoginDialogState extends State<LoginDialog> {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ConditionsOfUseDialog();
+          return const ConditionsOfUseDialog();
         });
   }
 }

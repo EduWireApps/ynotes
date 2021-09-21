@@ -27,13 +27,13 @@ class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
         isScrollable: false,
         body: RefreshIndicator(
           onRefresh: refreshTickets,
-          child: Container(
+          child: SizedBox(
               width: screenSize.size.width,
               child: ChangeNotifierProvider<SchoolLifeController>.value(
                   value: appSys.schoolLifeController,
                   child: Consumer<SchoolLifeController>(builder: (context, model, child) {
                     //if there is no tickets
-                    if ((model.tickets ?? []).length == 0 || model.tickets == null) {
+                    if ((model.tickets ?? []).isEmpty || model.tickets == null) {
                       return buildNoTickets();
                     } else {
                       return Container(
@@ -73,10 +73,10 @@ class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
           icon,
           color: ThemeUtils.textColor(),
         )),
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         width: 90,
         height: 90,
-        margin: EdgeInsets.all(10));
+        margin: const EdgeInsets.all(10));
   }
 
   Widget buildNoTickets() {
@@ -86,7 +86,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
       value: appSys.schoolLifeController,
       child: Consumer<SchoolLifeController>(builder: (context, model, child) {
         return Center(
-          child: Container(
+          child: SizedBox(
             height: screenSize.size.height,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -100,13 +100,12 @@ class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
                   "Pas de données.",
                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
                 ),
-                Container(
+                SizedBox(
                   width: 90,
                   child: TextButton(
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(18.0),
-                          side: BorderSide(color: ThemeUtils.textColor())),
+                          borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: ThemeUtils.textColor())),
                     ),
                     onPressed: () {
                       model.refresh(force: true);
@@ -132,58 +131,56 @@ class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
 
   Widget buildTicket(SchoolLifeTicket ticket) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          children: [
-            buildCircle(ticket),
-            SizedBox(width: screenSize.size.width / 5 * 0.1),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8, top: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      ticket.libelle!,
-                      style: TextStyle(
-                          color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 16),
-                      textAlign: TextAlign.left,
-                    ),
-                    Text(
-                      "Motif : " + (ticket.motif ?? "(Sans motif)"),
-                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
-                      textAlign: TextAlign.left,
-                    ),
-                    Text(
-                      "Date : " + (ticket.displayDate ?? "(Sans date)"),
-                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
-                      textAlign: TextAlign.left,
-                    ),
-                    RichText(
-                        text: TextSpan(
-                            style: TextStyle(
-                                color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange,
-                                fontFamily: "Asap",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                            children: [
-                          TextSpan(
-                            text: ticket.isJustified! ? "Justifié " : "A justifier ",
-                          ),
-                          WidgetSpan(
-                              child: Icon((ticket.isJustified ?? false) ? MdiIcons.check : MdiIcons.exclamation,
-                                  color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange))
-                        ])),
-                  ],
-                ),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+      color: Theme.of(context).primaryColor,
+      child: Row(
+        children: [
+          buildCircle(ticket),
+          SizedBox(width: screenSize.size.width / 5 * 0.1),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8, top: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    ticket.libelle!,
+                    style: TextStyle(
+                        color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 16),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Motif : " + (ticket.motif ?? "(Sans motif)"),
+                    style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Date : " + (ticket.displayDate ?? "(Sans date)"),
+                    style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
+                    textAlign: TextAlign.left,
+                  ),
+                  RichText(
+                      text: TextSpan(
+                          style: TextStyle(
+                              color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange,
+                              fontFamily: "Asap",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                          children: [
+                        TextSpan(
+                          text: ticket.isJustified! ? "Justifié " : "A justifier ",
+                        ),
+                        WidgetSpan(
+                            child: Icon((ticket.isJustified ?? false) ? MdiIcons.check : MdiIcons.exclamation,
+                                color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange))
+                      ])),
+                ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

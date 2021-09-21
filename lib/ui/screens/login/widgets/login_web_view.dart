@@ -17,7 +17,7 @@ class LoginWebView extends StatefulWidget {
   final String? url;
   final String? spaceUrl;
 
-  LoginWebView({Key? key, this.url, this.spaceUrl}) : super(key: key);
+  const LoginWebView({Key? key, this.url, this.spaceUrl}) : super(key: key);
   @override
   _LoginWebViewState createState() => _LoginWebViewState();
 }
@@ -25,7 +25,7 @@ class LoginWebView extends StatefulWidget {
 class _LoginWebViewState extends State<LoginWebView> {
   InAppWebViewController? _controller;
 
-  var loginData;
+  dynamic loginData;
   late Map currentProfile;
   //locals, but shouldn't be obviously
 
@@ -39,14 +39,14 @@ class _LoginWebViewState extends State<LoginWebView> {
   authAndValidateProfile() async {
     CustomLogger.log("LOGIN", "(Web view) Validating profile");
 
-    Timer(new Duration(milliseconds: 1500), () async {
+    Timer(const Duration(milliseconds: 1500), () async {
       setState(() {
         auth = true;
       });
 
       //We use this window function to get the credentials
       String loginDataProcess =
-          "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
+          "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : '';})();";
       String? loginDataProcessResult = await (_controller!.evaluateJavascript(source: loginDataProcess));
       //We are finally parsing the credentials, hurray !
       getCreds(loginDataProcessResult);
@@ -113,12 +113,12 @@ class _LoginWebViewState extends State<LoginWebView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (!kIsWeb && Platform.isLinux)
-                      Text(
+                      const Text(
                         "La connexion par ENT n'est pas encore supportée sur Linux...",
                         style: TextStyle(fontFamily: "Asap", color: Colors.red),
                       ),
                     if (!kIsWeb && !Platform.isLinux)
-                      Text(
+                      const Text(
                         "Patientez... nous vous connectons à l'ENT",
                         style: TextStyle(fontFamily: "Asap"),
                       ),
@@ -136,7 +136,7 @@ class _LoginWebViewState extends State<LoginWebView> {
 
   //Here, we parse the credentials
   getCreds(String? credsData) {
-    if (credsData != null && credsData.length > 0) {
+    if (credsData != null && credsData.isNotEmpty) {
       CustomLogger.logWrapped("LOGIN", "Credentials data", credsData);
       Map temp = json.decode(credsData);
       CustomLogger.log("LOGIN", "(Web view) Status: ${temp["status"]}");
@@ -153,7 +153,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   //IDK if it's still useful, but It redirects the user to the Pronote official page and log in
   loginTest() async {
     CustomLogger.log("LOGIN", "(Web view) Login test");
-    Timer(new Duration(milliseconds: 1500), () async {
+    Timer(const Duration(milliseconds: 1500), () async {
       String toexecute = 'if(!window.messageData) /*window.messageData = [];*/';
       await _controller!.evaluateJavascript(source: toexecute);
     });
@@ -163,25 +163,25 @@ class _LoginWebViewState extends State<LoginWebView> {
   setCookie() async {
     CustomLogger.log("LOGIN", "(Web view) Setting cookie");
     //generate UUID
-    appSys.settings.system.uuid = Uuid().v4();
+    appSys.settings.system.uuid = const Uuid().v4();
     appSys.saveSettings();
     //We use the window function to create a cookie
     //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
-    String cookieFunction = '(function(){try{' +
-        'var lJetonCas = "", lJson = JSON.parse(document.body.innerText);' +
-        'lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;' +
-        'document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();' +
-        'if(!!lJetonCas) {' +
-        'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
-        'document.cookie = "uuidAppliMobile=' +
+    String cookieFunction = '(function(){try{'
+            'var lJetonCas = "", lJson = JSON.parse(document.body.innerText);'
+            'lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;'
+            'document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();'
+            'if(!!lJetonCas) {'
+            'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();'
+            'document.cookie = "uuidAppliMobile=' +
         appSys.settings.system.uuid! +
-        ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
-        'document.cookie = "ielang=' +
-        "1036" +
-        ';expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();' +
-        'return "ok";' +
-        '} else return "ko";' +
-        '} catch(e){return "ko";}})();';
+        ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();'
+            'document.cookie = "ielang='
+            "1036"
+            ';expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();'
+            'return "ok";'
+            '} else return "ko";'
+            '} catch(e){return "ko";}})();';
 
     //We evaluate the cookie function
     String? cookieFunctionResult = await (_controller?.evaluateJavascript(source: cookieFunction));
@@ -229,13 +229,13 @@ class _LoginWebViewState extends State<LoginWebView> {
         child: Container(
           width: 90,
           height: 90,
-          child: Center(
+          child: const Center(
             child: Icon(
               MdiIcons.exitRun,
               size: 40,
             ),
           ),
-          decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+          decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
         ),
         onPressed: () async {
           Navigator.of(context).pop();

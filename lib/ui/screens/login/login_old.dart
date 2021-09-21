@@ -11,7 +11,7 @@ import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
+import 'package:ynotes/ui/screens/login/content/login_text_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/api_choice_box.dart';
 import 'package:ynotes/ui/screens/login/widgets/contact_bottom_sheet.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_box.dart';
@@ -25,12 +25,12 @@ import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 
 enum availableLoginPageBoxes {
-  ApiChoiceBox,
-  PronoteLoginWayBox,
-  PronoteQrCodeBox,
-  PronoteGeolocationBox,
-  PronoteUrlBox,
-  LoginBox
+  apiChoiceBox,
+  pronoteLoginWayBox,
+  pronoteQrCodeBox,
+  pronoteGeolocationBox,
+  pronoteUrlBox,
+  loginBox
 }
 
 class LoginPageBox {
@@ -47,13 +47,13 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin {
-  availableLoginPageBoxes previousPage = availableLoginPageBoxes.ApiChoiceBox;
-  availableLoginPageBoxes currentPage = availableLoginPageBoxes.ApiChoiceBox;
+  availableLoginPageBoxes previousPage = availableLoginPageBoxes.apiChoiceBox;
+  availableLoginPageBoxes currentPage = availableLoginPageBoxes.apiChoiceBox;
 
   PageController? pageController;
-  TextEditingController _username = TextEditingController();
-  TextEditingController _password = TextEditingController();
-  TextEditingController _url = TextEditingController();
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _url = TextEditingController();
   late PronoteSpace chosenSpace;
   Future<List>? connectionData;
   @override
@@ -82,7 +82,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   _buildTopButtons(),
@@ -100,9 +100,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
   ///Pronote demonstration login
   Future<void> demoLogin() async {
     if (appSys.settings.system.chosenParser == 1 &&
-        _url.text.length == 0 &&
-        _password.text.length == 0 &&
-        _username.text.length == 0) {
+        _url.text.isEmpty &&
+        _password.text.isEmpty &&
+        _username.text.isEmpty) {
       connectionData = appSys.api!.login("demonstration", "pronotevs", additionnalSettings: {
         "url": "https://demo.index-education.net/pronote/parent.html",
         "mobileCasLogin": false,
@@ -131,6 +131,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
     pageController?.jumpToPage(pageBoxes().indexWhere((element) => element.box == box));
   }
 
+  @override
   initState() {
     super.initState();
     pageController = PageController();
@@ -140,7 +141,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
   List<LoginPageBox> pageBoxes() {
     return [
       LoginPageBox(
-          box: availableLoginPageBoxes.ApiChoiceBox,
+          box: availableLoginPageBoxes.apiChoiceBox,
           widget: _buildSinglePage(
               title: LoginPageTextContent.apiChoice.pageTitle,
               description: LoginPageTextContent.apiChoice.pageDescription,
@@ -152,14 +153,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                     appSys.api = apiManager(appSys.offline);
                   });
                   if (appSys.api?.apiName == "Pronote") {
-                    goToPage(availableLoginPageBoxes.PronoteLoginWayBox);
+                    goToPage(availableLoginPageBoxes.pronoteLoginWayBox);
                   } else {
-                    goToPage(availableLoginPageBoxes.LoginBox);
+                    goToPage(availableLoginPageBoxes.loginBox);
                   }
                 },
               ))),
       LoginPageBox(
-        box: availableLoginPageBoxes.PronoteLoginWayBox,
+        box: availableLoginPageBoxes.pronoteLoginWayBox,
         widget: _buildSinglePage(
             title: appSys.api?.apiName ?? "",
             description: LoginPageTextContent.pronote.loginWays.pageDescription,
@@ -168,37 +169,37 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
             })),
       ),
       LoginPageBox(
-        box: availableLoginPageBoxes.PronoteUrlBox,
+        box: availableLoginPageBoxes.pronoteUrlBox,
         widget: _buildSinglePage(
             title: appSys.api?.apiName ?? "",
             description: LoginPageTextContent.pronote.url.pageDescription,
             child: PronoteUrlBox(
               urlCon: _url,
               longPressCallBack: () => demoLogin(),
-              callback: () => goToPage(availableLoginPageBoxes.LoginBox),
+              callback: () => goToPage(availableLoginPageBoxes.loginBox),
             )),
       ),
       LoginPageBox(
-        box: availableLoginPageBoxes.PronoteQrCodeBox,
+        box: availableLoginPageBoxes.pronoteQrCodeBox,
         widget: _buildSinglePage(
             title: appSys.api?.apiName ?? "",
             description: LoginPageTextContent.pronote.qrCode.pageDescription,
-            child: PronoteQrCodeBox()),
+            child: const PronoteQrCodeBox()),
       ),
       LoginPageBox(
-        box: availableLoginPageBoxes.PronoteGeolocationBox,
+        box: availableLoginPageBoxes.pronoteGeolocationBox,
         widget: _buildSinglePage(
             title: appSys.api?.apiName ?? "",
             description: LoginPageTextContent.pronote.qrCode.pageDescription,
             child: PronoteGeolocationBox(
               callback: (String url) {
                 _url.text = url;
-                goToPage(availableLoginPageBoxes.PronoteUrlBox);
+                goToPage(availableLoginPageBoxes.pronoteUrlBox);
               },
             )),
       ),
       LoginPageBox(
-        box: availableLoginPageBoxes.LoginBox,
+        box: availableLoginPageBoxes.loginBox,
         widget: _buildSinglePage(
             title: appSys.api?.apiName ?? "",
             description: LoginPageTextContent.login.pageDescription,
@@ -230,7 +231,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          children: [Spacer()],
+          children: const [Spacer()],
         ),
         Text(name,
             style: TextStyle(
@@ -241,7 +242,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                 fontWeight: FontWeight.w600,
                 fontSize: 20,
                 color: theme.colors.foregroundLightColor)),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
       ],
@@ -259,7 +260,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
         children: <Widget>[
           Expanded(
             child: InkWell(
-                child: new Text(
+                child: Text(
                   'FAQ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -272,7 +273,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
           ),
           Expanded(
               child: InkWell(
-            child: new Text('Contact',
+            child: Text('Contact',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: "Asap",
@@ -283,7 +284,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
           )),
           Expanded(
             child: InkWell(
-                child: new Text(
+                child: Text(
                   'CGU',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -301,7 +302,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
 
   _buildPageView() {
     return PageView(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       controller: pageController,
       children: pageBoxes().map((e) => e.widget).toList(),
     );
@@ -312,7 +313,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
+        SizedBox(
             width: 90.w.clamp(0, 400),
             child: Column(
               children: [
@@ -320,7 +321,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
                 Align(alignment: Alignment.center, child: FadeAnimation(0.2, child)),
               ],
             )),
-        SizedBox(
+        const SizedBox(
           height: 50,
         ),
       ],
@@ -330,23 +331,23 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
   _buildTopButtons() {
     return Row(
       children: [
-        SizedBox(
+        const SizedBox(
           width: 5,
         ),
         YButton(
             onPressed: () {
-              goToPage(availableLoginPageBoxes.ApiChoiceBox);
+              goToPage(availableLoginPageBoxes.apiChoiceBox);
             },
             text: "Retour",
             icon: Icons.chevron_left),
-        Spacer(),
+        const Spacer(),
         YButton(
             onPressed: () async {
-              openLocalPage(YPageLocal(child: LogsPage(), title: "Logs"));
+              openLocalPage(const YPageLocal(child: LogsPage(), title: "Logs"));
             },
             text: "Logs",
             icon: Icons.bug_report),
-        SizedBox(
+        const SizedBox(
           width: 5,
         ),
       ],
@@ -357,17 +358,17 @@ class _LoginState extends State<Login> with TickerProviderStateMixin, YPageMixin
     switch (id) {
       case "qrcode":
         {
-          goToPage(availableLoginPageBoxes.PronoteQrCodeBox);
+          goToPage(availableLoginPageBoxes.pronoteQrCodeBox);
         }
         break;
       case "location":
         {
-          goToPage(availableLoginPageBoxes.PronoteGeolocationBox);
+          goToPage(availableLoginPageBoxes.pronoteGeolocationBox);
         }
         break;
       case "manual":
         {
-          goToPage(availableLoginPageBoxes.PronoteUrlBox);
+          goToPage(availableLoginPageBoxes.pronoteUrlBox);
         }
         break;
     }

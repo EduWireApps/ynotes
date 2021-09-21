@@ -13,7 +13,7 @@ Future<Grade?> simulatorModalBottomSheet(
   BuildContext context,
 ) {
   return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Colors.transparent,
@@ -55,17 +55,17 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Wrap(alignment: WrapAlignment.center, children: [
       ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 500),
+        constraints: const BoxConstraints(maxWidth: 500),
         child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
                 color: Theme.of(context).primaryColor),
             padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: screenSize.size.height / 10 * 0.1),
-                DragHandle(),
+                const DragHandle(),
                 SizedBox(height: screenSize.size.height / 10 * 0.1),
                 editorFields(context)
               ],
@@ -82,9 +82,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
     if (disciplines != null) {
       choices = [];
       choices.clear();
-      disciplines.forEach((element) {
-        choices!.add(element);
-      });
+      for (var element in disciplines) {
+        choices.add(element);
+      }
       choices.add(null);
       CustomLogger.log("BOTTOM SHEET", "(Simulator) Choices: $choices");
     }
@@ -97,11 +97,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
         ),
         Container(
           child: (disciplines == null)
-              ? Container(
-                  child: Text(
-                    "Pas de periode",
-                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  ),
+              ? Text(
+                  "Pas de periode",
+                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                 )
               : Container(
                   padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
@@ -120,11 +118,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                               canvasColor: Theme.of(context).primaryColorDark,
                             ),
                             child: (choices == null)
-                                ? Container(
-                                    child: Text(
-                                      "Pas de matières",
-                                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                    ),
+                                ? Text(
+                                    "Pas de matières",
+                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                   )
                                 : DropdownButtonHideUnderline(
                                     child: DropdownButton<Discipline>(
@@ -173,7 +169,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
   Widget editorFields(BuildContext context) {
     var screenSize = MediaQuery.of(context);
 
-    return Container(
+    return SizedBox(
       height: screenSize.size.height / 5 * 1.5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -188,7 +184,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
                 ),
-                Expanded(child: dropdown(this.widget.gradesController!.disciplines())),
+                Expanded(child: dropdown(widget.gradesController!.disciplines())),
                 Expanded(child: weightSelector()),
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
@@ -216,7 +212,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                       notSignificant: false,
                       letters: false,
                       subdisciplineCode: (disciplineChoice!.subdisciplineCodes != null &&
-                              disciplineChoice!.subdisciplineCodes!.length > 0)
+                              disciplineChoice!.subdisciplineCodes!.isNotEmpty)
                           ? disciplineChoice!.subdisciplineCodes![0]
                           : null,
                       weight: gradeWeight.toString(),
@@ -238,7 +234,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 textColor: Colors.white,
                 icon: MdiIcons.flaskEmptyPlus,
                 iconColor: Colors.white,
-                padding: EdgeInsets.all(5)),
+                padding: const EdgeInsets.all(5)),
           )
         ],
       ),
@@ -262,7 +258,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
           },
               label: gradeValue != null ? gradeValue.toString() : "--",
               backgroundColor: Theme.of(context).primaryColorLight,
-              padding: EdgeInsets.all(5)),
+              padding: const EdgeInsets.all(5)),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
@@ -282,7 +278,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
           },
               label: gradeOn.toString(),
               backgroundColor: Theme.of(context).primaryColorLight,
-              padding: EdgeInsets.all(5)),
+              padding: const EdgeInsets.all(5)),
         )
       ],
     );
@@ -308,7 +304,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
         },
             label: gradeWeight.toString(),
             backgroundColor: Theme.of(context).primaryColorLight,
-            padding: EdgeInsets.all(5))
+            padding: const EdgeInsets.all(5))
       ],
     );
   }

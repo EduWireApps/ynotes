@@ -202,7 +202,7 @@ class CustomDialogs {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return NewRecipientDialog();
+          return const NewRecipientDialog();
         });
   }
 
@@ -243,7 +243,7 @@ class CustomDialogs {
           return Container();
         } as Widget Function(BuildContext, Animation<double>, Animation<double>),
         transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(scale: a1.value, child: PronoteGeolocationDialog());
+          return Transform.scale(scale: a1.value, child: const PronoteGeolocationDialog());
         });
   }
 

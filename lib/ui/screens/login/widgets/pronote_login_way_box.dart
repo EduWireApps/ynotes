@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sizer/sizer.dart';
-import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
+import 'package:ynotes/ui/screens/login/content/login_text_content.dart';
 import 'package:ynotes_packages/theme.dart';
 
 class PronoteLoginWayBox extends StatefulWidget {
@@ -78,16 +78,14 @@ class _PronoteLoginWayBoxState extends State<PronoteLoginWayBox> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                        child: Text(label,
-                            style: TextStyle(
-                                fontFamily: "Asap", color: theme.colors.foregroundColor, fontWeight: FontWeight.bold))),
-                    Container(
-                        child: Text(description,
-                            style: TextStyle(
-                              fontFamily: "Asap",
-                              color: theme.colors.foregroundLightColor,
-                            )))
+                    Text(label,
+                        style: TextStyle(
+                            fontFamily: "Asap", color: theme.colors.foregroundColor, fontWeight: FontWeight.bold)),
+                    Text(description,
+                        style: TextStyle(
+                          fontFamily: "Asap",
+                          color: theme.colors.foregroundLightColor,
+                        ))
                   ],
                 ),
               ),

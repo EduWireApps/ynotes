@@ -3,7 +3,7 @@ import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
-import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
+import 'package:ynotes/ui/screens/login/content/login_text_content.dart';
 import 'package:ynotes_packages/theme.dart';
 
 class ApiChoiceBox extends StatefulWidget {
@@ -18,13 +18,13 @@ class _ApiChoiceBoxState extends State<ApiChoiceBox> with TickerProviderStateMix
   List<Map> apis() => [
         {
           "name": "EcoleDirecte",
-          "mainColor": Color(0xff2874A6),
-          "icon": AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
+          "mainColor": const Color(0xff2874A6),
+          "icon": const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
         },
         {
           "name": "Pronote",
-          "mainColor": Color(0xff61b872),
-          "icon": AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
+          "mainColor": const Color(0xff61b872),
+          "icon": const AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
         },
         /*{
           "name": "La Vie Scolaire",
@@ -60,14 +60,14 @@ class _ApiChoiceBoxState extends State<ApiChoiceBox> with TickerProviderStateMix
                         },
                         borderRadius: BorderRadius.circular(25),
                         child: ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: 350),
-                          child: Container(
+                          constraints: const BoxConstraints(maxWidth: 350),
+                          child: SizedBox(
                             height: 50,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  margin: const EdgeInsets.symmetric(horizontal: 10),
                                   width: 40,
                                   height: 40,
                                   child: FittedBox(
@@ -79,7 +79,7 @@ class _ApiChoiceBoxState extends State<ApiChoiceBox> with TickerProviderStateMix
                                 Expanded(
                                     child: Text(apis()[index]["name"],
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(fontFamily: "Asap", fontSize: 25, color: Colors.white))),
+                                        style: const TextStyle(fontFamily: "Asap", fontSize: 25, color: Colors.white))),
                               ],
                             ),
                           ),
@@ -93,7 +93,7 @@ class _ApiChoiceBoxState extends State<ApiChoiceBox> with TickerProviderStateMix
               itemCount: apis().length),
           Row(
             children: [
-              Spacer(),
+              const Spacer(),
               Text(
                 LoginPageTextContent.login.unavailableService,
                 style: TextStyle(

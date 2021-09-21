@@ -29,7 +29,7 @@ class PollsPage extends StatefulWidget {
   _PollsPageState createState() => _PollsPageState();
 }
 
-enum sortValue { date, reversed_date, author }
+enum sortValue { date, reversedDate, author }
 
 class _PollsPageState extends State<PollsPage> with LayoutMixin {
   @override
@@ -44,7 +44,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
             child: FutureBuilder<List<PollInfo>?>(
                 future: pollsFuture,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data != null && snapshot.data!.length != 0) {
+                  if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
                     SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
                         ? setState(() {
                             pollsList = snapshot.data;
@@ -57,7 +57,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
                         ListView.builder(
                             itemCount: pollsList!.length,
                             shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
+                            physics: const ClampingScrollPhysics(),
                             itemBuilder: (BuildContext context, int index) {
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(11),
@@ -73,7 +73,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
                                         children: [
                                           AutoSizeText(
                                             (snapshot.data?[index].title != null
-                                                    ? (snapshot.data ?? [])[index].title ?? "" + " - "
+                                                    ? (snapshot.data ?? [])[index].title ?? " - "
                                                     : "") +
                                                 (((snapshot.data ?? [])[index].start != null)
                                                     ? DateFormat("dd/MM/yyyy")
@@ -98,7 +98,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
                                               child: Row(
                                                 children: [
                                                   Checkbox(
-                                                    side: BorderSide(width: 1, color: Colors.white),
+                                                    side: const BorderSide(width: 1, color: Colors.white),
                                                     fillColor:
                                                         MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                                     shape: const CircleBorder(),
@@ -168,7 +168,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
           child: Row(
             children: [
               Checkbox(
-                side: BorderSide(width: 1, color: Colors.white),
+                side: const BorderSide(width: 1, color: Colors.white),
                 fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                 shape: const CircleBorder(),
                 value: (question.answers ?? "").contains((question.choices ?? [])[i].rank.toString()),
@@ -183,7 +183,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
             ],
           )));
     }
-    return new Column(children: list);
+    return Column(children: list);
   }
 
   Widget _buildPollQuestion(PollInfo mainPoll, screenSize) {
@@ -206,6 +206,6 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
         ),
       ));
     }
-    return new Column(children: list);
+    return Column(children: list);
   }
 }

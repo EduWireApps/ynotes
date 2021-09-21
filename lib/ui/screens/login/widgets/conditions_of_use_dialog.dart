@@ -18,17 +18,17 @@ class _ConditionsOfUseDialogState extends State<ConditionsOfUseDialog> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      contentPadding: EdgeInsets.only(top: 10.0),
-      content: Container(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      contentPadding: const EdgeInsets.only(top: 10.0),
+      content: SizedBox(
         height: screenSize.size.height / 10 * 6,
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(32.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(32.0)),
           child: Stack(
             children: <Widget>[
               SingleChildScrollView(
                 controller: scrollViewController,
-                child: Container(
+                child: SizedBox(
                   width: screenSize.size.width,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -36,46 +36,44 @@ class _ConditionsOfUseDialogState extends State<ConditionsOfUseDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.all(5),
-                        child: Text(
+                        padding: const EdgeInsets.all(5),
+                        child: const Text(
                           "Conditions d’utilisation",
                           style: TextStyle(fontSize: 24, fontFamily: "Asap", fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5.0,
                       ),
-                      Divider(
+                      const Divider(
                         color: Colors.grey,
                         height: 4.0,
                       ),
                       Padding(
-                          padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10, bottom: 10),
+                          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10, bottom: 10),
                           child: SingleChildScrollView(
-                              child: Container(
-                            child: FutureBuilder(
-                                //Read the TOS file
-                                future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) {
-                                    CustomLogger.log("LOGIN", "An error occured while getting the TOS");
-                                    CustomLogger.error(snapshot.error);
-                                  }
-                                  return Text(
-                                    snapshot.data.toString(),
-                                    style: TextStyle(
-                                      fontFamily: "Asap",
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  );
-                                }),
-                          ))),
+                              child: FutureBuilder(
+                                  //Read the TOS file
+                                  future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      CustomLogger.log("LOGIN", "An error occured while getting the TOS");
+                                      CustomLogger.error(snapshot.error);
+                                    }
+                                    return Text(
+                                      snapshot.data.toString(),
+                                      style: const TextStyle(
+                                        fontFamily: "Asap",
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    );
+                                  }))),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
-                          primary: Color(0xff27AE60),
-                          shape: RoundedRectangleBorder(
+                          padding: const EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
+                          primary: const Color(0xff27AE60),
+                          shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
                           ),
@@ -84,7 +82,7 @@ class _ConditionsOfUseDialogState extends State<ConditionsOfUseDialog> {
                           Navigator.pop(context);
                           Navigator.pushReplacementNamed(context, "/intro");
                         },
-                        child: Text(
+                        child: const Text(
                           "J'accepte",
                           style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
@@ -105,9 +103,9 @@ class _ConditionsOfUseDialogState extends State<ConditionsOfUseDialog> {
                     child: FloatingActionButton(
                       onPressed: () {
                         scrollViewController.animateTo(scrollViewController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                            duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
                       },
-                      child: RotatedBox(quarterTurns: 3, child: Icon(Icons.chevron_left)),
+                      child: const RotatedBox(quarterTurns: 3, child: Icon(Icons.chevron_left)),
                     ),
                   ),
                 ),

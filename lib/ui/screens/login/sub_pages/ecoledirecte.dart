@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/login/w/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -22,7 +21,7 @@ class LoginEcoleDirectePage extends StatefulWidget {
 class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _loading = false;
-  _Credentials _credentials = _Credentials();
+  final _Credentials _credentials = _Credentials();
   bool _canNavigate = true;
 
   Future<void> submit(bool b) async {
@@ -45,7 +44,7 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
           _canNavigate = false;
         });
         YSnackbars.success(context, title: "Connecté !", message: data[1]);
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 3));
         // TODO: redirect to intro
         Navigator.pushReplacementNamed(context, "/summary");
         // success
@@ -76,7 +75,7 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
                       label: "Identifiant",
                       type: TextInputType.text,
                       validator: (String? value) {
-                        return value == null || value.length == 0 ? 'Ce champ est obligatoire' : null;
+                        return value == null || value.isEmpty ? 'Ce champ est obligatoire' : null;
                       },
                       onSaved: (String? value) {
                         _credentials.username = value;
@@ -86,7 +85,7 @@ class _LoginEcoleDirectePageState extends State<LoginEcoleDirectePage> {
                       label: "Mot de passe",
                       type: TextInputType.visiblePassword,
                       validator: (String? value) {
-                        return value == null || value.length == 0 ? 'Ce champ est obligatoire' : null;
+                        return value == null || value.isEmpty ? 'Ce champ est obligatoire' : null;
                       },
                       onSaved: (String? value) {
                         _credentials.password = value;

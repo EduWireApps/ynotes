@@ -34,9 +34,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
     return Container(
       height: screenSize.size.height,
       color: Theme.of(context).backgroundColor,
-      padding: EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       child: SingleChildScrollView(
-        child: new Column(
+        child: Column(
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
@@ -96,20 +96,20 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               width: screenSize.size.width,
               height: screenSize.size.height / 10 * 0.6,
               child: Stack(
                 children: [
                   Positioned(
                     left: screenSize.size.width / 5 * 0.1,
-                    child: Container(
+                    child: SizedBox(
                       width: screenSize.size.width / 5 * 4.4,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            if (selectedRecipients!.length == 0)
+                            if (selectedRecipients!.isEmpty)
                               Container(
                                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
@@ -122,7 +122,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               Container(
                                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
-                                  deleteIcon: Icon(Icons.delete),
+                                  deleteIcon: const Icon(Icons.delete),
                                   onDeleted: () {
                                     setState(() {
                                       selectedRecipients!.remove(recipient);
@@ -138,7 +138,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                   ),
                   Positioned(
                     right: screenSize.size.width / 5 * 0.5,
-                    child: Container(
+                    child: SizedBox(
                       width: screenSize.size.width / 5 * 0.5,
                       child: IconButton(
                         onPressed: () async {
@@ -155,7 +155,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                   ),
                   Positioned(
                     right: screenSize.size.width / 5 * 0.1,
-                    child: Container(
+                    child: SizedBox(
                       width: screenSize.size.width / 5 * 0.5,
                       child: IconButton(
                         onPressed: () async {
@@ -163,29 +163,30 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                           List<Recipient>? recipients = await ((appSys.api as APIEcoleDirecte).mailRecipients());
                           List<String> recipientsName = [];
                           if (recipients != null) {
-                            recipients.forEach((element) {
+                            for (var element in recipients) {
                               CustomLogger.log("BOTTOM SHEET", "(Write mail) Recipient id: ${element.id}");
                               String name = element.name ?? "";
                               String surname = element.surname ?? "";
                               String discipline = element.discipline ?? "";
                               String toAdd = name + " " + surname + " - (" + discipline + ")";
                               recipientsName.add(toAdd);
-                            });
+                            }
                           }
                           List<int> alreadySelected = [];
-                          selectedRecipients!.forEach((selected) {
-                            if (recipients!.indexOf(selected) >= 0) alreadySelected.add(recipients.indexOf(selected));
-                          });
+                          for (var selected in selectedRecipients!) {
+                            if (recipients!.contains(selected)) alreadySelected.add(recipients.indexOf(selected));
+                          }
                           List<int>? selection = (await (CustomDialogs.showMultipleChoicesDialog(
                               context, recipientsName, alreadySelected,
                               singleChoice: false))) as List<int>?;
                           if (selection != null) {
                             CustomLogger.log("BOTTOM SHEET", "(Write mail) Selection: $selection");
                             setState(() {
-                              selection.forEach((index) {
-                                if (!selectedRecipients!.contains(recipients![index]))
+                              for (var index in selection) {
+                                if (!selectedRecipients!.contains(recipients![index])) {
                                   selectedRecipients!.add(recipients[index]);
-                              });
+                                }
+                              }
                             });
                           }
                         },
@@ -199,7 +200,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
-            Container(
+            SizedBox(
               height: screenSize.size.height / 10 * 0.6,
               width: screenSize.size.width / 5 * 4.5,
               child: TextField(
@@ -207,8 +208,8 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                 maxLines: 1,
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
-                decoration: new InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(
                       horizontal: screenSize.size.width / 5 * 0.04, vertical: screenSize.size.height / 10 * 0.1),
                   labelText: 'Sujet',
@@ -222,7 +223,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
-            Container(
+            SizedBox(
               height: screenSize.size.height / 10 * 6.5,
               width: screenSize.size.width,
               child: ClipRRect(
@@ -255,11 +256,11 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-          if (this.widget.defaultRecipients != null) {
-            selectedRecipients = this.widget.defaultRecipients;
+          if (widget.defaultRecipients != null) {
+            selectedRecipients = widget.defaultRecipients;
           }
-          if (this.widget.defaultSubject != null) {
-            subjectController.text = "Re: [${this.widget.defaultSubject}]";
+          if (widget.defaultSubject != null) {
+            subjectController.text = "Re: [${widget.defaultSubject}]";
           }
         }));
   }

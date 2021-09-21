@@ -21,8 +21,8 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
     var screenSize = MediaQuery.of(context);
 
     return Scaffold(
-      appBar: new AppBar(
-          title: new Text(
+      appBar: AppBar(
+          title: const Text(
             "Statistiques",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
@@ -54,16 +54,16 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
                 borderRadius: BorderRadius.circular(11),
                 child: PlasmaRenderer(
                   particles: 5,
-                  color: Color(0x8a2513ef),
+                  color: const Color(0x8a2513ef),
                   size: 1.67,
                   speed: 10,
                   offset: 0.00,
                   blendMode: BlendMode.screen,
-                  child: Container(
+                  child: SizedBox(
                     width: screenSize.size.width / 5 * 4.8,
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           "Statistiques globales",
                           style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 18),
                         ),
@@ -73,7 +73,7 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("45650",
+                            const Text("45650",
                                 style: TextStyle(
                                     fontFamily: "Asap",
                                     color: Colors.white,
@@ -87,7 +87,7 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
                                   borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
                               margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
                               message: "Votre score global calculé à partir d'une formule secrète",
-                              child: Icon(
+                              child: const Icon(
                                 MdiIcons.information,
                                 color: Colors.white,
                               ),
@@ -99,7 +99,7 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
                           alignment: WrapAlignment.center,
                           runSpacing: screenSize.size.height / 10 * 0.1,
                           spacing: screenSize.size.width / 5 * 0.2,
-                          children: [
+                          children: const [
                             LeadingAndSubtitle(
                               leading: Text(
                                 "14.5",
@@ -138,7 +138,7 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
-            Container(
+            SizedBox(
               width: screenSize.size.width / 5 * 4.8,
               child: ExpandablePanel(
                 header: Container(
@@ -147,12 +147,12 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColorLight,
                     shape: BoxShape.rectangle,
-                    borderRadius: new BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-                    boxShadow: <BoxShadow>[
-                      new BoxShadow(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                    boxShadow: const <BoxShadow>[
+                      BoxShadow(
                         color: Colors.black12,
                         blurRadius: 10.0,
-                        offset: new Offset(0.0, 10.0),
+                        offset: Offset(0.0, 10.0),
                       ),
                     ],
                   ),
@@ -173,12 +173,12 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
                       color: Theme.of(context).primaryColorLight,
                       shape: BoxShape.rectangle,
                       borderRadius:
-                          new BorderRadius.only(bottomRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
-                      boxShadow: <BoxShadow>[
-                        new BoxShadow(
+                          const BorderRadius.only(bottomRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
+                      boxShadow: const <BoxShadow>[
+                        BoxShadow(
                           color: Colors.black12,
                           blurRadius: 10.0,
-                          offset: new Offset(0.0, 10.0),
+                          offset: Offset(0.0, 10.0),
                         ),
                       ],
                     )),
@@ -189,12 +189,12 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
                     color: Theme.of(context).primaryColorLight,
                     shape: BoxShape.rectangle,
                     borderRadius:
-                        new BorderRadius.only(bottomRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
-                    boxShadow: <BoxShadow>[
-                      new BoxShadow(
+                        const BorderRadius.only(bottomRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
+                    boxShadow: const <BoxShadow>[
+                      BoxShadow(
                         color: Colors.black12,
                         blurRadius: 10.0,
-                        offset: new Offset(0.0, 10.0),
+                        offset: Offset(0.0, 10.0),
                       ),
                     ],
                   ),

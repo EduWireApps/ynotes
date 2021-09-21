@@ -17,14 +17,13 @@ class _LoginTextFieldState extends State<LoginTextField> {
   late bool obscured;
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
         widget.label.toUpperCase(),
         style: TextStyle(
             fontFamily: "Asap", fontSize: 14, fontWeight: FontWeight.w600, color: theme.colors.foregroundColor),
       ),
-      SizedBox(
+      const SizedBox(
         height: 5,
       ),
       Container(
@@ -35,14 +34,14 @@ class _LoginTextFieldState extends State<LoginTextField> {
             children: [
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: TextField(
                     maxLines: 1,
                     controller: widget.controller,
                     obscureText: obscured,
                     style: TextStyle(color: theme.colors.foregroundColor),
                     textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(
                           bottom: 16, // HERE THE IMPORTANT PART
@@ -63,7 +62,7 @@ class _LoginTextFieldState extends State<LoginTextField> {
                             size: 30, color: theme.colors.foregroundLightColor))),
             ],
           ))
-    ]));
+    ]);
   }
 
   @override

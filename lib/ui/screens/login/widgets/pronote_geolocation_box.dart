@@ -6,7 +6,7 @@ import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/pronote/schools_controller.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
-import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
+import 'package:ynotes/ui/screens/login/content/login_text_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_text_field.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
@@ -38,19 +38,17 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
           ChangeNotifierProvider<PronoteSchoolsController>.value(
             value: pronoteSchoolsCon,
             child: Consumer<PronoteSchoolsController>(builder: (context, _model, child) {
-              return Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AnimatedSwitcher(
-                      duration: Duration(milliseconds: 200),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return ScaleTransition(child: child, scale: animation);
-                      },
-                      child: getView(_model),
-                    )
-                  ],
-                ),
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: getView(_model),
+                  )
+                ],
               );
             }),
           ),
@@ -61,7 +59,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
 
   Widget buildError(String? error) {
     return Column(
-      key: ValueKey<int>(1),
+      key: const ValueKey<int>(1),
       children: [
         Text(
           LoginPageTextContent.pronote.geolocation.error + "\n $error",
@@ -72,7 +70,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
               fontSize: 12.5.sp.clamp(0, 19)),
           textAlign: TextAlign.center,
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         YButton(
@@ -90,9 +88,9 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
     var screenSize = MediaQuery.of(context);
 
     return Column(
-      key: ValueKey<int>(0),
+      key: const ValueKey<int>(0),
       children: [
-        Container(
+        SizedBox(
           height: screenSize.size.height / 10 * 2.5,
           child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard!),
         ),
@@ -113,7 +111,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
   Widget buildSchools(List? schools) {
     var screenSize = MediaQuery.of(context);
 
-    return Container(
+    return SizedBox(
       width: screenSize.size.width / 5 * 4,
       child: Column(
         children: [
@@ -122,7 +120,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
             controller: searchCon,
           ),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
-          Container(
+          SizedBox(
               height: 30.h,
               child: filterSchools(schools as List<PronoteSchool>?).length != 0
                   ? ListView.builder(
@@ -232,7 +230,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
   Widget buildStatusRequest(List<PronoteSpace>? spaces) {
     return Container(
         padding: EdgeInsets.symmetric(vertical: 0.2.h),
-        child: spaces != null && (spaces.length != 0)
+        child: spaces != null && (spaces.isNotEmpty)
             ? Column(
                 children: [
                   Text(
@@ -252,7 +250,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
                         color: theme.colors.foregroundLightColor,
                         fontSize: 15),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   ColumnBuilder(
@@ -267,7 +265,7 @@ class _PronoteGeolocationBoxState extends State<PronoteGeolocationBox> {
   }
 
   filterSchools(List<PronoteSchool>? schools) {
-    if (schools != null && schools.length != 0) {
+    if (schools != null && schools.isNotEmpty) {
       return schools.where((element) => element.name!.toUpperCase().contains(searchCon.text.toUpperCase())).toList();
     }
     return schools;

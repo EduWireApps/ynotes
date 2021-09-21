@@ -31,23 +31,23 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
 
   @override
   Widget build(BuildContext context) {
-    CustomLogger.log("BOTTOM SHEET", "(Read mail) Mail id: ${this.widget.mail.id}");
+    CustomLogger.log("BOTTOM SHEET", "(Read mail) Mail id: ${widget.mail.id}");
     MediaQueryData screenSize = MediaQuery.of(context);
     return Wrap(
       alignment: WrapAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
                 color: Theme.of(context).primaryColor),
             child: FutureBuilder<String?>(
                 future: getMail(),
                 builder: (context, snapshot) {
                   return Container(
-                      padding: EdgeInsets.all(0),
-                      child: new Column(
+                      padding: const EdgeInsets.all(0),
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Container(
@@ -70,12 +70,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      if (this.widget.mail.files.toList().length > 0)
+                                      if (widget.mail.files.toList().isNotEmpty)
                                         IconButton(
                                           onPressed: () async {
-                                            showFilesModalBottomSheet(context, this.widget.mail.files.toList());
+                                            showFilesModalBottomSheet(context, widget.mail.files.toList());
                                           },
-                                          icon: Icon(MdiIcons.file),
+                                          icon: const Icon(MdiIcons.file),
                                           color: ThemeUtils.textColor(),
                                         ),
                                       IconButton(
@@ -93,7 +93,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             height:
                                 isLargeScreen ? screenSize.size.height / 10 * 5.5 : screenSize.size.height / 10 * (8.8),
                             child: SingleChildScrollView(
@@ -104,7 +104,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                         horizontal: screenSize.size.width / 5 * 0.2,
                                         vertical: screenSize.size.height / 10 * 0.2),
                                     child: AutoSizeText(
-                                      this.widget.mail.subject != "" ? this.widget.mail.subject ?? "" : "(Sans sujet)",
+                                      widget.mail.subject != "" ? widget.mail.subject ?? "" : "(Sans sujet)",
                                       maxLines: 100,
                                       style: TextStyle(
                                           fontFamily: "Asap",
@@ -114,16 +114,16 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  Container(
+                                  SizedBox(
                                     height: screenSize.size.height / 10 * 0.8,
                                     child: Row(
                                       children: [
                                         Container(
-                                            margin: EdgeInsets.only(left: 15),
+                                            margin: const EdgeInsets.only(left: 15),
                                             width: 90,
                                             child: CircleAvatar(
                                               child: Text(
-                                                this.widget.mail.from?["name"][0] ?? "",
+                                                widget.mail.from?["name"][0] ?? "",
                                                 style: TextStyle(
                                                     fontFamily: "Asap",
                                                     color: ThemeUtils.textColor(),
@@ -133,7 +133,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                             )),
                                         Expanded(
                                           child: Container(
-                                            margin: EdgeInsets.only(left: 15),
+                                            margin: const EdgeInsets.only(left: 15),
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +142,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                                   spacing: screenSize.size.width / 5 * 0.1,
                                                   children: [
                                                     Text(
-                                                      this.widget.mail.from?["name"] ?? "",
+                                                      widget.mail.from?["name"] ?? "",
                                                       style:
                                                           TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                                       overflow: TextOverflow.ellipsis,
@@ -157,9 +157,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                                     ),
                                                   ],
                                                 ),
-                                                if ((this.widget.mail.to ?? []).isNotEmpty)
+                                                if ((widget.mail.to ?? []).isNotEmpty)
                                                   Text(
-                                                    this.widget.mail.to![0]?["name"] ?? "",
+                                                    widget.mail.to![0]?["name"] ?? "",
                                                     style: TextStyle(
                                                         fontFamily: "Asap",
                                                         color: ThemeUtils.isThemeDark
@@ -177,7 +177,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                             icon: Icon(MdiIcons.undoVariant, color: ThemeUtils.textColor()),
                                             onPressed: () async {
                                               await CustomDialogs.writeModalBottomSheet(context,
-                                                  defaultSubject: this.widget.mail.subject,
+                                                  defaultSubject: widget.mail.subject,
                                                   defaultListRecipients: recipientFromMap());
                                             },
                                           ),
@@ -185,7 +185,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                       ],
                                     ),
                                   ),
-                                  Container(
+                                  SizedBox(
                                     width: screenSize.size.width,
                                     child: (snapshot.hasData)
                                         ? Column(
@@ -207,15 +207,15 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                                   textStyle: TextStyle(color: ThemeUtils.textColor()),
                                                 ),
                                               ),
-                                              if (this.widget.mail.files.toList().length > 0)
+                                              if (widget.mail.files.toList().isNotEmpty)
                                                 CustomButtons.materialButton(context, null, null, () {
-                                                  showFilesModalBottomSheet(context, this.widget.mail.files.toList());
+                                                  showFilesModalBottomSheet(context, widget.mail.files.toList());
                                                 },
-                                                    label: this.widget.mail.files.toList().length.toString() +
+                                                    label: widget.mail.files.toList().length.toString() +
                                                         " pièce" +
-                                                        (this.widget.mail.files.toList().length > 1 ? "s" : "") +
+                                                        (widget.mail.files.toList().length > 1 ? "s" : "") +
                                                         " jointe" +
-                                                        (this.widget.mail.files.toList().length > 1 ? "s" : ""),
+                                                        (widget.mail.files.toList().length > 1 ? "s" : ""),
                                                     icon: MdiIcons.file),
                                             ],
                                           )
@@ -259,12 +259,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
 
   recipientFromMap() {
     return [
-      Recipient(
-          this.widget.mail.from?["prenom"],
-          this.widget.mail.from?["nom"],
-          this.widget.mail.from?["id"].toString(),
-          this.widget.mail.from?["type"] == "P",
-          this.widget.mail.from?["matiere"])
+      Recipient(widget.mail.from?["prenom"], widget.mail.from?["nom"], widget.mail.from?["id"].toString(),
+          widget.mail.from?["type"] == "P", widget.mail.from?["matiere"])
     ];
   }
 }

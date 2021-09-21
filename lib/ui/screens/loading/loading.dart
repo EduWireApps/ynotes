@@ -36,12 +36,12 @@ class _LoadingPageState extends State<LoadingPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image(
-              image: AssetImage('assets/images/icons/app/AppIcon.png'),
+              image: const AssetImage('assets/images/icons/app/AppIcon.png'),
               width: 100,
               color: theme.colors.primary.backgroundColor,
             ),
-            YVerticalSpacer(50),
-            SizedBox(width: 200, child: YLinearProgressBar())
+            const YVerticalSpacer(50),
+            const SizedBox(width: 200, child: YLinearProgressBar())
           ],
         )),
       ),

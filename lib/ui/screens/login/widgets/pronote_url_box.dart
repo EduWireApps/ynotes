@@ -6,7 +6,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
-import 'package:ynotes/ui/screens/login/content/loginTextContent.dart';
+import 'package:ynotes/ui/screens/login/content/login_text_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_dialog.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_text_field.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_web_view.dart';
@@ -35,14 +35,14 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
       child: Column(
         children: [
           LoginTextField(label: LoginPageTextContent.pronote.url.url, controller: widget.urlCon),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Row(
             children: [
               InkWell(
                 onTap: () {
-                  print("");
+                  // TODO: show a dialog to tell the user what to do when he has forgotten his password
                 },
                 child: Text(
                   LoginPageTextContent.pronote.url.forgotUrl,
@@ -50,7 +50,7 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
                       fontFamily: "Asap", color: theme.colors.foregroundColor, decoration: TextDecoration.underline),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               YButton(
                   onPressed: () => processUrl(),
                   onLongPress: widget.longPressCallBack,
@@ -64,7 +64,7 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
 
   ///Pronote URL autoformatter
   formatURL(String url) {
-    RegExp regExp = new RegExp(
+    RegExp regExp = RegExp(
       r"(.*/pronote)(.*)",
       caseSensitive: false,
       multiLine: false,
@@ -72,7 +72,7 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
     if (regExp.hasMatch(url) && regExp.firstMatch(url)?.groupCount == 2) {
       String suffix = regExp.firstMatch(url)?.group(2) ?? "";
 
-      RegExp suffixMatches = new RegExp(
+      RegExp suffixMatches = RegExp(
         r"/?(mobile\.)?(.*)?",
         caseSensitive: false,
         multiLine: false,

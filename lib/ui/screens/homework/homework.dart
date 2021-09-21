@@ -9,6 +9,7 @@ import 'widgets/homework_timeline.dart';
 class HomeworkPage extends StatefulWidget {
   final HomeworkController hwController = appSys.homeworkController;
   HomeworkPage({Key? key}) : super(key: key);
+  @override
   State<StatefulWidget> createState() => HomeworkPageState();
 }
 
@@ -18,18 +19,19 @@ class HomeworkPageState extends State<HomeworkPage> with LayoutMixin {
   PageController agendaSettingsController = PageController(initialPage: 1);
 
   animateToPage(int index) {
-    _pageControllerHW!.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
+    _pageControllerHW!.animateToPage(index, duration: const Duration(milliseconds: 250), curve: Curves.ease);
   }
 
   @override
   Widget build(BuildContext context) {
-    return YPage(title: "Devoirs", isScrollable: false, body: HomeworkTimeline());
+    return const YPage(title: "Devoirs", isScrollable: false, body: HomeworkTimeline());
   }
 
   void callback() {
     setState(() {});
   }
 
+  @override
   void initState() {
     super.initState();
   }

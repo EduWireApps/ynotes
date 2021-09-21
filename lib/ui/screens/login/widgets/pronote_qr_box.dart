@@ -44,94 +44,90 @@ class _PronoteQrCodeBoxState extends State<PronoteQrCodeBox> {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: theme.colors.foregroundLightColor),
       child: Column(
         children: [
-          Container(
+          SizedBox(
             height: 40.h,
             child: PageView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: pageCon,
               children: [
-                Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 50.w.clamp(0, 500),
-                        height: 50.w.clamp(0, 500),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: QRView(
-                            key: qrKey,
-                            onQRViewCreated: _onQRViewCreated,
-                          ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 50.w.clamp(0, 500),
+                      height: 50.w.clamp(0, 500),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: QRView(
+                          key: qrKey,
+                          onQRViewCreated: _onQRViewCreated,
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FutureBuilder<bool?>(
-                                future: controller?.getFlashStatus(),
-                                builder: (context, flashFuture) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        color: (flashFuture.data ?? false)
-                                            ? theme.colors.primary.backgroundColor
-                                            : theme.colors.backgroundLightColor,
-                                        shape: BoxShape.circle),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        controller?.toggleFlash();
-                                        setState(() {});
-                                      },
-                                      icon: Icon(MdiIcons.flashlight,
-                                          color: (flashFuture.data ?? false)
-                                              ? Colors.white
-                                              : theme.colors.foregroundColor),
-                                    ),
-                                  );
-                                }),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Container(
-                              decoration:
-                                  BoxDecoration(color: theme.colors.backgroundLightColor, shape: BoxShape.circle),
-                              child: IconButton(
-                                onPressed: () {
-                                  controller?.flipCamera();
-                                },
-                                icon: Icon(
-                                  MdiIcons.cameraFlip,
-                                  color: theme.colors.foregroundColor,
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FutureBuilder<bool?>(
+                            future: controller?.getFlashStatus(),
+                            builder: (context, flashFuture) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: (flashFuture.data ?? false)
+                                        ? theme.colors.primary.backgroundColor
+                                        : theme.colors.backgroundLightColor,
+                                    shape: BoxShape.circle),
+                                child: IconButton(
+                                  onPressed: () {
+                                    controller?.toggleFlash();
+                                    setState(() {});
+                                  },
+                                  icon: Icon(MdiIcons.flashlight,
+                                      color: (flashFuture.data ?? false) ? Colors.white : theme.colors.foregroundColor),
                                 ),
-                              ),
-                            ),
-                          ],
+                              );
+                            }),
+                        const SizedBox(
+                          width: 8,
                         ),
-                      ),
-                      if (loginData != null)
-                        FadeAnimation(
-                          0.5,
-                          Text(
-                            "✓ QR Code détecté",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: "Asap", color: Colors.green, fontWeight: FontWeight.w400, fontSize: 22),
+                        Container(
+                          decoration: BoxDecoration(color: theme.colors.backgroundLightColor, shape: BoxShape.circle),
+                          child: IconButton(
+                            onPressed: () {
+                              controller?.flipCamera();
+                            },
+                            icon: Icon(
+                              MdiIcons.cameraFlip,
+                              color: theme.colors.foregroundColor,
+                            ),
                           ),
                         ),
-                      SizedBox(height: 25),
-                      if (loginData != null)
-                        CustomButtons.materialButton(context, 130, 39, () {
-                          pageCon.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-                        }, label: "Continuer", backgroundColor: Color(0xff4ADE80), icon: Icons.arrow_forward_rounded)
-                    ],
-                  ),
+                      ],
+                    ),
+                    if (loginData != null)
+                      const FadeAnimation(
+                        0.5,
+                        Text(
+                          "✓ QR Code détecté",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: "Asap", color: Colors.green, fontWeight: FontWeight.w400, fontSize: 22),
+                        ),
+                      ),
+                    const SizedBox(height: 25),
+                    if (loginData != null)
+                      CustomButtons.materialButton(context, 130, 39, () {
+                        pageCon.animateToPage(1, duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+                      },
+                          label: "Continuer",
+                          backgroundColor: const Color(0xff4ADE80),
+                          icon: Icons.arrow_forward_rounded)
+                  ],
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 45.w.clamp(0, 500),
                       child: PinCodeTextField(
                         appContext: context,
@@ -157,12 +153,12 @@ class _PronoteQrCodeBoxState extends State<PronoteQrCodeBox> {
                           fontWeight: FontWeight.normal,
                           fontSize: 21),
                     ),
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                     CustomButtons.materialButton(context, null, 39, () {
                       setState(() {
                         loginData = null;
                       });
-                      pageCon.animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+                      pageCon.animateToPage(0, duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
                     }, label: "Re-scanner un QR Code", backgroundColor: Colors.grey, icon: Icons.arrow_back_ios_rounded)
                   ],
                 ),
@@ -188,7 +184,7 @@ class _PronoteQrCodeBoxState extends State<PronoteQrCodeBox> {
       //Init the device UUID (important)
       //Used by pronote to fingerprint the device
 
-      appSys.settings.system.uuid = Uuid().v4();
+      appSys.settings.system.uuid = const Uuid().v4();
       appSys.saveSettings();
 
       //Open the loading dialog with credentials

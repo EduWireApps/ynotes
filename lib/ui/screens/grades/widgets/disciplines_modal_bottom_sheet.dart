@@ -22,7 +22,7 @@ void disciplineModalBottomSheet(context, Discipline? discipline, Function? callb
     }
   }
   showModalBottomSheet(
-      shape: RoundedRectangleBorder(),
+      shape: const RoundedRectangleBorder(),
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
@@ -36,7 +36,7 @@ class DisciplineModalBottomSheet extends StatefulWidget {
   final Function? callback;
   final Color? colorGroup;
 
-  const DisciplineModalBottomSheet(this.discipline, this.callback, this.colorGroup);
+  const DisciplineModalBottomSheet(this.discipline, this.callback, this.colorGroup, {Key? key}) : super(key: key);
 
   @override
   _DisciplineModalBottomSheetState createState() => _DisciplineModalBottomSheetState();
@@ -51,10 +51,10 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
       alignment: WrapAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
                 color: Theme.of(context).primaryColor),
             padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
             child: Column(
@@ -63,12 +63,12 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
                 SizedBox(
                   height: screenSize.size.height / 10 * 0.1,
                 ),
-                DragHandle(),
+                const DragHandle(),
                 SizedBox(
                   height: screenSize.size.height / 10 * 0.1,
                 ),
                 ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 500),
+                  constraints: const BoxConstraints(maxWidth: 500),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -120,7 +120,7 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
               widget.callback!();
             }
           }
-        }, label: "Couleur", icon: MdiIcons.palette, padding: EdgeInsets.all(10)),
+        }, label: "Couleur", icon: MdiIcons.palette, padding: const EdgeInsets.all(10)),
       ],
     );
   }
@@ -128,13 +128,13 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
   Widget buildDisciplineAverageAndDetails() {
     return Row(
       children: [
-        Expanded(flex: 5, child: SizedBox()),
+        const Expanded(flex: 5, child: SizedBox()),
         buildSquareKeyValue("MAX", widget.discipline?.maxClassAverage ?? "N/A"),
-        Expanded(child: SizedBox()),
+        const Expanded(child: SizedBox()),
         buildSquareKeyValue("MIN", widget.discipline?.minClassAverage ?? "N/A"),
-        Expanded(child: SizedBox()),
+        const Expanded(child: SizedBox()),
         buildSquareKeyValue("CLASSE", widget.discipline?.classAverage ?? "N/A"),
-        Expanded(flex: 5, child: SizedBox()),
+        const Expanded(flex: 5, child: SizedBox()),
       ],
     );
   }
@@ -146,7 +146,7 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
         initialData: 0,
         builder: (context, snapshot) {
           return ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 100, maxHeight: 250),
+            constraints: const BoxConstraints(minHeight: 100, maxHeight: 250),
             child: Container(
               decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
               padding: EdgeInsets.symmetric(
@@ -176,12 +176,12 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 100, maxHeight: 100),
+      constraints: const BoxConstraints(maxWidth: 100, maxHeight: 100),
       child: Container(
         decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
         width: screenSize.size.width / 5 * 1,
         height: screenSize.size.width / 5 * 1,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -204,7 +204,7 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 80, maxHeight: 80),
+      constraints: const BoxConstraints(maxWidth: 80, maxHeight: 80),
       child: Container(
         width: screenSize.size.width / 5 * 0.9,
         height: screenSize.size.width / 5 * 0.9,

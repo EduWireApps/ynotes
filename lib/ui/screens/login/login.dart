@@ -11,12 +11,12 @@ class LoginPage extends StatelessWidget {
 
   static final List<_SchoolServiceBox> _services = [
     _SchoolServiceBox(
-        image: AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
+        image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
         imageColor: theme.colors.foregroundColor,
         name: 'Ecole Directe',
         route: '/login/ecoledirecte',
         index: 0),
-    _SchoolServiceBox(
+    const _SchoolServiceBox(
         image: AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
         name: 'Pronote',
         route: '/login/pronote',
@@ -131,7 +131,7 @@ class __SchoolServiceBoxState extends State<_SchoolServiceBox> {
             if (widget.beta)
               Padding(
                 padding: YPadding.pl(YScale.s4),
-                child: YBadge(text: "En bêta"),
+                child: const YBadge(text: "En bêta"),
               )
           ],
         ),

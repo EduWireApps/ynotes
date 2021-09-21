@@ -8,17 +8,17 @@ import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void contactBottomSheet(context) {
   showModalBottomSheet(
-      shape: RoundedRectangleBorder(),
+      shape: const RoundedRectangleBorder(),
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
-        return LoginContactModalBottomSheet();
+        return const LoginContactModalBottomSheet();
       });
 }
 
 class LoginContactModalBottomSheet extends StatefulWidget {
-  const LoginContactModalBottomSheet();
+  const LoginContactModalBottomSheet({Key? key}) : super(key: key);
 
   @override
   _LoginContactModalBottomSheetState createState() => _LoginContactModalBottomSheetState();
@@ -47,10 +47,10 @@ class _LoginContactModalBottomSheetState extends State<LoginContactModalBottomSh
       alignment: WrapAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
                 color: Theme.of(context).primaryColor),
             padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
             child: Column(
@@ -59,9 +59,9 @@ class _LoginContactModalBottomSheetState extends State<LoginContactModalBottomSh
                 SizedBox(
                   height: screenSize.size.height / 10 * 0.1,
                 ),
-                DragHandle(),
+                const DragHandle(),
                 Row(
-                  children: [Spacer()],
+                  children: const [Spacer()],
                 ),
                 SizedBox(
                   height: screenSize.size.height / 10 * 0.1,
