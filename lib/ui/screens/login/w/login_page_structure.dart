@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/ui/components/y_page/y_page_local.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -47,7 +49,13 @@ class LoginPageStructure extends StatelessWidget {
                                   icon: Icons.arrow_back_ios_new_rounded),
                             YButton(
                               text: "Logs",
-                              onPressed: () {},
+                              onPressed: () {
+                                // TODO: implement real logs page
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const YPageLocal(child: LogsPage(), title: "Logs")));
+                              },
                               variant: YButtonVariant.text,
                               color: YColor.secondary,
                               invertColors: true,
@@ -78,7 +86,10 @@ class LoginPageStructure extends StatelessWidget {
                             ),
                           ),
                           YVerticalSpacer(YScale.s5),
-                          body,
+                          Padding(
+                            padding: YPadding.px(YScale.s2),
+                            child: body,
+                          ),
                           YVerticalSpacer(YScale.s3),
                           Padding(
                             padding: YPadding.px(YScale.s2),

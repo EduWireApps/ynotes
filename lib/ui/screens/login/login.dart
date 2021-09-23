@@ -38,32 +38,30 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoginPageStructure(
-        backButton: false,
-        subtitle: "Choisis ton service scolaire",
-        body: Padding(
-          padding: YPadding.px(YScale.s2),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            ..._children,
-            Padding(
-              padding: YPadding.pt(YScale.s1),
-              child: YButton(
-                text: "Je ne vois pas mon service",
-                variant: YButtonVariant.text,
-                onPressed: () async {
-                  await YDialogs.showInfo(
-                      context,
-                      YInfoDialog(
-                        title: "Je ne vois pas mon service",
-                        body: Text(
-                            "Si tu ne vois pas ton service scolaire dans la liste, c'est que yNotes ne le prend pas en charge. Mais si tu sais coder et que tu as envie de l'ajouter, nous t'invitons à prendre contact avec nous sur Github ou Discord.",
-                            style: theme.texts.body1),
-                        confirmLabel: "OK",
-                      ));
-                },
-              ),
-            )
-          ]),
-        ));
+      backButton: false,
+      subtitle: "Choisis ton service scolaire",
+      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ..._children,
+        Padding(
+          padding: YPadding.pt(YScale.s1),
+          child: YButton(
+            text: "Je ne vois pas mon service",
+            variant: YButtonVariant.text,
+            onPressed: () async {
+              await YDialogs.showInfo(
+                  context,
+                  YInfoDialog(
+                    title: "Je ne vois pas mon service",
+                    body: Text(
+                        "Si tu ne vois pas ton service scolaire dans la liste, c'est que yNotes ne le prend pas en charge. Mais si tu sais coder et que tu as envie de l'ajouter, nous t'invitons à prendre contact avec nous sur Github ou Discord.",
+                        style: theme.texts.body1),
+                    confirmLabel: "OK",
+                  ));
+            },
+          ),
+        )
+      ]),
+    );
   }
 }
 
