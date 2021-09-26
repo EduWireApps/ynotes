@@ -11,12 +11,14 @@ class KVS {
     return await _storage.read(key: key);
   }
 
-  static Future<void> write({required String key, required String? value}) async {
+  static Future<void> write({required String key, required String value}) async {
     return await _storage.write(key: key, value: value);
   }
 
   static Future<void> delete({required String key}) async {
-    return await _storage.delete(key: key);
+    if (await containsKey(key: key)) {
+      return await _storage.delete(key: key);
+    }
   }
 
   static Future<bool> containsKey({required String key}) async {

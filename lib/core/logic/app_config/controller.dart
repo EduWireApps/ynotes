@@ -18,6 +18,7 @@ import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/model.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
@@ -94,9 +95,8 @@ class ApplicationSystem extends ChangeNotifier {
 
       _initSettings();
       //Import secureStorage
-      const storage = FlutterSecureStorage();
       //Delete all
-      await storage.deleteAll();
+      await KVS.deleteAll();
       updateTheme("clair");
     } catch (e) {
       CustomLogger.log("APPSYS", "Error occured when exiting the app");

@@ -185,7 +185,6 @@ class APIPronote extends API {
           if (localClient.paramsUser != null) {
             appSys.account = PronoteAccountConverter.account(localClient.paramsUser!);
           }
-
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
             await KVS.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];

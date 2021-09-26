@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart' as conv;
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
@@ -78,17 +77,15 @@ class Communication {
   Requests? session;
   dynamic requests;
 
-  Communication(String site, var cookies, var client) {
+  Communication(String site, this.cookies, this.client) {
     rootSite = getRootAdress(site)[0];
     htmlPage = getRootAdress(site)[1];
 
     encryption = Encryption();
     attributes = {};
     requestNumber = 1;
-    cookies = cookies;
     lastPing = 0;
     authorizedTabs = [];
-    client = client;
     shouldCompressRequests = false;
     shouldEncryptRequests = false;
     lastResponse = null;
@@ -520,7 +517,7 @@ class PronoteClient {
   }
 
   Future<bool?> init() async {
-    if (!Platform.isLinux) {
+    if (!Platform.isLinux && !Platform.isWindows) {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
       stepsLogger.add("ⓘ " +
@@ -733,17 +730,16 @@ class PronoteClient {
 
   _login() async {
     try {
-      const storage = FlutterSecureStorage();
-      await storage.write(key: "username", value: username);
+      await KVS.write(key: "username", value: username);
       if (mobileLogin == false && qrCodeLogin == false) {
-        await storage.write(key: "password", value: password);
+        await KVS.write(key: "password", value: password);
       }
       //In case password changed
-      if ((mobileLogin == true || qrCodeLogin == true) && (await storage.read(key: "password")) != null) {
-        password = await storage.read(key: "password");
+      if ((mobileLogin == true || qrCodeLogin == true) && (await KVS.read(key: "password")) != null) {
+        password = await KVS.read(key: "password");
       }
-      await storage.write(key: "pronoteurl", value: pronoteUrl);
-      await storage.write(key: "ispronotecas", value: ((mobileLogin ?? false) || (qrCodeLogin ?? false)).toString());
+      await KVS.write(key: "pronoteurl", value: pronoteUrl);
+      await KVS.write(key: "ispronotecas", value: ((mobileLogin ?? false) || (qrCodeLogin ?? false)).toString());
 
       CustomLogger.log("PRONOTE", "Saved credentials");
     } catch (e) {

@@ -9,7 +9,7 @@ import 'package:ynotes/core/utils/kvs.dart';
 ///Redirect to the good CAS
 ///Return type : cookies as Map
 callCas(String? cas, String username, String? password, String url) async {
-  await KVS.write(key: "pronotecas", value: cas);
+  await KVS.write(key: "pronotecas", value: cas ?? "");
   cas ??= "aucun";
   switch (cas.toLowerCase()) {
     case ("aucun"):

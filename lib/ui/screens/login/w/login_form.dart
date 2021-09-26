@@ -37,7 +37,7 @@ class _LoginFormState extends State<LoginForm> {
       final List<dynamic>? data =
           await appSys.api!.login(_credentials.username.trim(), _credentials.password.trim(), additionnalSettings: {
         "url": _credentials.url.trim(),
-        // "demo": false,
+        "demo": false,
         "mobileCasLogin": false,
       });
       if (data != null && data[0] == 1) {

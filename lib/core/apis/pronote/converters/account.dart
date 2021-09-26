@@ -81,7 +81,7 @@ class PronoteAccountConverter {
     }
     tabs.add(appTabs.summary);
     tabs.add(appTabs.files);
-    return tabs;
+    return tabs.toSet().toList();
   }
 
   static List<SchoolAccount> schoolAccounts(List? schoolAccountsData) {

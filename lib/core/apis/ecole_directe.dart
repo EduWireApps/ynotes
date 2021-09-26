@@ -41,11 +41,6 @@ List<String> colorList = [
 
 String? token;
 
-///END OF THE API CLASS
-void createKVS(String key, String? data) async {
-  await KVS.write(key: key, value: data);
-}
-
 ///  CLOUD SUB API
 /// Read this : called with two arguments. The first one is "args" and is used to add the path:
 
@@ -219,14 +214,14 @@ class APIEcoleDirecte extends API {
           token = req['token'];
 
           //Create secure KVS for credentials
-          createKVS("password", password ?? "");
-          createKVS("username", username ?? "");
+          KVS.write(key: "password", value: password ?? "");
+          KVS.write(key: "username", value: username ?? "");
           //IMPORTANT ! store the user ID
-          createKVS("userID", userID);
-          createKVS("classe", classe);
-          createKVS("demo", additionnalSettings?["demo"].toString());
+          KVS.write(key: "userID", value: userID);
+          KVS.write(key: "classe", value: classe);
+          KVS.write(key: "demo", value: additionnalSettings?["demo"].toString() ?? "");
           //random date
-          createKVS("startday", DateTime.parse("2020-02-02").toString());
+          KVS.write(key: "startday", value: DateTime.parse("2020-02-02").toString());
 
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);
