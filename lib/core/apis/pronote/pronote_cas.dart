@@ -4,27 +4,20 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
-import 'package:ynotes/core/utils/secure_storage.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map
 callCas(String? cas, String username, String? password, String url) async {
-  final storage = CustomSecureStorage();
-  await storage.write(key: "pronotecas", value: cas);
+  await KVS.write(key: "pronotecas", value: cas);
   cas ??= "aucun";
   switch (cas.toLowerCase()) {
     case ("aucun"):
-      {
-        return null;
-      }
+      return null;
     case ("atrium sud"):
-      {
-        return await atriumSud(username, password);
-      }
+      return await atriumSud(username, password);
     case ("ile de france"):
-      {
-        return await idf(username, password, url);
-      }
+      return await idf(username, password, url);
   }
 }
 

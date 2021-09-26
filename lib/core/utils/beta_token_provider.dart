@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:supabase/supabase.dart';
-import 'package:ynotes/core/apis/ecole_directe.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 
 ///Useful to get access to any beta feature using a SupaBase db.
 ///This table should contain a 'token' column, and an 'id' column.
@@ -63,7 +63,7 @@ class BetaTokenProviderUtil {
 
   Future<Token?> _getToken() async {
     try {
-      Token token = jsonDecode(await storage.read(key: tokenName) ?? "{}");
+      Token token = jsonDecode(await KVS.read(key: tokenName) ?? "{}");
       return token;
     } catch (e) {
       return null;
@@ -85,7 +85,7 @@ class BetaTokenProviderUtil {
 
   Future<bool> _saveToken(Token token) async {
     try {
-      createStorage(tokenName, jsonEncode(token));
+      KVS.write(key: tokenName, value: jsonEncode(token));
       return true;
     } catch (e) {
       return false;

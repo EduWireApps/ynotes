@@ -21,7 +21,6 @@ import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/themes/themes.dart';
 import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
-import 'package:ynotes_packages/utilities.dart';
 
 import 'package:sizer/sizer.dart';
 

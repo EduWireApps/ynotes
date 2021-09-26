@@ -9,7 +9,7 @@ import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurring_events.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
-import 'package:ynotes/core/utils/secure_storage.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -24,8 +24,7 @@ abstract class API {
   API(this.offlineController, {required this.apiName});
 
   Future<AppAccount?> account() async {
-    final storage = CustomSecureStorage();
-    String? appAccount = await storage.read(key: "appAccount");
+    String? appAccount = await KVS.read(key: "appAccount");
     if (appAccount != null) {
       CustomLogger.log("API MODEL", "Returning account");
       return AppAccount.fromJson(jsonDecode(appAccount));

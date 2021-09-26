@@ -40,7 +40,7 @@ apiManager(Offline _offline) {
   }
 }
 
-checkPronoteURL(String url) async {
+Future<bool> checkPronoteURL(String url) async {
   var response = await http
       .get(Uri.parse(getRootAddress(url)[0] +
           (url[url.length - 1] == "/" ? "" : "/") +
@@ -123,7 +123,7 @@ setChosenParser(int chosen) async {
   appSys.saveSettings();
 }
 
-testIfPronoteCas(String url) async {
+Future<bool> testIfPronoteCas(String url) async {
   //auto forward
   if (url.contains("?")) {
     url += "&fd=1";

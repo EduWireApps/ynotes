@@ -16,10 +16,10 @@ import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/settings.dart';
 
 class APIPronote extends API {
   bool loginLock = false;
@@ -187,7 +187,7 @@ class APIPronote extends API {
           }
 
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
-            await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
+            await KVS.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
           } else {
             loginLock = false;

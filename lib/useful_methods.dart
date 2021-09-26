@@ -76,12 +76,6 @@ launchURL(url) async {
   }
 }
 
-//Redefine the switch statement
-Future<String?> readStorage(_key) async {
-  String? u = await storage.read(key: _key);
-  return u;
-}
-
 Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
   List<Discipline> newList = [];
   Future.forEach(list, (Discipline f) async {

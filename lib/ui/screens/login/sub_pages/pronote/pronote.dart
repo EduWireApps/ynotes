@@ -11,7 +11,7 @@ class LoginPronotePage extends StatelessWidget {
   static const List<_MethodBox> _methods = [
     _MethodBox(title: "QR Code", subtitle: "Cheese !", route: "/login", icon: Icons.qr_code_scanner_rounded),
     _MethodBox(title: "Géolocalisation", subtitle: "On sait où tu es", route: "/login", icon: Icons.place),
-    _MethodBox(title: "Url", subtitle: "Pose les termes", route: "/login", icon: MdiIcons.cursorText),
+    _MethodBox(title: "Url", subtitle: "Pose les termes", route: "/login/pronote/url", icon: MdiIcons.cursorText),
   ];
 
   List<Widget> get _children {

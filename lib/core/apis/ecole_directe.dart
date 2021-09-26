@@ -17,13 +17,13 @@ import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
-import 'package:ynotes/core/utils/secure_storage.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
 import 'ecole_directe/ecole_directe_methods.dart';
 
-//Create a secure storage
+//Create a secure KVS
 List<String> colorList = [
   "#f07aa0",
   "#17d0c9",
@@ -39,13 +39,11 @@ List<String> colorList = [
   "#8ac6d1"
 ];
 
-final storage = CustomSecureStorage();
-
 String? token;
 
 ///END OF THE API CLASS
-void createStorage(String key, String? data) async {
-  await storage.write(key: key, value: data);
+void createKVS(String key, String? data) async {
+  await KVS.write(key: key, value: data);
 }
 
 ///  CLOUD SUB API
@@ -204,7 +202,7 @@ class APIEcoleDirecte extends API {
           }
 
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
-            await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
+            await KVS.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
           } else {
             return [0, "Impossible de collecter les comptes."];
@@ -220,15 +218,15 @@ class APIEcoleDirecte extends API {
           //Store the token
           token = req['token'];
 
-          //Create secure storage for credentials
-          createStorage("password", password ?? "");
-          createStorage("username", username ?? "");
+          //Create secure KVS for credentials
+          createKVS("password", password ?? "");
+          createKVS("username", username ?? "");
           //IMPORTANT ! store the user ID
-          createStorage("userID", userID);
-          createStorage("classe", classe);
-          createStorage("demo", additionnalSettings?["demo"].toString());
+          createKVS("userID", userID);
+          createKVS("classe", classe);
+          createKVS("demo", additionnalSettings?["demo"].toString());
           //random date
-          createStorage("startday", DateTime.parse("2020-02-02").toString());
+          createKVS("startday", DateTime.parse("2020-02-02").toString());
 
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);

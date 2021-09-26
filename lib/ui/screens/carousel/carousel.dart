@@ -9,8 +9,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -619,7 +619,7 @@ class _Page4State extends State<Page4> {
                       height: screenSize.size.height / 10 * 0.1,
                     ),
                     CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                      createStorage("agreedTermsAndConfiguredApp", "true");
+                      KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
                       Navigator.pushReplacementNamed(context, "/summary");
                     }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: const Color(0xff5DADE2))
                     /*RaisedButton(

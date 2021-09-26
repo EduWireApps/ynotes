@@ -17,12 +17,12 @@ import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/agenda/widgets/agenda.dart';
-import 'package:ynotes/useful_methods.dart';
 
 ///The notifications class
 class AppNotification {
@@ -33,10 +33,10 @@ class AppNotification {
     Offline _offline = Offline();
     API api = apiManager(_offline);
     //Login creds
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-    String? url = await readStorage("pronoteurl");
-    String? cas = await readStorage("pronotecas");
+    String? u = await KVS.read(key: "username");
+    String? p = await KVS.read(key: "password");
+    String? url = await KVS.read(key: "pronoteurl");
+    String? cas = await KVS.read(key: "pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
         await api.login(u, p, additionnalSettings: {
@@ -300,10 +300,10 @@ class AppNotification {
     List<Lesson>? lessons = [];
     API api = apiManager(appSys.offline);
     //Login creds
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-    String? url = await readStorage("pronoteurl");
-    String? cas = await readStorage("pronotecas");
+    String? u = await KVS.read(key: "username");
+    String? p = await KVS.read(key: "password");
+    String? url = await KVS.read(key: "pronoteurl");
+    String? cas = await KVS.read(key: "pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
         await api.login(u, p, additionnalSettings: {

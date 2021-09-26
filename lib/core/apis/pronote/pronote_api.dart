@@ -18,11 +18,10 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
-import 'package:ynotes/core/utils/secure_storage.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
 
-import '../ecole_directe.dart';
 import '../utils.dart';
 
 Map errorMessages = {
@@ -105,8 +104,8 @@ class Communication {
     try {
       authorizedTabs = prepareTabs(data['donneesSec']['donnees']['listeOnglets']);
 
-      createStorage("classe", data['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
-      createStorage("userFullName", data['donneesSec']['donnees']['ressource']["L"]);
+      KVS.write(key: "classe", value: data['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
+      KVS.write(key: "userFullName", value: data['donneesSec']['donnees']['ressource']["L"]);
       isOldAPIUsed = true;
     } catch (e) {
       isOldAPIUsed = false;
@@ -559,8 +558,7 @@ class PronoteClient {
 
     startDay = inputFormat.parse(funcOptions['donneesSec']['donnees']['General']['PremierLundi']['V']);
 
-    final storage = CustomSecureStorage();
-    await storage.write(key: "startday", value: startDay.toString());
+    await KVS.write(key: "startday", value: startDay.toString());
     week = await getWeek(DateTime.now());
 
     localPeriods = periods;
@@ -842,7 +840,7 @@ class PronoteClient {
       if ((mobileLogin == true || qrCodeLogin == true) &&
           authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"] != null) {
         CustomLogger.log("PRONOTE", "Saving token");
-        await storage.write(key: "password", value: authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
+        await KVS.write(key: "password", value: authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
         password = authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];
       }
       if (authResponse['donneesSec']['donnees'].toString().contains("cle")) {
@@ -857,8 +855,10 @@ class PronoteClient {
             stepsLogger.add("✅ Prepared tabs");
 
             try {
-              createStorage("classe", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
-              createStorage("userFullName", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
+              KVS.write(
+                  key: "classe",
+                  value: mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
+              KVS.write(key: "userFullName", value: mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
             } catch (e) {
               stepsLogger.add("❌ Failed to register UserInfos");
 

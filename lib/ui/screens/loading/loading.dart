@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/ecole_directe.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes/useful_methods.dart';
@@ -7,8 +7,8 @@ import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
 
 testIfExistingAccount() async {
-  var u = await storage.read(key: "username");
-  var p = await storage.read(key: "password");
+  var u = await KVS.read(key: "username");
+  var p = await KVS.read(key: "password");
   if (u != null && p != null) {
     return true;
   } else {
@@ -56,9 +56,9 @@ class _LoadingPageState extends State<LoadingPage> {
 
   tryToConnect() async {
     await Future.delayed(const Duration(milliseconds: 500), () => "1");
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-    String? z = await readStorage("agreedTermsAndConfiguredApp");
+    String? u = await KVS.read(key: "username");
+    String? p = await KVS.read(key: "password");
+    String? z = await KVS.read(key: "agreedTermsAndConfiguredApp");
     CustomLogger.log("LOADING", "${[u, p, z]}");
     Navigator.pushReplacementNamed(context, u != null && p != null && z != null ? "/summary" : "/login");
   }

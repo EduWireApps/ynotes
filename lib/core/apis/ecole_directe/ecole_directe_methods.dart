@@ -16,6 +16,7 @@ import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
@@ -172,8 +173,8 @@ class EcoleDirecteMethod {
 
   refreshToken() async {
 //Get the password in the secure storage
-    String? password = await storage.read(key: "password");
-    String? username = await storage.read(key: "username");
+    String? password = await KVS.read(key: "password");
+    String? username = await KVS.read(key: "username");
     var url = endpoints.login;
     CustomLogger.log("LOGIN", url);
     Map<String, String> headers = {"Content-type": "text/plain"};
