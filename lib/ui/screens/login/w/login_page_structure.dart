@@ -8,11 +8,11 @@ import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class LoginPageStructure extends StatelessWidget {
+  final String subtitle;
   final bool backButton;
   final Widget body;
-  final String subtitle;
 
-  const LoginPageStructure({Key? key, this.backButton = true, required this.body, required this.subtitle})
+  const LoginPageStructure({Key? key, required this.subtitle, this.backButton = true, required this.body})
       : super(key: key);
 
   @override

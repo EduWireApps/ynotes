@@ -50,53 +50,42 @@ class _MethodBox extends StatefulWidget {
 class __SchoolServiceBoxState extends State<_MethodBox> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: YBorderRadius.xl,
-      onTap: () async {
-        Navigator.pushNamed(context, widget.route);
-      },
-      child: Ink(
-        decoration: BoxDecoration(
-          color: theme.colors.backgroundLightColor,
-          borderRadius: YBorderRadius.xl,
-        ),
-        padding: EdgeInsets.symmetric(vertical: YScale.s2, horizontal: YScale.s4),
-        child: Row(
-          children: [
-            Icon(
-              widget.icon,
-              color: theme.colors.foregroundLightColor,
-              size: YScale.s12,
-            ),
-            YHorizontalSpacer(YScale.s4),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontSize: YFontSize.xl,
-                      color: theme.colors.foregroundColor,
-                      fontWeight: YFontWeight.bold,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+    return LoginElementBox(
+        children: [
+          Icon(
+            widget.icon,
+            color: theme.colors.foregroundLightColor,
+            size: YScale.s12,
+          ),
+          YHorizontalSpacer(YScale.s4),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: YFontSize.xl,
+                    color: theme.colors.foregroundColor,
+                    fontWeight: YFontWeight.bold,
                   ),
-                  Text(
-                    widget.subtitle,
-                    style: TextStyle(
-                      fontSize: YFontSize.lg,
-                      color: theme.colors.foregroundLightColor,
-                      fontWeight: YFontWeight.medium,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  widget.subtitle,
+                  style: TextStyle(
+                    fontSize: YFontSize.lg,
+                    color: theme.colors.foregroundLightColor,
+                    fontWeight: YFontWeight.medium,
                   ),
-                ],
-              ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ],
+        onTap: () async {
+          Navigator.pushNamed(context, widget.route);
+        });
   }
 }

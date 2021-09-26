@@ -30,6 +30,9 @@ class KVS {
   }
 
   static Future<void> deleteAll() async {
-    return await _storage.deleteAll();
+    final Map<String, String> store = await _storage.readAll();
+    if (store.isNotEmpty) {
+      return await _storage.deleteAll();
+    }
   }
 }
