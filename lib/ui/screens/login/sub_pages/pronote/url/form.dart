@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/ui/screens/login/w/widgets.dart';
 
 class LoginPronoteUrlFormPageArguments {
@@ -14,7 +15,7 @@ class LoginPronoteUrlFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as LoginPronoteUrlFormPageArguments;
+    final args = RoutingUtils.getArgs<LoginPronoteUrlFormPageArguments>(context);
 
     return LoginForm(subtitle: _subtitle, url: args.url);
   }

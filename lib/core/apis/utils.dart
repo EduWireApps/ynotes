@@ -41,14 +41,18 @@ apiManager(Offline _offline) {
 }
 
 Future<bool> checkPronoteURL(String url) async {
-  var response = await http
-      .get(Uri.parse(getRootAddress(url)[0] +
-          (url[url.length - 1] == "/" ? "" : "/") +
-          "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4"))
-      .catchError((e) {});
-  if (response.statusCode == 200) {
-    return true;
-  } else {
+  final List<String> rootAddress = getRootAddress(url);
+  final String infoUrl =
+      "${rootAddress[0]}/${rootAddress[1].split("/")[1]}/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
+  try {
+    var response = await http.get(Uri.parse(infoUrl)).catchError((e) {});
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    CustomLogger.error(e);
     return false;
   }
 }
@@ -95,10 +99,11 @@ Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) asy
   return finalID;
 }
 
-getRootAddress(addr) {
+List<String> getRootAddress(addr) {
+  final Uri uri = Uri.parse(addr);
   return [
-    (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
-    (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+    "${uri.scheme}://${uri.host}${uri.port != 80 ? ':${uri.port}' : ''}",
+    "${uri.path}${uri.query == '' ? '' : '?'}${uri.query}",
   ];
 }
 
@@ -129,7 +134,7 @@ Future<bool> testIfPronoteCas(String url) async {
     url += "?fd=1";
   }
   var response = await http.get(Uri.parse(url));
-  CustomLogger.logWrapped("API UTILS", "Response body", response.body);
+  // CustomLogger.logWrapped("API UTILS", "Response body", response.body);
   if (response.body.contains('id="id_body"')) {
     return false;
   } else {

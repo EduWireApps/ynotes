@@ -15,7 +15,6 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';

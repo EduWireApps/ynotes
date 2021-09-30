@@ -65,15 +65,17 @@ class _LoginWebViewState extends State<LoginWebView> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
+    final List<String> rootAddress = getRootAddress(widget.url);
+    final String infoUrl =
+        "${rootAddress[0]}/${rootAddress[1].split("/")[1]}/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           InAppWebView(
             initialUrlRequest: URLRequest(
-                url: Uri.parse(getRootAddress(widget.url)[0] +
-                    (widget.url![widget.url!.length - 1] == "/" ? "" : "/") +
-                    "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4")),
+              url: Uri.parse(infoUrl),
+            ),
 
             ///1) We open a page with the serverUrl + weird string hardcoded
             initialOptions: InAppWebViewGroupOptions(
@@ -167,24 +169,26 @@ class _LoginWebViewState extends State<LoginWebView> {
     appSys.saveSettings();
     //We use the window function to create a cookie
     //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
-    String cookieFunction = '(function(){try{'
-            'var lJetonCas = "", lJson = JSON.parse(document.body.innerText);'
-            'lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;'
-            'document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();'
-            'if(!!lJetonCas) {'
-            'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();'
-            'document.cookie = "uuidAppliMobile=' +
+    String cookieFunction = '(function(){try{' +
+        'var lJetonCas = "", lJson = JSON.parse(document.body.innerText);' +
+        'lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;' +
+        'document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();' +
+        'if(!!lJetonCas) {' +
+        'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
+        'document.cookie = "uuidAppliMobile=' +
         appSys.settings.system.uuid! +
-        ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();'
-            'document.cookie = "ielang='
-            "1036"
-            ';expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();'
-            'return "ok";'
-            '} else return "ko";'
-            '} catch(e){return "ko";}})();';
+        ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
+        'document.cookie = "ielang=' +
+        "1036" +
+        ';expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();' +
+        'return "ok";' +
+        '} else return "ko";' +
+        '} catch(e){return "ko";}})();';
+    print(cookieFunction);
 
     //We evaluate the cookie function
     String? cookieFunctionResult = await (_controller?.evaluateJavascript(source: cookieFunction));
+    print(cookieFunctionResult);
     //If it contains "ok" we are logged in
     if (cookieFunctionResult == "ok") {
       //We use this window function to redirect to the special login page

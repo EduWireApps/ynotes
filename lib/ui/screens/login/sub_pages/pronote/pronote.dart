@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/ui/screens/login/w/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -8,10 +12,15 @@ import 'package:ynotes_packages/utilities.dart';
 class LoginPronotePage extends StatelessWidget {
   const LoginPronotePage({Key? key}) : super(key: key);
 
-  static const List<_MethodBox> _methods = [
-    _MethodBox(title: "QR Code", subtitle: "Cheese !", route: "/login", icon: Icons.qr_code_scanner_rounded),
-    _MethodBox(title: "Géolocalisation", subtitle: "On sait où tu es", route: "/login", icon: Icons.place),
-    _MethodBox(title: "Url", subtitle: "Pose les termes", route: "/login/pronote/url", icon: MdiIcons.cursorText),
+  static final List<_MethodBox> _methods = [
+    const _MethodBox(title: "QR Code", subtitle: "Cheese !", route: "/login", icon: Icons.qr_code_scanner_rounded),
+    const _MethodBox(title: "Géolocalisation", subtitle: "On sait où tu es", route: "/login", icon: Icons.place),
+    _MethodBox(
+        title: "Url",
+        subtitle: "Pose les termes",
+        route: "/login/pronote/url",
+        icon: MdiIcons.cursorText,
+        supported: !(kIsWeb || Platform.isWindows || Platform.isLinux)),
   ];
 
   List<Widget> get _children {
@@ -39,8 +48,15 @@ class _MethodBox extends StatefulWidget {
   final String subtitle;
   final String route;
   final IconData icon;
+  final bool supported;
 
-  const _MethodBox({Key? key, required this.title, required this.subtitle, required this.route, required this.icon})
+  const _MethodBox(
+      {Key? key,
+      required this.title,
+      required this.subtitle,
+      required this.route,
+      required this.icon,
+      this.supported = true})
       : super(key: key);
 
   @override
@@ -48,18 +64,20 @@ class _MethodBox extends StatefulWidget {
 }
 
 class __SchoolServiceBoxState extends State<_MethodBox> {
+  Widget opacity(Widget child) => Opacity(opacity: widget.supported ? 1 : 0.5, child: child);
+
   @override
   Widget build(BuildContext context) {
     return LoginElementBox(
         children: [
-          Icon(
+          opacity(Icon(
             widget.icon,
             color: theme.colors.foregroundLightColor,
             size: YScale.s12,
-          ),
+          )),
           YHorizontalSpacer(YScale.s4),
           Flexible(
-            child: Column(
+            child: opacity(Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -81,11 +99,16 @@ class __SchoolServiceBoxState extends State<_MethodBox> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
-            ),
+            )),
           ),
+          YHorizontalSpacer(YScale.s4),
+          if (!widget.supported)
+            YBadge(text: "Indisponible sur ${Platform.operatingSystem.capitalize()}", color: YColor.danger)
         ],
-        onTap: () async {
-          Navigator.pushNamed(context, widget.route);
-        });
+        onTap: widget.supported
+            ? () async {
+                Navigator.pushNamed(context, widget.route);
+              }
+            : null);
   }
 }

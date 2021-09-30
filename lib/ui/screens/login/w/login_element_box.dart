@@ -5,7 +5,7 @@ import 'package:ynotes_packages/utilities.dart';
 
 class LoginElementBox extends StatelessWidget {
   final List<Widget> children;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const LoginElementBox({Key? key, required this.children, required this.onTap}) : super(key: key);
 

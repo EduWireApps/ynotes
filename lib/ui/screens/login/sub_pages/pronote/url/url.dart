@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
+import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview/webview.dart';
 import 'package:ynotes/ui/screens/login/w/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -25,8 +27,37 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
     });
     if (b) {
       _formKey.currentState!.save();
-      final _ProcessUrlResponse? response = await _UrlManager.processUrl(context, _url);
-      print(response);
+      final _ProcessUrlResponse response = await processUrl(context, _url);
+      if (response.message == null) {
+        switch (response.route!) {
+          case _Route.form:
+            Navigator.pushNamed(context, "/login/pronote/url/form",
+                arguments: LoginPronoteUrlFormPageArguments(response.url));
+            break;
+          case _Route.webview:
+            final Map? res = await Navigator.pushNamed(context, "/login/pronote/url/webview",
+                arguments: LoginPronoteUrlWebviewPageArguments(response.url));
+            if (res != null) {
+              final List<dynamic>? data = await appSys.api!.login(res["login"], res["mdp"], additionnalSettings: {
+                "url": response.url,
+                "mobileCasLogin": true,
+              });
+              if (data != null && data[0] == 1) {
+                setState(() {
+                  _canNavigate = false;
+                });
+                YSnackbars.success(context, title: "Connecté !", message: data[1]);
+                await Future.delayed(const Duration(seconds: 3));
+                Navigator.pushReplacementNamed(context, "/intro");
+              } else {
+                YSnackbars.error(context, title: "Erreur", message: data![1]);
+              }
+            }
+            break;
+        }
+      } else {
+        YSnackbars.error(context, title: "Erreur", message: response.message!);
+      }
     }
     setState(() {
       _loading = false;
@@ -54,9 +85,9 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
                     if (value == null || value.isEmpty) {
                       return "Ce champ est obligatoire";
                     }
-                    final RegExp urlExp =
-                        RegExp(r"(http|ftp|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?");
-                    if (!urlExp.hasMatch(value)) {
+                    final RegExp urlOrIpExp = RegExp(
+                        r"^(((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6})|(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}(\:\b[0-9]{1,4})?)\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)?$");
+                    if (!urlOrIpExp.hasMatch(value)) {
                       return "Url invalide";
                     }
                   },
@@ -76,26 +107,12 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
           ],
         ));
   }
-}
 
-class _FormatUrlResponse {
-  final bool valid;
-  final String? url;
-
-  const _FormatUrlResponse({this.valid = true, this.url = ""});
-}
-
-class _ProcessUrlResponse {
-  final bool valid;
-  final String message;
-
-  const _ProcessUrlResponse({required this.valid, required this.message});
-}
-
-class _UrlManager {
-  const _UrlManager._();
-
-  static _FormatUrlResponse _formatUrl(String url) {
+  String? _formatUrl(String url) {
+    final bool isIp = double.tryParse(url[0]) != null;
+    if (isIp) {
+      url = "http://$url";
+    }
     final RegExp regExp = RegExp(
       r"(.*/pronote)(.*)",
       caseSensitive: false,
@@ -113,14 +130,14 @@ class _UrlManager {
       if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
         CustomLogger.saveLog(object: "LOGIN", text: "(Pronote URL) Nothing matches");
         suffix = "/mobile.eleve.html";
-        return _FormatUrlResponse(url: (regExp.firstMatch(url)?.group(1) ?? "") + suffix);
+        return (regExp.firstMatch(url)?.group(1) ?? "") + suffix;
       }
       //situation where only mobile. is missing
       else if (suffixMatches.firstMatch(suffix)?.group(1) == null &&
           suffixMatches.firstMatch(suffix)?.group(2) != null) {
         CustomLogger.saveLog(object: "LOGIN", text: "(Pronote URL) 'mobile.' is missing.");
         suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
-        return _FormatUrlResponse(url: (regExp.firstMatch(url)?.group(1) ?? "") + suffix);
+        return (regExp.firstMatch(url)?.group(1) ?? "") + suffix;
       }
 
       //situation where everything matches
@@ -130,30 +147,37 @@ class _UrlManager {
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
             (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
 
-        return _FormatUrlResponse(url: (regExp.firstMatch(url)?.group(1) ?? "") + suffix);
+        return (regExp.firstMatch(url)?.group(1) ?? "") + suffix;
       }
     }
     CustomLogger.saveLog(object: "LOGIN", text: "(Pronote URL) Invalid url.");
-    return const _FormatUrlResponse(valid: false);
+    return null;
   }
 
-  static Future<_ProcessUrlResponse?> processUrl(BuildContext context, String url) async {
-    final _FormatUrlResponse res = _formatUrl(url);
-    final bool isValid = await checkPronoteURL(url);
-    if (res.valid && isValid) {
+  Future<_ProcessUrlResponse> processUrl(BuildContext context, String url) async {
+    final String? res = _formatUrl(url);
+    final bool isValid = res != null;
+    if (isValid) url = res;
+    if (isValid && await checkPronoteURL(url)) {
       final bool isCas = await testIfPronoteCas(url);
       CustomLogger.saveLog(object: "LOGIN", text: "(Pronote URL) Is CAS: $isCas");
       if (isCas) {
-        Navigator.pushNamed(context, "/login/pronote/url/webview");
-        return null;
+        return _ProcessUrlResponse(route: _Route.webview, url: url);
       } else {
-        // TODO: redirect to /login/url/form with form like ED
-        Navigator.pushNamed(context, "/login/pronote/url/form", arguments: LoginPronoteUrlFormPageArguments(url));
-        return null;
+        return _ProcessUrlResponse(route: _Route.form, url: url);
       }
     } else {
-      return const _ProcessUrlResponse(valid: false, message: "Impossible de se connecter à cette adresse.");
-      // YSnackbars.error(context, title: "Erreur", message: "Impossible de se connecter à cette adresse");
+      return const _ProcessUrlResponse(message: "Impossible de se connecter à cette adresse.");
     }
   }
+}
+
+enum _Route { form, webview }
+
+class _ProcessUrlResponse {
+  final _Route? route;
+  final String? message;
+  final String url;
+
+  const _ProcessUrlResponse({this.route, this.message, this.url = ""});
 }

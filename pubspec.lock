@@ -1299,7 +1299,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.4"
   vector_math:
     dependency: transitive
     description:
@@ -1384,7 +1384,7 @@ packages:
     description:
       path: "."
       ref: rework
-      resolved-ref: d6cfe7e42c13269e6242e8dcd7a37cbc306bb398
+      resolved-ref: b329d88f295269d4271581083383d1b798cbb567
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
     version: "0.4.3"

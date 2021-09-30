@@ -21,41 +21,55 @@ class _LoginDemosPageState extends State<LoginDemosPage> {
       imageColor: theme.colors.foregroundColor,
       name: 'Ecole Directe',
       parser: 0,
-      disabled: !canNavigate,
-      onTap: () async {
-        setState(() {
-          canNavigate = false;
-        });
+      disabled: !_canNavigate,
+      onTap: _onTap(() async {
         await appSys.api!.login("john.doe", "123456", additionnalSettings: {
           "demo": true,
         });
-      },
+      }),
     ),
     _DemoServiceBox(
-      image: const AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
-      name: 'Pronote',
-      parser: 1,
-      disabled: !canNavigate,
-      onTap: () async {
-        setState(() {
-          canNavigate = false;
-        });
-        await appSys.api!.login("demonstration", "pronotevs", additionnalSettings: {
-          "url": "https://demo.index-education.net/pronote/parent.html",
-          "mobileCasLogin": false,
-        });
-      },
-    )
+        image: const AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
+        name: 'Pronote',
+        parser: 1,
+        disabled: !_canNavigate,
+        onTap: _onTap(
+          () async {
+            await appSys.api!.login("demonstration", "pronotevs", additionnalSettings: {
+              "url": "https://demo.index-education.net/pronote/parent.html",
+              "mobileCasLogin": false,
+            });
+          },
+        ))
   ];
 
-  bool canNavigate = true;
+  AsyncCallback _onTap(AsyncCallback callback) {
+    return () async {
+      setState(() {
+        _canNavigate = false;
+      });
+
+      await callback();
+    };
+  }
+
+  bool _canNavigate = true;
 
   @override
   Widget build(BuildContext context) {
     return LoginPageStructure(
-        backButton: canNavigate,
+        backButton: _canNavigate,
         subtitle: "Choisis un service scolaire",
-        body: Column(children: spacedChildren(_demos)));
+        body: Column(children: [
+          Opacity(opacity: _canNavigate ? 1 : 0.5, child: Column(children: spacedChildren(_demos))),
+          if (!_canNavigate)
+            Column(
+              children: [
+                YVerticalSpacer(YScale.s2),
+                const YLinearProgressBar(),
+              ],
+            )
+        ]));
   }
 }
 
@@ -67,15 +81,15 @@ class _DemoServiceBox extends StatefulWidget {
   final AsyncCallback onTap;
   final bool disabled;
 
-  const _DemoServiceBox(
-      {Key? key,
-      required this.image,
-      this.imageColor,
-      required this.name,
-      required this.parser,
-      required this.onTap,
-      required this.disabled})
-      : super(key: key);
+  const _DemoServiceBox({
+    Key? key,
+    required this.image,
+    this.imageColor,
+    required this.name,
+    required this.parser,
+    required this.onTap,
+    required this.disabled,
+  }) : super(key: key);
 
   @override
   __DemoServiceBoxState createState() => __DemoServiceBoxState();
@@ -93,16 +107,17 @@ class __DemoServiceBoxState extends State<_DemoServiceBox> {
           color: widget.imageColor,
         ),
         YHorizontalSpacer(YScale.s6),
-        Flexible(
-          child: Text(
-            widget.name,
-            style: TextStyle(
-              fontSize: YFontSize.xl,
-              color: theme.colors.foregroundColor,
-              fontWeight: YFontWeight.medium,
-            ),
-            overflow: TextOverflow.ellipsis,
+        Text(
+          widget.name,
+          style: TextStyle(
+            fontSize: YFontSize.xl,
+            color: theme.colors.foregroundColor,
+            fontWeight: YFontWeight.medium,
           ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Container(),
         ),
       ],
       onTap: widget.disabled
