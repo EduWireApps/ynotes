@@ -3,7 +3,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
-import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview/webview.dart';
+import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 import 'package:ynotes/ui/screens/login/w/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';

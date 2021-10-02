@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
@@ -51,12 +51,7 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: theme.colors.backgroundColor,
-        statusBarBrightness: theme.isDark ? Brightness.light : Brightness.dark,
-        statusBarIconBrightness: theme.isDark ? Brightness.light : Brightness.dark,
-        systemNavigationBarIconBrightness: theme.isDark ? Brightness.light : Brightness.dark));
+    UIUtils.setSystemUIOverlayStyle();
     tryToConnect();
   }
 

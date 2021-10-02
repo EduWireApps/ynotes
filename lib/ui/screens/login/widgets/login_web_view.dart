@@ -65,9 +65,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
-    final List<String> rootAddress = getRootAddress(widget.url);
-    final String infoUrl =
-        "${rootAddress[0]}/${rootAddress[1].split("/")[1]}/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
+    final String infoUrl = getInfoUrl(widget.url!);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(

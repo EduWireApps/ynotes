@@ -63,9 +63,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
     setState(() {
       url = args.url;
     });
-    final List<String> rootAddress = getRootAddress(url);
-    final String infoUrl =
-        "${rootAddress[0]}/${rootAddress[1].split("/")[1]}/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
+    final String infoUrl = getInfoUrl(url);
     return YPage(
       scrollable: false,
       appBar: const YAppBar(title: "Connexion à l'ENT"),
@@ -159,8 +157,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
     appSys.saveSettings();
     //We use the window function to create a cookie
     //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
-    final String script =
-        """
+    final String script = """
     (function(){try{
         var lJetonCas = "", lJson = JSON.parse(document.body.innerText);
         lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;

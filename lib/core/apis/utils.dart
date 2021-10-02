@@ -40,12 +40,14 @@ apiManager(Offline _offline) {
   }
 }
 
-Future<bool> checkPronoteURL(String url) async {
+String getInfoUrl(String url) {
   final List<String> rootAddress = getRootAddress(url);
-  final String infoUrl =
-      "${rootAddress[0]}/${rootAddress[1].split("/")[1]}/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
+  return "${rootAddress[0]}/${rootAddress[1].split("/")[1]}/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
+}
+
+Future<bool> checkPronoteURL(String url) async {
   try {
-    var response = await http.get(Uri.parse(infoUrl)).catchError((e) {});
+    var response = await http.get(Uri.parse(getInfoUrl(url))).catchError((e) {});
     if (response.statusCode == 200) {
       return true;
     } else {

@@ -1,3 +1,5 @@
+// TODO: document
+
 class PronoteSchool {
   ///School name
   final String? name;
@@ -10,9 +12,14 @@ class PronoteSchool {
   final String? url;
 
   final String? postalCode;
-  PronoteSchool({this.name, this.coordinates, this.url, this.postalCode});
+
+  String get department => postalCode!.substring(0, 2);
+
+  const PronoteSchool({this.name, this.coordinates, this.url, this.postalCode});
 }
 
+// TODO: delete
+@Deprecated("Will be deleted soon")
 class PronoteSpace {
   final String? name;
   final String? url;

@@ -14,7 +14,8 @@ class LoginPronotePage extends StatelessWidget {
 
   static final List<_MethodBox> _methods = [
     const _MethodBox(title: "QR Code", subtitle: "Cheese !", route: "/login", icon: Icons.qr_code_scanner_rounded),
-    const _MethodBox(title: "Géolocalisation", subtitle: "On sait où tu es", route: "/login", icon: Icons.place),
+    const _MethodBox(
+        title: "Géolocalisation", subtitle: "On sait où tu es", route: "/login/pronote/geolocation", icon: Icons.place),
     _MethodBox(
         title: "Url",
         subtitle: "Pose les termes",
