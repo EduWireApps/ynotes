@@ -354,8 +354,10 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
   void initState() {
     super.initState();
     mailsListFuture = (appSys.api as APIEcoleDirecte?)?.getMails();
-    refreshLocalMailsList();
-    refreshLocalMailsList(forceReload: true);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      refreshLocalMailsList();
+      refreshLocalMailsList(forceReload: true);
+    });
 
     searchCon.addListener(() {
       setState(() {});
