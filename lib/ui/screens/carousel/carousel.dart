@@ -522,6 +522,7 @@ class _Page4State extends State<Page4> {
                               fontSize: screenSize.size.height / 10 * 0.28)),
                       onChanged: (value) async {
                         await model.updateTheme(value ? "sombre" : "clair");
+                        setState(() {});
                       },
                       secondary: Icon(
                         Icons.lightbulb_outline,

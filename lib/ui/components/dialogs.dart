@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/logic/pronote/login/geolocation/schools_model.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
@@ -16,7 +15,6 @@ import 'package:ynotes/ui/components/dialogs/update_note_dialog.dart';
 import 'package:ynotes/ui/screens/agenda/widgets/persistant_notification_dialog.dart';
 import 'package:ynotes/ui/screens/grades/widgets/share_grade_dialog.dart';
 import 'package:ynotes/ui/screens/homework/widgets/homework_details.dart';
-import 'package:ynotes/ui/screens/login/widgets/pronote_location_dialog.dart';
 
 import '../../useful_methods.dart';
 import '../screens/agenda/widgets/recurring_events_dialog.dart';
@@ -229,22 +227,6 @@ class CustomDialogs {
         return const PersistantNotificationConfigDialog();
       },
     );
-  }
-
-  static Future<PronoteSpace?> showPronoteSchoolGeolocationDialog(BuildContext context) async {
-    return await showGeneralDialog(
-        context: context,
-        barrierColor: Colors.black.withOpacity(0.5),
-        transitionDuration: const Duration(milliseconds: 200),
-        barrierDismissible: true,
-        barrierLabel: '',
-        // ignore: unnecessary_cast
-        pageBuilder: (context, animation1, animation2) {
-          return Container();
-        } as Widget Function(BuildContext, Animation<double>, Animation<double>),
-        transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(scale: a1.value, child: const PronoteGeolocationDialog());
-        });
   }
 
   static Future showRecurringEventDialog(BuildContext context, String? scheme) {

@@ -99,6 +99,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     switchValue: ThemeUtils.isThemeDark,
                     onToggle: (value) async {
                       _appSys.updateTheme(value ? "sombre" : "clair");
+                      setState(() {});
                     },
                   ),
                   SettingsTile.switchTile(

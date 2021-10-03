@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/login/w/widgets.dart';
+import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
 
@@ -46,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
         });
         YSnackbars.success(context, title: "Connecté !", message: data[1]);
         await Future.delayed(const Duration(seconds: 3));
-        Navigator.pushReplacementNamed(context, "/intro");
+        Navigator.pushReplacementNamed(context, "/terms");
         // success
       } else {
         YSnackbars.error(context, title: "Erreur", message: data![1]);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/ui/components/NEW/buttons/buttons.dart';
+import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes_packages/components.dart';
@@ -46,7 +48,7 @@ class LoginPageStructure extends StatelessWidget {
                                   text: "Retour",
                                   onPressed: () => Navigator.pop(context),
                                   color: YColor.secondary,
-                                  icon: Icons.arrow_back_ios_new_rounded),
+                                  icon: Icons.west),
                             YButton(
                               text: "Logs",
                               onPressed: () {
@@ -92,15 +94,7 @@ class LoginPageStructure extends StatelessWidget {
                           YVerticalSpacer(YScale.s3),
                           Padding(
                             padding: YPadding.px(YScale.s2),
-                            child: YButton(
-                                text: "Mentions légales",
-                                block: true,
-                                onPressed: () async {
-                                  await showDialog(context: context, builder: (_) => const _LoginLegalLinksDialog());
-                                },
-                                variant: YButtonVariant.text,
-                                invertColors: true,
-                                color: YColor.secondary),
+                            child: AppButtons.legalLinks,
                           ),
                         ]),
                       ),
@@ -114,43 +108,6 @@ class LoginPageStructure extends StatelessWidget {
           ))),
     );
   }
-}
-
-class _LoginLegalLinksDialog extends StatelessWidget {
-  const _LoginLegalLinksDialog({Key? key}) : super(key: key);
-
-  static const List<_LegalLink> _legalLinks = [
-    _LegalLink(
-      text: "Politique de confidentialité",
-      url: "https://ynotes.fr/legal/CGUYNotes.pdf",
-    ),
-    _LegalLink(text: "Conditions d'utilisation", url: "https://ynotes.fr/legal/CGUYNotes.pdf")
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return YDialogBase(
-      title: 'Mentions légales',
-      body: Column(children: [
-        for (final link in _legalLinks)
-          YButton(
-              text: link.text,
-              onPressed: () => launch(link.url),
-              block: true,
-              color: YColor.secondary,
-              invertColors: true,
-              variant: YButtonVariant.text),
-      ]),
-      actions: [YButton(text: "FERMER", onPressed: () => Navigator.pop(context))],
-    );
-  }
-}
-
-class _LegalLink {
-  final String text;
-  final String url;
-
-  const _LegalLink({required this.text, required this.url});
 }
 
 class _Contact extends StatelessWidget {

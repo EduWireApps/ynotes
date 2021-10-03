@@ -6,7 +6,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:ynotes/core/logic/pronote/login/qr_code/qr_login_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/login/w/widgets.dart';
+import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -129,7 +129,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     if (data != null && data[0] == 1) {
       YSnackbars.success(context, title: "Connecté !", message: data[1]);
       await Future.delayed(const Duration(seconds: 3));
-      Navigator.pushReplacementNamed(context, "/intro");
+      Navigator.pushReplacementNamed(context, "/terms");
     } else {
       YSnackbars.error(context, title: "Erreur", message: data![1]);
       controller.reset();

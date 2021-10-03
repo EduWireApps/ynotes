@@ -1,3 +1,5 @@
+// TODO: rework
+
 class ApiChoiceTextContent {
   String pageTitle = "Connexion";
   String pageDescription = "Choisis ton service de vie scolaire";
