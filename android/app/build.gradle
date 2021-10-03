@@ -60,7 +60,7 @@ android {
     productFlavors {
         dev {
             dimension "app"
-            applicationId "fr.ynotes.debug2"
+            applicationId "fr.ynotes.debug"
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
         }
