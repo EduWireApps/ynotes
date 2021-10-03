@@ -1,4 +1,5 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class EcoleDirecteCloudConverter {
   static List<CloudItem> cloudFolders(var cloudFoldersData) {
@@ -10,7 +11,9 @@ class EcoleDirecteCloudConverter {
           var split = date.split(" ");
           date = split[0];
         }
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
       String? title = folderData["titre"];
       String elementType = "FOLDER";
       String? author = folderData["creePar"];

@@ -19,7 +19,7 @@ import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'widgets/read_mail_bottom_sheet.dart';
 import 'package:ynotes/useful_methods.dart';
-import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/components.dart' hide YPage;
 import 'package:ynotes/extensions.dart';
 
 String? dossier = "Reçus";
@@ -29,7 +29,7 @@ StreamSubscription? loginconnexion;
 late Future<List<Mail>?>? mailsListFuture;
 Future<void> mailModalBottomSheet(context, Mail mail, {int? index}) async {
   await showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Colors.transparent,
@@ -47,7 +47,7 @@ class MailPage extends StatefulWidget {
   _MailPageState createState() => _MailPageState();
 }
 
-enum sortValue { date, reversed_date, author }
+enum sortValue { date, reversedDate, author }
 
 class _MailPageState extends State<MailPage> with LayoutMixin {
   TextEditingController searchCon = TextEditingController();
@@ -136,13 +136,13 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
                                     });
                                   },
                                   borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                  child: Container(
+                                  child: SizedBox(
                                     height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                                     width: (screenSize.size.width / 5) * 0.6,
                                     child: Icon(
                                       case2(actualSort, {
                                         sortValue.date: MdiIcons.sortAscending,
-                                        sortValue.reversed_date: MdiIcons.sortDescending,
+                                        sortValue.reversedDate: MdiIcons.sortDescending,
                                         sortValue.author: MdiIcons.account,
                                       }),
                                       color: ThemeUtils.textColor(),
@@ -156,7 +156,7 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
                       ),
                       Container(
                           margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: CustomTextField(searchCon, "Chercher un mail", false, Icons.search, false)),
                       Expanded(
                         child: Container(
@@ -176,7 +176,7 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
                                     children: [
                                       ListView.builder(
                                           shrinkWrap: true,
-                                          physics: ClampingScrollPhysics(),
+                                          physics: const ClampingScrollPhysics(),
                                           itemCount: filterMails(localList).length,
                                           itemBuilder: (context, index) {
                                             return Column(
@@ -196,7 +196,7 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
                                                         },
                                                         child: Container(
                                                             height: screenSize.size.height / 10 * 1,
-                                                            margin: EdgeInsets.all(0),
+                                                            margin: const EdgeInsets.all(0),
                                                             child: Row(
                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                               children: <Widget>[
@@ -216,18 +216,16 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
                                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: <Widget>[
-                                                                        Container(
-                                                                          child: Text(
-                                                                            filterMails(localList)[index].subject ?? "",
-                                                                            textAlign: TextAlign.start,
-                                                                            style: TextStyle(
-                                                                              fontFamily: "Asap",
-                                                                              fontSize:
-                                                                                  screenSize.size.height / 10 * 0.25,
-                                                                              color: ThemeUtils.textColor(),
-                                                                            ),
-                                                                            overflow: TextOverflow.ellipsis,
+                                                                        Text(
+                                                                          filterMails(localList)[index].subject ?? "",
+                                                                          textAlign: TextAlign.start,
+                                                                          style: TextStyle(
+                                                                            fontFamily: "Asap",
+                                                                            fontSize:
+                                                                                screenSize.size.height / 10 * 0.25,
+                                                                            color: ThemeUtils.textColor(),
                                                                           ),
+                                                                          overflow: TextOverflow.ellipsis,
                                                                         ),
                                                                         Text(
                                                                           filterMails(localList)[index].from?["name"] ??
@@ -269,12 +267,10 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
                                                                   Container(width: 5, color: Colors.blue)
                                                               ],
                                                             )))),
-                                                Container(
-                                                  child: Divider(
-                                                    color: Colors.black45,
-                                                    height: screenSize.size.height / 10 * 0.005,
-                                                    thickness: screenSize.size.height / 10 * 0.005,
-                                                  ),
+                                                Divider(
+                                                  color: Colors.black45,
+                                                  height: screenSize.size.height / 10 * 0.005,
+                                                  thickness: screenSize.size.height / 10 * 0.005,
                                                 )
                                               ],
                                             );
@@ -307,7 +303,7 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
   }
 
   filterMails(List<Mail>? mails) {
-    if (mails != null && mails.length != 0) {
+    if (mails != null && mails.isNotEmpty) {
       return mails
           .where((element) =>
               (element.subject ?? "").toUpperCase().contains(searchCon.text.toUpperCase()) ||
@@ -330,18 +326,18 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
         break;
     }
     if (list != null) {
-      list.forEach((element) {
+      for (var element in list) {
         if (element.mtype == trad) {
           toReturn.add(element);
         }
-      });
+      }
       toReturn.sort((a, b) {
         DateTime datea = DateTime.parse(a.date!);
         DateTime dateb = DateTime.parse(b.date!);
         switch (actualSort) {
           case (sortValue.date):
             return dateb.compareTo(datea);
-          case (sortValue.reversed_date):
+          case (sortValue.reversedDate):
             return datea.compareTo(dateb);
           case (sortValue.author):
             return b.from?["nom"].compareTo(a.from?["nom"]);
@@ -354,11 +350,14 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     mailsListFuture = (appSys.api as APIEcoleDirecte?)?.getMails();
-    refreshLocalMailsList();
-    refreshLocalMailsList(forceReload: true);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      refreshLocalMailsList();
+      refreshLocalMailsList(forceReload: true);
+    });
 
     searchCon.addListener(() {
       setState(() {});
@@ -370,15 +369,14 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
   }
 
   _buildFloatingButton(BuildContext context) {
-    return Container(
-        child: FloatingActionButton(
+    return FloatingActionButton(
       heroTag: "btn1",
       backgroundColor: Colors.transparent,
       child: Container(
         width: 120,
         height: 120,
-        padding: EdgeInsets.all(5),
-        child: FittedBox(
+        padding: const EdgeInsets.all(5),
+        child: const FittedBox(
           child: Center(
             child: Icon(
               Icons.mail_outline,
@@ -386,11 +384,11 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
             ),
           ),
         ),
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+        decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
         await CustomDialogs.writeModalBottomSheet(context);
       },
-    ));
+    );
   }
 }

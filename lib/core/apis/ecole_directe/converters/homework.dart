@@ -8,7 +8,7 @@ class EcoleDirecteHomeworkConverter {
   static List<Homework> homework(Map<String, dynamic> hwData) {
     List rawData = hwData['data']['matieres'];
     List<Homework> homeworkList = [];
-    rawData.forEach((homework) {
+    for (var homework in rawData) {
       try {
         if (homework['aFaire'] != null) {
           String encodedContent = "";
@@ -39,8 +39,8 @@ class EcoleDirecteHomeworkConverter {
           String disciplineCode = homework['codeMatiere'];
           String id = homework['id'].toString();
 
-          rawContent = rawContent.replaceAllMapped(
-              new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+          rawContent = rawContent
+              .replaceAllMapped(RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
             return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
           });
 
@@ -67,7 +67,7 @@ class EcoleDirecteHomeworkConverter {
       } catch (e) {
         CustomLogger.error(e);
       }
-    });
+    }
     return homeworkList;
   }
 
@@ -84,12 +84,10 @@ class EcoleDirecteHomeworkConverter {
     Map<String, dynamic> hwData = uhwData['data'];
 
     List<Homework> unloadedHWList = [];
-            CustomLogger.log("test", "a");
+    CustomLogger.log("test", "a");
 
     hwData.forEach((key, value) {
-
       value.forEach((var hw) {
-
         Map mappedHomework = hw;
         bool loaded = false;
         CustomLogger.log("test", "b");

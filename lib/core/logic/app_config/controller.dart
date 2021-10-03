@@ -4,7 +4,6 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -18,6 +17,7 @@ import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/model.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
@@ -69,35 +69,34 @@ class ApplicationSystem extends ChangeNotifier {
   set currentSchoolAccount(SchoolAccount? newValue) {
     _currentSchoolAccount = newValue;
     if (account != null && account!.managableAccounts != null && newValue != null) {
-      this.settings.system.accountIndex = this.account!.managableAccounts!.indexOf(newValue);
+      settings.system.accountIndex = account!.managableAccounts!.indexOf(newValue);
     }
     notifyListeners();
   }
 
   buildControllers() {
     loginController = LoginController();
-    gradesController = GradesController(this.api);
-    homeworkController = HomeworkController(this.api);
-    agendaController = AgendaController(this.api);
-    schoolLifeController = SchoolLifeController(this.api);
-    mailsController = MailsController(this.api);
+    gradesController = GradesController(api);
+    homeworkController = HomeworkController(api);
+    agendaController = AgendaController(api);
+    schoolLifeController = SchoolLifeController(api);
+    mailsController = MailsController(api);
   }
 
   //Leave app
   exitApp() async {
     try {
-      await this.offline.clearAll();
+      await offline.clearAll();
       //Delete sharedPref
       SharedPreferences preferences = await (SharedPreferences.getInstance());
       await preferences.clear();
       //delte local setings and init them
 
-      this._initSettings();
+      _initSettings();
       //Import secureStorage
-      final storage = new FlutterSecureStorage();
       //Delete all
-      await storage.deleteAll();
-      this.updateTheme("clair");
+      await KVS.deleteAll();
+      updateTheme("clair");
     } catch (e) {
       CustomLogger.log("APPSYS", "Error occured when exiting the app");
       CustomLogger.error(e);
@@ -116,11 +115,12 @@ class ApplicationSystem extends ChangeNotifier {
     await initOffline();
     buildControllers();
     //Set api
-    this.api = apiManager(this.offline);
+    api = apiManager(offline);
     if (api != null) {
       account = await api!.account();
-      if (account != null && account!.managableAccounts != null)
+      if (account != null && account!.managableAccounts != null) {
         currentSchoolAccount = account!.managableAccounts![settings.system.accountIndex];
+      }
     }
     //Set background fetch
     await _initBackgroundFetch();
@@ -128,7 +128,7 @@ class ApplicationSystem extends ChangeNotifier {
   }
 
   saveSettings() {
-    SettingsUtils.setSetting(this.settings);
+    SettingsUtils.setSetting(settings);
     notifyListeners();
   }
 
@@ -141,11 +141,11 @@ class ApplicationSystem extends ChangeNotifier {
 
   ///On API refresh to provide a new API
   refreshControllersAPI() {
-    gradesController.api = this.api;
-    homeworkController.api = this.api;
-    agendaController.api = this.api;
-    schoolLifeController.api = this.api;
-    mailsController.api = this.api;
+    gradesController.api = api;
+    homeworkController.api = api;
+    agendaController.api = api;
+    schoolLifeController.api = api;
+    mailsController.api = api;
   }
 
 // This "Headless Task" is run when app is terminated.

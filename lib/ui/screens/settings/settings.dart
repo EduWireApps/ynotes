@@ -15,7 +15,6 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/utils/secure_storage.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -29,8 +28,6 @@ import '../../../tests.dart';
 import '../../../useful_methods.dart';
 
 bool? isFirstAvatarSelected;
-
-final storage = new CustomSecureStorage();
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -64,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
           data: ThemeData(brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light),
           child: SettingsList(
             shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             backgroundColor: Theme.of(context).backgroundColor,
             darkBackgroundColor: Theme.of(context).backgroundColor,
             lightBackgroundColor: Theme.of(context).backgroundColor,
@@ -81,11 +78,11 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           fontFamily: "Asap",
                           color:
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                      subtitle: '${appSys.currentSchoolAccount?.name ?? "Invité"}',
+                      subtitle: appSys.currentSchoolAccount?.name ?? "Invité",
                       leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                       trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
-                      onPressed: (context) => openLocalPage(YPageLocal(child: AccountPage(), title: "Compte")),
-                      iosChevron: Icon(Icons.chevron_right)),
+                      onPressed: (context) => openLocalPage(const YPageLocal(child: AccountPage(), title: "Compte")),
+                      iosChevron: const Icon(Icons.chevron_right)),
                 ],
               ),
               SettingsSection(
@@ -102,6 +99,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     switchValue: ThemeUtils.isThemeDark,
                     onToggle: (value) async {
                       _appSys.updateTheme(value ? "sombre" : "clair");
+                      setState(() {});
                     },
                   ),
                   SettingsTile.switchTile(
@@ -185,7 +183,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   ),
                   SettingsTile(
                     title: 'Je ne reçois pas de notifications',
-                    iosChevron: Icon(Icons.chevron_right),
+                    iosChevron: const Icon(Icons.chevron_right),
                     leading: Icon(MdiIcons.bellAlert, color: ThemeUtils.textColor()),
                     onPressed: (context) async {
                       if (!kIsWeb && Platform.isIOS) {
@@ -213,10 +211,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       Flushbar(
                         flushbarPosition: FlushbarPosition.BOTTOM,
                         backgroundColor: Colors.orange.shade200,
-                        duration: Duration(seconds: 10),
+                        duration: const Duration(seconds: 10),
                         isDismissible: true,
-                        margin: EdgeInsets.all(8),
-                        messageText: Text(
+                        margin: const EdgeInsets.all(8),
+                        messageText: const Text(
                           "Toujours pas de notifications ?",
                           style: TextStyle(fontFamily: "Asap"),
                         ),
@@ -225,13 +223,13 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             const url = 'https://ynotes.fr/help/notifications';
                             launchURL(url);
                           },
-                          child: Text(
+                          child: const Text(
                             "Aide liée aux notifications",
                             style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
                           ),
                         ),
                         borderRadius: BorderRadius.circular(8),
-                      )..show(context);
+                      ).show(context);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
@@ -251,7 +249,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                     leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
-                    iosChevron: Icon(Icons.chevron_right),
+                    iosChevron: const Icon(Icons.chevron_right),
                     onPressed: (context) {
                       CustomDialogs.showSpecialtiesChoice(context);
                     },
@@ -274,13 +272,13 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   title: 'Afficher les logs',
                   leading: Icon(MdiIcons.bug, color: ThemeUtils.textColor()),
                   onPressed: (context) {
-                    openLocalPage(YPageLocal(child: LogsPage(), title: "Logs"));
+                    openLocalPage(const YPageLocal(child: LogsPage(), title: "Logs"));
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                   subtitleTextStyle: TextStyle(
                       fontFamily: "Asap",
                       color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                  iosChevron: Icon(Icons.chevron_right),
+                  iosChevron: const Icon(Icons.chevron_right),
                 ),
               ]),
               SettingsSection(
@@ -303,7 +301,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: Icon(Icons.chevron_right),
+                    iosChevron: const Icon(Icons.chevron_right),
                   ),
                   SettingsTile(
                     title: 'Note de mise à jour',
@@ -315,7 +313,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: Icon(Icons.chevron_right),
+                    iosChevron: const Icon(Icons.chevron_right),
                   ),
                   SettingsTile(
                     title: 'Forcer la restauration des anciens paramètres',
@@ -332,19 +330,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: Icon(Icons.chevron_right),
+                    iosChevron: const Icon(Icons.chevron_right),
                   ),
                   SettingsTile(
                     title: 'A propos de cette application',
                     leading: Icon(MdiIcons.information, color: ThemeUtils.textColor()),
-                    iosChevron: Icon(Icons.chevron_right),
+                    iosChevron: const Icon(Icons.chevron_right),
                     onPressed: (context) async {
                       PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
                       showAboutDialog(
                           context: this.context,
                           applicationIcon: Image(
-                            image: AssetImage('assets/appico/foreground.png'),
+                            image: const AssetImage('assets/appico/foreground.png'),
                             width: screenSize.size.width / 5 * 0.7,
                           ),
                           applicationName: "yNotes",
@@ -373,7 +371,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           fontFamily: "Asap",
                           color:
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                      iosChevron: Icon(Icons.chevron_right),
+                      iosChevron: const Icon(Icons.chevron_right),
                     ),
                 ],
               ),
@@ -398,7 +396,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
       isFirstAvatarSelected = true;
     });
     super.initState();
-    leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
-    rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+    leftToRightAnimation = AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
+    rightToLeftAnimation = AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
   }
 }

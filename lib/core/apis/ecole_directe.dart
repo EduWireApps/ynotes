@@ -17,13 +17,13 @@ import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
-import 'package:ynotes/core/utils/secure_storage.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
 import 'ecole_directe/ecole_directe_methods.dart';
 
-//Create a secure storage
+//Create a secure KVS
 List<String> colorList = [
   "#f07aa0",
   "#17d0c9",
@@ -39,14 +39,7 @@ List<String> colorList = [
   "#8ac6d1"
 ];
 
-final storage = new CustomSecureStorage();
-
 String? token;
-
-///END OF THE API CLASS
-void createStorage(String key, String? data) async {
-  await storage.write(key: key, value: data);
-}
 
 ///  CLOUD SUB API
 /// Read this : called with two arguments. The first one is "args" and is used to add the path:
@@ -77,7 +70,7 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
 class APIEcoleDirecte extends API {
   late EcoleDirecteMethod methods;
   APIEcoleDirecte(Offline offlineController) : super(offlineController, apiName: "EcoleDirecte") {
-    this.methods = EcoleDirecteMethod(offlineController);
+    methods = EcoleDirecteMethod(offlineController);
   }
 
   @override
@@ -110,6 +103,7 @@ class APIEcoleDirecte extends API {
     }
   }
 
+  @override
   Future<http.Request> downloadRequest(Document document) async {
     String? type = document.type;
     String? id = document.id;
@@ -131,6 +125,7 @@ class APIEcoleDirecte extends API {
         forceFetch: forceReload ?? false);
   }
 
+  @override
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.homeworkFor, HomeworkOffline(offlineController).getHomeworkFor,
         forceFetch: forceReload ?? false, offlineArguments: dateHomework, onlineArguments: dateHomework);
@@ -138,48 +133,47 @@ class APIEcoleDirecte extends API {
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Mail>>? getMails({bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(methods.mails, MailsOffline(this.offlineController).getAllMails,
+    return await EcoleDirecteMethod.fetchAnyData(methods.mails, MailsOffline(offlineController).getAllMails,
         forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
+  @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        methods.nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
+        methods.nextHomework, HomeworkOffline(offlineController).getAllHomework,
         forceFetch: forceReload ?? false);
   }
 
   @override
-  Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
+  Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload = false}) async {
     List<Lesson>? lessons = await EcoleDirecteMethod.fetchAnyData(
         methods.lessons, LessonsOffline(offlineController).get,
-        forceFetch: forceReload ?? false, onlineArguments: dateToUse, offlineArguments: await getWeek(dateToUse));
+        forceFetch: forceReload ?? false, onlineArguments: from, offlineArguments: await getWeek(from));
 
     return (lessons ?? [])
         .where((lesson) =>
             DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(from)))
         .toList();
   }
 
+  @override
   Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
     return await EcoleDirecteMethod.fetchAnyData(methods.schoolLife, SchoolLifeOffline(offlineController).get,
         forceFetch: forceReload);
   }
 
+  @override
   Future<List> login(username, password, {Map? additionnalSettings}) async {
     methods = EcoleDirecteMethod(offlineController, demo: additionnalSettings?["demo"]);
 
     final prefs = await SharedPreferences.getInstance();
-    if (username == null) {
-      username = "";
-    }
-    if (password == null) {
-      password = "";
-    }
+    username ??= "";
+    password ??= "";
 
     var url = methods.endpoints.login;
-    print(["", ""]);
+    CustomLogger.log("ED LOGIN", ["", ""]);
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
@@ -203,7 +197,7 @@ class APIEcoleDirecte extends API {
           }
 
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
-            await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
+            await KVS.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
           } else {
             return [0, "Impossible de collecter les comptes."];
@@ -219,15 +213,15 @@ class APIEcoleDirecte extends API {
           //Store the token
           token = req['token'];
 
-          //Create secure storage for credentials
-          createStorage("password", password ?? "");
-          createStorage("username", username ?? "");
+          //Create secure KVS for credentials
+          KVS.write(key: "password", value: password ?? "");
+          KVS.write(key: "username", value: username ?? "");
           //IMPORTANT ! store the user ID
-          createStorage("userID", userID);
-          createStorage("classe", classe);
-          createStorage("demo", additionnalSettings?["demo"].toString());
+          KVS.write(key: "userID", value: userID);
+          KVS.write(key: "classe", value: classe);
+          KVS.write(key: "demo", value: additionnalSettings?["demo"].toString() ?? "");
           //random date
-          createStorage("startday", DateTime.parse("2020-02-02").toString());
+          KVS.write(key: "startday", value: DateTime.parse("2020-02-02").toString());
 
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);
@@ -236,7 +230,7 @@ class APIEcoleDirecte extends API {
           //log in file
           CustomLogger.saveLog(object: "ERROR", text: "Ecole Directe: " + e.toString());
         }
-        this.loggedIn = true;
+        loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
       }
       //Return an error
@@ -245,7 +239,7 @@ class APIEcoleDirecte extends API {
         if (message != null) {
           message = utf8.decode(message.codeUnits);
         }
-        return [0, "Oups ! Une erreur a eu lieu :\n$message"];
+        return [0, "Oups ! Une erreur a eu lieu : $message"];
       }
     } else {
       return [0, "Erreur"];
@@ -312,8 +306,8 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future uploadFile(String contexte, String id, String filepath) async {
-    switch (contexte) {
+  Future uploadFile(String context, String id, String filepath) async {
+    switch (context) {
       case ("CDT"):
         {
           //Ensure that token is refreshed

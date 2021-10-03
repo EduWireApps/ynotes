@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DragHandle extends StatefulWidget {
+  const DragHandle({Key? key}) : super(key: key);
+
   @override
   _DragHandleState createState() => _DragHandleState();
 }

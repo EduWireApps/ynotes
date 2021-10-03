@@ -7,7 +7,7 @@ class CustomLoader extends StatefulWidget {
   final double height;
   final Color color;
 
-  CustomLoader(this.width, this.height, this.color);
+  const CustomLoader(this.width, this.height, this.color, {Key? key}) : super(key: key);
   @override
   _CustomLoaderState createState() => _CustomLoaderState();
 }
@@ -15,7 +15,7 @@ class CustomLoader extends StatefulWidget {
 class _CustomLoaderState extends State<CustomLoader> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: widget.width,
         height: widget.height,
         child: FadeAnimation(

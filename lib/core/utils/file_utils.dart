@@ -41,8 +41,8 @@ class FileAppUtil {
 //store file in documents folder
 
     String dir = (await getExternalStorageDirectory())!.absolute.path + "/";
-    var file = "$dir";
-    File f = new File(file + "filename.csv");
+    var file = dir;
+    File f = File(file + "filename.csv");
 
 // convert rows to String and write as csv file
 
@@ -68,13 +68,11 @@ class FileAppUtil {
     try {
       List file = [];
 
-      if (!kIsWeb &&
-          (Platform.isLinux || await Permission.storage.request().isGranted)) {
+      if (!kIsWeb && (Platform.isLinux || await Permission.storage.request().isGranted)) {
         try {
           file = Directory(path).listSync();
         } catch (e) {
-          CustomLogger.log(
-              "FILE UTILS", "An error occured while getting the file list");
+          CustomLogger.log("FILE UTILS", "An error occured while getting the file list");
           CustomLogger.error(e);
         }
         //use your folder name insted of resume.
@@ -82,13 +80,10 @@ class FileAppUtil {
 
         await Future.forEach(file, (dynamic element) async {
           try {
-            listFiles.add(new FileInfo(
-                element,
-                await FileAppUtil.getLastModifiedDate(element),
+            listFiles.add(FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
-            CustomLogger.log(
-                "FILE UTILS", "An error occured while adding file to list");
+            CustomLogger.log("FILE UTILS", "An error occured while adding file to list");
             CustomLogger.error(e);
           }
         });
@@ -110,15 +105,16 @@ class FileAppUtil {
       } else {
         return null;
       }
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e);
+    }
   }
 
   static Future<String> loadAsset(path) async {
     return await rootBundle.loadString(path);
   }
 
-  static Future<void> openFile(String? filePath,
-      {bool usingFileName = false}) async {
+  static Future<void> openFile(String? filePath, {bool usingFileName = false}) async {
     try {
       String? path = "";
 
@@ -153,20 +149,18 @@ class FileAppUtil {
       final File file = File('${directory.path}/$fileName.txt');
       await file.writeAsString(data, mode: FileMode.write);
     } catch (e) {
-      CustomLogger.log(
-          "FILE UTILS", "An error occured while writing $fileName²");
+      CustomLogger.log("FILE UTILS", "An error occured while writing $fileName²");
       CustomLogger.error(e);
     }
   }
 }
 
 class FileInfo {
-  final element;
+  final dynamic element;
   final DateTime? lastModifiedDate;
   final String? fileName;
   bool selected;
-  FileInfo(this.element, this.lastModifiedDate, this.fileName,
-      {this.selected = false});
+  FileInfo(this.element, this.lastModifiedDate, this.fileName, {this.selected = false});
 }
 
 class FolderAppUtil {
@@ -181,8 +175,7 @@ class FolderAppUtil {
 
   static getDirectory({bool download = false}) async {
     if (download && !kIsWeb && Platform.isAndroid) {
-      final dir = await ExtStorage.getExternalStoragePublicDirectory(
-          ExtStorage.DIRECTORY_DOWNLOADS);
+      final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
 
       return dir;
     }
@@ -197,8 +190,7 @@ class FolderAppUtil {
     }
     if (!kIsWeb && (Platform.isLinux || Platform.isWindows)) {
       var dir = await getApplicationDocumentsDirectory();
-      Directory realDir =
-          Directory(dir.path + "/" + "yNotesApp" + "/" + "files");
+      Directory realDir = Directory(dir.path + "/" + "yNotesApp" + "/" + "files");
       return download ? realDir.path : realDir;
     }
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/mails/models.dart';
@@ -10,6 +9,7 @@ import 'package:ynotes/core/logic/school_life/models.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 import '../data/constants.dart';
 import '../data/texts.dart';
@@ -24,7 +24,7 @@ class SummaryAdministrativeData extends StatefulWidget {
 
 class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
   final TextStyle lightTextStyle =
-      TextStyle(color: theme.colors.neutral.shade400, fontSize: 11.sp.clamp(0, 18), fontWeight: FontWeight.w400);
+      TextStyle(color: theme.colors.foregroundLightColor, fontSize: YScale.s6, fontWeight: FontWeight.w400);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
             child: Consumer<SchoolLifeController>(builder: (context, model, child) {
               final List<SchoolLifeTicket> unjustifiedTickets =
                   model.tickets?.where((t) => t.isJustified == false).toList() ?? [];
-              if (unjustifiedTickets.length == 0) return noData(context, SummaryTexts.noTickets);
+              if (unjustifiedTickets.isEmpty) return noData(context, SummaryTexts.noTickets);
               return card(context,
                   data: unjustifiedTickets.length.toString(),
                   text1: unjustifiedTickets.length == 1 ? SummaryTexts.ticket : SummaryTexts.ticketPlural,
@@ -68,7 +68,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
             value: appSys.mailsController,
             child: Consumer<MailsController>(builder: (context, model, child) {
               final List<Mail> unreadMails = model.mails?.where((m) => m.read == false).toList() ?? [];
-              if (unreadMails.length == 0) return noData(context, SummaryTexts.noMails);
+              if (unreadMails.isEmpty) return noData(context, SummaryTexts.noMails);
               return card(context,
                   data: unreadMails.length.toString(),
                   text1: unreadMails.length == 1 ? SummaryTexts.mail : SummaryTexts.mailPlural,
@@ -82,13 +82,13 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
         child: StaggeredGridView.countBuilder(
           primary: false,
           shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           crossAxisSpacing: sidePadding,
           mainAxisSpacing: sidePadding,
           crossAxisCount: 4,
           itemCount: cards.length,
           itemBuilder: (BuildContext context, int i) => cards[i],
-          staggeredTileBuilder: (int i) => StaggeredTile.fit(2),
+          staggeredTileBuilder: (int i) => const StaggeredTile.fit(2),
         ));
   }
 
@@ -99,10 +99,10 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
       required String text2,
       required String routePath}) {
     final TextStyle gradeStyle =
-        TextStyle(fontSize: 35.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: theme.colors.neutral.shade500);
+        TextStyle(fontSize: YScale.s10, fontWeight: FontWeight.w600, color: theme.colors.foregroundColor);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 120),
+      constraints: BoxConstraints(maxWidth: 60.vw, maxHeight: 300),
       child: GestureDetector(
         onTap: () => Navigator.pushNamed(context, routePath),
         child: SummaryCard(
@@ -121,24 +121,22 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
                       if (subData != null)
                         Text('/' + subData,
                             style: TextStyle(
-                                color: theme.colors.neutral.shade400,
-                                fontSize: 15.sp.clamp(0, 18),
+                                color: theme.colors.foregroundLightColor,
+                                fontSize: YScale.s4,
                                 fontWeight: FontWeight.w400)),
                     ],
                   ),
                   Expanded(child: Container()),
-                  Icon(Icons.arrow_forward_outlined, color: theme.colors.neutral.shade400)
+                  Icon(Icons.arrow_forward_outlined, color: theme.colors.foregroundLightColor)
                 ]),
-            YVerticalSpacer(5),
+            const YVerticalSpacer(5),
             RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
                       text: text1,
                       style: TextStyle(
-                          color: theme.colors.neutral.shade500,
-                          fontSize: 15.sp.clamp(0, 18),
-                          fontWeight: FontWeight.w600)),
+                          color: theme.colors.foregroundColor, fontSize: YScale.s5, fontWeight: FontWeight.w600)),
                   TextSpan(
                     text: " " + text2,
                     style: lightTextStyle,

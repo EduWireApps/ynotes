@@ -26,7 +26,7 @@ void gradesModalBottomSheet(
   GradesController? gradesController,
 ) {
   showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       context: context,
@@ -60,11 +60,11 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
 }
 
 class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> with LayoutMixin {
-  var oldSize;
-  var statsPartOldSize;
+  dynamic oldSize;
+  dynamic statsPartOldSize;
   bool open = false;
-  GlobalKey headerPart = new GlobalKey(debugLabel: 'headerPart');
-  GlobalKey statsPart = new GlobalKey(debugLabel: 'statsPart');
+  GlobalKey headerPart = GlobalKey(debugLabel: 'headerPart');
+  GlobalKey statsPart = GlobalKey(debugLabel: 'statsPart');
   ExpandableController a = ExpandableController();
   PanelController panelController = PanelController();
   @override
@@ -98,7 +98,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
             ),
             controller: panelController,
             color: Colors.transparent,
-            boxShadow: [],
+            boxShadow: const [],
             minHeight: oldSize ?? 0.0,
             maxHeight: (oldSize ?? 0.0) + (statsPartOldSize ?? 0),
             panelBuilder: (scroll) {
@@ -111,11 +111,12 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                   ),
                   Center(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 500),
+                      constraints: const BoxConstraints(maxWidth: 500),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                          borderRadius:
+                              const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,7 +144,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
             "Voir plus",
             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
           ),
-          Container(
+          SizedBox(
             width: 50,
             height: 50,
             child: Icon(
@@ -159,15 +160,15 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   Widget buildGradeAveragesAndDetails() {
     return Row(
       children: [
-        Expanded(flex: 5, child: SizedBox()),
+        const Expanded(flex: 5, child: SizedBox()),
         buildSquareKeyValue("COEFF", widget.grade?.weight ?? ""),
-        Expanded(child: SizedBox()),
+        const Expanded(child: SizedBox()),
         buildSquareKeyValue("MAX", widget.grade?.max ?? ""),
-        Expanded(child: SizedBox()),
+        const Expanded(child: SizedBox()),
         buildSquareKeyValue("MIN", widget.grade?.min ?? ""),
-        Expanded(child: SizedBox()),
+        const Expanded(child: SizedBox()),
         buildSquareKeyValue("CLASSE", widget.grade?.classAverage ?? ""),
-        Expanded(flex: 5, child: SizedBox()),
+        const Expanded(flex: 5, child: SizedBox()),
       ],
     );
   }
@@ -175,10 +176,10 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   Widget buildGradeHeader() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
+    return SizedBox(
       width: screenSize.size.width,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 500),
+        constraints: const BoxConstraints(maxWidth: 500),
         child:
             Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
           buildGradeSquare(),
@@ -198,7 +199,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
         initialData: 0,
         builder: (context, snapshot) {
           return ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 100, maxHeight: 250),
+            constraints: const BoxConstraints(minHeight: 100, maxHeight: 250),
             child: Container(
               decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
               padding: EdgeInsets.symmetric(
@@ -241,7 +242,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 100, maxHeight: 100),
+      constraints: const BoxConstraints(maxWidth: 100, maxHeight: 100),
       child: Container(
         decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
         width: screenSize.size.width / 5 * 1,
@@ -297,7 +298,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 500),
+      constraints: const BoxConstraints(maxWidth: 500),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
         key: headerPart,
@@ -307,7 +308,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
-            DragHandle(),
+            const DragHandle(),
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
@@ -326,14 +327,14 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                 iconColor: Colors.blue,
               ),
             if (widget.gradesController?.isSimulating ?? false) SizedBox(height: screenSize.size.height / 10 * 0.25),
-            ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: buildGradeHeader()),
+            ConstrainedBox(constraints: const BoxConstraints(maxWidth: 500), child: buildGradeHeader()),
             SizedBox(height: screenSize.size.height / 10 * 0.25),
             buildGradeAveragesAndDetails(),
             SizedBox(height: screenSize.size.height / 10 * 0.15),
             if (widget.grade != null)
               CustomButtons.materialButton(context, 130, 45, () {
                 CustomDialogs.showShareGradeDialog(context, widget.grade!);
-              }, label: "Partager", icon: MdiIcons.shareVariant, padding: EdgeInsets.all(10)),
+              }, label: "Partager", icon: MdiIcons.shareVariant, padding: const EdgeInsets.all(10)),
             SizedBox(height: screenSize.size.height / 10 * 0.15),
             buildDragChevron(),
           ],
@@ -346,7 +347,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 80, maxHeight: 80),
+      constraints: const BoxConstraints(maxWidth: 80, maxHeight: 80),
       child: Container(
         width: screenSize.size.width / 5 * 0.9,
         height: screenSize.size.width / 5 * 0.9,
@@ -374,8 +375,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
       margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
       child: ExpandableNotifier(
         child: ExpandableTheme(
-          data: ExpandableThemeData(
-              hasIcon: false, animationDuration: const Duration(milliseconds: 500), useInkWell: true),
+          data: const ExpandableThemeData(
+              hasIcon: false, animationDuration: Duration(milliseconds: 500), useInkWell: true),
           child: ScrollOnExpand(
             child: ExpandablePanel(
               header: Container(
@@ -385,14 +386,14 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                 ),
                 decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11))),
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11))),
                 height: screenSize.size.height / 10 * 0.8,
                 child: Row(
                   children: [
                     Container(
                       width: 90,
                       height: 50,
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       decoration:
                           BoxDecoration(color: getAdaptedColor(impact), borderRadius: BorderRadius.circular(20)),
                       child: FittedBox(
@@ -401,7 +402,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                           children: [
                             Text(
                               getText(impact),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "Asap",
                                 fontWeight: FontWeight.w600,
                               ),
@@ -428,7 +429,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                 height: screenSize.size.height / 10 * 0.1,
                 decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11))),
+                    borderRadius:
+                        const BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11))),
               ),
               expanded: Container(
                 width: screenSize.size.width / 5 * 4.8,
@@ -440,7 +442,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                 ),
                 decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11))),
+                    borderRadius:
+                        const BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11))),
               ),
             ),
           ),
@@ -453,12 +456,12 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     MediaQueryData screenSize = MediaQuery.of(context);
     SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
 
-    return Container(
+    return SizedBox(
       width: 500,
       child: Column(
         key: statsPart,
         children: [
-          Divider(
+          const Divider(
             thickness: 2,
           ),
           Text(
@@ -497,12 +500,6 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               ))
         ],
       ),
-    );
-  }
-
-  Widget buildTest() {
-    return Center(
-      child: Text("test"),
     );
   }
 

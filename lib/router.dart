@@ -9,11 +9,12 @@ import 'package:ynotes/ui/screens/downloads/downloads.dart';
 import 'package:ynotes/ui/screens/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
 import 'package:ynotes/ui/screens/homework/homework.dart';
-import 'package:ynotes/ui/screens/login/login.dart';
+import 'package:ynotes/ui/screens/login/routes.dart';
 import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
 import 'package:ynotes/ui/screens/school_life/school_life.dart';
 import 'package:ynotes/ui/screens/summary/summary.dart';
+import 'package:ynotes/ui/screens/terms/terms.dart';
 
 class CustomRoute {
   final String path;
@@ -29,38 +30,44 @@ class CustomRoute {
 }
 
 final List<CustomRoute> routes = [
-  CustomRoute(path: "/login", page: Login(), relatedApi: -1, show: false),
-  CustomRoute(path: "/intro", icon: Icons.info, page: Carousel(), relatedApi: -1, show: false),
-  CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: SummaryPage(), tab: appTabs.SUMMARY),
-  CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: GradesPage(), tab: appTabs.GRADES),
+  ...loginRoutes,
+  CustomRoute(path: "/intro", icon: Icons.info, page: const Carousel(), relatedApi: -1, show: false),
+  CustomRoute(path: "/terms", icon: Icons.info, page: const TermsPage(), relatedApi: -1, show: false),
+  CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: const SummaryPage(), tab: appTabs.summary),
+  CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
-      path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.HOMEWORK),
-  CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: AgendaPage(), tab: appTabs.AGENDA),
+      path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
+  CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: const AgendaPage(), tab: appTabs.agenda),
   CustomRoute(
       path: "/mailbox",
       icon: MdiIcons.mail,
       title: "Messagerie",
-      page: MailPage(),
+      page: const MailPage(),
       relatedApi: 0,
-      tab: appTabs.MESSAGING),
+      tab: appTabs.messaging),
   CustomRoute(
       path: "/school_life",
       icon: MdiIcons.stamper,
       title: "Vie scolaire",
-      page: SchoolLifePage(),
+      page: const SchoolLifePage(),
       relatedApi: 0,
-      tab: appTabs.SCHOOL_LIFE),
+      tab: appTabs.schoolLife),
   CustomRoute(
-      path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: CloudPage(), relatedApi: 0, tab: appTabs.CLOUD),
+      path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: const CloudPage(), relatedApi: 0, tab: appTabs.cloud),
   CustomRoute(
       path: "/downloads",
       icon: MdiIcons.file,
       title: "Téléchargements",
-      page: DownloadsExplorer(),
+      page: const DownloadsExplorer(),
       relatedApi: 0,
-      tab: appTabs.FILES),
+      tab: appTabs.files),
   CustomRoute(
-      path: "/polls", icon: MdiIcons.poll, title: "Sondages", page: PollsPage(), relatedApi: 1, tab: appTabs.POLLS),
+      path: "/polls",
+      icon: MdiIcons.poll,
+      title: "Sondages",
+      page: const PollsPage(),
+      relatedApi: 1,
+      tab: appTabs.polls),
 ];
 
 PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {
@@ -79,5 +86,5 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   }
 
   CustomLogger.saveLog(object: "ROUTER", text: 'Route "${settings.name}" not found.');
-  return generateRoute(ErrorPage(), settings);
+  return generateRoute(const ErrorPage(), settings);
 }

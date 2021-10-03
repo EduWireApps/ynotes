@@ -28,7 +28,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 450),
+      constraints: const BoxConstraints(maxWidth: 450),
       child: Container(
           width: screenSize.size.width / 5 * 4.2,
           height: 50,
@@ -40,7 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           child: Stack(
             fit: StackFit.loose,
             children: [
-              Container(
+              SizedBox(
                 width: screenSize.size.width / 5 * 4.2,
                 height: 50,
                 child: TextField(
@@ -51,13 +51,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(left: 68, right: widget.eyeButton ? 12 : 0),
-                    border: new OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(25),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(25),
                       ),
                     ),
-                    hintStyle: new TextStyle(color: ThemeUtils.textColor().withOpacity(0.4)),
+                    hintStyle: TextStyle(color: ThemeUtils.textColor().withOpacity(0.4)),
                     hintText: widget.hint,
                   ),
                 ),
@@ -85,7 +85,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           });
                         },
                         iconSize: 50,
-                        icon: Center(child: Icon(MdiIcons.eye, size: 30, color: Color(0xff22256A))))
+                        icon: const Center(child: Icon(MdiIcons.eye, size: 30, color: Color(0xff22256A))))
 
                     /* GestureDetector(
                     onTap: () {

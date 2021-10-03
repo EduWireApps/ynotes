@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/summary/data/constants.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 import '../data/texts.dart';
 import 'average_chart.dart';
@@ -27,34 +27,34 @@ class SummaryAverageState extends State<SummaryAverage> {
           value: appSys.gradesController,
           child: Consumer<GradesController>(builder: (context, model, child) {
             return SummaryCard(
-                child: Container(
-              height: 12.h,
+                child: SizedBox(
+              height: 12.vh,
               child: Column(
                 children: [
                   Container(
-                    height: 3.h,
-                    margin: EdgeInsets.only(top: 0.2.h),
+                    height: 3.vh,
+                    margin: EdgeInsets.only(top: 0.2.vh),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           (!model.average.isNaN ? model.average.toStringAsFixed(2).replaceAll(".", ",") : "-"),
                           style: TextStyle(
-                              color: theme.colors.neutral.shade500,
-                              fontSize: 28.sp.clamp(0, 45),
+                              color: theme.colors.foregroundColor,
+                              fontSize: YScale.s12,
                               height: .4,
                               fontWeight: FontWeight.w700),
                         ),
-                        YHorizontalSpacer(.2.h),
+                        YHorizontalSpacer(.2.vh),
                         Expanded(
                           child: Text(SummaryTexts.average,
-                              style: TextStyle(color: theme.colors.neutral.shade400, fontSize: 13.sp.clamp(0, 25))),
+                              style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: YScale.s6)),
                         )
                       ],
                     ),
                   ),
-                  YVerticalSpacer(0.3.h),
-                  Container(height: 8.h, child: SummaryChart())
+                  YVerticalSpacer(0.3.vh),
+                  SizedBox(height: 8.vh, child: const SummaryChart())
                 ],
               ),
             ));

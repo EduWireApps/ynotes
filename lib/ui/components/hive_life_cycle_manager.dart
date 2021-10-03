@@ -6,7 +6,7 @@ import 'package:ynotes/globals.dart';
 class HiveLifecycleManager extends StatefulWidget {
   final Widget child;
 
-  HiveLifecycleManager({required this.child});
+  const HiveLifecycleManager({Key? key, required this.child}) : super(key: key);
 
   @override
   _HiveLifecycleManagerState createState() => _HiveLifecycleManagerState();

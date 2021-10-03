@@ -29,12 +29,6 @@ class _SpecialRoute {
 }
 
 class _YDrawerState extends State<YDrawer> with YPageMixin {
-  Widget divider(BuildContext context) => Divider(
-        color: theme.colors.neutral.shade400,
-        thickness: 0.5,
-        height: 0,
-      );
-
   @override
   Widget build(BuildContext context) {
     bool availableRoute(CustomRoute route) {
@@ -48,7 +42,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
       _SpecialRoute(
           title: "Paramètres",
           icon: Icons.settings,
-          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
+          onTap: () => openLocalPage(const YPageLocal(title: "Paramètres", child: SettingsPage()))),
     ];
 
     final List<_SpecialRoute> specialIcons = [
@@ -66,17 +60,17 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];
 
-    final Color backgroundColor = theme.colors.neutral.shade200;
+    final Color backgroundColor = theme.colors.backgroundLightColor;
 
     return Drawer(
       child: Container(
         color: backgroundColor,
         child: SafeArea(
           child: YShadowScrollContainer(color: backgroundColor, children: [
-            AccountHeader(),
+            const AccountHeader(),
             ListView.builder(
                 shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 itemCount: routes.length,
                 itemBuilder: (context, i) {
                   final route = routes[i];
@@ -86,10 +80,10 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                   }
 
                   final bool isCurrent = ModalRoute.of(context)!.settings.name == route.path;
-                  final Color textColor = isCurrent ? theme.colors.neutral.shade500 : theme.colors.neutral.shade400;
+                  final Color textColor = isCurrent ? theme.colors.foregroundColor : theme.colors.foregroundLightColor;
 
                   return Container(
-                    color: isCurrent ? theme.colors.neutral.shade300 : null,
+                    color: isCurrent ? theme.colors.backgroundColor : null,
                     child: ListTile(
                       leading: Icon(
                         route.icon,
@@ -107,10 +101,10 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     ),
                   );
                 }),
-            divider(context),
+            const YDivider(),
             ListView.builder(
                 shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 itemCount: specialRoutes.length,
                 itemBuilder: (context, i) {
                   final _SpecialRoute route = specialRoutes[i];
@@ -118,20 +112,20 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                   return ListTile(
                     leading: Icon(
                       route.icon,
-                      color: theme.colors.neutral.shade400,
+                      color: theme.colors.foregroundLightColor,
                     ),
-                    title: Text(route.title, style: TextStyle(color: theme.colors.neutral.shade400, fontSize: 18)),
+                    title: Text(route.title, style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 18)),
                     onTap: route.onTap,
                   );
                 }),
-            divider(context),
+            const YDivider(),
             Row(
               children: [
                 for (final e in specialIcons)
                   Expanded(
                       child: IconButton(
                     icon: Icon(e.icon),
-                    color: theme.colors.neutral.shade400,
+                    color: theme.colors.foregroundLightColor,
                     onPressed: e.onTap,
                   ))
               ],

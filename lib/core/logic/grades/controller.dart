@@ -21,8 +21,8 @@ class GradesController extends ChangeNotifier {
   List<String?>? specialties;
   String _sorter = "all";
 
-  List<Grade> _addedGrades = [];
-  List<Grade?> _removedGrades = [];
+  final List<Grade> _addedGrades = [];
+  final List<Grade?> _removedGrades = [];
 
   GradesController(API? api) {
     _api = api;
@@ -149,7 +149,7 @@ class GradesController extends ChangeNotifier {
             generalRank: e.generalRank))
         .toList());
     CustomLogger.log("GRADES", "Merging");
-    _simulatedDisciplines.forEach((discipline) {
+    for (var discipline in _simulatedDisciplines) {
       discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
           element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
       if (_addedGrades.any((_grade) =>
@@ -157,7 +157,7 @@ class GradesController extends ChangeNotifier {
         discipline.gradesList!.addAll(_addedGrades.where((_grade) =>
             _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode));
       }
-    });
+    }
 
     return _simulatedDisciplines;
   }
@@ -193,7 +193,7 @@ class GradesController extends ChangeNotifier {
       return li;
     }
     List<Discipline> toReturn = [];
-    (li ?? []).forEach((f) {
+    for (var f in (li ?? [])) {
       switch (_sorter) {
         case "all":
           if (f.periodName == _period) {
@@ -277,12 +277,12 @@ class GradesController extends ChangeNotifier {
           }
           break;
       }
-    });
+    }
     return toReturn;
   }
 
   _refreshPeriods() async {
-    List<Period> temp = this.disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
+    List<Period> temp = disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
     final ids = temp.map((e) => e.name).toSet();
     temp.retainWhere((x) => ids.remove(x.name));
     List<Period> unicalPeriods = temp.toSet().toList();
@@ -310,13 +310,15 @@ class GradesController extends ChangeNotifier {
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
     }
 
     double sum = 0.0;
-    averages.forEach((element) {
+    for (var element in averages) {
       sum += element;
-    });
+    }
     _average = temp ?? (sum / averages.length);
     notifyListeners();
   }
@@ -340,8 +342,8 @@ class GradesController extends ChangeNotifier {
   }
 
   void _setDefaultPeriod() {
-    if (_disciplines != null && _disciplines!.length != 0 && _period == "") {
-      _period = (_disciplines ?? []).lastWhere((list) => list.gradesList!.length > 0).gradesList!.last.periodName;
+    if (_disciplines != null && _disciplines!.isNotEmpty && _period == "") {
+      _period = (_disciplines ?? []).lastWhere((list) => list.gradesList!.isNotEmpty).gradesList!.last.periodName;
     }
   }
 

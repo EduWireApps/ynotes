@@ -14,9 +14,9 @@ class PinnedHomeworkOffline {
       Map notParsedList = parent.pinnedHomeworkBox!.toMap();
       List<DateTime> parsedList = [];
       notParsedList.removeWhere((key, value) => value == false);
-      notParsedList.keys.forEach((element) {
+      for (var element in notParsedList.keys) {
         parsedList.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
-      });
+      }
       return parsedList;
     } catch (e) {
       CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");

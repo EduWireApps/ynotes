@@ -1,7 +1,7 @@
 name: ynotes
 description: yNotes application de gestion de vie scolaire
 
-version: 0.12.1+9
+version: 0.13.0+9
 publish_to: none
 
 environment:
@@ -47,7 +47,7 @@ dependencies:
   ynotes_packages:
     git:
       url: https://github.com/EduWireApps/ynotes-packages
-      ref: main
+      ref: rework
   android_alarm_manager: ^2.0.0
   another_flushbar: ^1.10.17
   auto_size_text: ^3.0.0-nullsafety.0
@@ -79,6 +79,7 @@ dependencies:
   hive_flutter: ^1.0.0
   html_character_entities: ^1.0.0+1
   html_editor_enhanced: ^1.8.0
+  html_unescape: ^2.0.0
   http: ^0.13.0
   intl: ^0.16.1
   json_annotation: ^4.0.1
@@ -118,10 +119,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner: ^2.0.4
+  build_runner: ^2.0.4 # flutter packages pub run build_runner build --delete-conflicting-outputs
   hive_generator: ^1.0.1
   json_serializable: ^4.1.0
   dependency_validator: ^3.1.0 # flutter pub run dependency_validator
+  flutter_lints: ^1.0.4
 flutter_icons:
   ios: true
   android: true

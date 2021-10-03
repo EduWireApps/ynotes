@@ -1,6 +1,5 @@
 import 'package:ynotes_packages/theme.dart';
-import 'system/theme.dart';
-import 'light/theme.dart';
-import 'dark/theme.dart';
+import 'light.dart';
+import 'dark.dart';
 
-final List<YTheme> themes = [systemTheme, lightTheme, darkTheme];
+final List<YTheme> themes = [lightTheme, darkTheme];

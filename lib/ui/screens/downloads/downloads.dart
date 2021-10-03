@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:path/path.dart' as pathPackage;
+import 'package:path/path.dart' as path_package;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
@@ -16,7 +16,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/useful_methods.dart';
-import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/components.dart' hide YPage;
 
 Future<List<FileInfo>>? filesListFuture;
 
@@ -30,7 +30,7 @@ class DownloadsExplorer extends StatefulWidget {
   _DownloadsExplorerState createState() => _DownloadsExplorerState();
 }
 
-enum explorerSortValue { date, reversed_date, name }
+enum explorerSortValue { date, reversedDate, name }
 
 class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin {
   String path = "";
@@ -78,9 +78,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                         var finalList = splits.sublist(1, splits.length - 1);
                                         var concatenate = StringBuffer();
 
-                                        finalList.forEach((item) {
+                                        for (var item in finalList) {
                                           concatenate.write(r'/' + item);
-                                        });
+                                        }
 
                                         setState(() {
                                           path = concatenate.toString();
@@ -97,18 +97,17 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
 
                                         await refreshFileListFuture();
                                       }
-                                      listFiles ??
-                                          [].forEach((element) {
-                                            setState(() {
-                                              element.selected = false;
-                                            });
-                                          });
+                                      for (var file in listFiles ?? []) {
+                                        setState(() {
+                                          file.selected = false;
+                                        });
+                                      }
                                       await refreshFileListFuture();
                                     }
                                   },
                                   child: Container(
                                       height: screenSize.size.height / 10 * 0.7,
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       child: FittedBox(
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -144,17 +143,16 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                     setState(() {
                                       selectionMode = false;
                                     });
-                                    listFiles ??
-                                        [].forEach((element) {
-                                          setState(() {
-                                            element.selected = false;
-                                          });
-                                        });
+                                    for (var file in listFiles ?? []) {
+                                      setState(() {
+                                        file.selected = false;
+                                      });
+                                    }
                                     await refreshFileListFuture();
                                   },
                                   child: Container(
                                       height: screenSize.size.height / 10 * 0.7,
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       child: FittedBox(
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -187,7 +185,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                           },
                           child: Container(
                               height: screenSize.size.height / 10 * 0.7,
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               child: FittedBox(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -225,24 +223,24 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                         defaultText: await FileAppUtil.getFileNameWithExtension(
                                             listFiles!.firstWhere((element) => element.selected).element));
                                     if (newName != null) {
-                                      String dir = pathPackage
+                                      String dir = path_package
                                           .dirname(listFiles!.firstWhere((element) => element.selected).element.path);
-                                      String newPath = pathPackage.join(dir, newName);
+                                      String newPath = path_package.join(dir, newName);
                                       await listFiles!
                                           .firstWhere((element) => element.selected)
                                           .element
                                           .rename(newPath);
                                     }
-                                    listFiles!.forEach((element) {
+                                    for (var element in listFiles!) {
                                       setState(() {
                                         element.selected = false;
                                       });
-                                    });
+                                    }
                                     await refreshFileListFuture();
                                   },
                                   child: Container(
                                       height: screenSize.size.height / 10 * 0.7,
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       child: FittedBox(
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -290,7 +288,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                           },
                           child: Container(
                               height: screenSize.size.height / 10 * 0.7,
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               child: FittedBox(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -309,7 +307,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                           : Icon(
                                               case2(actualSort, {
                                                 explorerSortValue.date: MdiIcons.sortClockAscending,
-                                                explorerSortValue.reversed_date: MdiIcons.sortClockDescending,
+                                                explorerSortValue.reversedDate: MdiIcons.sortClockDescending,
                                                 explorerSortValue.name: MdiIcons.sortAlphabeticalAscending,
                                               }),
                                               color: ThemeUtils.textColor(),
@@ -346,7 +344,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                   },
                                   child: Container(
                                       height: screenSize.size.height / 10 * 0.7,
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       child: FittedBox(
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -376,7 +374,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                           borderRadius: BorderRadius.circular(15),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(15),
-                            onTap: !(clipboard.length > 0)
+                            onTap: !(clipboard.isNotEmpty)
                                 ? null
                                 : () async {
                                     await Future.forEach(clipboard, (FileInfo element) async {
@@ -400,13 +398,13 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                   },
                             child: Container(
                                 height: screenSize.size.height / 10 * 0.7,
-                                padding: EdgeInsets.all(5),
+                                padding: const EdgeInsets.all(5),
                                 child: FittedBox(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Opacity(
-                                        opacity: clipboard.length > 0 ? 1.0 : 0.6,
+                                        opacity: clipboard.isNotEmpty ? 1.0 : 0.6,
                                         child: Icon(
                                           MdiIcons.contentPaste,
                                           color: ThemeUtils.textColor(),
@@ -431,7 +429,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                 future: filesListFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if ((snapshot.data ?? []).length != 0) {
+                    if ((snapshot.data ?? []).isNotEmpty) {
                       listFiles = snapshot.data;
                       return RefreshIndicator(
                         onRefresh: refreshFileListFuture,
@@ -440,8 +438,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                           children: [
                             ListView.builder(
                               shrinkWrap: true,
-                              physics: ClampingScrollPhysics(),
-                              padding: EdgeInsets.all(0.0),
+                              physics: const ClampingScrollPhysics(),
+                              padding: const EdgeInsets.all(0.0),
                               itemCount: listFiles!.length,
                               itemBuilder: (context, index) {
                                 final item = listFiles![index].fileName!;
@@ -460,112 +458,106 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                     });
                                   },
                                   key: Key(item),
-                                  child: Container(
-                                    child: Column(
-                                      children: <Widget>[
-                                        ConstrainedBox(
-                                          constraints: new BoxConstraints(
-                                            minHeight: screenSize.size.height / 10 * 0.7,
-                                          ),
-                                          child: Container(
-                                            margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
-                                            child: Material(
-                                              color: listFiles![index].selected
-                                                  ? Colors.blue
-                                                  : Theme.of(context).primaryColorDark,
-                                              child: GestureDetector(
-                                                onSecondaryTap: () {
+                                  child: Column(
+                                    children: <Widget>[
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          minHeight: screenSize.size.height / 10 * 0.7,
+                                        ),
+                                        child: Container(
+                                          margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
+                                          child: Material(
+                                            color: listFiles![index].selected
+                                                ? Colors.blue
+                                                : Theme.of(context).primaryColorDark,
+                                            child: GestureDetector(
+                                              onSecondaryTap: () {
+                                                setState(() {
+                                                  selectionMode = true;
+                                                  listFiles![index].selected = true;
+                                                });
+                                              },
+                                              child: InkWell(
+                                                splashColor: const Color(0xff525252),
+                                                onLongPress: () {
                                                   setState(() {
                                                     selectionMode = true;
                                                     listFiles![index].selected = true;
                                                   });
                                                 },
-                                                child: InkWell(
-                                                  splashColor: Color(0xff525252),
-                                                  onLongPress: () {
-                                                    setState(() {
-                                                      selectionMode = true;
-                                                      listFiles![index].selected = true;
-                                                    });
-                                                  },
-                                                  onTap: () async {
-                                                    if (selectionMode) {
-                                                      CustomLogger.log("DOWNLOADS",
-                                                          "Number of selected files: ${selectedFiles.length}");
-                                                      listFiles![index].selected = !listFiles![index].selected;
-                                                      setState(() {});
+                                                onTap: () async {
+                                                  if (selectionMode) {
+                                                    CustomLogger.log("DOWNLOADS",
+                                                        "Number of selected files: ${selectedFiles.length}");
+                                                    listFiles![index].selected = !listFiles![index].selected;
+                                                    setState(() {});
+                                                  } else {
+                                                    if (listFiles![index].element is Directory) {
+                                                      setState(() {
+                                                        path = path + "/" + listFiles![index].fileName!;
+                                                      });
+                                                      await refreshFileListFuture();
                                                     } else {
-                                                      if (listFiles![index].element is Directory) {
-                                                        setState(() {
-                                                          path = path + "/" + listFiles![index].fileName!;
-                                                        });
-                                                        await refreshFileListFuture();
-                                                      } else {
-                                                        await FileAppUtil.openFile(listFiles![index].element.path);
-                                                      }
+                                                      await FileAppUtil.openFile(listFiles![index].element.path);
                                                     }
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: screenSize.size.width / 5 * 0.25,
-                                                        vertical: screenSize.size.height / 10 * 0.2),
-                                                    child: Container(
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        children: <Widget>[
-                                                          Icon(
-                                                            (listFiles![index].element is Directory)
-                                                                ? MdiIcons.folder
-                                                                : MdiIcons.file,
-                                                            color: (listFiles![index].element is Directory)
-                                                                ? Colors.yellow.shade100
-                                                                : ThemeUtils.textColor().withOpacity(0.5),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 5,
-                                                          ),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: <Widget>[
-                                                                Text(
-                                                                  (snapshot.data ?? [])[index].fileName ?? "",
+                                                  }
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: screenSize.size.width / 5 * 0.25,
+                                                      vertical: screenSize.size.height / 10 * 0.2),
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        (listFiles![index].element is Directory)
+                                                            ? MdiIcons.folder
+                                                            : MdiIcons.file,
+                                                        color: (listFiles![index].element is Directory)
+                                                            ? Colors.yellow.shade100
+                                                            : ThemeUtils.textColor().withOpacity(0.5),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              (snapshot.data ?? [])[index].fileName ?? "",
+                                                              style: TextStyle(
+                                                                  fontFamily: "Asap",
+                                                                  fontSize: 15,
+                                                                  color: ThemeUtils.textColor()),
+                                                            ),
+                                                            if ((snapshot.data ?? [])[index].lastModifiedDate != null)
+                                                              FittedBox(
+                                                                child: Text(
+                                                                  DateFormat("yyyy-MM-dd HH:mm").format(
+                                                                      (snapshot.data ?? [])[index].lastModifiedDate!),
+                                                                  textAlign: TextAlign.left,
                                                                   style: TextStyle(
                                                                       fontFamily: "Asap",
                                                                       fontSize: 15,
-                                                                      color: ThemeUtils.textColor()),
+                                                                      color: ThemeUtils.isThemeDark
+                                                                          ? Colors.white.withOpacity(0.5)
+                                                                          : Colors.black.withOpacity(0.5)),
                                                                 ),
-                                                                if ((snapshot.data ?? [])[index].lastModifiedDate !=
-                                                                    null)
-                                                                  FittedBox(
-                                                                    child: Text(
-                                                                      DateFormat("yyyy-MM-dd HH:mm").format(
-                                                                          (snapshot.data ?? [])[index]
-                                                                              .lastModifiedDate!),
-                                                                      textAlign: TextAlign.left,
-                                                                      style: TextStyle(
-                                                                          fontFamily: "Asap",
-                                                                          fontSize: 15,
-                                                                          color: ThemeUtils.isThemeDark
-                                                                              ? Colors.white.withOpacity(0.5)
-                                                                              : Colors.black.withOpacity(0.5)),
-                                                                    ),
-                                                                  ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
+                                                              ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
@@ -574,7 +566,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                         ),
                       );
                     } else {
-                      return Container(
+                      return SizedBox(
                         height: screenSize.size.height / 10 * 7.3,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -673,7 +665,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
           });
 
           break;
-        case explorerSortValue.reversed_date:
+        case explorerSortValue.reversedDate:
           setState(() {
             try {
               (listFiles ?? []).sort((a, b) {
@@ -683,7 +675,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                   return 0;
                 }
               });
-            } catch (e) {}
+            } catch (e) {
+              CustomLogger.error(e);
+            }
           });
 
           break;

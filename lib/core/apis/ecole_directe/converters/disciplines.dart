@@ -9,18 +9,18 @@ class EcoleDirecteDisciplineConverter {
     List gradesData = disciplinesData['data']['notes'];
     Map<String, dynamic> settings = disciplinesData['data']['parametrage'];
 
-    periodes.forEach((periodeElement) {
+    for (var periodeElement in periodes) {
       try {
         //Make a list of grades
 
         List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
-        disciplines.forEach((rawData) {
+        for (var rawData in disciplines) {
           List profs = rawData['professeurs'];
           List<String> teachersNames = [];
 
-          profs.forEach((e) {
+          for (var e in profs) {
             teachersNames.add(e["nom"]);
-          });
+          }
           //No one sub discipline
           if (rawData['codeSousMatiere'] == "") {
             String? disciplineCode = rawData['codeMatiere'];
@@ -85,27 +85,27 @@ class EcoleDirecteDisciplineConverter {
               CustomLogger.error(e);
             }
           }
-        });
+        }
         //Retrieve related grades for each discipline
-        disciplinesList.forEach((discipline) {
+        for (var discipline in disciplinesList) {
           if (discipline.periodName == periodeElement["periode"]) {
             List<Grade> localGradesList = [];
 
-            gradesData.forEach((element) {
+            for (var element in gradesData) {
               if (element["codeMatiere"] == discipline.disciplineCode &&
                   element["codePeriode"] == periodeElement["idPeriode"]) {
                 String nomPeriode = periodeElement["periode"];
                 localGradesList.add(Grade.fromEcoleDirecteJson(element, nomPeriode));
               }
-            });
+            }
 
             discipline.gradesList = localGradesList;
           }
-        });
+        }
       } catch (e) {
         CustomLogger.error(e);
       }
-    });
+    }
     return disciplinesList;
   }
 }

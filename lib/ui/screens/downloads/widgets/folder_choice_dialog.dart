@@ -7,19 +7,19 @@ import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 
-// ignore: must_be_immutable
 class FolderChoiceDialog extends StatefulWidget {
-  BuildContext context;
-  String path;
-  List<FileInfo>? files = [];
-  bool selectionMode;
-  Function callback;
-  FolderChoiceDialog(this.context, this.path, this.files, this.selectionMode, this.callback);
+  final BuildContext context;
+  final String path;
+  final List<FileInfo>? files;
+  final bool selectionMode;
+  final Function callback;
+  const FolderChoiceDialog(this.context, this.path, this.selectionMode, this.callback,
+      {Key? key, this.files = const []})
+      : super(key: key);
 
   @override
   _FolderChoiceDialogState createState() => _FolderChoiceDialogState();
 }
-// ignore: must_be_immutable
 
 class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
   TextEditingController textController = TextEditingController(text: "");
@@ -40,20 +40,18 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
         style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
       ),
       content: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 500),
-        child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        child: SizedBox(
           height: widget.selectionMode ? screenSize.size.height / 10 * 2.5 : screenSize.size.height / 10 * 1.2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                child: Text(
-                  "Donnez un nom à ce dossier",
-                  style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
-                  textAlign: TextAlign.left,
-                ),
+              Text(
+                "Donnez un nom à ce dossier",
+                style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
+                textAlign: TextAlign.left,
               ),
-              Container(
+              SizedBox(
                 width: screenSize.size.width / 5 * 4.3,
                 height: screenSize.size.height / 10 * 0.8,
                 child: TextFormField(
@@ -81,15 +79,13 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                 ),
               ),
               if (widget.selectionMode)
-                Container(
-                  child: Text(
-                    "Utiliser un dossier existant",
-                    style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
-                    textAlign: TextAlign.left,
-                  ),
+                Text(
+                  "Utiliser un dossier existant",
+                  style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
+                  textAlign: TextAlign.left,
                 ),
               if (widget.selectionMode)
-                Container(
+                SizedBox(
                   width: screenSize.size.width / 5 * 4.3,
                   child: DropdownButton<String>(
                     value: dropDownValue,
@@ -135,7 +131,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
         TextButton(
           child: Text(
             dropDownValue != "Aucun" ? "DÉPLACER" : "CRÉER",
-            style: TextStyle(color: Colors.green),
+            style: const TextStyle(color: Colors.green),
             textScaleFactor: 1.0,
           ),
           onPressed: () async {
@@ -180,9 +176,9 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
 
     folderNames.add("Aucun");
 
-    folderList.forEach((element) {
+    for (var element in folderList) {
       folderNames.add(element.fileName);
-    });
+    }
     // set up the AlertDialog
   }
 }

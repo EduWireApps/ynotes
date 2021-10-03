@@ -1,8 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/useful_methods.dart';
 
 ///Login change notifier
 class LoginController extends ChangeNotifier {
@@ -13,7 +13,7 @@ class LoginController extends ChangeNotifier {
   //Error logs
   String logs = "";
   //getters
-  Connectivity _connectivity = Connectivity();
+  final Connectivity _connectivity = Connectivity();
 
   bool attemptedToRelogin = false;
   LoginController() {
@@ -21,9 +21,9 @@ class LoginController extends ChangeNotifier {
     _connectivity.onConnectivityChanged.listen(connectionChanged);
   }
 
-  get actualState => _actualState;
-  set actualState(loginStatus) {
-    _actualState = loginStatus;
+  loginStatus get actualState => _actualState;
+  set actualState(loginStatus status) {
+    _actualState = status;
     notifyListeners();
   }
 
@@ -69,14 +69,14 @@ class LoginController extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Connexion à l'API...";
       notifyListeners();
-      String? u = await readStorage("username");
-      String? p = await readStorage("password");
-      String? url = await readStorage("pronoteurl");
-      String? cas = await readStorage("pronotecas");
-      bool? iscas = (await readStorage("ispronotecas") == "true");
-      bool? demo = (await readStorage("demo") == "true");
+      String? u = await KVS.read(key: "username");
+      String? p = await KVS.read(key: "password");
+      String? url = await KVS.read(key: "pronoteurl");
+      String? cas = await KVS.read(key: "pronotecas");
+      bool? iscas = (await KVS.read(key: "ispronotecas") == "true");
+      bool? demo = (await KVS.read(key: "demo") == "true");
 
-      var z = await readStorage("agreedTermsAndConfiguredApp");
+      var z = await KVS.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
         await appSys.api!
             .login(u, p, additionnalSettings: {"url": url, "mobileCasLogin": iscas, "cas": cas, "demo": demo}).then(
@@ -119,7 +119,9 @@ class LoginController extends ChangeNotifier {
         _actualState = loginStatus.error;
         notifyListeners();
       }
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e);
+    }
   }
 }
 

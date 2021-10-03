@@ -18,20 +18,20 @@ class _HomeworkFilterDialogState extends State<HomeworkFilterDialog> {
     return AlertDialog(
       backgroundColor: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-      content: Container(
+      content: SizedBox(
         width: screenSize.size.width / 5 * 3.2,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, homeworkFilter.ALL),
+            buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, homeworkFilter.all),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Spécialités", MdiIcons.star, homeworkFilter.SPECIALTIES),
+            buildDefaultChoice("Spécialités", MdiIcons.star, homeworkFilter.specialties),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, homeworkFilter.LITERARY),
+            buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, homeworkFilter.literacy),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Sciences", MdiIcons.atom, homeworkFilter.SCIENCES),
+            buildDefaultChoice("Sciences", MdiIcons.atom, homeworkFilter.sciences),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Matières personnalisées", MdiIcons.pencil, homeworkFilter.CUSTOM),
+            buildDefaultChoice("Matières personnalisées", MdiIcons.pencil, homeworkFilter.custom),
           ],
         ),
       ),
@@ -61,7 +61,7 @@ class _HomeworkFilterDialogState extends State<HomeworkFilterDialog> {
               Container(
                 width: screenSize.size.width / 10 * 1.5,
                 height: screenSize.size.width / 10 * 1.5,
-                decoration: BoxDecoration(shape: BoxShape.circle),
+                decoration: const BoxDecoration(shape: BoxShape.circle),
                 child: Icon(
                   icon,
                   color: ThemeUtils.textColor(),

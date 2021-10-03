@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/grades/models.dart';
 import 'package:ynotes/globals.dart';
@@ -10,6 +9,7 @@ import 'package:ynotes/ui/screens/summary/widgets/card.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 class SummaryLastGrades extends StatefulWidget {
   const SummaryLastGrades({Key? key}) : super(key: key);
@@ -27,7 +27,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
           final allGrades =
               getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true) ?? [];
           final grades = allGrades.reversed.toList().sublist((allGrades.length - 5).clamp(0, 10000)).reversed;
-          if (grades.length != 0) {
+          if (grades.isNotEmpty) {
             return Column(mainAxisSize: MainAxisSize.min, children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: sidePadding),
@@ -37,19 +37,18 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                   children: [
                     Text(SummaryTexts.lastGrades,
                         style: TextStyle(
-                            color: theme.colors.neutral.shade500, fontSize: 15.sp, fontWeight: FontWeight.w500)),
+                            color: theme.colors.foregroundColor, fontSize: YScale.s8, fontWeight: FontWeight.w500)),
                     YButton(
                       onPressed: () => Navigator.pushNamed(context, "/grades"),
                       text: SummaryTexts.seeAll,
-                      type: YColor.neutral,
-                      variant: YVariant.reverse,
+                      color: YColor.secondary,
                       icon: Icons.arrow_forward_rounded,
                       isIconReversed: true,
                     )
                   ],
                 ),
               ),
-              YVerticalSpacer(10),
+              YVerticalSpacer(YScale.s2),
               SingleChildScrollView(
                 padding: EdgeInsets.only(right: sidePadding),
                 scrollDirection: Axis.horizontal,
@@ -64,14 +63,14 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
 
   Widget gradeCard(BuildContext context, Grade grade) {
     final TextStyle gradeStyle =
-        TextStyle(fontSize: 25.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: theme.colors.neutral.shade500);
+        TextStyle(fontSize: YScale.s10, fontWeight: FontWeight.w600, color: theme.colors.foregroundColor);
 
     return Padding(
         padding: EdgeInsets.only(left: sidePadding),
         child: GestureDetector(
           onTap: () => Navigator.pushNamed(context, "/grades"),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 100),
+            constraints: BoxConstraints(maxWidth: 60.vw, maxHeight: 150),
             child: SummaryCard(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,31 +85,31 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
                           Text((grade.notSignificant! ? "(" + grade.value! : grade.value) ?? "", style: gradeStyle),
                           Text('/' + grade.scale!,
                               style: TextStyle(
-                                  color: theme.colors.neutral.shade400,
-                                  fontSize: 25.sp.clamp(0, 25),
+                                  color: theme.colors.foregroundLightColor,
+                                  fontSize: YScale.s5,
                                   fontWeight: FontWeight.w400)),
                           if (grade.notSignificant!) Text(")", style: gradeStyle)
                         ],
                       ),
                       Expanded(child: Container()),
-                      Icon(Icons.arrow_forward_outlined, color: theme.colors.neutral.shade400)
+                      Icon(Icons.arrow_forward_outlined, color: theme.colors.foregroundLightColor)
                     ]),
-                Spacer(),
+                const Spacer(),
                 Text(
                   grade.disciplineName ?? "",
                   style: TextStyle(
-                      color: theme.colors.neutral.shade400, fontSize: 9.sp.clamp(0, 15), fontWeight: FontWeight.w600),
+                      color: theme.colors.foregroundLightColor, fontSize: YScale.s4, fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 ),
-                if( (grade.testName ??"") != "")
-                Text(
-                  grade.testName ?? "",
-                  style: TextStyle(
-                      color: theme.colors.neutral.shade500, fontSize: 13.sp.clamp(0, 25), fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                )
+                if ((grade.testName ?? "") != "")
+                  Text(
+                    grade.testName ?? "",
+                    style: TextStyle(
+                        color: theme.colors.foregroundColor, fontSize: YScale.s6, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.left,
+                  )
               ],
             )),
           ),

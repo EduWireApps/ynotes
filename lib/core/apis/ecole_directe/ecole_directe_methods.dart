@@ -16,6 +16,7 @@ import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
@@ -23,11 +24,11 @@ import 'package:ynotes/useful_methods.dart';
 import '../ecole_directe.dart';
 
 class EcoleDirecteMethod {
-  Offline _offlineController;
+  final Offline _offlineController;
   late EcoleDirecteEndpoints endpoints;
 
   EcoleDirecteMethod(this._offlineController, {bool demo = false}) {
-    endpoints = EcoleDirecteEndpoints(debug: demo, id: appSys.account?.id ?? "");
+    endpoints = EcoleDirecteEndpoints(debug: demo);
   }
   Future<List<CloudItem>?> cloudFolders() async {
     await testToken();
@@ -108,7 +109,7 @@ class EcoleDirecteMethod {
         onErrorBody: "Lessons request returned an error:",
       );
       int week = await getWeek(dateToUse);
-      
+
       if (lessonsList != null) {
         await LessonsOffline(_offlineController).updateLessons(lessonsList, week);
       }
@@ -172,8 +173,8 @@ class EcoleDirecteMethod {
 
   refreshToken() async {
 //Get the password in the secure storage
-    String? password = await storage.read(key: "password");
-    String? username = await storage.read(key: "username");
+    String? password = await KVS.read(key: "password");
+    String? username = await KVS.read(key: "username");
     var url = endpoints.login;
     CustomLogger.log("LOGIN", url);
     Map<String, String> headers = {"Content-type": "text/plain"};
@@ -218,7 +219,7 @@ class EcoleDirecteMethod {
 
     String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content,
         characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
-    recipientsList.forEach((element) {
+    for (var element in recipientsList) {
       String eOrp = element.isTeacher! ? "P" : "E";
       int? id = int.tryParse(element.id!);
       String? surname = element.surname;
@@ -248,7 +249,7 @@ class EcoleDirecteMethod {
                             "contacts": []
                         }
                     },""";
-    });
+    }
 
     await testToken();
     String? id = appSys.currentSchoolAccount?.studentID ?? "";
@@ -344,7 +345,7 @@ class EcoleDirecteMethod {
       }
     } else {
       //Offline data;
-      var data;
+      dynamic data;
       if (!isOfflineLocked) {
         try {
           data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
@@ -370,7 +371,7 @@ class EcoleDirecteMethod {
   }
 
   static getNextSunday(DateTime date) {
-    return date.subtract(Duration(days: date.weekday - 1)).add(Duration(days: 6));
+    return date.subtract(Duration(days: date.weekday - 1)).add(const Duration(days: 6));
   }
 
   static Future<dynamic> request(
@@ -381,12 +382,9 @@ class EcoleDirecteMethod {
       Map<String, String>? headers,
       bool getRequest = false}) async {
     try {
-
       String finalUrl = url;
-      if (headers == null) {
-        headers = {"Content-type": "text/plain"};
-      }
-      var response;
+      headers ??= {"Content-type": "text/plain"};
+      dynamic response;
       if (getRequest) {
         response = await http.get(Uri.parse(finalUrl), headers: headers);
       } else {
@@ -399,7 +397,7 @@ class EcoleDirecteMethod {
           responseData != null &&
           responseData['code'] != null &&
           responseData['code'] == 200) {
-        var parsedData;
+        dynamic parsedData;
         try {
           parsedData = await converter(responseData);
         } catch (e) {

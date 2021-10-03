@@ -12,7 +12,7 @@ class EcoleDirecteAccountConverter {
       var data = mapGet(accountData, ["data", "accounts", 0]);
       String? name = utf8convert(mapGet(data, ["prenom"]));
       String? surname = utf8convert(mapGet(data, ["nom"]));
-      String? id = Uuid().v1();
+      String? id = const Uuid().v1();
       bool isParentMainAccount = true;
       List<SchoolAccount> _schoolAccountsList = schoolAccounts(rawSchoolAccounts);
       return AppAccount(
@@ -21,12 +21,12 @@ class EcoleDirecteAccountConverter {
           id: id,
           managableAccounts: _schoolAccountsList,
           isParentMainAccount: isParentMainAccount,
-          apiType: API_TYPE.EcoleDirecte);
+          apiType: API_TYPE.ecoleDirecte);
     } else {
       SchoolAccount _account = singleSchoolAccount(accountData);
       String? name = _account.name;
       String? surname = _account.surname;
-      String? id = Uuid().v1();
+      String? id = const Uuid().v1();
       bool isParentMainAccount = false;
       return AppAccount(
           name: name,
@@ -34,59 +34,59 @@ class EcoleDirecteAccountConverter {
           id: id,
           managableAccounts: [_account],
           isParentMainAccount: isParentMainAccount,
-          apiType: API_TYPE.EcoleDirecte);
+          apiType: API_TYPE.ecoleDirecte);
     }
   }
 
   static List<appTabs> availableTabs(List? modules) {
     List<appTabs> tabs = [];
-    (modules ?? []).forEach((element) {
+    for (var element in (modules ?? [])) {
 //Tabs available in app
       if (element["enable"] == true) {
         switch (element["code"]) {
           case "VIE_SCOLAIRE":
-            tabs.add(appTabs.SCHOOL_LIFE);
+            tabs.add(appTabs.schoolLife);
             break;
           case "NOTES":
-            tabs.add(appTabs.GRADES);
+            tabs.add(appTabs.grades);
             break;
           case "MESSAGERIE":
-            tabs.add(appTabs.MESSAGING);
+            tabs.add(appTabs.messaging);
 
             break;
           case "EDT":
-            tabs.add(appTabs.AGENDA);
+            tabs.add(appTabs.agenda);
 
             break;
           case "CLOUD":
-            tabs.add(appTabs.CLOUD);
+            tabs.add(appTabs.cloud);
 
             break;
           case "CAHIER_DE_TEXTES":
-            tabs.add(appTabs.HOMEWORK);
+            tabs.add(appTabs.homework);
             break;
           default:
         }
       }
       //always available tabs
-      tabs.add(appTabs.FILES);
-      tabs.add(appTabs.SUMMARY);
-    });
+      tabs.add(appTabs.files);
+      tabs.add(appTabs.summary);
+    }
     return tabs;
   }
 
   static List<Period> periods(Map<dynamic, dynamic> periodsData) {
     List rawPeriods = periodsData['data']['periodes'];
     List<Period> periods = [];
-    rawPeriods.forEach((element) {
+    for (var element in rawPeriods) {
       periods.add(Period(element["periode"], element["idPeriode"]));
-    });
+    }
     return periods;
   }
 
   static List<SchoolAccount> schoolAccounts(List<Map<dynamic, dynamic>> schoolAccountsData) {
     List<SchoolAccount> accounts = [];
-    schoolAccountsData.forEach((rawAccountData) {
+    for (var rawAccountData in schoolAccountsData) {
       String? name = utf8convert(mapGet(rawAccountData, ["prenom"]));
       String? surname = utf8convert(mapGet(rawAccountData, ["nom"]));
       String? schoolName = utf8convert(mapGet(rawAccountData, ["nomEtablissement"]));
@@ -100,7 +100,7 @@ class EcoleDirecteAccountConverter {
           studentID: studentID,
           availableTabs: tabs,
           schoolName: schoolName));
-    });
+    }
     return accounts;
   }
 

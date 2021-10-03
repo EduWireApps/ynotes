@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes_packages/components.dart';
 
 class YPageLocal extends StatefulWidget {
   final Widget child;
@@ -24,7 +23,7 @@ class _YPageLocalState extends State<YPageLocal> {
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
             leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: closePage,
             ),
             backgroundColor:
@@ -32,10 +31,7 @@ class _YPageLocalState extends State<YPageLocal> {
             centerTitle: false,
             title: Text(widget.title, textAlign: TextAlign.start),
             systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-            brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
             actions: widget.actions),
-        body: widget.scrollable
-            ? YShadowScrollContainer(color: Theme.of(context).backgroundColor, children: [widget.child])
-            : widget.child);
+        body: widget.scrollable ? SingleChildScrollView(child: Column(children: [widget.child])) : widget.child);
   }
 }

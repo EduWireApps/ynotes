@@ -73,12 +73,12 @@ class HiveBoxProvider {
 ///Unlock it on another thread/isolate could `definitely break the user database, so please be cautious`.
 class Offline {
   //Boxes name
-  static final String offlineCacheBoxName = "offlineData";
-  static final String doneHomeworkBoxName = "doneHomework";
-  static final String homeworkBoxName = "homework";
-  static final String pinnedHomeworkBoxName = "pinnedHomework";
-  static final String agendaBoxName = "agenda";
-  static final String mailsBoxName = "mails";
+  static const String offlineCacheBoxName = "offlineData";
+  static const String doneHomeworkBoxName = "doneHomework";
+  static const String homeworkBoxName = "homework";
+  static const String pinnedHomeworkBoxName = "pinnedHomework";
+  static const String agendaBoxName = "agenda";
+  static const String mailsBoxName = "mails";
   DateTime? dateOfOpening;
   //sample box for example.dart (do not delete)
   Box<Example>? exampleBox;
@@ -104,7 +104,7 @@ class Offline {
       await mailsBox?.deleteFromDisk();
       await homeworkBox?.deleteFromDisk();
 
-      await this.init();
+      await init();
     } catch (e) {
       CustomLogger.log("OFFLINE", "Failed to clear all db");
       CustomLogger.error(e);
@@ -159,7 +159,7 @@ class Offline {
       if (boxName.contains("offlineData")) {
         await appSys.hiveBoxProvider.deleteBox(boxName);
       }
-      await this.init();
+      await init();
 
       throw ("Error while opening $boxName");
     }

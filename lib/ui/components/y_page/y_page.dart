@@ -1,11 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';
 import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes_packages/theme.dart';
 
 class YPage extends StatefulWidget {
@@ -21,32 +21,31 @@ class YPage extends StatefulWidget {
   _YPageState createState() => _YPageState();
 }
 
-class _YPageState extends State<YPage> with TickerProviderStateMixin {
+class _YPageState extends State<YPage> with TickerProviderStateMixin, LayoutMixin {
   @override
   Widget build(BuildContext context) {
     final MediaQueryData screenSize = MediaQuery.of(context);
     return Row(
       children: [
         if (screenSize.size.width > 800)
-          Container(
+          SizedBox(
             height: screenSize.size.height,
             width: 310,
-            child: YDrawer(),
+            child: const YDrawer(),
           ),
         Expanded(
           child: Scaffold(
-            backgroundColor: theme.colors.neutral.shade200,
-            drawer: (screenSize.size.width < 800) ? YDrawer() : null,
+            backgroundColor: theme.colors.backgroundLightColor,
+            drawer: (screenSize.size.width < 800) ? const YDrawer() : null,
             appBar: AppBar(
-                backgroundColor: theme.colors.neutral.shade100,
+                backgroundColor: theme.colors.backgroundColor,
                 centerTitle: false,
+                automaticallyImplyLeading: isLargeScreen,
                 title: Text(widget.title, textAlign: TextAlign.start),
-                systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-                brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
                 actions: widget.actions),
             body: widget.isScrollable
                 ? SingleChildScrollView(child: _page(context))
-                : Container(height: screenSize.size.height, child: _page(context)),
+                : SizedBox(height: screenSize.size.height, child: _page(context)),
           ),
         ),
       ],
@@ -57,12 +56,12 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
     late Animation<double> showLoginControllerStatus;
     late AnimationController showLoginControllerStatusController;
 
-    showLoginControllerStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    showLoginControllerStatus = new Tween(
+    showLoginControllerStatusController = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    showLoginControllerStatus = Tween(
       begin: 1.0,
       end: 0.0,
-    ).animate(new CurvedAnimation(
-        parent: showLoginControllerStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
+    ).animate(CurvedAnimation(
+        parent: showLoginControllerStatusController, curve: const Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
     return ChangeNotifierProvider<LoginController>.value(
       value: appSys.loginController,
       child: Consumer<LoginController>(builder: (context, model, child) {

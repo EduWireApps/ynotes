@@ -19,7 +19,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       backgroundColor: Theme.of(context).primaryColorDark,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
       contentPadding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
       content: Container(
         padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
@@ -29,7 +29,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                 color: Theme.of(context).primaryColorDark,
               ),
               width: screenSize.size.width / 5 * 4.7,
@@ -60,8 +60,8 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                       TextSpan(
                         text: "Autorisez yNotes à accéder à ",
                         children: <TextSpan>[
-                          TextSpan(text: widget.authName, style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: " pour que l'application fonctionne correctement."),
+                          TextSpan(text: widget.authName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          const TextSpan(text: " pour que l'application fonctionne correctement."),
                         ],
                       ),
                       style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
@@ -76,7 +76,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                     child: AutoSizeText.rich(
                       TextSpan(
                         children: <TextSpan>[
-                          TextSpan(text: "Pour quoi faire ?", style: TextStyle(fontWeight: FontWeight.bold)),
+                          const TextSpan(text: "Pour quoi faire ?", style: TextStyle(fontWeight: FontWeight.bold)),
                           TextSpan(text: "\n" + widget.goal!),
                         ],
                       ),
@@ -96,7 +96,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                             ),
                             onPressed: () => Navigator.of(context).pop(false),
-                            child: Text(
+                            child: const Text(
                               'Je refuse',
                               style: TextStyle(color: Colors.white),
                             ),
@@ -110,7 +110,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                             ),
                             onPressed: () => Navigator.of(context).pop(true),
-                            child: Text(
+                            child: const Text(
                               "Donner l'accès",
                               style: TextStyle(color: Colors.white),
                             ),

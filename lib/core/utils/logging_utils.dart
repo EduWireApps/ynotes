@@ -42,11 +42,11 @@ class CustomLogger {
   }
 
   static Future<void> _writeLog({required String object, required String text, required File file}) async {
-    final String locale = "fr_FR";
+    const String locale = "fr_FR";
     final String date = DateFormat.yMEd(locale).format(DateTime.now()).capitalize() +
         " à " +
         DateFormat.jms(locale).format(DateTime.now());
-    final n = "\n";
+    const n = "\n";
     if ((await file.exists()) == false) {
       await file.create();
     }

@@ -41,7 +41,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     String date = "(vide)";
 
     return Scaffold(
-      appBar: new AppBar(
+      appBar: AppBar(
         title: ChangeNotifierProvider<PageController>.value(
             value: pageView,
             child: Consumer<PageController>(builder: (context, model, child) {
@@ -50,14 +50,14 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                     .format(widget.homework[getPageIndex(model).round()].date!)
                     .toUpperCase();
               }
-              return new Text(
+              return Text(
                 date,
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                style: const TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
               );
             })),
         systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         actions: [
-          Container(
+          SizedBox(
             width: screenSize.size.width / 5 * 0.6,
             child: TextButton(
                 onPressed: () async {
@@ -71,13 +71,13 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             child: TextButton(
                 onPressed: () async {
                   await showModalBottomSheet(
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
                       context: context,
                       backgroundColor: Theme.of(context).primaryColor,
                       isScrollControlled: true,
                       builder: (context) {
-                        return HomeworkReaderOptionsBottomSheet();
+                        return const HomeworkReaderOptionsBottomSheet();
                       });
                   setState(() {});
                 },
@@ -145,7 +145,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 });
                 await HomeworkOffline(appSys.offline).updateSingleHW(hw);
               },
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: (hw.done ?? false) ? Colors.green : color,
                   icon: MdiIcons.check,
@@ -156,7 +156,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 });
                 await HomeworkOffline(appSys.offline).updateSingleHW(hw);
               },
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: (hw.pinned ?? false) ? Colors.green : color,
                   icon: MdiIcons.pin,
@@ -166,9 +166,9 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   transitionBuilder: (Widget child, Animation<double> animation) {
                     return ScaleTransition(child: child, scale: animation);
                   },
-                  child: (hw.files.toList()).length > 0
+                  child: (hw.files.toList()).isNotEmpty
                       ? Container(
-                          key: ValueKey<int>(0),
+                          key: const ValueKey<int>(0),
                           child: CustomButtons.materialButton(context, 45, 45, () async {
                             await refreshSelf();
                             showFilesModalBottomSheet(context, hw.files.toList());
@@ -183,7 +183,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 await CustomDialogs.showHomeworkDetailsDialog(context, hw);
                 setState(() {});
               },
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: color,
                   icon: MdiIcons.shareVariantOutline,
@@ -200,7 +200,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                     borderRadius: BorderRadius.circular(11),
                     backgroundColor: color,
                     icon: MdiIcons.pencil,
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     iconColor: ThemeUtils.textColor()),
               if (hw.editable)
                 CustomButtons.materialButton(context, 45, 45, () async {
@@ -209,7 +209,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
 
                   setState(() {});
                 },
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     borderRadius: BorderRadius.circular(11),
                     backgroundColor: color,
                     icon: MdiIcons.trashCan,
@@ -267,12 +267,12 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   maintainState: true,
                   maintainSize: true,
                   child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         MdiIcons.chevronLeft,
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        pageView.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                        pageView.previousPage(duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
                       }),
                 ),
                 Expanded(
@@ -284,7 +284,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                       flex: 11,
                       child: AutoSizeText(hw.discipline ?? "",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: Colors.white)),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: Colors.white)),
                     ),
                     if (hw.teacherName != null && hw.teacherName != "")
                       Flexible(
@@ -292,7 +292,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                         child: AutoSizeText(
                           hw.teacherName?.trimLeft() ?? "",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontFamily: "Asap", color: Colors.white60),
+                          style: const TextStyle(fontFamily: "Asap", color: Colors.white60),
                         ),
                       ),
                   ],
@@ -303,12 +303,12 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   maintainState: true,
                   maintainSize: true,
                   child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         MdiIcons.chevronRight,
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        pageView.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                        pageView.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
                       }),
                 )
               ],
@@ -326,13 +326,13 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             height: screenSize.size.height / 10 * 7.5,
             width: screenSize.size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/pageItems/homework/noHomework.png')),
+                const Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/pageItems/homework/noHomework.png')),
                 Text(
                   "Pas de devoirs pour cette journée.",
                   textAlign: TextAlign.center,
@@ -396,12 +396,11 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             customWidgetBuilder: (element) {
               if (element.attributes['class'] == 'math-tex') {
                 try {
-                  return Container(
-                      child: TeXView(
+                  return TeXView(
                     child: TeXViewDocument(element.text,
                         style: TeXViewStyle.fromCSS(
                             """background-color: #${(ThemeUtils.isThemeDark ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
-                  ));
+                  );
                 } catch (e) {
                   return Container();
                 }
@@ -425,16 +424,16 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     if (offset.toInt() + 1 < widget.homework.length) {
       //Current background color
       Color? current = widget.homework[offset.toInt()].editable
-          ? Color(0xff7DD3FC)
+          ? const Color(0xff7DD3FC)
           : Color(await getColor(widget.homework[offset.toInt()].disciplineCode));
       Color? next = widget.homework[offset.toInt() + 1].editable
-          ? Color(0xff7DD3FC)
+          ? const Color(0xff7DD3FC)
           : Color(await getColor(widget.homework[offset.toInt() + 1].disciplineCode));
 
       return Color.lerp(current, next, offset - offset.toInt()) ?? Colors.white;
     } else {
       return widget.homework.last.editable
-          ? Color(0xff7DD3FC)
+          ? const Color(0xff7DD3FC)
           : Color(await getColor(widget.homework.last.disciplineCode));
     }
   }
@@ -465,7 +464,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   }
 
   pageColor(ApplicationSystem _appSys) {
-    if ( _appSys.settings.user.homeworkPage.pageColorVariant == 0 ||
+    if (_appSys.settings.user.homeworkPage.pageColorVariant == 0 ||
         ThemeUtils.isThemeDark && _appSys.settings.user.homeworkPage.pageColorVariant == 2) {
       return Theme.of(context).primaryColorDark;
     }
@@ -473,7 +472,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       return ThemeUtils.textColor(revert: true);
     }
     if (_appSys.settings.user.homeworkPage.pageColorVariant == 2) {
-      return Color(0xfff2e7bf);
+      return const Color(0xfff2e7bf);
     }
   }
 

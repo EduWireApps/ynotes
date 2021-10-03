@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_responsive_breakpoints/flutter_responsive_breakpoints.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/screens/summary/widgets/administrative_data.dart';
-import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/components.dart' hide YPage;
 import 'widgets/average.dart';
 import 'data/constants.dart';
 import 'widgets/last_grades.dart';
@@ -18,6 +18,7 @@ class SummaryPage extends StatefulWidget {
   const SummaryPage({
     Key? key,
   }) : super(key: key);
+  @override
   State<StatefulWidget> createState() {
     return SummaryPageState();
   }
@@ -26,10 +27,10 @@ class SummaryPage extends StatefulWidget {
 class SummaryPageState extends State<SummaryPage> with YPageMixin {
   bool firstStart = true;
   List<Widget> pages = [
-    SummaryAverage(),
-    SummaryLastGrades(),
-    YVerticalSpacer(1.2.h),
-    SummaryAdministrativeData()
+    const SummaryAverage(),
+    const SummaryLastGrades(),
+    YVerticalSpacer(1.2.vh),
+    const SummaryAdministrativeData()
   ];
 
   @override
@@ -40,16 +41,13 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           onRefresh: () async {},
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: sidePadding),
-              child: Container(
-                height: 100.h,
-                child: ReorderableList(
-                  itemCount: pages.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                        key: Key(index.toString()), leading: Text("test"));
-                  },
-                  onReorder: (startindex, newindex) {},
-                ),
+              child: Column(
+                children: const [
+                  SummaryAverage(),
+                  SummaryLastGrades(),
+                  YVerticalSpacer(40),
+                  SummaryAdministrativeData()
+                ],
               )),
         ));
   }
@@ -58,6 +56,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
     await appSys.loginController.init();
   }
 
+  @override
   initState() {
     super.initState();
 
@@ -65,11 +64,12 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
     SchedulerBinding.instance!.addPostFrameCallback((!mounted
         ? null
         : (_) {
+            showUpdateNote();
             refreshControllers(force: false);
-            if (this.firstStart) {
+            if (firstStart) {
               initLoginController().then((var f) {
-                if (this.firstStart) {
-                  this.firstStart = false;
+                if (firstStart) {
+                  firstStart = false;
                 }
                 refreshControllers();
               });
@@ -77,14 +77,14 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           })!);
   }
 
-  Future<void> refreshControllers({force: true}) async {
+  Future<void> refreshControllers({force = true}) async {
     await appSys.gradesController.refresh(force: force);
     await appSys.homeworkController.refresh(force: force);
   }
 
   showUpdateNote() async {
-    if ((appSys.settings.system.lastReadUpdateNote != "0.11.2")) {
-      appSys.settings.system.lastReadUpdateNote = "0.11.2";
+    if ((appSys.settings.system.lastReadUpdateNote != "0.12")) {
+      appSys.settings.system.lastReadUpdateNote = "0.12";
       appSys.saveSettings();
       await CustomDialogs.showUpdateNoteDialog(context);
     }

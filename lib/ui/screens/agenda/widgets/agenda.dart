@@ -26,7 +26,7 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
             DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
             DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
         .toList();
-    if (dailyLessons.length != 0) {
+    if (dailyLessons.isNotEmpty) {
       //Get current lesson
       try {
         lesson = dailyLessons.firstWhere((lesson) =>
@@ -55,7 +55,7 @@ getNextLesson(List<Lesson>? lessons) {
             DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
             DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
         .toList();
-    if (dailyLessons.length != 0) {
+    if (dailyLessons.isNotEmpty) {
       //Get current lesson
       try {
         dailyLessons.sort((a, b) => a.start!.compareTo(b.start!));
@@ -75,6 +75,8 @@ getNextLesson(List<Lesson>? lessons) {
 }
 
 class Agenda extends StatefulWidget {
+  const Agenda({Key? key}) : super(key: key);
+
   @override
   _AgendaState createState() => _AgendaState();
 }
@@ -103,18 +105,18 @@ class _AgendaState extends State<Agenda> {
                 height: screenSize.size.height,
                 padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
                 child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   child: Column(
                     children: <Widget>[
                       _buildAgendaButtons(context),
-                      Container(
+                      SizedBox(
                         height: screenSize.size.height / 10 * 8,
                         child: Stack(
                           children: [
                             FutureBuilder<List<AgendaEvent>?>(
                                 future: agendaFuture,
                                 builder: (context, snapshot) {
-                                  if (snapshot.hasData && snapshot.data != null && (snapshot.data ?? []).length != 0) {
+                                  if (snapshot.hasData && snapshot.data != null && (snapshot.data ?? []).isNotEmpty) {
                                     return RefreshIndicator(
                                         onRefresh: refreshAgendaFuture,
                                         child: AgendaGrid(
@@ -122,7 +124,7 @@ class _AgendaState extends State<Agenda> {
                                           initState,
                                         ));
                                   }
-                                  if (snapshot.data != null && snapshot.data!.length == 0) {
+                                  if (snapshot.data != null && snapshot.data!.isEmpty) {
                                     return Center(
                                       child: FittedBox(
                                         child: Column(
@@ -131,7 +133,7 @@ class _AgendaState extends State<Agenda> {
                                             Container(
                                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
                                               height: screenSize.size.height / 10 * 1.9,
-                                              child: Image(
+                                              child: const Image(
                                                   fit: BoxFit.fitWidth,
                                                   image: AssetImage('assets/images/pageItems/agenda/noEvent.png')),
                                             ),
@@ -149,7 +151,7 @@ class _AgendaState extends State<Agenda> {
                                               child: TextButton(
                                                 style: TextButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
-                                                      borderRadius: new BorderRadius.circular(18.0),
+                                                      borderRadius: BorderRadius.circular(18.0),
                                                       side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                                 ),
                                                 onPressed: () async {
