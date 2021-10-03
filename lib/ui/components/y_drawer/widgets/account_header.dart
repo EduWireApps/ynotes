@@ -4,7 +4,6 @@ import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes_packages/theme.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class AccountHeader extends StatefulWidget {

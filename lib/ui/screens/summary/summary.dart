@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_responsive_breakpoints/flutter_responsive_breakpoints.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
@@ -31,7 +31,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
   List<Widget> pages = [
     const SummaryAverage(),
     const SummaryLastGrades(),
-    YVerticalSpacer(1.2.h),
+    YVerticalSpacer(1.2.vh),
     const SummaryAdministrativeData()
   ];
 

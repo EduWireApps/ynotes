@@ -22,8 +22,6 @@ import 'package:ynotes/ui/themes/themes.dart';
 import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
 
-import 'package:sizer/sizer.dart';
-
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,56 +65,55 @@ class _AppState extends State<App> {
       value: appSys,
       child: Consumer<ApplicationSystem>(builder: (context, model, child) {
         return Wiredash(
-            projectId: "ynotes-giw0qs2",
-            secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
-            navigatorKey: _navigatorKey,
-            theme: WiredashThemeData(
-                backgroundColor: ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white,
-                primaryBackgroundColor: ThemeUtils.isThemeDark ? const Color(0xff414141) : const Color(0xffF3F3F3),
-                secondaryBackgroundColor: ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white,
-                secondaryColor: Theme.of(context).primaryColorDark,
-                primaryColor: Theme.of(context).primaryColor,
-                primaryTextColor: ThemeUtils.textColor(),
-                brightness: Brightness.dark,
-                secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
-            options: WiredashOptionsData(
-              /// You can set your own locale to override device default (`window.locale` by default)
-              locale: const Locale.fromSubtags(languageCode: 'fr'),
-            ),
-            child: HiveLifecycleManager(
-              child: YApp(
-                initialTheme: 1,
-                themes: themes,
-                builder: (context) => Responsive(
-                  builder: (context) => Sizer(
-                    builder: (context, orientation, deviceType) => MaterialApp(
-                      localizationsDelegates: const [
-                        // ... app-specific localization delegate[s] here
-                        GlobalMaterialLocalizations.delegate,
-                        GlobalWidgetsLocalizations.delegate,
-                        GlobalCupertinoLocalizations.delegate,
-                      ],
-                      supportedLocales: const [
-                        Locale('fr'), //French
-                      ],
-                      debugShowCheckedModeBanner: false,
-                      theme: model.themeData?.copyWith(
-                        colorScheme: theme.themeData.colorScheme,
-                        splashColor: theme.themeData.splashColor,
-                        highlightColor: theme.themeData.highlightColor,
-                        splashFactory: theme.themeData.splashFactory,
-                        textSelectionTheme: theme.themeData.textSelectionTheme,
-                      ),
-                      title: kDebugMode ? "yNotes DEV" : "yNotes",
-                      navigatorKey: _navigatorKey,
-                      home: const LoadingPage(),
-                      themeMode: ThemeMode.light,
-                      onGenerateRoute: onGenerateRoute,
-                    ),
+          projectId: "ynotes-giw0qs2",
+          secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
+          navigatorKey: _navigatorKey,
+          theme: WiredashThemeData(
+              backgroundColor: ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white,
+              primaryBackgroundColor: ThemeUtils.isThemeDark ? const Color(0xff414141) : const Color(0xffF3F3F3),
+              secondaryBackgroundColor: ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white,
+              secondaryColor: Theme.of(context).primaryColorDark,
+              primaryColor: Theme.of(context).primaryColor,
+              primaryTextColor: ThemeUtils.textColor(),
+              brightness: Brightness.dark,
+              secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
+          options: WiredashOptionsData(
+            /// You can set your own locale to override device default (`window.locale` by default)
+            locale: const Locale.fromSubtags(languageCode: 'fr'),
+          ),
+          child: HiveLifecycleManager(
+            child: YApp(
+              initialTheme: 1,
+              themes: themes,
+              builder: (context) => Responsive(
+                builder: (context) => MaterialApp(
+                  localizationsDelegates: const [
+                    // ... app-specific localization delegate[s] here
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: const [
+                    Locale('fr'), //French
+                  ],
+                  debugShowCheckedModeBanner: false,
+                  theme: model.themeData?.copyWith(
+                    colorScheme: theme.themeData.colorScheme,
+                    splashColor: theme.themeData.splashColor,
+                    highlightColor: theme.themeData.highlightColor,
+                    splashFactory: theme.themeData.splashFactory,
+                    textSelectionTheme: theme.themeData.textSelectionTheme,
                   ),
+                  title: kDebugMode ? "yNotes DEV" : "yNotes",
+                  navigatorKey: _navigatorKey,
+                  home: const LoadingPage(),
+                  themeMode: ThemeMode.light,
+                  onGenerateRoute: onGenerateRoute,
                 ),
               ),
-            ));
+            ),
+          ),
+        );
       }),
     );
   }

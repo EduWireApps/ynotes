@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/grades/models.dart';
 import 'package:ynotes/globals.dart';
@@ -71,7 +70,7 @@ class _SummaryLastGradesState extends State<SummaryLastGrades> {
         child: GestureDetector(
           onTap: () => Navigator.pushNamed(context, "/grades"),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 150),
+            constraints: BoxConstraints(maxWidth: 60.vw, maxHeight: 150),
             child: SummaryCard(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

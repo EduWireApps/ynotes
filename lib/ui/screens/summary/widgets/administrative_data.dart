@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/mails/models.dart';
@@ -103,7 +102,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
         TextStyle(fontSize: YScale.s10, fontWeight: FontWeight.w600, color: theme.colors.foregroundColor);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 300),
+      constraints: BoxConstraints(maxWidth: 60.vw, maxHeight: 300),
       child: GestureDetector(
         onTap: () => Navigator.pushNamed(context, routePath),
         child: SummaryCard(

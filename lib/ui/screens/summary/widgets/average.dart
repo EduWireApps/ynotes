@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/summary/data/constants.dart';
@@ -29,12 +28,12 @@ class SummaryAverageState extends State<SummaryAverage> {
           child: Consumer<GradesController>(builder: (context, model, child) {
             return SummaryCard(
                 child: SizedBox(
-              height: 12.h,
+              height: 12.vh,
               child: Column(
                 children: [
                   Container(
-                    height: 3.h,
-                    margin: EdgeInsets.only(top: 0.2.h),
+                    height: 3.vh,
+                    margin: EdgeInsets.only(top: 0.2.vh),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -46,7 +45,7 @@ class SummaryAverageState extends State<SummaryAverage> {
                               height: .4,
                               fontWeight: FontWeight.w700),
                         ),
-                        YHorizontalSpacer(.2.h),
+                        YHorizontalSpacer(.2.vh),
                         Expanded(
                           child: Text(SummaryTexts.average,
                               style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: YScale.s6)),
@@ -54,8 +53,8 @@ class SummaryAverageState extends State<SummaryAverage> {
                       ],
                     ),
                   ),
-                  YVerticalSpacer(0.3.h),
-                  SizedBox(height: 8.h, child: const SummaryChart())
+                  YVerticalSpacer(0.3.vh),
+                  SizedBox(height: 8.vh, child: const SummaryChart())
                 ],
               ),
             ));

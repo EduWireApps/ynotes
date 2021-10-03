@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/globals.dart';
@@ -52,7 +51,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
         leftTitles: SideTitles(
           interval: 1.0,
           showTitles: true,
-          reservedSize: 5.w.clamp(0, 90),
+          reservedSize: 5.vw.clamp(0, 90),
           getTextStyles: (value) => TextStyle(
             color: theme.colors.foregroundLightColor,
             fontWeight: FontWeight.bold,

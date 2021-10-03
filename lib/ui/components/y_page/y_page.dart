@@ -9,6 +9,7 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';
 import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes_packages/theme.dart';
 
 class YPage extends StatefulWidget {
@@ -24,7 +25,7 @@ class YPage extends StatefulWidget {
   _YPageState createState() => _YPageState();
 }
 
-class _YPageState extends State<YPage> with TickerProviderStateMixin {
+class _YPageState extends State<YPage> with TickerProviderStateMixin, LayoutMixin {
   @override
   Widget build(BuildContext context) {
     final MediaQueryData screenSize = MediaQuery.of(context);
@@ -43,7 +44,7 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
             appBar: AppBar(
                 backgroundColor: theme.colors.backgroundColor,
                 centerTitle: false,
-                automaticallyImplyLeading: !(kIsWeb || Platform.isWindows || Platform.isLinux),
+                automaticallyImplyLeading: isLargeScreen,
                 title: Text(widget.title, textAlign: TextAlign.start),
                 actions: widget.actions),
             body: widget.isScrollable
