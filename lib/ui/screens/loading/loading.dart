@@ -59,7 +59,7 @@ class _LoadingPageState extends State<LoadingPage> {
     await Future.delayed(const Duration(milliseconds: 500), () => "1");
     String? u = await KVS.read(key: "username");
     String? p = await KVS.read(key: "password");
-    String? z = await KVS.read(key: "agreedTermsAndConfiguredApp");
+    String? z = await KVS.read(key: "agreedTermsAndConfiguredApp"); // TODO: set this at /terms
     CustomLogger.log("LOADING", "${[u, p, z]}");
     Navigator.pushReplacementNamed(context, u != null && p != null && z != null ? "/summary" : "/login");
   }

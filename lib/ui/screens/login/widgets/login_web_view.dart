@@ -182,11 +182,9 @@ class _LoginWebViewState extends State<LoginWebView> {
         'return "ok";' +
         '} else return "ko";' +
         '} catch(e){return "ko";}})();';
-    print(cookieFunction);
 
     //We evaluate the cookie function
     String? cookieFunctionResult = await (_controller?.evaluateJavascript(source: cookieFunction));
-    print(cookieFunctionResult);
     //If it contains "ok" we are logged in
     if (cookieFunctionResult == "ok") {
       //We use this window function to redirect to the special login page

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/pronote/schools_model.dart';
+import 'package:ynotes/core/logic/pronote/login/geolocation/schools_model.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';

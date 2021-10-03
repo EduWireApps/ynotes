@@ -50,7 +50,6 @@ class LoginPageStructure extends StatelessWidget {
                             YButton(
                               text: "Logs",
                               onPressed: () {
-                                // TODO: implement real logs page
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

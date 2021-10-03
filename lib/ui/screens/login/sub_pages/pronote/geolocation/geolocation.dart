@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/logic/pronote/schools_controller.dart';
+import 'package:ynotes/core/logic/pronote/login/geolocation/schools_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 import 'package:ynotes_packages/components.dart';

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:sizer/sizer.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/logic/pronote/schools_controller.dart';
+import 'package:ynotes/core/logic/pronote/login/geolocation/schools_controller.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/screens/login/content/login_text_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/login_text_field.dart';

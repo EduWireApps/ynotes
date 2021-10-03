@@ -4,6 +4,7 @@ import 'package:ynotes/ui/screens/login/sub_pages/demos.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/ecoledirecte.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/geolocation/geolocation.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/pronote.dart';
+import 'package:ynotes/ui/screens/login/sub_pages/pronote/qrcode.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
@@ -19,4 +20,5 @@ final List<CustomRoute> loginRoutes = [
       path: "/login/pronote/url/webview", page: const LoginPronoteUrlWebviewPage(), relatedApi: -1, show: false),
   CustomRoute(
       path: "/login/pronote/geolocation", page: const LoginPronoteGeolocationPage(), relatedApi: -1, show: false),
+  CustomRoute(path: "/login/pronote/qrcode", page: const LoginPronoteQrcodePage(), relatedApi: -1, show: false),
 ];

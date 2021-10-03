@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/logic/pronote/schools_controller.dart';
+import 'package:ynotes/core/logic/pronote/login/geolocation/schools_controller.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/text_field.dart';

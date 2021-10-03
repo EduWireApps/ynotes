@@ -41,9 +41,7 @@ class _PronoteUrlBoxState extends State<PronoteUrlBox> with LayoutMixin, YPageMi
           Row(
             children: [
               InkWell(
-                onTap: () {
-                  // TODO: show a dialog to tell the user what to do when he has forgotten his password
-                },
+                onTap: () {},
                 child: Text(
                   LoginPageTextContent.pronote.url.forgotUrl,
                   style: TextStyle(

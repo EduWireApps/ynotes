@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/ui/screens/login/w/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -49,12 +48,6 @@ class LoginPage extends StatelessWidget {
             },
           ),
         ),
-        YButton(
-            onPressed: () async {
-              await KVS.deleteAll();
-            },
-            text: "RESET",
-            color: YColor.danger)
       ]),
     );
   }
