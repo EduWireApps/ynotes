@@ -89,7 +89,6 @@ class _GradesPageState extends State<GradesPage> with LayoutMixin {
                         ],
                       )),
                   Expanded(
-                    flex: 28,
                     child: RefreshIndicator(
                         onRefresh: forceRefreshGrades,
                         child: Container(

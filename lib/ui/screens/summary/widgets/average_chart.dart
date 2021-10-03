@@ -10,6 +10,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 class SummaryChart extends StatefulWidget {
   const SummaryChart({
@@ -34,13 +35,13 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
         drawVerticalLine: true,
         getDrawingHorizontalLine: (value) {
           return FlLine(
-            color: theme.colors.foregroundLightColor,
+            color: theme.colors.primary.lightColor,
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
           return FlLine(
-            color: theme.colors.foregroundLightColor,
+            color: theme.colors.primary.lightColor,
             strokeWidth: 1,
           );
         },
@@ -55,7 +56,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
           getTextStyles: (value) => TextStyle(
             color: theme.colors.foregroundLightColor,
             fontWeight: FontWeight.bold,
-            fontSize: 10.sp,
+            fontSize: YScale.s3,
           ),
           getTitles: (value) {
             double max = getMax();
@@ -70,7 +71,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
           },
         ),
       ),
-      borderData: FlBorderData(show: true, border: Border.all(color: theme.colors.foregroundLightColor, width: 1)),
+      borderData: FlBorderData(show: true, border: Border.all(color: theme.colors.primary.lightColor, width: 1)),
       minX: 0,
       maxX: ((_averages ?? []).length > maxGradesCount ? maxGradesCount : (_averages ?? []).length).toDouble() - 1,
       minY: (getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin()).round().toDouble(),

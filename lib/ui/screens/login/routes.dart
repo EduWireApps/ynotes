@@ -9,6 +9,7 @@ import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 
+/// Contains all routes concerning user authentification (`/login/...`)
 final List<CustomRoute> loginRoutes = [
   CustomRoute(path: "/login", page: const LoginPage(), relatedApi: -1, show: false),
   CustomRoute(path: "/login/demos", page: const LoginDemosPage(), relatedApi: -1, show: false),

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -40,9 +43,8 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
             appBar: AppBar(
                 backgroundColor: theme.colors.backgroundColor,
                 centerTitle: false,
+                automaticallyImplyLeading: !(kIsWeb || Platform.isWindows || Platform.isLinux),
                 title: Text(widget.title, textAlign: TextAlign.start),
-                systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-                brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
                 actions: widget.actions),
             body: widget.isScrollable
                 ? SingleChildScrollView(child: _page(context))

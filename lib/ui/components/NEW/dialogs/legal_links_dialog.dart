@@ -3,7 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 
+/// A dialog containing legal links.
 class LegalLinksDialog extends StatelessWidget {
+  /// A dialog containing legal links.
   const LegalLinksDialog({Key? key}) : super(key: key);
 
   static const List<_LegalLink> _legalLinks = [

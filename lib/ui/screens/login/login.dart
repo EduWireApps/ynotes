@@ -7,6 +7,8 @@ import 'package:ynotes_packages/utilities.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
+  // This is the list of the available school services
+  // This is only temporary and should be stored in the [API] class
   static final List<SchoolServiceBox> _services = [
     SchoolServiceBox(
         image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),

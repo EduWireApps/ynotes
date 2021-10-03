@@ -10,6 +10,7 @@ import 'package:ynotes/core/logic/school_life/models.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 import '../data/constants.dart';
 import '../data/texts.dart';
@@ -24,7 +25,7 @@ class SummaryAdministrativeData extends StatefulWidget {
 
 class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
   final TextStyle lightTextStyle =
-      TextStyle(color: theme.colors.foregroundLightColor, fontSize: 11.sp.clamp(0, 18), fontWeight: FontWeight.w400);
+      TextStyle(color: theme.colors.foregroundLightColor, fontSize: YScale.s6, fontWeight: FontWeight.w400);
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +100,10 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
       required String text2,
       required String routePath}) {
     final TextStyle gradeStyle =
-        TextStyle(fontSize: 35.sp.clamp(0, 35), fontWeight: FontWeight.w600, color: theme.colors.foregroundColor);
+        TextStyle(fontSize: YScale.s10, fontWeight: FontWeight.w600, color: theme.colors.foregroundColor);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 120),
+      constraints: BoxConstraints(maxWidth: 60.w, maxHeight: 300),
       child: GestureDetector(
         onTap: () => Navigator.pushNamed(context, routePath),
         child: SummaryCard(
@@ -122,7 +123,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
                         Text('/' + subData,
                             style: TextStyle(
                                 color: theme.colors.foregroundLightColor,
-                                fontSize: 15.sp.clamp(0, 18),
+                                fontSize: YScale.s4,
                                 fontWeight: FontWeight.w400)),
                     ],
                   ),
@@ -136,9 +137,7 @@ class _SummaryAdministrativeDataState extends State<SummaryAdministrativeData> {
                   TextSpan(
                       text: text1,
                       style: TextStyle(
-                          color: theme.colors.foregroundColor,
-                          fontSize: 15.sp.clamp(0, 18),
-                          fontWeight: FontWeight.w600)),
+                          color: theme.colors.foregroundColor, fontSize: YScale.s5, fontWeight: FontWeight.w600)),
                   TextSpan(
                     text: " " + text2,
                     style: lightTextStyle,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/components/NEW/buttons/buttons.dart';
-import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes_packages/components.dart';

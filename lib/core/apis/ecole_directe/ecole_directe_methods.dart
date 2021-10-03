@@ -28,7 +28,7 @@ class EcoleDirecteMethod {
   late EcoleDirecteEndpoints endpoints;
 
   EcoleDirecteMethod(this._offlineController, {bool demo = false}) {
-    endpoints = EcoleDirecteEndpoints(debug: demo, id: appSys.account?.id ?? "");
+    endpoints = EcoleDirecteEndpoints(debug: demo);
   }
   Future<List<CloudItem>?> cloudFolders() async {
     await testToken();

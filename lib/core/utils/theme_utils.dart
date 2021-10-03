@@ -21,15 +21,6 @@ ThemeData lightTheme = ThemeData(
 class ThemeUtils {
   static get isThemeDark => appSys.themeName!.contains("sombre");
 
-  Map themeColors = {
-    "light": {"primaryColor": Colors.red},
-    "dark": {"primaryColor": Colors.red}
-  };
-//Theme utils colors
-  primaryColor() => themeColors["light"]["primaryColor"];
-
-  Color test() => Colors.blue;
-
   ///Make the selected color darker
   static Color darken(Color color, {double? forceAmount}) {
     double amount = 0.05;

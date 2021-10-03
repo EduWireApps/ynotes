@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
@@ -162,6 +166,10 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
       final bool isCas = await testIfPronoteCas(url);
       CustomLogger.saveLog(object: "LOGIN", text: "(Pronote URL) Is CAS: $isCas");
       if (isCas) {
+        if (kIsWeb || Platform.isWindows || Platform.isLinux) {
+          return _ProcessUrlResponse(
+              message: "Impossible de se connecter avec une webview sur ${Platform.operatingSystem.capitalize()}");
+        }
         return _ProcessUrlResponse(route: _Route.webview, url: url);
       } else {
         return _ProcessUrlResponse(route: _Route.form, url: url);

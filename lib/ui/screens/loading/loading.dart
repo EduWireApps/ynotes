@@ -51,6 +51,7 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
+    // We set the system ui
     UIUtils.setSystemUIOverlayStyle();
     tryToConnect();
   }
@@ -61,7 +62,9 @@ class _LoadingPageState extends State<LoadingPage> {
     String? p = await KVS.read(key: "password");
     String? z = await KVS.read(key: "agreedTermsAndConfiguredApp");
     CustomLogger.log("LOADING", "${[u, p, z]}");
+    // The user is authenticated
     if (u != null && p != null) {
+      // The user has agreed to the terms and the app is configured
       if (z != null) {
         Navigator.pushReplacementNamed(context, "/summary");
       } else {

@@ -6,6 +6,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/summary/data/constants.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 import '../data/texts.dart';
 import 'average_chart.dart';
@@ -41,14 +42,14 @@ class SummaryAverageState extends State<SummaryAverage> {
                           (!model.average.isNaN ? model.average.toStringAsFixed(2).replaceAll(".", ",") : "-"),
                           style: TextStyle(
                               color: theme.colors.foregroundColor,
-                              fontSize: 28.sp.clamp(0, 45),
+                              fontSize: YScale.s12,
                               height: .4,
                               fontWeight: FontWeight.w700),
                         ),
                         YHorizontalSpacer(.2.h),
                         Expanded(
                           child: Text(SummaryTexts.average,
-                              style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 13.sp.clamp(0, 25))),
+                              style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: YScale.s6)),
                         )
                       ],
                     ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/logic/pronote/login/geolocation/schools_controller.dart';
+import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 import 'package:ynotes_packages/components.dart';
@@ -140,7 +140,7 @@ class _SchoolTile extends StatelessWidget {
       leading: Icon(Icons.school_rounded, color: theme.colors.foregroundLightColor),
       title: RichText(
           text: TextSpan(text: "${school.name!} ", style: theme.texts.title, children: [
-        TextSpan(text: "(${school.department})", style: theme.texts.body1),
+        TextSpan(text: "(${school.departmentCode})", style: theme.texts.body1),
       ])),
       subtitle: Padding(
         padding: YPadding.pt(YScale.s1),

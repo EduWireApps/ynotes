@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -29,7 +27,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
       builder: (context, controller, child) => YPage(
         appBar: const YAppBar(title: "QR Code"),
         scrollable: false,
-        floatingButtons: controller.status == AuthStatus.initial
+        floatingButtons: controller.status == QrStatus.initial
             ? [
                 YFloatingButton(
                     icon: MdiIcons.cameraFlip,
@@ -45,7 +43,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                     color: YColor.secondary),
               ]
             : null,
-        body: controller.status == AuthStatus.initial
+        body: controller.status == QrStatus.initial
             ? Column(children: [
                 Expanded(
                     child: Stack(
@@ -56,12 +54,9 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                         onQRViewCreated: (QRViewController qrController) async {
                           this.qrController = qrController;
                           qrController.scannedDataStream.listen((barCode) async {
-                            print("-------------------------------");
-                            if (controller.status == AuthStatus.initial && controller.isQrCodeValid(barCode)) {
-                              print("YES");
+                            if (controller.status == QrStatus.initial && controller.isQrCodeValid(barCode)) {
                               await getCode();
                             }
-                            print("-------------------------------");
                           });
                         }),
                     const QrCrossHair()

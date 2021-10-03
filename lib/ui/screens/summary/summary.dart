@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -41,16 +43,13 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
           onRefresh: () async {},
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: sidePadding),
-              // TODO: display the content instead of "test"
-              child: SizedBox(
-                height: 100.h,
-                child: ReorderableList(
-                  itemCount: pages.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(key: Key(index.toString()), leading: const Text("test"));
-                  },
-                  onReorder: (startindex, newindex) {},
-                ),
+              child: Column(
+                children: const [
+                  SummaryAverage(),
+                  SummaryLastGrades(),
+                  YVerticalSpacer(40),
+                  SummaryAdministrativeData()
+                ],
               )),
         ));
   }
