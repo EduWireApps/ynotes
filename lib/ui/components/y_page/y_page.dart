@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';
 import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';

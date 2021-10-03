@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +64,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
     SchedulerBinding.instance!.addPostFrameCallback((!mounted
         ? null
         : (_) {
+            showUpdateNote();
             refreshControllers(force: false);
             if (firstStart) {
               initLoginController().then((var f) {
@@ -84,8 +83,8 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
   }
 
   showUpdateNote() async {
-    if ((appSys.settings.system.lastReadUpdateNote != "0.11.2")) {
-      appSys.settings.system.lastReadUpdateNote = "0.11.2";
+    if ((appSys.settings.system.lastReadUpdateNote != "0.12")) {
+      appSys.settings.system.lastReadUpdateNote = "0.12";
       appSys.saveSettings();
       await CustomDialogs.showUpdateNoteDialog(context);
     }
