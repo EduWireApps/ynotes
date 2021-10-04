@@ -87,7 +87,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                             javaScriptEnabled: true,
                             allowFileAccessFromFileURLs: true,
                             userAgent:
-                                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
                             allowUniversalAccessFromFileURLs: true)),
                     onWebViewCreated: (InAppWebViewController controller) {
                       _controller = controller;

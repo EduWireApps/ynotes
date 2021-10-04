@@ -39,7 +39,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
                 arguments: LoginPronoteUrlFormPageArguments(response.url));
             break;
           case _Route.webview:
-            final Map? res = await Navigator.pushNamed(context, "/login/pronote/url/webview",
+            final dynamic res = await Navigator.pushNamed(context, "/login/pronote/url/webview",
                 arguments: LoginPronoteUrlWebviewPageArguments(response.url));
             if (res != null) {
               final List<dynamic>? data = await appSys.api!.login(res["login"], res["mdp"], additionnalSettings: {

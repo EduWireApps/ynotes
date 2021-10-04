@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
                   YInfoDialog(
                     title: "Je ne vois pas mon service",
                     body: Text(
-                        "Si tu ne vois pas ton service scolaire dans la liste, c'est que yNotes ne le prend pas en charge. Mais si tu sais coder et que tu as envie de l'ajouter, nous t'invitons à prendre contact avec nous sur Github ou Discord.",
+                        "Si ton service scolaire n'apparait pas dans la liste, c'est que yNotes ne le prend pas en charge. Tu sais coder ? Prend contact avec nous sur Github ou Discord pour en apprendre plus sur l'implémentation des services et peut-être même participer à l'implémentation du tien.",
                         style: theme.texts.body1),
                     confirmLabel: "OK",
                   ));
