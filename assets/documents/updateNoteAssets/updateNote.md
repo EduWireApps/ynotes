@@ -8,7 +8,7 @@ Les utilisateurs Pronote disposent désormais de **3 méthodes de connexion**:
 
 - Par **url**: c'était l'unique manière de se connecter jusqu'à présent
 - Par **géolocalisation**: nous vous fournissons la liste de tous les établissements les plus proches de vous
-- Avec un **QR code**: utilisze un QR code généré depuis votre espace Pronote en ligne
+- Avec un **QR code**: utilisez un QR code généré depuis votre espace Pronote en ligne
 
 # Interface
 

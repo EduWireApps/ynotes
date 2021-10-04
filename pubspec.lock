@@ -559,6 +559,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.0-rc.2021031201"
+  focus_detector:
+    dependency: "direct main"
+    description:
+      name: focus_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -1391,7 +1398,7 @@ packages:
     description:
       path: "."
       ref: rework
-      resolved-ref: ccd264c4c749719ccbe65819cbed2d1c1fd0bcf9
+      resolved-ref: eda38cc492fcd0d8baf8f727743670ca714afa24
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
     version: "0.4.3"

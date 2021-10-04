@@ -12,6 +12,7 @@ class TermsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return YPage(
+      showScrollbar: true,
       appBar: const YAppBar(title: "Termes et conditions", removeLeading: true),
       body: Padding(
           padding: YPadding.p(YScale.s2),
@@ -24,7 +25,11 @@ class TermsPage extends StatelessWidget {
                       CustomLogger.log("LOGIN", "An error occured while getting the TOS");
                       CustomLogger.error(snapshot.error);
                     }
-                    return Text(snapshot.data.toString(), style: theme.texts.body1);
+                    return Text(
+                      snapshot.data.toString(),
+                      style: theme.texts.body1,
+                      textAlign: TextAlign.justify,
+                    );
                   }),
               YVerticalSpacer(YScale.s8),
               YButton(

@@ -40,7 +40,7 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin, LayoutMixi
             appBar: AppBar(
                 backgroundColor: theme.colors.backgroundColor,
                 centerTitle: false,
-                automaticallyImplyLeading: isLargeScreen,
+                automaticallyImplyLeading: screenSize.size.width < 800,
                 title: Text(widget.title, textAlign: TextAlign.start),
                 actions: widget.actions),
             body: widget.isScrollable
