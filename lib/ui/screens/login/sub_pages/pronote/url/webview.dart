@@ -4,7 +4,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
@@ -23,12 +27,14 @@ class LoginPronoteUrlWebviewPage extends StatefulWidget {
   const LoginPronoteUrlWebviewPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPronoteUrlWebviewPageState createState() => _LoginPronoteUrlWebviewPageState();
+  _LoginPronoteUrlWebviewPageState createState() =>
+      _LoginPronoteUrlWebviewPageState();
 }
 
 enum _AuthState { setCookie, authenticate, test }
 
-class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage> {
+class _LoginPronoteUrlWebviewPageState
+    extends State<LoginPronoteUrlWebviewPage> {
   InAppWebViewController? _controller;
   late String url;
   Map? loginStatus;
@@ -45,28 +51,68 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
       });
       const String script =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : '';})();";
-      final String? result = await (_controller!.evaluateJavascript(source: script));
+      final String? result =
+          await (_controller!.evaluateJavascript(source: script));
       getCredentials(result);
       if (loginStatus != null) {
         setState(() {
           step = _AuthState.test;
         });
-        await _controller!
-            .loadUrl(urlRequest: URLRequest(url: Uri.parse(url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+        await _controller!.loadUrl(
+            urlRequest: URLRequest(
+                url: Uri.parse(
+                    url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = RoutingUtils.getArgs<LoginPronoteUrlWebviewPageArguments>(context);
+    final args =
+        RoutingUtils.getArgs<LoginPronoteUrlWebviewPageArguments>(context);
     setState(() {
       url = args.url;
     });
     final String infoUrl = getInfoUrl(url);
     return YPage(
       scrollable: false,
-      appBar: const YAppBar(title: "Connexion à l'ENT"),
+      appBar: YAppBar(
+        title: "Connexion à l'ENT",
+        actions: [
+          IconButton(
+              onPressed: () {
+                YDialogs.showInfo(
+                    context,
+                    YInfoDialog(
+                      title: "Je ne parviens pas à me connecter",
+                      body: Column(
+                        children: [
+                          Text(
+                              "Impossible de se connecter, une page blanche ou une question ? Rejoignez le serveur Discord de support pour obtenir une réponse. \n\nSi votre problème est une simple erreur d'affichage ou ne vous empêche pas de vous connecter signalez l'erreur avec l'outil de rapport ci-dessous.",
+                              style: theme.texts.body1),
+                          YVerticalSpacer(YScale.s2),
+                          YButton(
+                            onPressed: () async =>
+                                await launch("https://discord.gg/pRCBs22dNX"),
+                            color: YColor.primary,
+                            text: "Besoin d'une assistance rapide",
+                            icon: FontAwesomeIcons.discord,
+                          ),
+                          YVerticalSpacer(YScale.s2),
+                          YButton(
+                            onPressed: () => Wiredash.of(context)!.show(),
+                            color: YColor.secondary,
+                            text: "Signaler un problème mineur",
+                            icon: MdiIcons.forum,
+                          )
+                        ],
+                      ),
+                      confirmLabel: "Fermer",
+                    ));
+              },
+              icon: const Icon(MdiIcons.lifebuoy)),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -81,7 +127,8 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
 
                     ///1) We open a page with the serverUrl + weird string hardcoded
                     initialOptions: InAppWebViewGroupOptions(
-                        android: AndroidInAppWebViewOptions(useHybridComposition: true),
+                        android: AndroidInAppWebViewOptions(
+                            useHybridComposition: true),
                         crossPlatform: InAppWebViewOptions(
                             supportZoom: true,
                             javaScriptEnabled: true,
@@ -101,7 +148,8 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                     onLoadStop: (controller, url) async {
                       await stepper();
                     },
-                    onProgressChanged: (InAppWebViewController controller, int progress) {},
+                    onProgressChanged:
+                        (InAppWebViewController controller, int progress) {},
                   ),
                 ),
                 if (!authenticated)
@@ -144,7 +192,8 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
   loginTest() async {
     CustomLogger.log("LOGIN", "(Web view) Login test");
     Timer(const Duration(milliseconds: 1500), () async {
-      const String script = 'if(!window.messageData) /*window.messageData = [];*/';
+      const String script =
+          'if(!window.messageData) /*window.messageData = [];*/';
       await _controller!.evaluateJavascript(source: script);
     });
   }
@@ -172,7 +221,8 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
         """;
 
     //We evaluate the cookie function
-    final bool? _authenticated = await (_controller?.evaluateJavascript(source: script));
+    final bool? _authenticated =
+        await (_controller?.evaluateJavascript(source: script));
     if (_authenticated != null && _authenticated) {
       //We use this window function to redirect to the special login page
       String authFunction = 'location.assign("' + url + '?fd=1")';
