@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
@@ -22,7 +23,8 @@ class TermsPage extends StatelessWidget {
                   future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      CustomLogger.log("LOGIN", "An error occured while getting the TOS");
+                      CustomLogger.log(
+                          "LOGIN", "An error occured while getting the TOS");
                       CustomLogger.error(snapshot.error);
                     }
                     return Text(
@@ -39,6 +41,16 @@ class TermsPage extends StatelessWidget {
                   text: "J'ACCEPTE",
                   block: true,
                   size: YButtonSize.large),
+              YVerticalSpacer(YScale.s2),
+              if (kDebugMode)
+                YButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, "/login");
+                    },
+                    text: "Retour",
+                    block: true,
+                    color: YColor.warning,
+                    size: YButtonSize.large),
               YVerticalSpacer(YScale.s2),
               AppButtons.legalLinks
             ],
