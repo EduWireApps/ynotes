@@ -260,7 +260,7 @@ class GradesController extends ChangeNotifier {
             }
           }
           break;
-        case "spécialités":
+        case "specialties":
           if (specialties != null) {
             if (f.periodName == _period &&
                 specialties!.any((test) {
