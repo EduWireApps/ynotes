@@ -101,8 +101,8 @@ Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) asy
   return finalID;
 }
 
-List<String> getRootAddress(addr) {
-  final Uri uri = Uri.parse(addr);
+List<String> getRootAddress(String address) {
+  final Uri uri = Uri.parse(address);
   return [
     "${uri.scheme}://${uri.host}${uri.port != 80 ? ':${uri.port}' : ''}",
     "${uri.path}${uri.query == '' ? '' : '?'}${uri.query}",

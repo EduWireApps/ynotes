@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
@@ -171,6 +172,33 @@ class PronoteGeolocationController extends Controller {
     return schools
         .where((school) => school.name!.toUpperCase().contains(name.toUpperCase()) && school.url != null)
         .toList();
+  }
+
+  /// Get the availables spaces related to students for a given school
+  Future<List<PronoteSchoolSpace>?> getSchoolSpaces(PronoteSchool school) async {
+    try {
+      if (school.url != null) {
+        final String url = getInfoUrl(school.url!);
+        dynamic response = await http.get(Uri.parse(url)).catchError((e) {
+          throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+        });
+        final List<PronoteSchoolSpace> spaces = [];
+        dynamic data = json.decode(response.body);
+        for (var space in data["espaces"]) {
+          CustomLogger.log("PRONOTE", "(Schools) Space name: ${space["nom"].toUpperCase()}");
+          if (space["nom"].toUpperCase().contains("ÉLÈVES")) {
+            spaces.add(PronoteSchoolSpace(
+                name: space["nom"], spaceUrl: "${school.url!}/${space["URL"]}", schoolUrl: school.url!));
+          }
+        }
+        return spaces;
+      }
+    } catch (e) {
+      setState(() {
+        _error = GeolocationError(title: "Une erreur est survenue", message: "$e");
+      });
+      return null;
+    }
   }
 
   /// Reset the controller

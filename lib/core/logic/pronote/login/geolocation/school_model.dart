@@ -18,3 +18,22 @@ class PronoteSchool {
   /// A Pronote school provided by the Pronote geolocation API.
   const PronoteSchool({this.name, this.coordinates, this.url, this.postalCode});
 }
+
+/// A Pronote school space provided by the Pronote geolocation API.
+class PronoteSchoolSpace {
+  /// The space name
+  final String name;
+
+  /// The school url
+  final String schoolUrl;
+
+  /// The full space url
+  final String spaceUrl;
+
+  /// A Pronote school space provided by the Pronote geolocation API.
+  const PronoteSchoolSpace({
+    required this.name,
+    required this.schoolUrl,
+    required this.spaceUrl,
+  });
+}

@@ -27,14 +27,12 @@ class LoginPronoteUrlWebviewPage extends StatefulWidget {
   const LoginPronoteUrlWebviewPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPronoteUrlWebviewPageState createState() =>
-      _LoginPronoteUrlWebviewPageState();
+  _LoginPronoteUrlWebviewPageState createState() => _LoginPronoteUrlWebviewPageState();
 }
 
 enum _AuthState { setCookie, authenticate, test }
 
-class _LoginPronoteUrlWebviewPageState
-    extends State<LoginPronoteUrlWebviewPage> {
+class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage> {
   InAppWebViewController? _controller;
   late String url;
   Map? loginStatus;
@@ -51,25 +49,21 @@ class _LoginPronoteUrlWebviewPageState
       });
       const String script =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : '';})();";
-      final String? result =
-          await (_controller!.evaluateJavascript(source: script));
+      final String? result = await (_controller!.evaluateJavascript(source: script));
       getCredentials(result);
       if (loginStatus != null) {
         setState(() {
           step = _AuthState.test;
         });
-        await _controller!.loadUrl(
-            urlRequest: URLRequest(
-                url: Uri.parse(
-                    url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+        await _controller!
+            .loadUrl(urlRequest: URLRequest(url: Uri.parse(url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        RoutingUtils.getArgs<LoginPronoteUrlWebviewPageArguments>(context);
+    final args = RoutingUtils.getArgs<LoginPronoteUrlWebviewPageArguments>(context);
     setState(() {
       url = args.url;
     });
@@ -92,8 +86,7 @@ class _LoginPronoteUrlWebviewPageState
                               style: theme.texts.body1),
                           YVerticalSpacer(YScale.s2),
                           YButton(
-                            onPressed: () async =>
-                                await launch("https://discord.gg/pRCBs22dNX"),
+                            onPressed: () async => await launch("https://discord.gg/pRCBs22dNX"),
                             color: YColor.primary,
                             text: "Besoin d'une assistance rapide",
                             icon: FontAwesomeIcons.discord,
@@ -127,14 +120,12 @@ class _LoginPronoteUrlWebviewPageState
 
                     ///1) We open a page with the serverUrl + weird string hardcoded
                     initialOptions: InAppWebViewGroupOptions(
-                        android: AndroidInAppWebViewOptions(
-                            useHybridComposition: true),
+                        android: AndroidInAppWebViewOptions(useHybridComposition: true),
                         crossPlatform: InAppWebViewOptions(
                             supportZoom: true,
                             javaScriptEnabled: true,
                             allowFileAccessFromFileURLs: true,
-                            userAgent:
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
+                            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
                             allowUniversalAccessFromFileURLs: true)),
                     onWebViewCreated: (InAppWebViewController controller) {
                       _controller = controller;
@@ -148,8 +139,7 @@ class _LoginPronoteUrlWebviewPageState
                     onLoadStop: (controller, url) async {
                       await stepper();
                     },
-                    onProgressChanged:
-                        (InAppWebViewController controller, int progress) {},
+                    onProgressChanged: (InAppWebViewController controller, int progress) {},
                   ),
                 ),
                 if (!authenticated)
@@ -158,7 +148,7 @@ class _LoginPronoteUrlWebviewPageState
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Connexion en cours...", style: theme.texts.title),
+                        Text("Connexion en cours...", style: theme.texts.body1),
                         YVerticalSpacer(YScale.s2),
                         const SizedBox(width: 250, child: YLinearProgressBar())
                       ],
@@ -192,8 +182,7 @@ class _LoginPronoteUrlWebviewPageState
   loginTest() async {
     CustomLogger.log("LOGIN", "(Web view) Login test");
     Timer(const Duration(milliseconds: 1500), () async {
-      const String script =
-          'if(!window.messageData) /*window.messageData = [];*/';
+      const String script = 'if(!window.messageData) /*window.messageData = [];*/';
       await _controller!.evaluateJavascript(source: script);
     });
   }
@@ -221,8 +210,7 @@ class _LoginPronoteUrlWebviewPageState
         """;
 
     //We evaluate the cookie function
-    final bool? _authenticated =
-        await (_controller?.evaluateJavascript(source: script));
+    final bool? _authenticated = await (_controller?.evaluateJavascript(source: script));
     if (_authenticated != null && _authenticated) {
       //We use this window function to redirect to the special login page
       String authFunction = 'location.assign("' + url + '?fd=1")';
