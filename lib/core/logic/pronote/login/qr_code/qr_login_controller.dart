@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:convert/convert.dart' as conv;
 import 'package:crypto/crypto.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/pronote/pronote_api.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 
 /// The status of the controller
@@ -27,6 +29,26 @@ class QrLoginController extends Controller {
 
   /// The url extracted from the [_loginData]
   String get url => _loginData?["url"];
+
+  /// Handles camera permissions
+  Future<String?> handlePermission() async {
+    final status = await Permission.camera.status;
+    if (status.isGranted) {
+      return null;
+    }
+    if (status.isDenied) {
+      final res = await Permission.camera.request();
+      UIUtils.setSystemUIOverlayStyle();
+      if (res.isGranted) {
+        return null;
+      } else {
+        return "Vous avez refusé l'accès à la caméra pour yNotes. Cette fonctionnalité repose sur la caméra, veuillez réessayer et accepter.";
+      }
+    }
+    if (status.isPermanentlyDenied) {
+      return "Vous avez bloqué l'accès à la caméra de façon permanente pour yNotes. Pour accéder à cette fonctionnalité, veuillez la modifier dans les paramètres de votre téléphone.";
+    }
+  }
 
   /// Check if the Qr code is valid for the connection.
   bool isQrCodeValid(Barcode barCode) {

@@ -19,6 +19,31 @@ class LoginPronoteQrcodePage extends StatefulWidget {
 class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
   final QrLoginController controller = QrLoginController();
   QRViewController? qrController;
+  bool loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    handlePermission();
+  }
+
+  Future<void> handlePermission() async {
+    final String? res = await controller.handlePermission();
+    if (res == null) {
+      setState(() {
+        loaded = true;
+      });
+    } else {
+      await YDialogs.showInfo(
+          context,
+          YInfoDialog(
+            title: "Permission refusée",
+            body: Text(res, style: theme.texts.body1),
+            confirmLabel: "OK",
+          ));
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +52,25 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
       builder: (context, controller, child) => YPage(
         appBar: const YAppBar(title: "QR Code"),
         scrollable: false,
-        floatingButtons: controller.status == QrStatus.initial
-            ? [
-                YFloatingButton(
-                    icon: MdiIcons.cameraFlip,
-                    onPressed: () {
-                      qrController?.flipCamera();
-                    },
-                    color: YColor.secondary),
-                YFloatingButton(
-                    icon: MdiIcons.flashlight,
-                    onPressed: () {
-                      qrController?.toggleFlash();
-                    },
-                    color: YColor.secondary),
-              ]
+        floatingButtons: loaded
+            ? (controller.status == QrStatus.initial
+                ? [
+                    YFloatingButton(
+                        icon: MdiIcons.cameraFlip,
+                        onPressed: () {
+                          qrController?.flipCamera();
+                        },
+                        color: YColor.secondary),
+                    YFloatingButton(
+                        icon: MdiIcons.flashlight,
+                        onPressed: () {
+                          qrController?.toggleFlash();
+                        },
+                        color: YColor.secondary),
+                  ]
+                : null)
             : null,
-        body: controller.status == QrStatus.initial
+        body: loaded && controller.status == QrStatus.initial
             ? Column(children: [
                 Expanded(
                     child: Stack(
@@ -69,11 +96,12 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                     child: Column(
                       children: [
                         YVerticalSpacer(YScale.s16),
-                        Text(
-                          "Connexion en cours...",
-                          style: theme.texts.body1,
-                          textAlign: TextAlign.center,
-                        ),
+                        if (loaded)
+                          Text(
+                            "Connexion en cours...",
+                            style: theme.texts.body1,
+                            textAlign: TextAlign.center,
+                          ),
                         YVerticalSpacer(YScale.s6),
                         const YLinearProgressBar(),
                       ],
