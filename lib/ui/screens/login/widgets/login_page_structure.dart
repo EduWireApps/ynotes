@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/components/NEW/buttons/buttons.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -44,12 +45,12 @@ class LoginPageStructure extends StatelessWidget {
                           children: [
                             if (backButton)
                               YButton(
-                                  text: "Retour",
+                                  text: LoginContent.widgets.structure.back,
                                   onPressed: () => Navigator.pop(context),
                                   color: YColor.secondary,
                                   icon: Icons.west),
                             YButton(
-                              text: "Logs",
+                              text: LoginContent.widgets.structure.logs,
                               onPressed: () {
                                 Navigator.push(
                                     context,
@@ -72,7 +73,7 @@ class LoginPageStructure extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Connexion",
+                                Text(LoginContent.widgets.structure.logIn,
                                     style: TextStyle(
                                         fontSize: YFontSize.xl6,
                                         fontWeight: YFontWeight.bold,

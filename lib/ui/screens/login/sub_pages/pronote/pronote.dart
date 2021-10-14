@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/extensions.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -14,20 +15,20 @@ class LoginPronotePage extends StatelessWidget {
 
   static final List<_MethodBox> _methods = [
     _MethodBox(
-        title: "QR Code",
-        subtitle: "Cheese !",
+        title: LoginContent.pronote.methods.qrCode.title,
+        subtitle: LoginContent.pronote.methods.qrCode.subtitle,
         route: "/login/pronote/qrcode",
         icon: Icons.qr_code_scanner_rounded,
         supported: !(kIsWeb || Platform.isWindows || Platform.isLinux)),
     _MethodBox(
-        title: "Géolocalisation",
-        subtitle: "On sait où tu es",
+        title: LoginContent.pronote.methods.geolocation.title,
+        subtitle: LoginContent.pronote.methods.geolocation.subtitle,
         route: "/login/pronote/geolocation",
         icon: Icons.place,
         supported: !(kIsWeb || Platform.isWindows || Platform.isLinux)),
-    const _MethodBox(
-      title: "Url",
-      subtitle: "Pose les termes",
+    _MethodBox(
+      title: LoginContent.pronote.methods.url.title,
+      subtitle: LoginContent.pronote.methods.url.subtitle,
       route: "/login/pronote/url",
       icon: MdiIcons.cursorText,
     ),
@@ -47,7 +48,7 @@ class LoginPronotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoginPageStructure(
-      subtitle: "Choisis un moyen de connexion",
+      subtitle: LoginContent.pronote.subtitle,
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: _children),
     );
   }
@@ -113,7 +114,7 @@ class __SchoolServiceBoxState extends State<_MethodBox> {
           ),
           YHorizontalSpacer(YScale.s4),
           if (!widget.supported)
-            YBadge(text: "Indisponible sur ${Platform.operatingSystem.capitalize()}", color: YColor.danger)
+            YBadge(text: LoginContent.pronote.notAvailable(Platform.operatingSystem.capitalize()), color: YColor.danger)
         ],
         onTap: widget.supported
             ? () async {

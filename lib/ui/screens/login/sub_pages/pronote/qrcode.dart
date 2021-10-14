@@ -4,6 +4,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:ynotes/core/logic/pronote/login/qr_code/qr_login_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -37,7 +38,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
       await YDialogs.showInfo(
           context,
           YInfoDialog(
-            title: "Permission refusée",
+            title: LoginContent.pronote.qrCode.permissionDenied,
             body: Text(res, style: theme.texts.body1),
             confirmLabel: "OK",
           ));
@@ -50,7 +51,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     return ControllerConsumer<QrLoginController>(
       controller: controller,
       builder: (context, controller, child) => YPage(
-        appBar: const YAppBar(title: "QR Code"),
+        appBar: YAppBar(title: LoginContent.pronote.qrCode.title),
         scrollable: false,
         floatingButtons: loaded
             ? (controller.status == QrStatus.initial
@@ -98,7 +99,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                         YVerticalSpacer(YScale.s16),
                         if (loaded)
                           Text(
-                            "Connexion en cours...",
+                            LoginContent.pronote.qrCode.connecting,
                             style: theme.texts.body1,
                             textAlign: TextAlign.center,
                           ),
@@ -115,14 +116,14 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     final String? res = await YDialogs.getInput(
         context,
         YInputDialog(
-            title: "Code",
+            title: LoginContent.pronote.qrCode.code,
             input: YFormField(
               type: YFormFieldInputType.number,
-              label: "Code",
+              label: LoginContent.pronote.qrCode.code,
               properties: YFormFieldProperties(),
               validator: (String? value) {
                 if (value == null || value.isEmpty || value.length != 4) {
-                  return "Le code doit comporter 4 caractères";
+                  return LoginContent.pronote.qrCode.fieldMessage;
                 }
                 return null;
               },
@@ -138,7 +139,8 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
   Future<void> login(String code) async {
     final List<String>? decryptedData = controller.decrypt(code);
     if (decryptedData == null) {
-      YSnackbars.error(context, title: "Erreur", message: "Votre code PIN est invalide");
+      YSnackbars.error(context,
+          title: LoginContent.pronote.qrCode.error, message: LoginContent.pronote.qrCode.errorMessage);
       getCode();
       return;
     }
@@ -150,11 +152,11 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
       "mobileCasLogin": false,
     });
     if (data != null && data[0] == 1) {
-      YSnackbars.success(context, title: "Connecté !", message: data[1]);
+      YSnackbars.success(context, title: LoginContent.pronote.qrCode.connected, message: data[1]);
       await Future.delayed(const Duration(seconds: 3));
       Navigator.pushReplacementNamed(context, "/terms");
     } else {
-      YSnackbars.error(context, title: "Erreur", message: data![1]);
+      YSnackbars.error(context, title: LoginContent.pronote.qrCode.error, message: data![1]);
       controller.reset();
     }
   }

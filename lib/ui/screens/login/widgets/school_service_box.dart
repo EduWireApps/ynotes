@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -50,7 +51,7 @@ class _SchoolServiceBoxState extends State<SchoolServiceBox> {
         if (widget.beta)
           Padding(
             padding: YPadding.pl(YScale.s4),
-            child: const YBadge(text: "En bêta"),
+            child: YBadge(text: LoginContent.widgets.schoolService.beta),
           )
       ],
       onTap: () async {

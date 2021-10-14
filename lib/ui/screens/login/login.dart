@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -29,22 +30,20 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return LoginPageStructure(
       backButton: false,
-      subtitle: "Choisis ton service scolaire",
+      subtitle: LoginContent.login.subtitle,
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         ...spacedChildren(_services),
         Padding(
           padding: YPadding.pt(YScale.s1),
           child: YButton(
-            text: "Je ne vois pas mon service",
+            text: LoginContent.login.missingService,
             variant: YButtonVariant.text,
             onPressed: () async {
               await YDialogs.showInfo(
                   context,
                   YInfoDialog(
-                    title: "Je ne vois pas mon service",
-                    body: Text(
-                        "Si ton service scolaire n'apparait pas dans la liste, c'est que yNotes ne le prend pas en charge. Tu sais coder ? Prend contact avec nous sur Github ou Discord pour en apprendre plus sur l'implémentation des services et peut-être même participer à l'implémentation du tien.",
-                        style: theme.texts.body1),
+                    title: LoginContent.login.missingService,
+                    body: Text(LoginContent.login.dialogBody, style: theme.texts.body1),
                     confirmLabel: "OK",
                   ));
             },

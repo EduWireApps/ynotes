@@ -7,6 +7,7 @@ import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
@@ -57,17 +58,17 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
                 setState(() {
                   _canNavigate = false;
                 });
-                YSnackbars.success(context, title: "Connecté !", message: data[1]);
+                YSnackbars.success(context, title: LoginContent.pronote.url.connected, message: data[1]);
                 await Future.delayed(const Duration(seconds: 3));
                 Navigator.pushReplacementNamed(context, "/terms");
               } else {
-                YSnackbars.error(context, title: "Erreur", message: data![1]);
+                YSnackbars.error(context, title: LoginContent.pronote.url.error, message: data![1]);
               }
             }
             break;
         }
       } else {
-        YSnackbars.error(context, title: "Erreur", message: response.message!);
+        YSnackbars.error(context, title: LoginContent.pronote.url.error, message: response.message!);
       }
     }
     setState(() {
@@ -84,7 +85,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
       });
     }
     return LoginPageStructure(
-        subtitle: "Par URL Pronote",
+        subtitle: LoginContent.pronote.url.subtitle,
         body: Column(
           children: [
             YForm(
@@ -94,19 +95,19 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
                 YFormField(
                   type: YFormFieldInputType.url,
                   defaultValue: args?.url,
-                  label: "URL Pronote",
+                  label: LoginContent.pronote.url.fieldLabel,
                   properties: YFormFieldProperties(),
                   onSaved: (String? value) {
                     _url = value ?? "";
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Ce champ est obligatoire";
+                      return LoginContent.pronote.url.requiredField;
                     }
                     final RegExp urlOrIpExp = RegExp(
                         r"^(((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6})|(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}(\:\b[0-9]{1,4})?)\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)?$");
                     if (!urlOrIpExp.hasMatch(value)) {
-                      return "Url invalide";
+                      return LoginContent.pronote.url.errorMessage;
                     }
                   },
                 )
@@ -114,7 +115,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
             ),
             YVerticalSpacer(YScale.s6),
             YButton(
-              text: "SE CONNECTER",
+              text: LoginContent.pronote.url.logIn,
               onPressed: () {
                 submit(_formKey.currentState!.validate());
               },

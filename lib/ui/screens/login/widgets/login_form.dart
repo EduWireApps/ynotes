@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -44,12 +45,12 @@ class _LoginFormState extends State<LoginForm> {
         setState(() {
           _canNavigate = false;
         });
-        YSnackbars.success(context, title: "Connecté !", message: data[1]);
+        YSnackbars.success(context, title: LoginContent.widgets.form.connected, message: data[1]);
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacementNamed(context, "/terms");
         // success
       } else {
-        YSnackbars.error(context, title: "Erreur", message: data![1]);
+        YSnackbars.error(context, title: LoginContent.widgets.form.error, message: data![1]);
       }
     }
     setState(() {
@@ -71,20 +72,20 @@ class _LoginFormState extends State<LoginForm> {
             fields: [
               YFormField(
                   properties: YFormFieldProperties(),
-                  label: "Identifiant",
+                  label: LoginContent.widgets.form.id,
                   type: YFormFieldInputType.text,
                   validator: (String? value) {
-                    return value == null || value.isEmpty ? 'Ce champ est obligatoire' : null;
+                    return value == null || value.isEmpty ? LoginContent.widgets.form.requiredField : null;
                   },
                   onSaved: (String? value) {
                     _credentials.username = value ?? "";
                   }),
               YFormField(
                   properties: YFormFieldProperties(),
-                  label: "Mot de passe",
+                  label: LoginContent.widgets.form.password,
                   type: YFormFieldInputType.password,
                   validator: (String? value) {
-                    return value == null || value.isEmpty ? 'Ce champ est obligatoire' : null;
+                    return value == null || value.isEmpty ? LoginContent.widgets.form.requiredField : null;
                   },
                   onSaved: (String? value) {
                     _credentials.password = value ?? "";
@@ -93,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           YVerticalSpacer(YScale.s6),
           YButton(
-            text: "SE CONNECTER",
+            text: LoginContent.widgets.form.logIn,
             onPressed: () {
               submit(_formKey.currentState!.validate());
             },

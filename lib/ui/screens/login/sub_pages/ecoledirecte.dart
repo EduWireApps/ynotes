@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 
 class LoginEcoleDirectePage extends StatelessWidget {
@@ -8,6 +9,6 @@ class LoginEcoleDirectePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LoginForm(subtitle: _subtitle);
+    return LoginForm(subtitle: LoginContent.ecoleDirecte.subtitle);
   }
 }
