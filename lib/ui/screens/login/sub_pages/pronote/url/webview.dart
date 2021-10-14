@@ -73,7 +73,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
       appBar: YAppBar(
         title: "Connexion à l'ENT",
         actions: [
-          IconButton(
+          YIconButton(
               onPressed: () {
                 YDialogs.showInfo(
                     context,
@@ -103,7 +103,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                       confirmLabel: "Fermer",
                     ));
               },
-              icon: const Icon(MdiIcons.lifebuoy)),
+              icon: MdiIcons.lifebuoy),
         ],
       ),
       body: Column(
