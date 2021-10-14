@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
@@ -11,6 +12,12 @@ import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
+
+class LoginPronoteUrlPageArguments {
+  final String url;
+
+  const LoginPronoteUrlPageArguments(this.url);
+}
 
 class LoginPronoteUrlPage extends StatefulWidget {
   const LoginPronoteUrlPage({Key? key}) : super(key: key);
@@ -70,6 +77,12 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
 
   @override
   Widget build(BuildContext context) {
+    final args = RoutingUtils.getArgs<LoginPronoteUrlPageArguments?>(context);
+    if (args != null) {
+      setState(() {
+        _url = args.url;
+      });
+    }
     return LoginPageStructure(
         subtitle: "Par URL Pronote",
         body: Column(
@@ -80,6 +93,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
               fields: [
                 YFormField(
                   type: YFormFieldInputType.url,
+                  defaultValue: args?.url,
                   label: "URL Pronote",
                   properties: YFormFieldProperties(),
                   onSaved: (String? value) {

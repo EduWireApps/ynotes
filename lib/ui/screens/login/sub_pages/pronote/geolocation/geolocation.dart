@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
+import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -166,25 +165,9 @@ class _SchoolTile extends StatelessWidget {
             url = spaces[0].spaceUrl;
           }
           if (url != null) {
-            final dynamic res = await Navigator.pushNamed(context, "/login/pronote/url/webview",
-                arguments: LoginPronoteUrlWebviewPageArguments(url));
-
-            if (res != null) {
-              final List<dynamic>? data = await appSys.api!.login(res["login"], res["mdp"], additionnalSettings: {
-                "url": url,
-                "mobileCasLogin": true,
-              });
-              if (data != null && data[0] == 1) {
-                YSnackbars.success(context, title: "Connecté !", message: data[1]);
-                await Future.delayed(const Duration(seconds: 3));
-                Navigator.pushReplacementNamed(context, "/terms");
-              } else {
-                YSnackbars.error(context, title: "Erreur", message: data![1]);
-              }
-            }
+            Navigator.pushNamed(context, "/login/pronote/url", arguments: LoginPronoteUrlPageArguments(url));
           }
         }
-        return;
       },
     );
   }
