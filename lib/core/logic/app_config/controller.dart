@@ -154,10 +154,10 @@ class ApplicationSystem extends ChangeNotifier {
     themeData = appThemes[themeName];
     this.themeName = themeName;
     if (themeName == "clair") {
-      theme.currentTheme = 1;
+      theme.updateCurrentTheme(1);
     }
     if (themeName == "sombre") {
-      theme.currentTheme = 2;
+      theme.updateCurrentTheme(2);
     }
     settings.user.global.theme = themeName;
     SystemChrome.setSystemUIOverlayStyle(

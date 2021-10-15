@@ -24,8 +24,7 @@ class TermsPage extends StatelessWidget {
                   future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      CustomLogger.log(
-                          "LOGIN", "An error occured while getting the TOS");
+                      CustomLogger.log("LOGIN", "An error occured while getting the TOS");
                       CustomLogger.error(snapshot.error);
                     }
                     return Text(
@@ -45,15 +44,15 @@ class TermsPage extends StatelessWidget {
               YVerticalSpacer(YScale.s2),
               if (kDebugMode)
                 YButton(
-                    onPressed: () async {
-                      //reset KVS
-                      await KVS.deleteAll();
-                      Navigator.pushReplacementNamed(context, "/login");
-                    },
-                    text: "Retour",
-                    block: true,
-                    color: YColor.warning,
-                    size: YButtonSize.large),
+                  onPressed: () async {
+                    //reset KVS
+                    await KVS.deleteAll();
+                    Navigator.pushReplacementNamed(context, "/login");
+                  },
+                  text: "[DEV ONLY] Retour",
+                  block: true,
+                  color: YColor.danger,
+                ),
               YVerticalSpacer(YScale.s2),
               AppButtons.legalLinks
             ],
