@@ -13,6 +13,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -71,31 +72,29 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
     return YPage(
       scrollable: false,
       appBar: YAppBar(
-        title: "Connexion à l'ENT",
+        title: LoginContent.pronote.url.webview.title,
         actions: [
           YIconButton(
               onPressed: () {
                 YDialogs.showInfo(
                     context,
                     YInfoDialog(
-                      title: "Je ne parviens pas à me connecter",
+                      title: LoginContent.pronote.url.webview.dialog.title,
                       body: Column(
                         children: [
-                          Text(
-                              "Impossible de se connecter, une page blanche ou une question ? Rejoignez le serveur Discord de support pour obtenir une réponse. \n\nSi votre problème est une simple erreur d'affichage ou ne vous empêche pas de vous connecter signalez l'erreur avec l'outil de rapport ci-dessous.",
-                              style: theme.texts.body1),
+                          Text(LoginContent.pronote.url.webview.dialog.body, style: theme.texts.body1),
                           YVerticalSpacer(YScale.s2),
                           YButton(
                             onPressed: () async => await launch("https://discord.gg/pRCBs22dNX"),
                             color: YColor.primary,
-                            text: "Besoin d'une assistance rapide",
+                            text: LoginContent.pronote.url.webview.dialog.support,
                             icon: FontAwesomeIcons.discord,
                           ),
                           YVerticalSpacer(YScale.s2),
                           YButton(
                             onPressed: () => Wiredash.of(context)!.show(),
                             color: YColor.secondary,
-                            text: "Signaler un problème mineur",
+                            text: LoginContent.pronote.url.webview.dialog.report,
                             icon: MdiIcons.forum,
                           )
                         ],
@@ -148,7 +147,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Connexion en cours...", style: theme.texts.body1),
+                        Text(LoginContent.pronote.url.webview.connecting, style: theme.texts.body1),
                         YVerticalSpacer(YScale.s2),
                         const SizedBox(width: 250, child: YLinearProgressBar())
                       ],

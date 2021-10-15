@@ -1,6 +1,3 @@
-// TODO: url and geolocation
-// TODO: make content compliant with "yNotes is cool"
-
 library login_content;
 
 part 'widgets.dart';

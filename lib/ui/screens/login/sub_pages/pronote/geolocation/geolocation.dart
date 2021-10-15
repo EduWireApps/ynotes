@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -28,7 +29,7 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
               children: [
                 YVerticalSpacer(YScale.s16),
                 Text(
-                  "Recherche des établissements à proximité en cours...",
+                  LoginContent.pronote.geolocation.searching,
                   style: theme.texts.body1,
                   textAlign: TextAlign.center,
                 ),
@@ -64,7 +65,7 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
           padding: YPadding.p(YScale.s2),
           child: YFormField(
             type: YFormFieldInputType.text,
-            label: "Rechercher un établissement",
+            label: LoginContent.pronote.geolocation.search,
             properties: YFormFieldProperties(textInputAction: TextInputAction.search),
             onChanged: (String value) {
               setState(() {
@@ -76,7 +77,7 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
         Padding(
           padding: YPadding.pt(YScale.s4),
           child: controller.filteredSchools(_schoolName).isEmpty
-              ? Text("Aucun résultat! Réessaie...", style: theme.texts.body1)
+              ? Text(LoginContent.pronote.geolocation.noResults, style: theme.texts.body1)
               : Column(children: children),
         )
       ],
@@ -109,7 +110,7 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
   @override
   Widget build(BuildContext context) {
     return YPage(
-      appBar: const YAppBar(title: "Géolocalisation"),
+      appBar: YAppBar(title: LoginContent.pronote.geolocation.title),
       body: ControllerConsumer<PronoteGeolocationController>(
         controller: controller,
         builder: (context, controller, child) {
@@ -131,9 +132,9 @@ class _SchoolTile extends StatelessWidget {
     if (school.coordinates!.length > 2) {
       try {
         double val = double.tryParse(school.coordinates![2])! / 1000;
-        distance = "à " + val.toStringAsPrecision(2) + " kilomètres";
+        distance = LoginContent.pronote.geolocation.getDistance(val.toStringAsPrecision(2));
       } catch (e) {
-        distance = "(distance non définie)";
+        distance = LoginContent.pronote.geolocation.noDistance;
       }
     }
     return ListTile(
@@ -154,7 +155,7 @@ class _SchoolTile extends StatelessWidget {
             final res = await YDialogs.getConfirmation(
                 context,
                 YConfirmationDialog<PronoteSchoolSpace>(
-                    title: "Choisis un espace",
+                    title: LoginContent.pronote.geolocation.chooseSpace,
                     options: spaces
                         .map((space) => YConfirmationDialogOption<PronoteSchoolSpace>(value: space, label: space.name))
                         .toList()));
