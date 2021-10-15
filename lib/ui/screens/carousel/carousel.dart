@@ -9,9 +9,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
+import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -19,7 +19,8 @@ import 'package:ynotes/ui/components/dialogs.dart';
 class Page1 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  Page1({Key? key, this.offset, this.idx}) : super(key: key);
+  const Page1({Key? key, this.offset, this.idx}) : super(key: key);
+  @override
   _Page1State createState() => _Page1State();
 }
 
@@ -27,23 +28,26 @@ class Page1 extends StatefulWidget {
 class Page2 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  Page2({Key? key, this.offset, this.idx}) : super(key: key);
+  const Page2({Key? key, this.offset, this.idx}) : super(key: key);
+  @override
   _Page2State createState() => _Page2State();
 }
 
 class Page3 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  Page3({Key? key, this.offset, this.idx}) : super(key: key);
+  const Page3({Key? key, this.offset, this.idx}) : super(key: key);
 
+  @override
   _Page3State createState() => _Page3State();
 }
 
 class Page4 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  Page4({Key? key, this.offset, this.idx}) : super(key: key);
+  const Page4({Key? key, this.offset, this.idx}) : super(key: key);
 
+  @override
   _Page4State createState() => _Page4State();
 }
 
@@ -56,9 +60,10 @@ class PageInfo {
 }
 
 //PAGE1 STATE
-class SlidingCarousel extends StatefulWidget {
-  SlidingCarousel({Key? key}) : super(key: key);
-  _SlidingCarouselState createState() => _SlidingCarouselState();
+class Carousel extends StatefulWidget {
+  const Carousel({Key? key}) : super(key: key);
+  @override
+  _CarouselState createState() => _CarouselState();
 }
 
 //PAGE2 STATE
@@ -74,7 +79,7 @@ class _Page1State extends State<Page1> {
                 alignment: Alignment.center,
                 child: Transform.rotate(
                   angle: -0.4 + widget.offset! * 0.4,
-                  child: Icon(
+                  child: const Icon(
                     Icons.star,
                     color: Color(0xFFE7D928),
                     size: 150.0,
@@ -87,7 +92,7 @@ class _Page1State extends State<Page1> {
             width: MediaQuery.of(context).size.width,
             child: Transform.translate(
                 offset: Offset(-widget.offset! * 200, 0),
-                child: SizedBox(
+                child: const SizedBox(
                     width: 50,
                     height: 140.0,
                     child: AutoSizeText.rich(
@@ -117,7 +122,7 @@ class _Page1State extends State<Page1> {
                         Align(
                             alignment: Alignment.center,
                             child: buildGradesBox(
-                              Color(0xFFD5B872),
+                              const Color(0xFFD5B872),
                             )),
                       ],
                     ),
@@ -134,7 +139,7 @@ class _Page1State extends State<Page1> {
                       Align(
                           alignment: Alignment.center,
                           child: buildGradesBox(
-                            Color(0xFFC9463C),
+                            const Color(0xFFC9463C),
                           )),
                     ],
                   ),
@@ -145,7 +150,7 @@ class _Page1State extends State<Page1> {
                       alignment: Alignment.center,
                       child: Transform.rotate(
                         angle: 0.6 - (widget.offset! / 1.6),
-                        child: Icon(
+                        child: const Icon(
                           Icons.book,
                           color: Color(0xFF606060),
                           size: 110.0,
@@ -160,7 +165,7 @@ class _Page1State extends State<Page1> {
                   angle: -0.2 + (widget.offset! * 0.2),
                   child: Stack(
                     children: <Widget>[
-                      Align(alignment: Alignment.center, child: buildGradesBox(Color(0xFF1CA68A))),
+                      Align(alignment: Alignment.center, child: buildGradesBox(const Color(0xFF1CA68A))),
                     ],
                   ),
                 ),
@@ -174,10 +179,10 @@ class _Page1State extends State<Page1> {
             child: Transform.translate(
                 offset: Offset(-widget.offset! * 200, 0),
                 child: Container(
-                    padding: EdgeInsets.only(left: 5, right: 5),
+                    padding: const EdgeInsets.only(left: 5, right: 5),
                     width: 50,
                     height: 140.0,
-                    child: AutoSizeText.rich(
+                    child: const AutoSizeText.rich(
                         TextSpan(
                           text: "Car les",
                           children: <TextSpan>[
@@ -201,35 +206,34 @@ class _Page1State extends State<Page1> {
       decoration: ShapeDecoration(
         color: color,
         shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(35),
+          borderRadius: BorderRadius.circular(35),
         ),
       ),
       child: Container(
-        margin: EdgeInsets.all(15),
+        margin: const EdgeInsets.all(15),
         width: 120,
         height: 120,
         decoration: ShapeDecoration(
-          color: Color(0xFF3F3F3F),
+          color: const Color(0xFF3F3F3F),
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width),
           ),
         ),
-        child: Container(
-            child: Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("18",
+            const Text("18",
                 style: TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold, fontSize: 46)),
             Container(
               width: 70,
               height: 5,
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
             ),
-            Text("20",
+            const Text("20",
                 style: TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold, fontSize: 46)),
           ],
-        )),
+        ),
       ),
     );
   }
@@ -238,7 +242,7 @@ class _Page1State extends State<Page1> {
 class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: Stack(
@@ -249,31 +253,38 @@ class _Page2State extends State<Page2> {
               children: <Widget>[
                 Transform.translate(
                   offset: Offset(200 - (widget.offset! - 1) * 20, 57),
-                  child: Container(
+                  child: SizedBox(
                       height: 100,
                       width: 100,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/calendar.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset('assets/images/pageItems/carousel/shelves/calendar.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(70 - (widget.offset! - 1) * 20, -157),
-                  child: Container(
+                  child: SizedBox(
                       height: 120,
                       width: 120,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/clock.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/clock.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset! - 1) * 400, -90),
-                  child: Container(
+                  child: SizedBox(
                       height: 170,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve1.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset('assets/images/pageItems/carousel/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset! - 1) * 300, 90),
-                  child: Container(
+                  child: SizedBox(
                       height: 90,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve2.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset('assets/images/pageItems/carousel/shelves/shelve2.png'))),
                 ),
               ],
             ),
@@ -285,10 +296,10 @@ class _Page2State extends State<Page2> {
             child: Transform.translate(
                 offset: Offset(-(widget.offset! - 1) * 200, 0),
                 child: Container(
-                    padding: EdgeInsets.only(left: 5, right: 5),
+                    padding: const EdgeInsets.only(left: 5, right: 5),
                     width: 50,
                     height: 140.0,
-                    child: AutoSizeText.rich(
+                    child: const AutoSizeText.rich(
                         TextSpan(
                           text: "...emmenez l'école",
                           children: <TextSpan>[
@@ -319,7 +330,7 @@ class _Page3State extends State<Page3> {
                 opacity: opacityvalue,
                 child: Transform.rotate(
                   angle: 6 - (widget.offset! - 2),
-                  child: Icon(
+                  child: const Icon(
                     Icons.star,
                     color: Colors.white,
                     size: 110.0,
@@ -336,7 +347,7 @@ class _Page3State extends State<Page3> {
                 opacity: opacityvalue,
                 child: Transform.rotate(
                   angle: 1.2 - (widget.offset! - 2) * 1.2,
-                  child: Icon(
+                  child: const Icon(
                     Icons.star,
                     color: Colors.white,
                     size: 110.0,
@@ -353,7 +364,7 @@ class _Page3State extends State<Page3> {
                 opacity: opacityvalue,
                 child: Transform.rotate(
                   angle: 4 - (widget.offset! - 2) * 1.4,
-                  child: Icon(
+                  child: const Icon(
                     Icons.star,
                     color: Colors.white,
                     size: 110.0,
@@ -370,7 +381,7 @@ class _Page3State extends State<Page3> {
                 opacity: opacityvalue,
                 child: Transform.rotate(
                   angle: 2 - (widget.offset! - 2) * 1.5,
-                  child: Icon(
+                  child: const Icon(
                     Icons.star,
                     color: Colors.white,
                     size: 60.0,
@@ -385,10 +396,10 @@ class _Page3State extends State<Page3> {
           child: Transform.translate(
               offset: Offset(-(widget.offset! - 2) * 200, 0),
               child: Container(
-                  padding: EdgeInsets.only(left: 5, right: 5),
+                  padding: const EdgeInsets.only(left: 5, right: 5),
                   width: 50,
                   height: 140.0,
-                  child: AutoSizeText.rich(
+                  child: const AutoSizeText.rich(
                       TextSpan(
                         text: "...sans oublier de gérer votre",
                         children: <TextSpan>[
@@ -423,7 +434,7 @@ class _Page4State extends State<Page4> {
           color: Theme.of(context).backgroundColor,
           child: CupertinoScrollbar(
             child: SingleChildScrollView(
-              child: Container(
+              child: SizedBox(
                 height: screenSize.size.height,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -511,45 +522,80 @@ class _Page4State extends State<Page4> {
                               fontSize: screenSize.size.height / 10 * 0.28)),
                       onChanged: (value) async {
                         await model.updateTheme(value ? "sombre" : "clair");
+                        setState(() {});
                       },
                       secondary: Icon(
                         Icons.lightbulb_outline,
                         color: ThemeUtils.textColor(),
                       ),
                     ),
-                    SizedBox(
-                      height: screenSize.size.height / 10 * 0.1,
-                    ),
-                    Text(
-                      "Notifications",
-                      style: TextStyle(
-                          fontFamily: "Asap",
-                          fontSize: screenSize.size.height / 10 * 0.3,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeUtils.textColor()),
-                      textAlign: TextAlign.center,
-                    ),
-                    SwitchListTile(
-                        value: model.settings!["user"]["global"]["notificationNewGrade"],
+                    if (Platform.isAndroid || Platform.isIOS)
+                      SizedBox(
+                        height: screenSize.size.height / 10 * 0.1,
+                      ),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      Text(
+                        "Notifications",
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            fontSize: screenSize.size.height / 10 * 0.3,
+                            fontWeight: FontWeight.w500,
+                            color: ThemeUtils.textColor()),
+                        textAlign: TextAlign.center,
+                      ),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      SwitchListTile(
+                          value: model.settings.user.global.notificationNewGrade,
+                          title: Text(
+                            "Notification de nouvelle note",
+                            style: TextStyle(
+                                fontFamily: "Asap",
+                                color: ThemeUtils.textColor(),
+                                fontSize: screenSize.size.height / 10 * 0.28),
+                          ),
+                          secondary: Transform.rotate(
+                            angle: -25,
+                            child: Icon(
+                              MdiIcons.bellRing,
+                              color: ThemeUtils.textColor(),
+                            ),
+                          ),
+                          onChanged: (value) async {
+                            if (value == false ||
+                                (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                                    (await Permission.ignoreBatteryOptimizations.isGranted))) {
+                              model.settings.user.global.notificationNewGrade = value;
+                            } else {
+                              if (await (CustomDialogs.showAuthorizationsDialog(
+                                      context,
+                                      "la configuration d'optimisation de batterie",
+                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
+                                  false) {
+                                if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                                  model.settings.user.global.notificationNewGrade = value;
+                                }
+                              }
+                            }
+                          }),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      Divider(
+                        color: ThemeUtils.textColor().withOpacity(0.4),
+                      ),
+                    if (Platform.isAndroid || Platform.isIOS)
+                      SwitchListTile(
+                        value: model.settings.user.global.notificationNewMail,
                         title: Text(
-                          "Notification de nouvelle note",
+                          "Notification de nouveau mail",
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
                               fontSize: screenSize.size.height / 10 * 0.28),
                         ),
-                        secondary: Transform.rotate(
-                          angle: -25,
-                          child: Icon(
-                            MdiIcons.bellRing,
-                            color: ThemeUtils.textColor(),
-                          ),
-                        ),
                         onChanged: (value) async {
                           if (value == false ||
                               (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
                                   (await Permission.ignoreBatteryOptimizations.isGranted))) {
-                            model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
+                            model.settings.user.global.notificationNewMail = value;
                           } else {
                             if (await (CustomDialogs.showAuthorizationsDialog(
                                     context,
@@ -557,55 +603,26 @@ class _Page4State extends State<Page4> {
                                     "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
+                                model.settings.user.global.notificationNewMail = value;
                               }
                             }
                           }
-                        }),
-                    Divider(
-                      color: ThemeUtils.textColor().withOpacity(0.4),
-                    ),
-                    SwitchListTile(
-                      value: appSys.settings!["user"]["global"]["notificationNewMail"],
-                      title: Text(
-                        "Notification de nouveau mail",
-                        style: TextStyle(
-                            fontFamily: "Asap",
+                        },
+                        secondary: Transform.rotate(
+                          angle: -25,
+                          child: Icon(
+                            MdiIcons.bellRing,
                             color: ThemeUtils.textColor(),
-                            fontSize: screenSize.size.height / 10 * 0.28),
-                      ),
-                      onChanged: (value) async {
-                        if (value == false ||
-                            (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
-                                (await Permission.ignoreBatteryOptimizations.isGranted))) {
-                          model.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
-                        } else {
-                          if (await (CustomDialogs.showAuthorizationsDialog(
-                                  context,
-                                  "la configuration d'optimisation de batterie",
-                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
-                              false) {
-                            if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              appSys.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
-                            }
-                          }
-                        }
-                      },
-                      secondary: Transform.rotate(
-                        angle: -25,
-                        child: Icon(
-                          MdiIcons.bellRing,
-                          color: ThemeUtils.textColor(),
+                          ),
                         ),
                       ),
-                    ),
                     SizedBox(
                       height: screenSize.size.height / 10 * 0.1,
                     ),
                     CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                      createStorage("agreedTermsAndConfiguredApp", "true");
+                      KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
                       Navigator.pushReplacementNamed(context, "/summary");
-                    }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: Color(0xff5DADE2))
+                    }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: const Color(0xff5DADE2))
                     /*RaisedButton(
                       color: Color(0xff5DADE2),
                       shape: StadiumBorder(),
@@ -638,6 +655,7 @@ class _Page4State extends State<Page4> {
   }
 
   void getAuth() async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
     if ((await BatteryOptimization.isIgnoringBatteryOptimizations()) ?? false) {
       setState(() {
         isIgnoringBatteryOptimization = true;
@@ -663,7 +681,7 @@ class _Page4State extends State<Page4> {
   }
 }
 
-class _SlidingCarouselState extends State<SlidingCarousel> {
+class _CarouselState extends State<Carousel> {
   late List<PageInfo> _pageInfoList;
 
   PageController? _pageController;
@@ -677,83 +695,86 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
     return Scaffold(
       backgroundColor: _pageOffset!.toInt() == 3 ? Theme.of(context).backgroundColor : _getBGColor(),
       body: //Disable back button
-          WillPopScope(
-        onWillPop: () async {
-          Future.value(false);
-          return false;
-        },
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: screenSize.size.height / 10 * 8.5,
-                    child: PageView.builder(
-                        controller: _pageController,
-                        itemCount: _pageInfoList.length,
-                        itemBuilder: (context, idx) {
-                          return Container(
-                              height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
-                        }),
-                  ),
-                  Container(
-                    width: screenSize.size.width,
-                    height: screenSize.size.height / 10 * 0.5,
-                    child: Stack(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Visibility(
-                            visible: _pageController!.hasClients ? (_pageIndex != 3) : true,
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
-                              // ignore: deprecated_member_use
-                              child: OutlineButton(
-                                color: Colors.transparent,
-                                highlightColor: Colors.black,
-                                focusColor: Colors.black,
-                                borderSide: BorderSide(color: Colors.indigo),
-                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                                highlightedBorderColor: Colors.black,
-                                onPressed: () async {
-                                  _pageController!
-                                      .animateToPage(3, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                                },
-                                child: AutoSizeText(
-                                  "Passer",
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      fontSize: screenSize.size.width / 5 * 0.3,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.indigo),
+          SafeArea(
+        child: WillPopScope(
+          onWillPop: () async {
+            Future.value(false);
+            return false;
+          },
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 8.5,
+                      child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: _pageInfoList.length,
+                          itemBuilder: (context, idx) {
+                            return SizedBox(
+                                height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
+                          }),
+                    ),
+                    SizedBox(
+                      width: screenSize.size.width,
+                      height: screenSize.size.height / 10 * 0.5,
+                      child: Stack(
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Visibility(
+                              visible: _pageController!.hasClients ? (_pageIndex != 3) : true,
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
+                                // ignore: deprecated_member_use
+                                child: OutlineButton(
+                                  color: Colors.transparent,
+                                  highlightColor: Colors.black,
+                                  focusColor: Colors.black,
+                                  borderSide: const BorderSide(color: Colors.indigo),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                                  highlightedBorderColor: Colors.black,
+                                  onPressed: () async {
+                                    _pageController!.animateToPage(3,
+                                        duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
+                                  },
+                                  child: AutoSizeText(
+                                    "Passer",
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        fontSize: screenSize.size.width / 5 * 0.3,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.indigo),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: SmoothPageIndicator(
-                            controller: _pageController!, // PageController
-                            count: 4,
-                            effect: WormEffect(), // your preferred effect
+                          Align(
+                            alignment: Alignment.center,
+                            child: SmoothPageIndicator(
+                              controller: _pageController!, // PageController
+                              count: 4,
+                              effect: const WormEffect(), // your preferred effect
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
 //set a list of basic infos (colors)
+  @override
   void initState() {
     super.initState();
 
@@ -776,10 +797,10 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
       Color? current = _pageInfoList[_pageOffset!.toInt()].backgroundColor;
       Color? next = _pageInfoList[_pageOffset!.toInt() + 1].backgroundColor;
       if (_pageOffset!.toInt() == 2) {
-        next = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
+        next = ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white;
       }
       if (_pageOffset!.toInt() == 3) {
-        current = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
+        current = ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white;
       }
       return Color.lerp(current, next, _pageOffset! - _pageOffset!.toInt());
     } else {
@@ -794,28 +815,28 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
           offset: offset,
           idx: idx,
         ),
-        backgroundColor: Color(0xFFECFCFF),
+        backgroundColor: const Color(0xFFECFCFF),
       ),
       PageInfo(
         widget: Page2(
           offset: offset,
           idx: idx,
         ),
-        backgroundColor: Color(0xFFE5AE6C),
+        backgroundColor: const Color(0xFFE5AE6C),
       ),
       PageInfo(
         widget: Page3(
           offset: offset,
           idx: idx,
         ),
-        backgroundColor: Color(0xFF252B62),
+        backgroundColor: const Color(0xFF252B62),
       ),
       PageInfo(
           widget: Page4(
             offset: offset,
             idx: idx,
           ),
-          backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white),
+          backgroundColor: ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white),
     ];
   }
 

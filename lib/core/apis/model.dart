@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/services/space/recurringEvents.dart';
+import 'package:ynotes/core/services/space/recurring_events.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -16,16 +17,16 @@ part 'model.g.dart';
 abstract class API {
   bool loggedIn = false;
   final Offline offlineController;
+  final String apiName;
 
   List<Grade>? gradesList;
 
-  API(this.offlineController);
+  API(this.offlineController, {required this.apiName});
 
   Future<AppAccount?> account() async {
-    final storage = new FlutterSecureStorage();
-    String? appAccount = await storage.read(key: "appAccount");
+    String? appAccount = await KVS.read(key: "appAccount");
     if (appAccount != null) {
-      print("Returning account");
+      CustomLogger.log("API MODEL", "Returning account");
       return AppAccount.fromJson(jsonDecode(appAccount));
     } else {
       return null;
@@ -41,11 +42,8 @@ abstract class API {
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
 
-  ///Get the dates of next homework (deprecated)
-  Future<List<DateTime>?> getDatesNextHomework();
-
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date,  {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
     List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
@@ -56,14 +54,14 @@ abstract class API {
       //Add extracurricular events
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
-   
+
     events.addAll(extracurricularEvents);
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
     var recurringEvents = await AgendaEventsOffline(appSys.offline).getAgendaEvents(week, selector: recurr.testRequest);
-    if (recurringEvents != null && recurringEvents.length != 0) {
-      recurringEvents.forEach((recurringEvent) {
+    if (recurringEvents != null && recurringEvents.isNotEmpty) {
+      for (var recurringEvent in recurringEvents) {
         events.removeWhere((element) => element.id == recurringEvent.id);
         if (recurringEvent.start != null && recurringEvent.end != null) {
           recurringEvent.start =
@@ -71,7 +69,7 @@ abstract class API {
           recurringEvent.end =
               DateTime(date.year, date.month, date.day, recurringEvent.end!.hour, recurringEvent.end!.minute);
         }
-      });
+      }
 
       events.addAll(recurringEvents);
     } else {}
@@ -97,7 +95,7 @@ abstract class API {
 
   ///Connect to the API
   ///Should return a connection status
-  Future<List> login(username, password, {url, cas, mobileCasLogin});
+  Future<List> login(username, password, {Map? additionnalSettings});
 
   ///Test to know if there are new grades
   Future<bool?> testNewGrades();
@@ -106,7 +104,7 @@ abstract class API {
   Future uploadFile(String context, String id, String filepath);
 }
 
-enum API_TYPE { EcoleDirecte, Pronote }
+enum API_TYPE { ecoleDirecte, pronote }
 
 @JsonSerializable()
 class AppAccount {
@@ -151,13 +149,20 @@ class SchoolAccount {
 
   final String? studentID;
 
+  final String? profilePicture;
   //Tabs the student can have access to
   List<appTabs> availableTabs;
 
   ///Configuration credentials
   Map? credentials;
   SchoolAccount(
-      {this.name, this.studentClass, this.studentID, required this.availableTabs, this.surname, this.schoolName})
+      {this.name,
+      this.studentClass,
+      this.studentID,
+      required this.availableTabs,
+      this.surname,
+      this.schoolName,
+      this.profilePicture})
       : super();
   factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);

@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 import 'data/example/example.dart';
 
@@ -35,7 +35,8 @@ class HiveBoxProvider {
           Hive.init("${dir.path}/offline");
         }
       } catch (e) {
-        print("Issue while initing Hive : " + e.toString());
+        CustomLogger.log("OFFLINE", "An error occured while initiating Hive");
+        CustomLogger.error(e);
       }
       registerAdapters();
     }
@@ -72,12 +73,12 @@ class HiveBoxProvider {
 ///Unlock it on another thread/isolate could `definitely break the user database, so please be cautious`.
 class Offline {
   //Boxes name
-  static final String offlineCacheBoxName = "offlineData";
-  static final String doneHomeworkBoxName = "doneHomework";
-  static final String homeworkBoxName = "homework";
-  static final String pinnedHomeworkBoxName = "pinnedHomework";
-  static final String agendaBoxName = "agenda";
-  static final String mailsBoxName = "mails";
+  static const String offlineCacheBoxName = "offlineData";
+  static const String doneHomeworkBoxName = "doneHomework";
+  static const String homeworkBoxName = "homework";
+  static const String pinnedHomeworkBoxName = "pinnedHomework";
+  static const String agendaBoxName = "agenda";
+  static const String mailsBoxName = "mails";
   DateTime? dateOfOpening;
   //sample box for example.dart (do not delete)
   Box<Example>? exampleBox;
@@ -103,9 +104,10 @@ class Offline {
       await mailsBox?.deleteFromDisk();
       await homeworkBox?.deleteFromDisk();
 
-      await this.init();
+      await init();
     } catch (e) {
-      print("Failed to clear all db " + e.toString());
+      CustomLogger.log("OFFLINE", "Failed to clear all db");
+      CustomLogger.error(e);
     }
   }
 
@@ -113,17 +115,17 @@ class Offline {
   ///Deletes corrupted box
   deleteCorruptedBox(String boxName) async {
     await Hive.deleteBoxFromDisk(boxName);
-    await logFile("Recovered $boxName");
+    CustomLogger.saveLog(object: "OFFLINE", text: "Recovered $boxName");
   }
 
   //Called when instanciated
   void dispose() async {
     await Hive.close();
-    print("Disposed hive");
+    CustomLogger.log("OFFLINE", "Disposed Hive");
   }
 
   init() async {
-    print("Init offline");
+    CustomLogger.log("OFFLINE", "Init");
     //Register adapters once
 
     try {
@@ -134,9 +136,10 @@ class Offline {
       agendaBox = await appSys.hiveBoxProvider.openBox(agendaBoxName);
       mailsBox = await appSys.hiveBoxProvider.openBox<Mail>(mailsBoxName);
 
-      print("All boxes opened");
+      CustomLogger.log("OFFLINE", "All boxes opened");
     } catch (e) {
-      print("Issue while opening boxes : " + e.toString());
+      CustomLogger.log("OFFLINE", "An error occured while opening boxes");
+      CustomLogger.error(e);
     }
   }
 
@@ -144,17 +147,19 @@ class Offline {
   safeBoxOpen(String boxName) async {
     try {
       Box box = await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
-        await logFile("Error while opening $boxName");
-        throw ("Something bad happened.");
+        final String errorMessage = "Error while opening $boxName";
+        CustomLogger.saveLog(object: "OFFLINE", text: errorMessage);
+        throw (errorMessage);
       });
-      print("Correctly opened $boxName");
+      CustomLogger.log("OFFLINE", "Correctly opened $boxName");
       return box;
     } catch (e) {
-      print("Error while opening $boxName");
+      CustomLogger.log("OFFLINE", "An error occurend while opening $boxName");
+      CustomLogger.error(e);
       if (boxName.contains("offlineData")) {
         await appSys.hiveBoxProvider.deleteBox(boxName);
       }
-      await this.init();
+      await init();
 
       throw ("Error while opening $boxName");
     }

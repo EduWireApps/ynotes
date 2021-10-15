@@ -1,5 +1,6 @@
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class MailsOffline {
   late Offline parent;
@@ -10,7 +11,8 @@ class MailsOffline {
     try {
       return parent.mailsBox?.values.toList();
     } catch (e) {
-      print("Error while returning mails " + e.toString());
+      CustomLogger.log("MAILS", "An error occured while returning mail");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -26,7 +28,7 @@ class MailsOffline {
 
   ///Update existing mails with passed data
   updateMails(List<Mail> mails) async {
-    print("Update offline mails");
+    CustomLogger.log("MAILS", "Update offline mails");
     try {
       List<Mail>? oldMails = [];
       if (parent.mailsBox?.values != null) {
@@ -49,11 +51,12 @@ class MailsOffline {
           ?.where((oldMail) => mails.any((newMail) => newMail.id == oldMail.id));
       if (old != null) {
         mails.removeWhere((newMail) => old.any((oldMail) => oldMail.id == newMail.id));
-        print(mails.length);
+        CustomLogger.log("MAILS", "Mails length: ${mails.length}");
       }
       await parent.mailsBox?.addAll(mails);
     } catch (e) {
-      print("Error while updating mails " + e.toString());
+      CustomLogger.log("MAILS", "An error occured while updating mail");
+      CustomLogger.error(e);
     }
   }
 }

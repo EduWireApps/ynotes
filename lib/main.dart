@@ -6,33 +6,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:flutter_responsive_breakpoints/flutter_responsive_breakpoints.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/backward_compatibility.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
-import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
-import 'package:ynotes/ui/screens/carousel/carousel.dart';
-import 'package:ynotes/ui/screens/loading/loadingPage.dart';
-
-import 'core/utils/themeUtils.dart';
-import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
-
-import 'package:sizer/sizer.dart';
+import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
+import 'package:ynotes/ui/screens/loading/loading.dart';
+import 'package:ynotes/ui/themes/themes.dart';
+import 'package:ynotes_packages/config.dart';
+import 'package:ynotes_packages/theme.dart';
 
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
+  await backwardCompatibility();
+  theme = YCurrentTheme(currentTheme: 1, themes: themes); // TODO: rework how theme integrates in the app
 
   appSys = ApplicationSystem();
   await appSys.initApp();
   if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
-  runZoned<Future<Null>>(() async {
-    runApp(Phoenix(child: HomeApp()));
+  runZoned<Future<void>>(() async {
+    runApp(Phoenix(child: const App()));
   });
 }
 
@@ -47,106 +51,84 @@ _headlessTask(HeadlessTask? task) async {
   }
 }
 
-class Carousel extends StatelessWidget {
+class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: SlidingCarousel(),
-    ));
-  }
+  _AppState createState() => _AppState();
 }
 
-class HomeApp extends StatefulWidget {
-  @override
-  _HomeAppState createState() => _HomeAppState();
-}
-
-class Loader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return Scaffold(body: LoadingPage());
-  }
-}
-
-class Login extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: SchoolAPIChoice());
-  }
-}
-
-class _HomeAppState extends State<HomeApp> {
+class _AppState extends State<App> {
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ApplicationSystem>.value(
-      value: appSys,
-      child: Consumer<ApplicationSystem>(builder: (context, model, child) {
-        return Wiredash(
-          projectId: "ynotes-giw0qs2",
-          secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
-          navigatorKey: _navigatorKey,
-          theme: WiredashThemeData(
-              backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
-              primaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
-              secondaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
-              secondaryColor: Theme.of(context).primaryColorDark,
-              primaryColor: Theme.of(context).primaryColor,
-              primaryTextColor: ThemeUtils.textColor(),
-              brightness: Brightness.dark,
-              secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
-          options: WiredashOptionsData(
-            /// You can set your own locale to override device default (`window.locale` by default)
-            locale: const Locale.fromSubtags(languageCode: 'fr'),
-          ),
-          child: HiveLifecycleManager(
-            child: Sizer(
-              builder: (context, orientation, deviceType) => MaterialApp(
-                localizationsDelegates: [
-                  // ... app-specific localization delegate[s] here
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: [
-                  const Locale('en'), // English (could be useless ?)
-                  const Locale('fr'), //French
-                  // ... other locales the app supports
-                ],
-                debugShowCheckedModeBanner: false,
-                theme: model.theme,
-                title: kDebugMode ? "yNotes DEV" : "yNotes",
-                navigatorKey: _navigatorKey,
-                home: Loader(),
-                themeMode: ThemeMode.light,
-                onGenerateRoute: onGenerateRoute,
-              ),
-            ),
-          ),
-        );
-      }),
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    return FocusDetector(
+      onForegroundGained: () {
+        UIUtils.setSystemUIOverlayStyle();
+      },
+      child: YApp(
+          initialTheme: appSys.themeName == "clair" ? 1 : 2,
+          themes: themes,
+          builder: (context) => ChangeNotifierProvider<ApplicationSystem>.value(
+                value: appSys,
+                child: Consumer<ApplicationSystem>(builder: (context, model, child) {
+                  return Wiredash(
+                    projectId: "ynotes-giw0qs2",
+                    secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
+                    navigatorKey: _navigatorKey,
+                    theme: WiredashThemeData(
+                        backgroundColor: ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white,
+                        primaryBackgroundColor:
+                            ThemeUtils.isThemeDark ? const Color(0xff414141) : const Color(0xffF3F3F3),
+                        secondaryBackgroundColor: ThemeUtils.isThemeDark ? const Color(0xff313131) : Colors.white,
+                        secondaryColor: Theme.of(context).primaryColorDark,
+                        primaryColor: Theme.of(context).primaryColor,
+                        primaryTextColor: ThemeUtils.textColor(),
+                        brightness: Brightness.dark,
+                        secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
+                    options: WiredashOptionsData(
+                      /// You can set your own locale to override device default (`window.locale` by default)
+                      locale: const Locale.fromSubtags(languageCode: 'fr'),
+                    ),
+                    child: HiveLifecycleManager(
+                      child: Responsive(
+                        builder: (context) => MaterialApp(
+                          localizationsDelegates: const [
+                            // ... app-specific localization delegate[s] here
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                          ],
+                          supportedLocales: const [
+                            Locale('fr'), //French
+                          ],
+                          debugShowCheckedModeBanner: false,
+                          theme: model.themeData?.copyWith(
+                            colorScheme: theme.themeData.colorScheme,
+                            splashColor: theme.themeData.splashColor,
+                            highlightColor: theme.themeData.highlightColor,
+                            splashFactory: theme.themeData.splashFactory,
+                            textSelectionTheme: theme.themeData.textSelectionTheme,
+                          ),
+                          title: kDebugMode ? "yNotes DEV" : "yNotes",
+                          navigatorKey: _navigatorKey,
+                          home: const LoadingPage(),
+                          themeMode: ThemeMode.light,
+                          onGenerateRoute: onGenerateRoute,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              )),
     );
   }
 
+  @override
   initState() {
     super.initState();
-  }
-}
-
-extension IndexedIterable<E> on Iterable<E> {
-  Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
-    var i = 0;
-    return map((e) => f(e, i++));
-  }
-}
-
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }

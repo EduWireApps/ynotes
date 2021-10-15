@@ -2,7 +2,8 @@ import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class AgendaController extends ChangeNotifier {
   DateTime? _date;
@@ -35,11 +36,11 @@ class AgendaController extends ChangeNotifier {
     List<AgendaEvent> dayEvents = [];
     DateTime? dayEventsEnd;
 
-    events.forEach((event) {
+    for (var event in events) {
       if (event.isLesson!) {
         dayEvents.add(event);
       }
-    });
+    }
     dayEvents.sort((a, b) => a.end!.compareTo(b.end!));
     dayEventsEnd = dayEvents.last.end;
 
@@ -63,17 +64,17 @@ class AgendaController extends ChangeNotifier {
 
     //We reproduce the old week
     var oldweek = List.filled(7, DateTime.now());
-    oldweek[0] = CalendarTime(_oldDate).startOfDay.subtract(Duration(days: 3));
-    oldweek[1] = CalendarTime(_oldDate).startOfDay.subtract(Duration(days: 2));
-    oldweek[2] = CalendarTime(_oldDate).startOfDay.subtract(Duration(days: 1));
+    oldweek[0] = CalendarTime(_oldDate).startOfDay.subtract(const Duration(days: 3));
+    oldweek[1] = CalendarTime(_oldDate).startOfDay.subtract(const Duration(days: 2));
+    oldweek[2] = CalendarTime(_oldDate).startOfDay.subtract(const Duration(days: 1));
     oldweek[3] = CalendarTime(_oldDate).startOfDay;
-    oldweek[4] = CalendarTime(_oldDate).startOfDay.add(Duration(days: 1));
-    oldweek[5] = CalendarTime(_oldDate).startOfDay.add(Duration(days: 2));
-    oldweek[6] = CalendarTime(_oldDate).startOfDay.add(Duration(days: 3));
+    oldweek[4] = CalendarTime(_oldDate).startOfDay.add(const Duration(days: 1));
+    oldweek[5] = CalendarTime(_oldDate).startOfDay.add(const Duration(days: 2));
+    oldweek[6] = CalendarTime(_oldDate).startOfDay.add(const Duration(days: 3));
 
     //We search for old week elements that are still present in the new week
     if (week.any((element) => oldweek.contains(element))) {
-      oldweek.forEach((oldWeekDate) {
+      for (var oldWeekDate in oldweek) {
         for (int i = 0; i < week.length; i++) {
           if (week[i] == oldWeekDate) {
             //We add these events
@@ -81,10 +82,10 @@ class AgendaController extends ChangeNotifier {
             (_cachedEvents ?? [])[i]!.addAll(oldEvents[i] ?? []);
           }
         }
-      });
+      }
     }
     if ((_cachedEvents ?? [])[3] == null) {
-      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay,  forceReload: false);
+      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay, forceReload: false);
     }
 
     loaded[3] = true;
@@ -100,17 +101,17 @@ class AgendaController extends ChangeNotifier {
       }
       i++;
     });
-    print("Agenda events set");
+    CustomLogger.log("AGENDA", "Agenda events set");
   }
 
   initWeek() {
-    week[0] = CalendarTime(_date).startOfDay.subtract(Duration(days: 3));
-    week[1] = CalendarTime(_date).startOfDay.subtract(Duration(days: 2));
-    week[2] = CalendarTime(_date).startOfDay.subtract(Duration(days: 1));
+    week[0] = CalendarTime(_date).startOfDay.subtract(const Duration(days: 3));
+    week[1] = CalendarTime(_date).startOfDay.subtract(const Duration(days: 2));
+    week[2] = CalendarTime(_date).startOfDay.subtract(const Duration(days: 1));
     week[3] = CalendarTime(_date).startOfDay;
-    week[4] = CalendarTime(_date).startOfDay.add(Duration(days: 1));
-    week[5] = CalendarTime(_date).startOfDay.add(Duration(days: 2));
-    week[6] = CalendarTime(_date).startOfDay.add(Duration(days: 3));
+    week[4] = CalendarTime(_date).startOfDay.add(const Duration(days: 1));
+    week[5] = CalendarTime(_date).startOfDay.add(const Duration(days: 2));
+    week[6] = CalendarTime(_date).startOfDay.add(const Duration(days: 3));
     for (int i = 0; i < 7; i++) {
       loaded[i] = false;
     }

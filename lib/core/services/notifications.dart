@@ -12,17 +12,17 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/ui/screens/agenda/widgets/agenda.dart';
 
 ///The notifications class
 class AppNotification {
@@ -33,15 +33,19 @@ class AppNotification {
     Offline _offline = Offline();
     API api = apiManager(_offline);
     //Login creds
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-    String? url = await readStorage("pronoteurl");
-    String? cas = await readStorage("pronotecas");
+    String? u = await KVS.read(key: "username");
+    String? p = await KVS.read(key: "password");
+    String? url = await KVS.read(key: "pronoteurl");
+    String? cas = await KVS.read(key: "pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
-        await api.login(u, p, url: url, cas: cas);
+        await api.login(u, p, additionnalSettings: {
+          "url": url,
+          "cas": cas,
+        });
       } catch (e) {
-        print("Error while logging");
+        CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
+        CustomLogger.error(e);
       }
     }
     var date = DateTime.now();
@@ -56,7 +60,8 @@ class AppNotification {
       Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
-      print("Error while registring adapter");
+      CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
+      CustomLogger.error(e);
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("offlineData");
@@ -68,7 +73,8 @@ class AppNotification {
       try {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
-        print("Error while collecting online lessons. ${e.toString()}");
+        CustomLogger.log("NOTIFICATIONS", "An error occured collecting online lessons");
+        CustomLogger.error(e);
 
         Box _offlineBox = await Hive.openBox("offlineData");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -82,7 +88,7 @@ class AppNotification {
     Lesson? lesson;
     //Show next lesson if this one is after current datetime
     if (nextLesson != null && nextLesson.start!.isAfter(DateTime.now())) {
-      if (await appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
+      if (appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled) {
         AndroidPlatformChannel.enableDND();
       }
       lesson = nextLesson;
@@ -90,9 +96,11 @@ class AppNotification {
     } else {
       final prefs = await (SharedPreferences.getInstance());
       bool? value = prefs.getBool("disableAtDayEnd");
-      print(value);
-      print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);
-      if (appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]) {
+      CustomLogger.log("NOTIFICATIONS", "disableAtDayEnd (prefs): $value");
+      CustomLogger.log(
+          "NOTIFICATIONS", "disableAtDayEnd (settings): ${appSys.settings.user.agendaPage.disableAtDayEnd}");
+
+      if (appSys.settings.user.agendaPage.disableAtDayEnd) {
         await cancelOnGoingNotification();
       } else {
         lesson = currentLesson;
@@ -101,23 +109,25 @@ class AppNotification {
     }
     //Logs for tests
     if (lesson != null) {
-      await logFile(
-          "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
+      CustomLogger.saveLog(
+          object: "NOTIFICATIONS",
+          text:
+              "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
     } else {
-      await logFile("Persistant notification next lesson callback triggered : you are in break.");
+      CustomLogger.saveLog(
+          object: "NOTIFICATIONS", text: "Persistant notification next lesson callback triggered : you are in break.");
     }
   }
 
 //Chose which triggered action to use
   static Future<void> cancelNotification(int id) async {
     await AwesomeNotifications().cancel(id);
-    print("Unscheduled $id");
+    CustomLogger.log("NOTIFICATIONS", "Unscheduled $id");
   }
 
   static Future<void> cancelOnGoingNotification() async {
     await cancelNotification(333);
-
-    print("Cancelled on going notification");
+    CustomLogger.log("NOTIFICATIONS", "Cancelled on going notification");
   }
 
   static getRelatedAction(
@@ -148,7 +158,8 @@ class AppNotification {
     }
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
-      appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "agendaOnGoingNotification", false);
+      appSys.settings.user.agendaPage.agendaOnGoingNotification = false;
+      appSys.saveSettings();
 
       await AppNotification.cancelOnGoingNotification();
       return;
@@ -156,7 +167,7 @@ class AppNotification {
   }
 
   static initNotifications(BuildContext context, Function navigatorCallback) async {
-    if (!kIsWeb  && (Platform.isAndroid || Platform.isIOS)) {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       AwesomeNotifications().initialize(null, [
         NotificationChannel(
             channelKey: 'alarm',
@@ -164,14 +175,16 @@ class AppNotification {
             channelName: 'Alarmes',
             importance: NotificationImportance.High,
             channelDescription: "Alarmes et rappels de l'application yNotes",
-            defaultColor: Color(0xFF9D50DD),
+            defaultColor: const Color(0xFF9D50DD),
             ledColor: Colors.white)
       ]);
       try {
         AwesomeNotifications().actionStream.listen((receivedNotification) async {
           await getRelatedAction(receivedNotification, context, navigatorCallback);
         });
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
     }
   }
 
@@ -191,21 +204,21 @@ class AppNotification {
       if (event.alarm == AlarmType.none) {
       } else {
         //delay between task start and task end
-        Duration delay = Duration();
+        Duration delay = const Duration();
         if (event.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
         if (event.alarm == AlarmType.fiveMinutes) {
-          delay = Duration(minutes: 5);
+          delay = const Duration(minutes: 5);
         }
         if (event.alarm == AlarmType.fifteenMinutes) {
-          delay = Duration(minutes: 15);
+          delay = const Duration(minutes: 15);
         }
         if (event.alarm == AlarmType.thirtyMinutes) {
-          delay = Duration(minutes: 30);
+          delay = const Duration(minutes: 30);
         }
         if (event.alarm == AlarmType.oneDay) {
-          delay = Duration(days: 1);
+          delay = const Duration(days: 1);
         }
         String time = DateFormat("HH:mm").format(event.start!);
         await AwesomeNotifications().createNotification(
@@ -218,10 +231,12 @@ class AppNotification {
                     ? NotificationLayout.Default
                     : NotificationLayout.BigText),
             schedule: NotificationCalendar.fromDate(date: event.start!.subtract(delay).toUtc()));
-        print("Scheduled an alarm" + event.start!.subtract(delay).toString() + " " + event.id.hashCode.toString());
+        CustomLogger.log("NOTIFICATIONS",
+            "Scheduled an alarm" + event.start!.subtract(delay).toString() + " " + event.id.hashCode.toString());
       }
     } catch (e) {
-      print(e);
+      CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling agenda reminders");
+      CustomLogger.error(e);
     }
   }
 
@@ -237,32 +252,32 @@ class AppNotification {
           ledColor: Colors.white)
     ]);
     List<AgendaReminder> reminders =
-        await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id)) as List <AgendaReminder>;
+        await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id)) as List<AgendaReminder>;
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == AlarmType.none) {
         await cancelNotification(event.id.hashCode);
       } else {
         //delay between task start and task end
-        Duration delay = Duration();
+        Duration delay = const Duration();
         if (rmd.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
         if (rmd.alarm == AlarmType.fiveMinutes) {
-          delay = Duration(minutes: 5);
+          delay = const Duration(minutes: 5);
         }
         if (rmd.alarm == AlarmType.fifteenMinutes) {
-          delay = Duration(minutes: 15);
+          delay = const Duration(minutes: 15);
         }
         if (rmd.alarm == AlarmType.thirtyMinutes) {
-          delay = Duration(minutes: 30);
+          delay = const Duration(minutes: 30);
         }
         if (rmd.alarm == AlarmType.oneDay) {
-          delay = Duration(days: 1);
+          delay = const Duration(days: 1);
         }
         String text = "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
-        print(event.start!.subtract(delay));
-        print(text);
+        CustomLogger.log("NOTIFICATIONS", "Event will start in ${event.start!.subtract(delay)}");
+        CustomLogger.log("NOTIFICATIONS", text);
 
         await AwesomeNotifications().createNotification(
             content: NotificationContent(
@@ -280,21 +295,24 @@ class AppNotification {
   ///Set an on going notification which is automatically refreshed (online or not) each hour
   static Future<void> setOnGoingNotification({bool dontShowActual = false}) async {
     //Logs for tests
-    await logFile("Setting on going notification");
-    print("Setting on going notification");
+    CustomLogger.saveLog(object: "NOTIFICATIONS", text: "Setting on going notification.");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? lessons = [];
     API api = apiManager(appSys.offline);
     //Login creds
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-    String? url = await readStorage("pronoteurl");
-    String? cas = await readStorage("pronotecas");
+    String? u = await KVS.read(key: "username");
+    String? p = await KVS.read(key: "password");
+    String? url = await KVS.read(key: "pronoteurl");
+    String? cas = await KVS.read(key: "pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
-        await api.login(u, p, url: url, cas: cas);
+        await api.login(u, p, additionnalSettings: {
+          "url": url,
+          "cas": cas,
+        });
       } catch (e) {
-        print("Error while logging");
+        CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
+        CustomLogger.error(e);
       }
     }
     var date = DateTime.now();
@@ -310,7 +328,8 @@ class AppNotification {
       Hive.registerAdapter(HomeworkAdapter());
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
-      print("Error while registring adapter");
+      CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
+      CustomLogger.error(e);
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("agenda");
@@ -322,7 +341,8 @@ class AppNotification {
       try {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
-        print("Error while collecting online lessons. ${e.toString()}");
+        CustomLogger.log("NOTIFICATIONS", "An error occured while collecting online lessons");
+        CustomLogger.error(e);
 
         Box _offlineBox = await Hive.openBox("offlineData2");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -331,34 +351,40 @@ class AppNotification {
         }
       }
     }
-    if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
+    if (appSys.settings.user.agendaPage.agendaOnGoingNotification) {
       Lesson? getActualLesson = getCurrentLesson(lessons);
       if (!dontShowActual) {
-        if (appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
+        if (appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled) {
           AndroidPlatformChannel.enableDND(); // Turn on DND - All notifications are suppressed.
         }
         await showOngoingNotification(getActualLesson);
       }
 
-      int? minutes = appSys.settings!["system"]["lastMailCount"];
+      int? minutes;
+
       await Future.forEach(lessons!, (Lesson lesson) async {
         if (lesson.start!.isAfter(date)) {
           try {
             if (await AndroidAlarmManager.oneShotAt(
                 lesson.start!.subtract(Duration(minutes: minutes ?? 15)), lesson.start.hashCode, callback,
-                allowWhileIdle: true, rescheduleOnReboot: true))
-              print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+                allowWhileIdle: true, rescheduleOnReboot: true)) {
+              CustomLogger.log(
+                  "NOTIFICATIONS", "Scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+            }
           } catch (e) {
-            print("failed " + e.toString());
+            CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling lesson notification");
+            CustomLogger.error(e);
           }
         }
       });
       try {
         if (await AndroidAlarmManager.oneShotAt(
             lessons.last.end!.subtract(Duration(minutes: minutes ?? 15)), lessons.last.end.hashCode, callback,
-            allowWhileIdle: true, rescheduleOnReboot: true)) print("Scheduled last lesson");
-      } catch (e) {}
-      print("Success !");
+            allowWhileIdle: true, rescheduleOnReboot: true)) CustomLogger.log("NOTIFICATIONS", "Scheduled last lesson");
+      } catch (e) {
+        CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling last lesson");
+        CustomLogger.error(e);
+      }
     }
   }
 
@@ -490,7 +516,7 @@ class AppNotification {
   static Future<void> showOngoingNotification(Lesson? lesson) async {
     var id = 333;
 
-    if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
+    if (appSys.settings.user.agendaPage.agendaOnGoingNotification) {
       await AwesomeNotifications().initialize('resource://drawable/tfiche', [
         NotificationChannel(
             channelKey: 'persisnotif',
@@ -518,9 +544,12 @@ class AppNotification {
         if (lesson!.canceled!) {
           sentence = "Votre cours a été annulé.";
         }
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
       try {
-        print(parse(sentence).documentElement!.text.length);
+        CustomLogger.log(
+            "NOTIFICATIONS", "Ongoing notification text length is ${parse(sentence).documentElement!.text.length}");
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: id,
@@ -539,7 +568,8 @@ class AppNotification {
           ],
         );
       } catch (e) {
-        print(e);
+        CustomLogger.log("NOTIFICATIONS", "An error occured while setting ongoing notification");
+        CustomLogger.error(e);
       }
     }
   }

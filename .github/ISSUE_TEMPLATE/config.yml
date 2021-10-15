@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 FAQ
+    url: https://ynotes.fr/faq/
+    about: |
+      Une question ? La réponse se trouve peut-être dans la FAQ.
+  - name: ❓ Centre d'aide
+    url: https://support.ynotes.fr/
+    about: |
+      De votre compte à notre politique de confidentialité, vous trouverez ici toute l'aide dont vous avez besoin.
+  - name: ❗️ Toutes les autres questions
+    url: https://discord.gg/pRCBs22dNX
+    about: |
+      Veuillez utiliser le serveur Discord pour les autres problèmes et pour poser des questions.

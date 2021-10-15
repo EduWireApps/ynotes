@@ -1,5 +1,6 @@
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class AgendaEventsOffline {
   late Offline parent;
@@ -10,13 +11,13 @@ class AgendaEventsOffline {
   ///Update existing agenda events with passed data
   addAgendaEvent(AgendaEvent newData, var id) async {
     try {
-      Map<dynamic, dynamic> timeTable = Map();
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("agendaEvents");
       List<AgendaEvent> events = [];
       if (offline != null) {
         timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("agendaEvents"));
       }
-      print(timeTable);
+      CustomLogger.log("EVENTS", "Timetable: $timeTable");
       if (timeTable[id] != null) {
         events.addAll(timeTable[id].cast<AgendaEvent>());
         events.removeWhere((element) => element.id == newData.id);
@@ -25,9 +26,10 @@ class AgendaEventsOffline {
       //Update the timetable
       timeTable.update(id, (value) => events, ifAbsent: () => events);
       await parent.agendaBox?.put("agendaEvents", timeTable);
-      print("Update offline agenda events (id : $id)");
+      CustomLogger.log("EVENTS", "Update offline agenda events (id : $id)");
     } catch (e) {
-      print("Error while updating offline agenda events " + e.toString());
+      CustomLogger.log("EVENTS", "An error occured while updating offline agenda events");
+      CustomLogger.error(e);
     }
   }
 
@@ -39,8 +41,8 @@ class AgendaEventsOffline {
         return parent.agendaBox?.get("agendaEvents")?[week]?.cast<AgendaEvent>().where(await selector).toList();
       }
     } catch (e) {
-      print("Error while returning agenda events for week $week " + e.toString());
-
+      CustomLogger.log("EVENTS", "An error occured while returning agenda events for week $week");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -48,7 +50,7 @@ class AgendaEventsOffline {
   ///Remove an agenda event with a given `id` and at a given `week`
   removeAgendaEvent(String? id, var fetchID) async {
     try {
-      Map<dynamic, dynamic> timeTable = Map();
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("agendaEvents");
       List<AgendaEvent> events = [];
       if (offline != null) {
@@ -57,13 +59,14 @@ class AgendaEventsOffline {
       if (timeTable[fetchID] != null) {
         events.addAll(timeTable[fetchID].cast<AgendaEvent>());
         events.removeWhere((element) => element.id == id);
-        print("Removed offline agenda event (fetchID : $fetchID, id: $id)");
+        CustomLogger.log("EVENTS", "Removed offline agenda event (fetchID : $fetchID, id: $id)");
       }
       //Update the timetable
       timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
       await parent.agendaBox?.put("agendaEvents", timeTable);
     } catch (e) {
-      print("Error while removing offline agenda events " + e.toString());
+      CustomLogger.log("EVENTS", "An error occured while removing offline agenda events");
+      CustomLogger.error(e);
     }
   }
 }

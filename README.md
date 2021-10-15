@@ -35,6 +35,7 @@
 - [A propos des APIs officielles](#a-propos-des-apis-officielles)
 - [Documentation](#documentation)
     - [Architecture](#architecture)
+    - [Précisions](#précisions)
 - [Contributeurs](#contributeurs)
     - [Mentions spéciales](#mentions-spéciales)
 
@@ -131,6 +132,12 @@ Le dossier `/offline` contient tout ce qui est nécessaire à la mise en cache/h
 Les vues sont dans `/lib/ui`
 L'organisation des fichiers est néanmoins succeptible de changer.
 
+### Précisions
+N'utilisez pas de `print(text);` mais plutôt:
+
+- `CustomLogger.log(object, text);`
+- `CustomLogger.logWrapped(object, description, text);`
+- `CustomLogger.error(e);`
 
 # Contributeurs
 ### Mentions spéciales

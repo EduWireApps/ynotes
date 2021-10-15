@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/ui/components/color_picker/src/utils.dart';
 
 class MaterialPicker extends StatefulWidget {
-  MaterialPicker({
+  const MaterialPicker({
+    Key? key,
     required this.pickerColor,
     required this.onColorChanged,
-    this.enableLabel: false,
-  });
+    this.enableLabel = false,
+  }) : super(key: key);
 
   final Color pickerColor;
   final ValueChanged<Color?> onColorChanged;
@@ -50,7 +51,7 @@ class _MaterialPickerState extends State<MaterialPicker> {
   List<Color?> _shadingTypes(List<Color> colors) {
     List<Color?> result = [];
 
-    colors.forEach((Color colorType) {
+    for (var colorType in colors) {
       if (colorType == Colors.grey) {
         result.addAll([50, 100, 200, 300, 350, 400, 500, 600, 700, 800, 850, 900].map((int shade) {
           return Colors.grey[shade];
@@ -66,16 +67,16 @@ class _MaterialPickerState extends State<MaterialPicker> {
           return colorType[shade];
         }).toList());
       } else {
-        result.add(Color(0));
+        result.add(const Color(0x00000000));
       }
-    });
+    }
 
     return result;
   }
 
   @override
   void initState() {
-    _colorTypes.forEach((List<Color> _colors) {
+    for (var _colors in _colorTypes) {
       _shadingTypes(_colors).forEach((Color? color) {
         if (widget.pickerColor.value == color!.value) {
           return setState(() {
@@ -84,7 +85,7 @@ class _MaterialPickerState extends State<MaterialPicker> {
           });
         }
       });
-    });
+    }
     super.initState();
   }
 
@@ -113,9 +114,10 @@ class _MaterialPickerState extends State<MaterialPicker> {
               return GestureDetector(
                 onTap: () => setState(() => _currentColor = _colors),
                 child: Container(
-                  color: Color(0),
-                  padding:
-                      _isPortrait ? EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 7.0) : EdgeInsets.fromLTRB(7.0, 0.0, 7.0, 0.0),
+                  color: const Color(0x00000000),
+                  padding: _isPortrait
+                      ? const EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 7.0)
+                      : const EdgeInsets.fromLTRB(7.0, 0.0, 7.0, 0.0),
                   child: Align(
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
@@ -158,7 +160,9 @@ class _MaterialPickerState extends State<MaterialPicker> {
       return ListView(
         scrollDirection: _isPortrait ? Axis.vertical : Axis.horizontal,
         children: [
-          _isPortrait ? Padding(padding: EdgeInsets.only(top: 15.0)) : Padding(padding: EdgeInsets.only(left: 15.0)),
+          _isPortrait
+              ? const Padding(padding: EdgeInsets.only(top: 15.0))
+              : const Padding(padding: EdgeInsets.only(left: 15.0)),
           ..._shadingTypes(_currentColor).map((Color? _color) {
             return GestureDetector(
               onTap: () {
@@ -166,9 +170,10 @@ class _MaterialPickerState extends State<MaterialPicker> {
                 widget.onColorChanged(_color);
               },
               child: Container(
-                color: Color(0),
-                padding:
-                    _isPortrait ? EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 7.0) : EdgeInsets.fromLTRB(7.0, 0.0, 7.0, 0.0),
+                color: const Color(0x00000000),
+                padding: _isPortrait
+                    ? const EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 7.0)
+                    : const EdgeInsets.fromLTRB(7.0, 0.0, 7.0, 0.0),
                 child: Align(
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
@@ -214,8 +219,8 @@ class _MaterialPickerState extends State<MaterialPicker> {
             );
           }),
           _isPortrait
-              ? const Padding(padding: const EdgeInsets.only(top: 15.0))
-              : const Padding(padding: const EdgeInsets.only(left: 15.0)),
+              ? const Padding(padding: EdgeInsets.only(top: 15.0))
+              : const Padding(padding: EdgeInsets.only(left: 15.0)),
         ],
       );
     }

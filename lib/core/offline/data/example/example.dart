@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class Example extends HiveObject {
   int id;
@@ -26,14 +27,15 @@ class ExampleOffline {
       //Caution box can be null
       return parent.exampleBox?.values.toList();
     } catch (e) {
-      print("Error while returning example " + e.toString());
+      CustomLogger.log("EXAMPLE", "An error occured while returning example");
+      CustomLogger.error(e);
       return null;
     }
   }
 
   ///Here we update existing data : but we don't want every fields to be updated each time
   update(List<Example> newExamples) async {
-    print("Update examples (length : ${newExamples.length})");
+    CustomLogger.log("EXAMPLE", "Update examples (length : ${newExamples.length})");
     try {
       //Here we get already persisted data
       List<Example>? oldExamples = [];
@@ -61,13 +63,14 @@ class ExampleOffline {
           ?.where((oldExample) => newExamples.any((newExample) => newExample.id == oldExample.id));
       if (old != null) {
         newExamples.removeWhere((newExample) => old.any((oldExample) => newExample.id == oldExample.id));
-        print(newExamples.length);
+        CustomLogger.log("EXAMPLE", "New examples length: ${newExamples.length}");
       }
 
       //We add to the database the others
       await parent.exampleBox?.addAll(newExamples);
     } catch (e) {
-      print("Error while updating examples " + e.toString());
+      CustomLogger.log("EXAMPLE", "An error occured while updating examples");
+      CustomLogger.error(e);
     }
   }
 }
