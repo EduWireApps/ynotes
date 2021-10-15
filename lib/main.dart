@@ -64,9 +64,6 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    print("--------");
-    print(appSys.themeName);
-    print("--------");
 
     return FocusDetector(
       onForegroundGained: () {

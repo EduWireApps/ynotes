@@ -60,7 +60,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];
 
-    final Color backgroundColor = theme.colors.backgroundLightColor;
+    final Color backgroundColor = theme.colors.backgroundColor;
 
     return Drawer(
       child: Container(
@@ -83,7 +83,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                   final Color textColor = isCurrent ? theme.colors.foregroundColor : theme.colors.foregroundLightColor;
 
                   return Container(
-                    color: isCurrent ? theme.colors.backgroundColor : null,
+                    color: isCurrent ? theme.colors.backgroundLightColor : null,
                     child: ListTile(
                       leading: Icon(
                         route.icon,

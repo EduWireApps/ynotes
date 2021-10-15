@@ -41,7 +41,8 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin, LayoutMixi
                 backgroundColor: theme.colors.backgroundColor,
                 centerTitle: false,
                 automaticallyImplyLeading: screenSize.size.width < 800,
-                title: Text(widget.title, textAlign: TextAlign.start),
+                title: Text(widget.title,
+                    style: TextStyle(color: theme.colors.foregroundColor), textAlign: TextAlign.start),
                 actions: widget.actions),
             body: widget.isScrollable
                 ? SingleChildScrollView(child: _page(context))

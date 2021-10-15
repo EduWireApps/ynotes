@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class YPageLocal extends StatefulWidget {
   final Widget child;
@@ -29,7 +30,8 @@ class _YPageLocalState extends State<YPageLocal> {
             backgroundColor:
                 ThemeUtils.isThemeDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorDark,
             centerTitle: false,
-            title: Text(widget.title, textAlign: TextAlign.start),
+            title:
+                Text(widget.title, style: TextStyle(color: theme.colors.foregroundColor), textAlign: TextAlign.start),
             systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
             actions: widget.actions),
         body: widget.scrollable ? SingleChildScrollView(child: Column(children: [widget.child])) : widget.child);
