@@ -10,10 +10,12 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/key_values.dart';
 import 'package:ynotes/useful_methods.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -67,25 +69,23 @@ class _AccountPageState extends State<AccountPage> {
                                       buildAccountDetail(e, (appSys.account!.managableAccounts ?? []).indexOf(e)))
                                   .toList())),
                     ),
-                    CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
-                      if (await CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText:
-                                  "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
-                              alternativeButtonConfirmText: "Se déconnecter") ??
-                          false) {
-                        await appSys.exitApp();
-                        appSys.api = null;
-                        appSys.buildControllers();
-                        setState(() {});
-                        Phoenix.rebirth(context);
-                      }
-                    },
-                        padding: const EdgeInsets.all(5),
-                        backgroundColor: Colors.red,
+                    YButton(
+                        onPressed: () async {
+                          if (await CustomDialogs.showConfirmationDialog(context, null,
+                                  alternativeText:
+                                      "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
+                                  alternativeButtonConfirmText: "Se déconnecter") ??
+                              false) {
+                            await appSys.exitApp();
+                            appSys.api = null;
+                            appSys.buildControllers();
+                            setState(() {});
+                            Phoenix.rebirth(context);
+                          }
+                        },
+                        text: "Se déconnecter",
                         icon: MdiIcons.logout,
-                        iconColor: Colors.white,
-                        label: "Déconnexion",
-                        textColor: Colors.white),
+                        color: YColor.danger),
                   ],
                 ),
               ),
@@ -207,13 +207,13 @@ class _AccountPageState extends State<AccountPage> {
               ),
               if (appSys.currentSchoolAccount != account)
                 Center(
-                  child: CustomButtons.materialButton(
-                      context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4, () {
-                    setState(() {
-                      appSys.currentSchoolAccount = account;
-                    });
-                  }, backgroundColor: Colors.blue, label: "Se connecter"),
-                )
+                    child: YButton(
+                        onPressed: () {
+                          setState(() {
+                            appSys.currentSchoolAccount = account;
+                          });
+                        },
+                        text: "Se connecter"))
             ],
           ),
         ));
@@ -350,13 +350,12 @@ class _LoginStatusState extends State<LoginStatus> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4, () {
-                model.login();
-              }, backgroundColor: Colors.orange, label: "Reconnexion", textColor: Colors.white),
-              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4, () {
-                //show wiredash
-                Wiredash.of(context)!.show();
-              }, backgroundColor: Colors.blue, label: "Support", textColor: Colors.white),
+              YButton(onPressed: () => model.login(), text: "Reconnexion", color: YColor.success),
+              YHorizontalSpacer(YScale.s2),
+              YButton(
+                onPressed: () => Wiredash.of(context)!.show(),
+                text: "Support",
+              ),
             ],
           ),
         ],
