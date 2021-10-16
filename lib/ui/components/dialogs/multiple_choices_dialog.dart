@@ -2,7 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 class MultipleChoicesDialog extends StatefulWidget {
   final List choices;
@@ -147,10 +149,19 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Container(margin: const EdgeInsets.only(top: 5), child: buildCancelButton()),
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 5),
+                              child: YButton(
+                                  onPressed: () => Navigator.pop(context), text: "Annuler", color: YColor.warning)),
                         ),
+                        YHorizontalSpacer(YScale.s2),
                         Expanded(
-                          child: Container(margin: const EdgeInsets.only(top: 5), child: buildValidateButton()),
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 5),
+                              child: YButton(
+                                  onPressed: () => Navigator.pop(context, indexsSelected),
+                                  text: "Valider",
+                                  color: YColor.success)),
                         ),
                       ],
                     ),
@@ -160,18 +171,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
             ),
           ),
         ));
-  }
-
-  buildCancelButton() {
-    return CustomButtons.materialButton(context, null, 45, () {
-      Navigator.of(context).pop();
-    }, label: "Annuler", backgroundColor: Colors.orange.shade300);
-  }
-
-  buildValidateButton() {
-    return CustomButtons.materialButton(context, null, 45, () {
-      Navigator.of(context).pop(indexsSelected);
-    }, label: "Valider", backgroundColor: Colors.green.shade300);
   }
 
   @override
