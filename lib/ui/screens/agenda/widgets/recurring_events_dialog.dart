@@ -1,17 +1,15 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
-// ignore: must_be_immutable
 class RecurringEventsDialog extends StatefulWidget {
-  String? scheme;
-  RecurringEventsDialog(this.scheme, {Key? key}) : super(key: key);
+  final String? scheme;
+  const RecurringEventsDialog(this.scheme, {Key? key}) : super(key: key);
   @override
   _RecurringEventsDialogState createState() => _RecurringEventsDialogState();
 }
@@ -124,25 +122,22 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     ),
                   ),
                 ),
-                CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                  if (enabled!) {
-                    if (everyDay! ? true : selectedDays.isNotEmpty) {
-                      var value = export();
-                      Navigator.of(context).pop(value);
-                    } else {
-                      CustomDialogs.showAnyDialog(context, "Vous devez sélectionner au moins un jour");
-                    }
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                },
-                    label: "J'ai fini",
-                    backgroundColor: (everyDay! ? true : selectedDays.isNotEmpty)
-                        ? Colors.green
-                        : Theme.of(context).primaryColorDark,
-                    padding: EdgeInsets.all(5),
-                    borderRadius: BorderRadius.circular(8)),
-                SizedBox(
+                YButton(
+                    onPressed: () {
+                      if (enabled!) {
+                        if (everyDay! ? true : selectedDays.isNotEmpty) {
+                          var value = export();
+                          Navigator.pop(context, value);
+                        } else {
+                          CustomDialogs.showAnyDialog(context, "Vous devez sélectionner au moins un jour");
+                        }
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                    text: "J'ai fini",
+                    color: (everyDay! ? true : selectedDays.isNotEmpty) ? YColor.success : YColor.secondary),
+                const SizedBox(
                   height: 10,
                 )
               ],
@@ -157,10 +152,10 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
     return Container(
       margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
       child: Material(
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         color: selectedDays.contains(dayNumber) ? Colors.blue : Theme.of(context).primaryColorDark,
         child: InkWell(
-          customBorder: CircleBorder(),
+          customBorder: const CircleBorder(),
           onTap: () {
             if (selectedDays.contains(dayNumber)) {
               setState(() {
@@ -175,7 +170,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
           child: Container(
             height: 50,
             width: 50,
-            padding: EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
             child: Center(
               child: Text(
                 dayName,
