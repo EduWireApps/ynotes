@@ -51,7 +51,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           height: screenSize.size.height / 10 * 1.8,
                           fit: BoxFit.scaleDown,
                           image: AssetImage(
-                              'assets/images/persistantNotification/persisIllu${appSys.themeName == "sombre" ? "Dark" : "Light"}.png'))),
+                              'assets/images/pageItems/persistantNotification/persisIllu${appSys.themeName == "sombre" ? "Dark" : "Light"}.png'))),
                   SizedBox(
                     width: screenSize.size.width / 5 * 4.4,
                     child: AutoSizeText.rich(
