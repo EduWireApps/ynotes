@@ -17,6 +17,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/text_field.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes_packages/theme.dart';
 import 'widgets/read_mail_bottom_sheet.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_packages/components.dart' hide YPage;
@@ -384,7 +385,7 @@ class _MailPageState extends State<MailPage> with LayoutMixin {
             ),
           ),
         ),
-        decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: theme.colors.primary.backgroundColor),
       ),
       onPressed: () async {
         await CustomDialogs.writeModalBottomSheet(context);

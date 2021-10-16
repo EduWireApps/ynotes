@@ -19,6 +19,7 @@ import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
+import 'package:ynotes_packages/theme.dart';
 import 'add_homework_dialog.dart';
 import 'homework_filter_dialog.dart';
 import '../sub_pages/view.dart';
@@ -432,7 +433,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
             ),
           ),
         ),
-        decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: theme.colors.primary.backgroundColor),
       ),
       onPressed: () async {
         Homework? temp = await showAddHomeworkBottomSheet(context);

@@ -476,7 +476,7 @@ class _GradesPageState extends State<GradesPage> with LayoutMixin {
                 ),
               ),
             ),
-            decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: theme.colors.primary.backgroundColor),
           ),
           onPressed: () async {
             Grade? a = await simulatorModalBottomSheet(appSys.gradesController, context);
