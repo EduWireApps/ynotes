@@ -6,9 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void disciplineModalBottomSheet(context, Discipline? discipline, Function? callback, var widget) {
@@ -105,22 +106,26 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CustomButtons.materialButton(context, 130, 45, () async {
-          Navigator.pop(context);
-          Color? color = await CustomDialogs.showColorPicker(context, Color(widget.discipline?.color ?? 0));
+        YButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              Color? color = await CustomDialogs.showColorPicker(context, Color(widget.discipline?.color ?? 0));
 
-          if (color != null) {
-            String test = color.toString();
-            String finalColor = "#" + test.toString().substring(10, test.length - 1);
-            final prefs = await (SharedPreferences.getInstance());
-            await prefs.setString(widget.discipline?.disciplineCode ?? "", finalColor);
-            widget.discipline?.setcolor = color;
-            //Call set state
-            if (widget.callback != null) {
-              widget.callback!();
-            }
-          }
-        }, label: "Couleur", icon: MdiIcons.palette, padding: const EdgeInsets.all(10)),
+              if (color != null) {
+                String test = color.toString();
+                String finalColor = "#" + test.toString().substring(10, test.length - 1);
+                final prefs = await (SharedPreferences.getInstance());
+                await prefs.setString(widget.discipline?.disciplineCode ?? "", finalColor);
+                widget.discipline?.setcolor = color;
+                //Call set state
+                if (widget.callback != null) {
+                  widget.callback!();
+                }
+              }
+            },
+            text: "Couleur",
+            icon: MdiIcons.palette,
+            color: YColor.secondary),
       ],
     );
   }
