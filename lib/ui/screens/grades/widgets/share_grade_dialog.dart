@@ -14,7 +14,8 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 shareBox(Grade grade, Discipline discipline) {}
 
@@ -166,9 +167,11 @@ class _ShareBoxState extends State<ShareBox> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.5, null, () async {
-                  await _capturePng();
-                }, label: "Partager", icon: MdiIcons.share)
+                YButton(
+                    onPressed: () async => await _capturePng(),
+                    text: "Partager",
+                    icon: MdiIcons.share,
+                    color: YColor.secondary),
               ],
             )
           ],
