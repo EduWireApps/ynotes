@@ -7,6 +7,9 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 Future<Grade?> simulatorModalBottomSheet(
   GradesController? gradesController,
@@ -89,7 +92,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
       CustomLogger.log("BOTTOM SHEET", "(Simulator) Choices: $choices");
     }
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           "Matière",
@@ -103,11 +106,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 )
               : Container(
                   padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-                  height: screenSize.size.height / 10 * 0.5,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                    color: Theme.of(context).primaryColorLight,
-                  ),
+                  height: YScale.s12,
+                  decoration:
+                      BoxDecoration(borderRadius: YBorderRadius.md, color: theme.colors.secondary.backgroundColor),
                   child: FittedBox(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -181,60 +182,53 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: screenSize.size.width / 5 * 0.3,
-                ),
                 Expanded(child: dropdown(widget.gradesController!.disciplines())),
+                YHorizontalSpacer(YScale.s2p5),
                 Expanded(child: weightSelector()),
-                SizedBox(
-                  width: screenSize.size.width / 5 * 0.3,
-                ),
               ],
             ),
           ),
+          YVerticalSpacer(YScale.s4),
           gradeOnSelector(),
           Container(
             margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.25),
-            child: CustomButtons.materialButton(
-                context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5, () async {
-              CustomLogger.log("BOTTOM SHEET", "(Simulator) Period name: ${disciplineChoice!.periodName}");
+            child: YButton(
+                onPressed: () async {
+                  CustomLogger.log("BOTTOM SHEET", "(Simulator) Period name: ${disciplineChoice!.periodName}");
 
-              if (gradeValue != null && disciplineChoice != null) {
-                if (gradeValue! > gradeOn) {
-                  CustomDialogs.showAnyDialog(context, "La note doit être inférieure à la note maximale possible");
-                } else {
-                  Grade finalGrade = Grade(
-                      date: DateTime.now(),
-                      entryDate: DateTime.now(),
-                      value: gradeValue.toString(),
-                      scale: gradeOn.toString(),
-                      simulated: true,
-                      notSignificant: false,
-                      letters: false,
-                      subdisciplineCode: (disciplineChoice!.subdisciplineCodes != null &&
-                              disciplineChoice!.subdisciplineCodes!.isNotEmpty)
-                          ? disciplineChoice!.subdisciplineCodes![0]
-                          : null,
-                      weight: gradeWeight.toString(),
-                      periodName: disciplineChoice!.periodName,
-                      periodCode: widget.gradesController!.periods!
-                          .firstWhere((period) => period.name == disciplineChoice!.periodName)
-                          .id
-                          .toString(),
-                      disciplineName: disciplineChoice!.disciplineName,
-                      disciplineCode: disciplineChoice!.disciplineCode);
-                  Navigator.of(context).pop(finalGrade);
-                }
-              } else {
-                CustomDialogs.showAnyDialog(context, "Remplissez tous les champs");
-              }
-            },
-                label: "J'ajoute cette note",
-                backgroundColor: Colors.blue,
-                textColor: Colors.white,
+                  if (gradeValue != null && disciplineChoice != null) {
+                    if (gradeValue! > gradeOn) {
+                      CustomDialogs.showAnyDialog(context, "La note doit être inférieure à la note maximale possible");
+                    } else {
+                      Grade finalGrade = Grade(
+                          date: DateTime.now(),
+                          entryDate: DateTime.now(),
+                          value: gradeValue.toString(),
+                          scale: gradeOn.toString(),
+                          simulated: true,
+                          notSignificant: false,
+                          letters: false,
+                          subdisciplineCode: (disciplineChoice!.subdisciplineCodes != null &&
+                                  disciplineChoice!.subdisciplineCodes!.isNotEmpty)
+                              ? disciplineChoice!.subdisciplineCodes![0]
+                              : null,
+                          weight: gradeWeight.toString(),
+                          periodName: disciplineChoice!.periodName,
+                          periodCode: widget.gradesController!.periods!
+                              .firstWhere((period) => period.name == disciplineChoice!.periodName)
+                              .id
+                              .toString(),
+                          disciplineName: disciplineChoice!.disciplineName,
+                          disciplineCode: disciplineChoice!.disciplineCode);
+                      Navigator.of(context).pop(finalGrade);
+                    }
+                  } else {
+                    CustomDialogs.showAnyDialog(context, "Remplissez tous les champs");
+                  }
+                },
+                text: "Ajouter",
                 icon: MdiIcons.flaskEmptyPlus,
-                iconColor: Colors.white,
-                padding: const EdgeInsets.all(5)),
+                color: YColor.info),
           )
         ],
       ),
@@ -248,27 +242,31 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
-          child: CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-            var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "votre note");
-            if (temp != null) {
-              setState(() {
-                gradeValue = temp;
-              });
-            }
-          },
-              label: gradeValue != null ? gradeValue.toString() : "--",
-              backgroundColor: Theme.of(context).primaryColorLight,
-              padding: const EdgeInsets.all(5)),
-        ),
+            child: YButton(
+                onPressed: () async {
+                  var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "votre note");
+                  if (temp != null) {
+                    setState(() {
+                      gradeValue = temp;
+                    });
+                  }
+                },
+                text: gradeValue != null ? gradeValue.toString() : "--",
+                color: YColor.secondary)),
         Container(
           padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
           child: Text(
             "/",
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+            style: TextStyle(
+                fontFamily: "Asap",
+                color: ThemeUtils.textColor(),
+                fontSize: YFontSize.xl,
+                fontWeight: YFontWeight.bold),
           ),
         ),
         Expanded(
-          child: CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
+            child: YButton(
+          onPressed: () async {
             var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "la note maximale");
             if (temp != null) {
               setState(() {
@@ -276,35 +274,34 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
               });
             }
           },
-              label: gradeOn.toString(),
-              backgroundColor: Theme.of(context).primaryColorLight,
-              padding: const EdgeInsets.all(5)),
-        )
+          text: gradeOn.toString(),
+          color: YColor.secondary,
+        )),
       ],
     );
   }
 
   Widget weightSelector() {
-    var screenSize = MediaQuery.of(context);
-
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           "Coefficient",
           style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
           textAlign: TextAlign.center,
         ),
-        CustomButtons.materialButton(context, 250, screenSize.size.height / 10 * 0.5, () async {
-          var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "coefficient");
-          if (temp != null) {
-            setState(() {
-              gradeWeight = temp;
-            });
-          }
-        },
-            label: gradeWeight.toString(),
-            backgroundColor: Theme.of(context).primaryColorLight,
-            padding: const EdgeInsets.all(5))
+        YButton(
+            onPressed: () async {
+              var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "coefficient");
+              if (temp != null) {
+                setState(() {
+                  gradeWeight = temp;
+                });
+              }
+            },
+            text: gradeWeight.toString(),
+            color: YColor.secondary,
+            block: true),
       ],
     );
   }
