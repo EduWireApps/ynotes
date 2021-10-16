@@ -11,10 +11,11 @@ import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 void gradesModalBottomSheet(
   context,
@@ -313,28 +314,26 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               height: screenSize.size.height / 10 * 0.1,
             ),
             if (widget.gradesController?.isSimulating ?? false)
-              CustomButtons.materialButton(
-                context,
-                null,
-                null,
-                () async {
-                  Navigator.pop(context);
-                  widget.gradesController!.simulationRemove(widget.grade);
-                },
-                label: "Supprimer virtuellement la note",
-                textColor: Colors.blue,
-                icon: MdiIcons.trashCan,
-                iconColor: Colors.blue,
-              ),
+              YButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.gradesController!.simulationRemove(widget.grade);
+                  },
+                  text: "Supprimer virtuellement la note",
+                  color: YColor.info,
+                  icon: MdiIcons.trashCan,
+                  variant: YButtonVariant.outlined),
             if (widget.gradesController?.isSimulating ?? false) SizedBox(height: screenSize.size.height / 10 * 0.25),
             ConstrainedBox(constraints: const BoxConstraints(maxWidth: 500), child: buildGradeHeader()),
             SizedBox(height: screenSize.size.height / 10 * 0.25),
             buildGradeAveragesAndDetails(),
             SizedBox(height: screenSize.size.height / 10 * 0.15),
             if (widget.grade != null)
-              CustomButtons.materialButton(context, 130, 45, () {
-                CustomDialogs.showShareGradeDialog(context, widget.grade!);
-              }, label: "Partager", icon: MdiIcons.shareVariant, padding: const EdgeInsets.all(10)),
+              YButton(
+                  onPressed: () => CustomDialogs.showShareGradeDialog(context, widget.grade!),
+                  text: "Partager",
+                  icon: MdiIcons.shareVariant,
+                  color: YColor.secondary),
             SizedBox(height: screenSize.size.height / 10 * 0.15),
             buildDragChevron(),
           ],
