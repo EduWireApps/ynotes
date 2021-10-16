@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -21,7 +20,7 @@ import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/model.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/ui/themes.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -148,7 +147,7 @@ class ApplicationSystem extends ChangeNotifier {
     mailsController.api = api;
   }
 
-// This "Headless Task" is run when app is terminated.
+  /// Updates the theme. **WARNING:** will change.
   updateTheme(String themeName) {
     CustomLogger.log("APPSYS", "Updating theme to $themeName");
     themeData = appThemes[themeName];
@@ -160,8 +159,7 @@ class ApplicationSystem extends ChangeNotifier {
       theme.updateCurrentTheme(2);
     }
     settings.user.global.theme = themeName;
-    SystemChrome.setSystemUIOverlayStyle(
-        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    UIUtils.setSystemUIOverlayStyle();
     notifyListeners();
   }
 
