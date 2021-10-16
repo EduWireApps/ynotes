@@ -5,9 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 Future<Homework?> showAddHomeworkBottomSheet(context, {Homework? hw}) {
   return showModalBottomSheet(
@@ -102,16 +103,13 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
               SizedBox(
                 height: screenSize.size.height / 10 * 0.2,
               ),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5,
-                  () async {
-                process(context);
-              },
-                  label: "J'ai fini",
-                  backgroundColor: (disciplineNameTextController.text != "" && contentTextController.text != "")
-                      ? Colors.green
-                      : Theme.of(context).primaryColorDark,
-                  padding: const EdgeInsets.all(5),
-                  borderRadius: BorderRadius.circular(8))
+              YButton(
+                onPressed: () => process(context),
+                text: "Ajouter",
+                color: (disciplineNameTextController.text != "" && contentTextController.text != "")
+                    ? YColor.success
+                    : YColor.secondary,
+              ),
             ],
           ),
         ),
