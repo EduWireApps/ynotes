@@ -296,6 +296,32 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     String number = date.day.toString();
     String month = DateFormat("MMMM", "fr_FR").format(date);
 
+    if (month == "janvier") {
+      month = "janv.";
+    } else if (month == "février") {
+      month = "févr.";
+    } else if (month == "mars") {
+      month = "mars";
+    } else if (month == "avril") {
+      month = "avr.";
+    } else if (month == "mai") {
+      month = "mai";
+    } else if (month == "juin") {
+      month = "juin";
+    } else if (month == "juillet") {
+      month = "juil.";
+    } else if (month == "août") {
+      month = "août";
+    } else if (month == "septembre") {
+      month = "sept.";
+    } else if (month == "octobre") {
+      month = "oct.";
+    } else if (month == "novembre") {
+      month = "nov.";
+    } else if (month == "décembre") {
+      month = "déc.";
+    }
+
     return SizedBox(
       height: screenSize.size.height / 10 * 1,
       width: screenSize.size.width / 5 * 0.8,
