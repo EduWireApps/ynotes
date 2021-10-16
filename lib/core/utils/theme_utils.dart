@@ -62,8 +62,6 @@ class ThemeUtils {
     return Colors.green;
   }
 
-  static Color spaceColor() => const Color(0xff282246);
-
   static Color textColor({bool revert = false}) {
     if (revert) {
       return isThemeDark ? Colors.black : Colors.white;

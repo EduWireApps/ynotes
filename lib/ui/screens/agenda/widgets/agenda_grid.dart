@@ -11,6 +11,7 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/agenda/agenda.dart';
+import 'package:ynotes_packages/theme.dart';
 import 'agenda_element.dart';
 import 'agenda_event_details_bottom_sheet.dart';
 import 'agenda_event_edit_bottom_sheet.dart';
@@ -271,7 +272,7 @@ class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
       duration: const Duration(milliseconds: 250),
       decoration: BoxDecoration(
           color: widget.afterSchool
-              ? ThemeUtils.darken(ThemeUtils.spaceColor(), forceAmount: 0.01).withOpacity(0.9)
+              ? ThemeUtils.darken(theme.colors.primary.backgroundColor, forceAmount: 0.01).withOpacity(0.9)
               : Theme.of(context).primaryColorDark.withOpacity(0.9),
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(5),
