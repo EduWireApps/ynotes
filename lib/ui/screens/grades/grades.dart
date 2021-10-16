@@ -12,10 +12,10 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes_packages/theme.dart';
 import 'widgets/grades_group.dart';
 import 'widgets/simulator_modal_bottom_sheet.dart';
 import 'package:ynotes_packages/components.dart' hide YPage;
@@ -494,17 +494,9 @@ class _GradesPageState extends State<GradesPage> with LayoutMixin {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 400),
       child: Container(
-        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
-        child: CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5,
-            () {
-          controller.simulationReset();
-        },
-            label: "Réinitialiser les notes",
-            textColor: Colors.white,
-            backgroundColor: Colors.blue,
-            padding: const EdgeInsets.all(10),
-            borderRadius: BorderRadius.circular(10)),
-      ),
+          margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
+          child: YButton(
+              onPressed: () => controller.simulationReset(), text: "Réinitialiser les notes", color: YColor.info)),
     );
   }
 }
