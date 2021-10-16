@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class Agenda2 extends StatefulWidget {
   const Agenda2({Key? key}) : super(key: key);
@@ -41,10 +42,13 @@ class _Agenda2State extends State<Agenda2> {
                 ),
               ),
             ),
-            CustomButtons.materialButton(context, null, null, () async {
-              con.jumpToPage(365);
-              appSys.agendaController.setDay(DateTime.now());
-            }, label: "today")
+            YButton(
+                onPressed: () {
+                  con.jumpToPage(365);
+                  appSys.agendaController.setDay(DateTime.now());
+                },
+                text: "Today",
+                color: YColor.secondary),
           ],
         );
       }),
