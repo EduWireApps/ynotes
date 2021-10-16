@@ -10,9 +10,11 @@ import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 ///Agenda event editor, has to be called with a `buildContext`, and the boolean `isLesson` is not optionnal to avoid any confusions.
 ///`customEvent` and `reminder` are optionals (for editing existing events), but can't both be set.
@@ -362,34 +364,27 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                                Navigator.pop(context);
-                              },
-                                  label: "Annuler",
-                                  backgroundColor: Colors.grey,
-                                  padding: const EdgeInsets.all(5),
-                                  borderRadius: BorderRadius.circular(8)),
+                              YButton(
+                                onPressed: () => Navigator.pop(context),
+                                text: "Annuler",
+                                color: YColor.secondary,
+                                invertColors: true,
+                              ),
+                              YHorizontalSpacer(YScale.s2),
                               if (widget.customEvent != null || widget.reminder != null)
-                                CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5,
-                                    () async {
-                                  deleteOrReset();
-                                },
-                                    label: (widget.isCustomEvent && widget.customEvent!.isLesson!)
+                                YButton(
+                                    onPressed: () => deleteOrReset(),
+                                    text: (widget.isCustomEvent && widget.customEvent!.isLesson!)
                                         ? "Réinitialiser"
                                         : "Supprimer",
-                                    backgroundColor: Colors.orange,
-                                    padding: const EdgeInsets.all(5),
-                                    borderRadius: BorderRadius.circular(8)),
-                              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                                createEvent();
-                              },
-                                  label: "J'ai fini",
-                                  backgroundColor:
-                                      !(widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!))
-                                          ? Colors.green
-                                          : Theme.of(context).primaryColorDark,
-                                  padding: const EdgeInsets.all(5),
-                                  borderRadius: BorderRadius.circular(8)),
+                                    color: YColor.warning),
+                              YHorizontalSpacer(YScale.s2),
+                              YButton(
+                                  onPressed: () => createEvent(),
+                                  text: "Valider",
+                                  color: !(widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!))
+                                      ? YColor.success
+                                      : YColor.secondary),
                             ],
                           ),
                           const SizedBox(
