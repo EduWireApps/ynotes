@@ -13,8 +13,9 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 class Page1 extends StatefulWidget {
   final double? offset;
@@ -619,10 +620,16 @@ class _Page4State extends State<Page4> {
                     SizedBox(
                       height: screenSize.size.height / 10 * 0.1,
                     ),
-                    CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                      KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
-                      Navigator.pushReplacementNamed(context, "/summary");
-                    }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: const Color(0xff5DADE2))
+                    Padding(
+                      padding: YPadding.px(YScale.s2),
+                      child: YButton(
+                          onPressed: () async {
+                            await KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
+                            Navigator.pushReplacementNamed(context, "/summary");
+                          },
+                          text: "Allons-y !",
+                          block: true),
+                    ),
                     /*RaisedButton(
                       color: Color(0xff5DADE2),
                       shape: StadiumBorder(),
