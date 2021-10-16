@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters/cloud.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/ecole_directe/endpoints/ecole_directe_endpoints.dart';
+import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
@@ -377,7 +378,7 @@ class EcoleDirecteMethod {
   static Future<dynamic> request(
       {required String data,
       required String url,
-      required Function converter,
+      required YConverter converter,
       required String onErrorBody,
       Map<String, String>? headers,
       bool getRequest = false}) async {
@@ -399,7 +400,7 @@ class EcoleDirecteMethod {
           responseData['code'] == 200) {
         dynamic parsedData;
         try {
-          parsedData = await converter(responseData);
+          parsedData = await converter.convert(responseData);
         } catch (e) {
           throw (onErrorBody + " - during conversion - " + e.toString());
         }

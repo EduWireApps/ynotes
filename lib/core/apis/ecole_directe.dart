@@ -16,8 +16,8 @@ import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
@@ -190,7 +190,7 @@ class APIEcoleDirecte extends API {
           //Put the value of the name in a variable
           //
           try {
-            appSys.account = EcoleDirecteAccountConverter.account(req);
+            appSys.account = EcoleDirecteAccountConverter.account.convert(req);
           } catch (e) {
             CustomLogger.log("ED", "Impossible to get accounts " + e.toString());
             CustomLogger.error(e);
