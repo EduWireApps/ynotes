@@ -10,11 +10,12 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/files_bottom_sheet.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
@@ -208,15 +209,16 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                                 ),
                                               ),
                                               if (widget.mail.files.toList().isNotEmpty)
-                                                CustomButtons.materialButton(context, null, null, () {
-                                                  showFilesModalBottomSheet(context, widget.mail.files.toList());
-                                                },
-                                                    label: widget.mail.files.toList().length.toString() +
+                                                YButton(
+                                                    onPressed: () =>
+                                                        showFilesModalBottomSheet(context, widget.mail.files.toList()),
+                                                    text: widget.mail.files.toList().length.toString() +
                                                         " pièce" +
                                                         (widget.mail.files.toList().length > 1 ? "s" : "") +
                                                         " jointe" +
                                                         (widget.mail.files.toList().length > 1 ? "s" : ""),
-                                                    icon: MdiIcons.file),
+                                                    icon: MdiIcons.file,
+                                                    color: YColor.secondary),
                                             ],
                                           )
                                         : Center(
