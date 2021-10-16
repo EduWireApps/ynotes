@@ -19,10 +19,10 @@ import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/agenda/widgets/agenda.dart';
+import 'package:ynotes_packages/theme.dart';
 
 ///The notifications class
 class AppNotification {
@@ -196,7 +196,7 @@ class AppNotification {
             channelKey: 'alarm',
             channelName: 'Alarmes',
             channelDescription: 'Alarmes',
-            defaultColor: ThemeUtils.spaceColor(),
+            defaultColor: theme.colors.primary.backgroundColor,
             ledColor: Colors.white),
       ]);
 
@@ -248,7 +248,7 @@ class AppNotification {
           channelShowBadge: true,
           channelName: 'Rappel pour un évènement',
           importance: NotificationImportance.High,
-          defaultColor: ThemeUtils.spaceColor(),
+          defaultColor: theme.colors.primary.backgroundColor,
           ledColor: Colors.white)
     ]);
     List<AgendaReminder> reminders =
@@ -398,7 +398,7 @@ class AppNotification {
           channelName: 'Notification de déboguage',
           importance: NotificationImportance.High,
           channelDescription: "Notification à usage de développement",
-          defaultColor: ThemeUtils.spaceColor(),
+          defaultColor: theme.colors.primary.backgroundColor,
           ledColor: Colors.white)
     ]);
 
@@ -419,7 +419,7 @@ class AppNotification {
           channelKey: 'loading',
           channelName: 'Chargement',
           channelDescription: 'Indicateur des chargements de yNotes',
-          defaultColor: ThemeUtils.spaceColor(),
+          defaultColor: theme.colors.primary.backgroundColor,
           importance: NotificationImportance.Min,
           ledColor: Colors.white),
     ]);
@@ -452,7 +452,7 @@ class AppNotification {
           importance: NotificationImportance.High,
           groupKey: "gradesGroup",
           channelDescription: "Nouvelles notes",
-          defaultColor: ThemeUtils.spaceColor(),
+          defaultColor: theme.colors.primary.backgroundColor,
           ledColor: Colors.white)
     ]);
 
@@ -524,7 +524,7 @@ class AppNotification {
             channelName: 'Rappel de cours constant',
             importance: NotificationImportance.Low,
             channelDescription: "Notification persistante de cours",
-            defaultColor: ThemeUtils.spaceColor(),
+            defaultColor: theme.colors.primary.backgroundColor,
             ledColor: Colors.white,
             onlyAlertOnce: true)
       ]);
