@@ -14,9 +14,11 @@ import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/extensions.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/files_bottom_sheet.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 import '../widgets/add_homework_dialog.dart';
 import '../widgets/homework_reader_options.dart';
 
@@ -126,6 +128,29 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     );
   }
 
+  Widget buildButton({required IconData icon, required Color backgroundColor, required VoidCallback onPressed}) {
+    return Padding(
+      padding: YPadding.px(YScale.s1p5),
+      child: Material(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        color: backgroundColor,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: onPressed,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              icon,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   buildButtons(Homework hw, Color color) {
     var screenSize = MediaQuery.of(context);
     return Container(
@@ -139,28 +164,24 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(context, 45, 45, () async {
-                setState(() {
-                  hw.done = !(hw.done ?? false);
-                });
-                await HomeworkOffline(appSys.offline).updateSingleHW(hw);
-              },
-                  padding: const EdgeInsets.all(5),
-                  borderRadius: BorderRadius.circular(11),
-                  backgroundColor: (hw.done ?? false) ? Colors.green : color,
+              buildButton(
                   icon: MdiIcons.check,
-                  iconColor: ThemeUtils.textColor()),
-              CustomButtons.materialButton(context, 45, 45, () async {
-                setState(() {
-                  hw.pinned = !(hw.pinned ?? false);
-                });
-                await HomeworkOffline(appSys.offline).updateSingleHW(hw);
-              },
-                  padding: const EdgeInsets.all(5),
-                  borderRadius: BorderRadius.circular(11),
-                  backgroundColor: (hw.pinned ?? false) ? Colors.green : color,
+                  backgroundColor: (hw.done ?? false) ? Colors.green : color,
+                  onPressed: () async {
+                    setState(() {
+                      hw.done = !(hw.done ?? false);
+                    });
+                    await HomeworkOffline(appSys.offline).updateSingleHW(hw);
+                  }),
+              buildButton(
                   icon: MdiIcons.pin,
-                  iconColor: ThemeUtils.textColor()),
+                  backgroundColor: (hw.pinned ?? false) ? Colors.green : color,
+                  onPressed: () async {
+                    setState(() {
+                      hw.pinned = !(hw.pinned ?? false);
+                    });
+                    await HomeworkOffline(appSys.offline).updateSingleHW(hw);
+                  }),
               AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
@@ -169,79 +190,58 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   child: (hw.files.toList()).isNotEmpty
                       ? Container(
                           key: const ValueKey<int>(0),
-                          child: CustomButtons.materialButton(context, 45, 45, () async {
-                            await refreshSelf();
-                            showFilesModalBottomSheet(context, hw.files.toList());
-                          },
-                              borderRadius: BorderRadius.circular(11),
-                              backgroundColor: color,
+                          child: buildButton(
                               icon: MdiIcons.fileDocumentMultipleOutline,
-                              iconColor: ThemeUtils.textColor()),
+                              backgroundColor: color,
+                              onPressed: () async {
+                                await refreshSelf();
+                                showFilesModalBottomSheet(context, hw.files.toList());
+                              }),
                         )
                       : Container()),
-              CustomButtons.materialButton(context, 45, 45, () async {
-                await CustomDialogs.showHomeworkDetailsDialog(context, hw);
-                setState(() {});
-              },
-                  padding: const EdgeInsets.all(5),
-                  borderRadius: BorderRadius.circular(11),
-                  backgroundColor: color,
+              buildButton(
                   icon: MdiIcons.shareVariantOutline,
-                  iconColor: ThemeUtils.textColor()),
+                  backgroundColor: color,
+                  onPressed: () async {
+                    await CustomDialogs.showHomeworkDetailsDialog(context, hw);
+                    setState(() {});
+                  }),
               if (hw.editable)
-                CustomButtons.materialButton(context, 45, 45, () async {
-                  Homework? temp = await showAddHomeworkBottomSheet(context, hw: hw);
-                  if (temp != null) {
-                    await HomeworkOffline(appSys.offline).updateSingleHW(temp);
-                  }
-                  await refreshSelf();
-                  setState(() {});
-                },
-                    borderRadius: BorderRadius.circular(11),
-                    backgroundColor: color,
+                buildButton(
                     icon: MdiIcons.pencil,
-                    padding: const EdgeInsets.all(5),
-                    iconColor: ThemeUtils.textColor()),
-              if (hw.editable)
-                CustomButtons.materialButton(context, 45, 45, () async {
-                  await hw.delete();
-                  await refreshSelf();
-
-                  setState(() {});
-                },
-                    padding: const EdgeInsets.all(5),
-                    borderRadius: BorderRadius.circular(11),
                     backgroundColor: color,
+                    onPressed: () async {
+                      Homework? temp = await showAddHomeworkBottomSheet(context, hw: hw);
+                      if (temp != null) {
+                        await HomeworkOffline(appSys.offline).updateSingleHW(temp);
+                      }
+                      await refreshSelf();
+                      setState(() {});
+                    }),
+              if (hw.editable)
+                buildButton(
                     icon: MdiIcons.trashCan,
-                    iconColor: ThemeUtils.textColor()),
-              if (hw.toReturn ?? false)
-                Expanded(
-                  child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return ScaleTransition(child: child, scale: animation);
-                      },
-                      child: (hw.toReturn ?? false)
-                          ? Expanded(
-                              child: CustomButtons.materialButton(
-                                context,
-                                null,
-                                45,
-                                () {
-                                  CustomDialogs.showUnimplementedSnackBar(context);
-                                },
-                                backgroundColor: color,
-                                label: "RENDRE MON DEVOIR",
-                                icon: MdiIcons.fileMoveOutline,
-                                borderRadius: BorderRadius.circular(11),
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: 5, vertical: screenSize.size.height / 10 * 0.12),
-                                textStyle: TextStyle(
-                                    fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
-                              ),
-                            )
-                          : Container()),
-                ),
+                    backgroundColor: color,
+                    onPressed: () async {
+                      await hw.delete();
+                      await refreshSelf();
+
+                      setState(() {});
+                    }),
+              Expanded(
+                child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: YButton(
+                      onPressed: () => CustomDialogs.showUnimplementedSnackBar(context),
+                      text: "RENDRE MON DEVOIR",
+                      icon: MdiIcons.fileMoveOutline,
+                      color: YColor.secondary,
+                      invertColors: true,
+                    )),
+              ),
             ],
           ),
         ],
