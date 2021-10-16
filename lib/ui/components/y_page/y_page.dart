@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';
 import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
@@ -38,7 +39,8 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin, LayoutMixi
             backgroundColor: theme.colors.backgroundLightColor,
             drawer: (screenSize.size.width < 800) ? const YDrawer() : null,
             appBar: AppBar(
-                backgroundColor: theme.colors.backgroundColor,
+                backgroundColor:
+                    ThemeUtils.isThemeDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorDark,
                 centerTitle: false,
                 automaticallyImplyLeading: screenSize.size.width < 800,
                 title: Text(widget.title,
