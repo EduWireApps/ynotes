@@ -1,7 +1,7 @@
 name: ynotes
 description: yNotes application de gestion de vie scolaire
 
-version: 0.13.1+9
+version: 0.13.2+9
 publish_to: none
 
 environment:
