@@ -1,3 +1,5 @@
+import 'package:latlong2/latlong.dart';
+
 /// A Pronote school provided by the Pronote geolocation API.
 class PronoteSchool {
   /// The school name
@@ -36,4 +38,14 @@ class PronoteSchoolSpace {
     required this.schoolUrl,
     required this.spaceUrl,
   });
+}
+
+// TODO: document
+
+class OSMLocation {
+  final LatLng coordinates;
+
+  final String name;
+
+  const OSMLocation({required this.coordinates, required this.name});
 }
