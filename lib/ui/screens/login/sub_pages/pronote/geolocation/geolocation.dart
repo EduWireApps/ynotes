@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
-import 'package:ynotes/ui/screens/login/controllers.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:flutter_map/flutter_map.dart';
 import "package:latlong2/latlong.dart";
@@ -16,11 +15,11 @@ class LoginPronoteGeolocationPage extends StatefulWidget {
 }
 
 class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPage> with TickerProviderStateMixin {
+  final PronoteGeolocationController geolocationController = PronoteGeolocationController();
   final MapController mapController = MapController();
   static const double defaultZoomValue = 6.5;
   LatLng? previousPosition;
-  bool onSearchPage = false;
-  late final animationController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
+  // late final animationController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
 
   void _animatedMapMove(LatLng destLocation, [double destZoom = defaultZoomValue]) {
     // Create some tweens. These serve to split up the transition from one location to another.
@@ -31,6 +30,8 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
 
     // The animation determines what path the animation will take. You can try different Curves values, although I found
     // fastOutSlowIn to be my favorite.
+    final animationController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
+
     Animation<double> animation = CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn);
 
     animationController.addListener(() {
@@ -46,12 +47,11 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
       }
     });
 
-    // TODO: investigate issue
     animationController.forward();
   }
 
   void mapMoveListener() {
-    if (!onSearchPage && geolocationController.coordinates != previousPosition) {
+    if (geolocationController.coordinates != previousPosition) {
       previousPosition = geolocationController.coordinates;
       if (previousPosition != null) {
         _animatedMapMove(previousPosition!, 13.5);
@@ -85,7 +85,6 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
   @override
   void dispose() {
     geolocationController.reset();
-    animationController.dispose();
     super.dispose();
   }
 
@@ -101,7 +100,8 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
                 if (controller.coordinates != null)
                   YButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, "/login/pronote/geolocation/results");
+                        Navigator.pushNamed(context, "/login/pronote/geolocation/results",
+                            arguments: geolocationController);
                       },
                       text: "CHERCHER",
                       variant: YButtonVariant.text),
@@ -113,14 +113,11 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
               YFloatingButton(
                 icon: Icons.search_rounded,
                 onPressed: () async {
-                  setState(() {
-                    onSearchPage = true;
-                  });
-                  await Navigator.pushNamed(context, "/login/pronote/geolocation/search");
-                  setState(() {
-                    onSearchPage = false;
-                  });
-                  mapMoveListener();
+                  final dynamic location = await Navigator.pushNamed(context, "/login/pronote/geolocation/search",
+                      arguments: geolocationController) as LatLng?;
+                  if (location != null) {
+                    geolocationController.updateCoordinates(location);
+                  }
                 },
                 color: YColor.secondary,
               ),

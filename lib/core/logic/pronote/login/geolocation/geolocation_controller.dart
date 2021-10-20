@@ -227,7 +227,7 @@ class PronoteGeolocationController extends Controller {
     }
   }
 
-  // TODO: document
+  /// Retrieves locations near a location as [String] from the Open Street Map api
   Future<List<OSMLocation>> locateNearPlaces(String location) async {
     setState(() {
       _status = GeolocationStatus.loading;

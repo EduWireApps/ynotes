@@ -40,12 +40,14 @@ class PronoteSchoolSpace {
   });
 }
 
-// TODO: document
-
+/// A model for an Open Street Map location
 class OSMLocation {
+  /// The coordinates of the location
   final LatLng coordinates;
 
+  /// The name of the location
   final String name;
 
+  /// A model for an Open Street Map location
   const OSMLocation({required this.coordinates, required this.name});
 }

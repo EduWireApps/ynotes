@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
+import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
-import 'package:ynotes/ui/screens/login/controllers.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -17,18 +17,19 @@ class LoginPronoteGeolocationResultsPage extends StatefulWidget {
 }
 
 class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeolocationResultsPage> {
+  PronoteGeolocationController? geolocationController;
   String _schoolName = "";
 
   List<Widget> get children {
     List<Widget> _els = [];
-    final List<PronoteSchool> schools = geolocationController.filteredSchools(_schoolName);
+    final List<PronoteSchool> schools = geolocationController!.filteredSchools(_schoolName);
     final int _length = schools.length;
 
     for (int i = 0; i < _length + _length - 1; i++) {
       _els.add(i % 2 == 0
           ? _SchoolTile(
               school: schools[i ~/ 2],
-              controller: geolocationController,
+              controller: geolocationController!,
             )
           : const YDivider());
     }
@@ -40,17 +41,17 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      geolocationController.addListener(() {
-        if (geolocationController.status == GeolocationStatus.error) {
+      geolocationController!.addListener(() {
+        if (geolocationController!.status == GeolocationStatus.error) {
           handleError();
         }
       });
-      geolocationController.locateSchoolsAround();
+      geolocationController!.locateSchoolsAround();
     });
   }
 
   Future<void> handleError() async {
-    final GeolocationError error = geolocationController.error!;
+    final GeolocationError error = geolocationController!.error!;
     await YDialogs.showInfo(
         context,
         YInfoDialog(
@@ -58,13 +59,14 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
           body: Text(error.message, style: theme.texts.body1),
           confirmLabel: "OK",
         ));
-    geolocationController.reset();
+    geolocationController!.reset();
   }
 
   @override
   Widget build(BuildContext context) {
+    geolocationController ??= RoutingUtils.getArgs<PronoteGeolocationController>(context);
     return ControllerConsumer<PronoteGeolocationController>(
-      controller: geolocationController,
+      controller: geolocationController!,
       builder: (context, controller, child) {
         return YPage(
             appBar: YAppBar(
@@ -73,19 +75,20 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
             ),
             body: Column(
               children: [
-                Padding(
-                  padding: YPadding.p(YScale.s2),
-                  child: YFormField(
-                    type: YFormFieldInputType.text,
-                    label: LoginContent.pronote.geolocation.search,
-                    properties: YFormFieldProperties(textInputAction: TextInputAction.search),
-                    onChanged: (String value) {
-                      setState(() {
-                        _schoolName = value;
-                      });
-                    },
+                if (controller.filteredSchools(_schoolName).isNotEmpty)
+                  Padding(
+                    padding: YPadding.p(YScale.s2),
+                    child: YFormField(
+                      type: YFormFieldInputType.text,
+                      label: LoginContent.pronote.geolocation.search,
+                      properties: YFormFieldProperties(textInputAction: TextInputAction.search),
+                      onChanged: (String value) {
+                        setState(() {
+                          _schoolName = value;
+                        });
+                      },
+                    ),
                   ),
-                ),
                 Padding(
                   padding: YPadding.pt(YScale.s4),
                   child: controller.filteredSchools(_schoolName).isEmpty

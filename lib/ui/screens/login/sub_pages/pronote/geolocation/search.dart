@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
+import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
-import 'package:ynotes/ui/screens/login/controllers.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -17,6 +17,7 @@ class LoginPronoteGeolocationSearchPage extends StatefulWidget {
 }
 
 class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocationSearchPage> {
+  PronoteGeolocationController? geolocationController;
   String _location = "";
   List<OSMLocation> _locations = [];
   Timer? _debounce;
@@ -33,7 +34,7 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
   }
 
   Future<void> fetchLocations() async {
-    final List<OSMLocation> _locations = await geolocationController.locateNearPlaces(_location);
+    final List<OSMLocation> _locations = await geolocationController!.locateNearPlaces(_location);
     setState(() {
       this._locations = _locations;
     });
@@ -42,10 +43,12 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
   _onSearchChanged(String value) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 250), () {
-      setState(() {
-        _location = value;
-      });
-      fetchLocations();
+      if (mounted) {
+        setState(() {
+          _location = value;
+        });
+        fetchLocations();
+      }
     });
   }
 
@@ -57,6 +60,7 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
 
   @override
   Widget build(BuildContext context) {
+    geolocationController ??= RoutingUtils.getArgs<PronoteGeolocationController>(context);
     return YPage(
         appBar: const YAppBar(title: "Search"),
         body: Column(
@@ -73,7 +77,7 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
               padding: YPadding.pt(YScale.s4),
               child: _locations.isEmpty
                   ? Text(
-                      geolocationController.status == GeolocationStatus.loading
+                      geolocationController!.status == GeolocationStatus.loading
                           ? "Recherche de lieux en cours..."
                           : (_location.isEmpty
                               ? "Commencez par faire une recherche"
@@ -98,8 +102,7 @@ class _LocationTile extends StatelessWidget {
       leading: Icon(Icons.home_work_rounded, color: theme.colors.foregroundLightColor),
       title: Text("${location.name} ", style: theme.texts.body1),
       onTap: () async {
-        geolocationController.updateCoordinates(location.coordinates);
-        Navigator.pop(context);
+        Navigator.pop(context, location.coordinates);
       },
     );
   }
