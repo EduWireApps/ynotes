@@ -64,11 +64,26 @@ class _PUrlWebviewDialog {
 }
 
 class _PGeolocation {
-  final searching = "Recherche des établissements à proximité en cours...";
-  final search = "Rechercher un établissement";
   final noResults = "Aucun résultat ! Réessaie...";
   final title = "Géolocalisation";
+  final searchButton = "CHERCHER";
+  final osmContributors = "© Contributeurs OpenStreetMap";
+  final results = _PGeolocationResults();
+  final search = _PGeolocationSearch();
+}
+
+class _PGeolocationResults {
+  final title = "Établissements";
+  final search = "Rechercher un établissement";
+  final searching = "Recherche des établissements à proximité en cours...";
   String getDistance(String distance) => "à $distance kilomètres";
   final noDistance = "(distance non définie)";
   final chooseSpace = "Choisis un espace";
+}
+
+class _PGeolocationSearch {
+  final title = "Rechercher";
+  final search = "Rechercher un lieu";
+  final searching = "Recherche de lieux en cours...";
+  final empty = "Commencez par faire une recherche";
 }

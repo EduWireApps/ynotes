@@ -62,14 +62,14 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
   Widget build(BuildContext context) {
     geolocationController ??= RoutingUtils.getArgs<PronoteGeolocationController>(context);
     return YPage(
-        appBar: const YAppBar(title: "Search"),
+        appBar: YAppBar(title: LoginContent.pronote.geolocation.search.title),
         body: Column(
           children: [
             Padding(
               padding: YPadding.p(YScale.s2),
               child: YFormField(
                   type: YFormFieldInputType.text,
-                  label: "Chercher un lieu",
+                  label: LoginContent.pronote.geolocation.search.search,
                   properties: YFormFieldProperties(textInputAction: TextInputAction.search),
                   onChanged: _onSearchChanged),
             ),
@@ -78,9 +78,9 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
               child: _locations.isEmpty
                   ? Text(
                       geolocationController!.status == GeolocationStatus.loading
-                          ? "Recherche de lieux en cours..."
+                          ? LoginContent.pronote.geolocation.search.searching
                           : (_location.isEmpty
-                              ? "Commencez par faire une recherche"
+                              ? LoginContent.pronote.geolocation.search.empty
                               : LoginContent.pronote.geolocation.noResults),
                       style: theme.texts.body1,
                       textAlign: TextAlign.center,

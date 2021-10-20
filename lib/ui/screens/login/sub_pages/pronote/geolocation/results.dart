@@ -70,7 +70,7 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
       builder: (context, controller, child) {
         return YPage(
             appBar: YAppBar(
-              title: "Établissements",
+              title: LoginContent.pronote.geolocation.results.title,
               bottom: controller.status == GeolocationStatus.loading ? const YLinearProgressBar() : null,
             ),
             body: Column(
@@ -80,7 +80,7 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
                     padding: YPadding.p(YScale.s2),
                     child: YFormField(
                       type: YFormFieldInputType.text,
-                      label: LoginContent.pronote.geolocation.search,
+                      label: LoginContent.pronote.geolocation.results.search,
                       properties: YFormFieldProperties(textInputAction: TextInputAction.search),
                       onChanged: (String value) {
                         setState(() {
@@ -94,7 +94,7 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
                   child: controller.filteredSchools(_schoolName).isEmpty
                       ? Text(
                           controller.status == GeolocationStatus.loading
-                              ? LoginContent.pronote.geolocation.searching
+                              ? LoginContent.pronote.geolocation.results.searching
                               : LoginContent.pronote.geolocation.noResults,
                           style: theme.texts.body1,
                           textAlign: TextAlign.center,
@@ -119,9 +119,9 @@ class _SchoolTile extends StatelessWidget {
     if (school.coordinates!.length > 2) {
       try {
         double val = double.tryParse(school.coordinates![2])! / 1000;
-        distance = LoginContent.pronote.geolocation.getDistance(val.toStringAsPrecision(2));
+        distance = LoginContent.pronote.geolocation.results.getDistance(val.toStringAsPrecision(2));
       } catch (e) {
-        distance = LoginContent.pronote.geolocation.noDistance;
+        distance = LoginContent.pronote.geolocation.results.noDistance;
       }
     }
     return ListTile(
@@ -142,7 +142,7 @@ class _SchoolTile extends StatelessWidget {
             final res = await YDialogs.getConfirmation(
                 context,
                 YConfirmationDialog<PronoteSchoolSpace>(
-                    title: LoginContent.pronote.geolocation.chooseSpace,
+                    title: LoginContent.pronote.geolocation.results.chooseSpace,
                     options: spaces
                         .map((space) => YConfirmationDialogOption<PronoteSchoolSpace>(value: space, label: space.name))
                         .toList()));

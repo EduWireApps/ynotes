@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
+import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:flutter_map/flutter_map.dart';
 import "package:latlong2/latlong.dart";
@@ -95,7 +96,7 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
         builder: (context, controller, child) {
           return YPage(
             appBar: YAppBar(
-              title: "Géolocalisation",
+              title: LoginContent.pronote.geolocation.title,
               actions: [
                 if (controller.coordinates != null)
                   YButton(
@@ -103,7 +104,7 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
                         Navigator.pushNamed(context, "/login/pronote/geolocation/results",
                             arguments: geolocationController);
                       },
-                      text: "CHERCHER",
+                      text: LoginContent.pronote.geolocation.searchButton,
                       variant: YButtonVariant.text),
               ],
               bottom: controller.status == GeolocationStatus.loading ? const YLinearProgressBar() : null,
@@ -142,7 +143,8 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
                       urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                       subdomains: ['a', 'b', 'c'],
                       attributionAlignment: Alignment.bottomLeft,
-                      attributionBuilder: (_) => Text("© Contributeurs OpenStreetMap", style: theme.texts.body1),
+                      attributionBuilder: (_) =>
+                          Text(LoginContent.pronote.geolocation.osmContributors, style: theme.texts.body1),
                     ),
                     MarkerLayerOptions(
                       markers: [
