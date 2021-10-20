@@ -49,6 +49,18 @@ class LoginPage extends StatelessWidget {
             },
           ),
         ),
+        YButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/intro");
+            },
+            text: "/intro",
+            color: YColor.danger),
+        YButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/intro_tmp");
+            },
+            text: "/intro_tmp",
+            color: YColor.danger),
       ]),
     );
   }

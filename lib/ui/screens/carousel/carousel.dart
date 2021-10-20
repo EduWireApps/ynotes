@@ -15,6 +15,7 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class Page1 extends StatefulWidget {
@@ -764,7 +765,14 @@ class _CarouselState extends State<Carousel> {
                             child: SmoothPageIndicator(
                               controller: _pageController!, // PageController
                               count: 4,
-                              effect: const WormEffect(), // your preferred effect
+                              onDotClicked: (int i) {
+                                _pageController!.animateToPage(i,
+                                    duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
+                              },
+                              effect: WormEffect(
+                                dotColor: theme.colors.backgroundLightColor,
+                                activeDotColor: theme.colors.primary.backgroundColor,
+                              ),
                             ),
                           ),
                         ],

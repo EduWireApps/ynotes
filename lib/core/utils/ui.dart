@@ -5,12 +5,12 @@ import 'package:ynotes_packages/theme.dart';
 class UIUtils {
   const UIUtils._();
 
-  static void setSystemUIOverlayStyle() {
+  static void setSystemUIOverlayStyle({Color? systemNavigationBarColor, bool? isDark}) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        systemNavigationBarColor: theme.colors.backgroundColor,
-        statusBarBrightness: theme.isDark ? Brightness.light : Brightness.dark,
-        statusBarIconBrightness: theme.isDark ? Brightness.light : Brightness.dark,
-        systemNavigationBarIconBrightness: theme.isDark ? Brightness.light : Brightness.dark));
+        systemNavigationBarColor: systemNavigationBarColor ?? theme.colors.backgroundColor,
+        statusBarBrightness: (isDark ?? theme.isDark) ? Brightness.light : Brightness.dark,
+        statusBarIconBrightness: (isDark ?? theme.isDark) ? Brightness.light : Brightness.dark,
+        systemNavigationBarIconBrightness: (isDark ?? theme.isDark) ? Brightness.light : Brightness.dark));
   }
 }
