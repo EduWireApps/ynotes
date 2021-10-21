@@ -979,13 +979,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
-  pin_code_fields:
-    dependency: "direct main"
-    description:
-      name: pin_code_fields
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.2.0"
   platform:
     dependency: transitive
     description:
@@ -1195,13 +1188,6 @@ packages:
       url: "https://github.com/felixblaschke/simple_animations"
     source: git
     version: "3.0.0-nullsafety.5"
-  sizer:
-    dependency: "direct main"
-    description:
-      name: sizer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.13"
   sky_engine:
     dependency: transitive
     description: flutter
