@@ -22,29 +22,28 @@ class YTColorTween extends Tween<YTColor> {
       foregroundColor: Color.lerp(_begin.foregroundColor, _end.foregroundColor, t) ?? _begin.foregroundColor);
 }
 
-class TMP extends StatefulWidget {
+class TMP extends StatelessWidget {
   final double offset;
   const TMP({Key? key, required this.offset}) : super(key: key);
-
-  @override
-  _TMPState createState() => _TMPState();
-}
-
-class _TMPState extends State<TMP> {
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(top: 0, left: 50.vw, child: Text("TEST")),
-        Positioned(top: 20, left: 50.vw - (widget.offset * 30), child: Text("OTHER"))
+        Positioned(top: 0, left: 50.vw, child: Text("Offset: $offset")),
+        Positioned(top: 20, left: 50.vw - (offset * 30), child: Text("OTHER"))
       ],
     );
   }
 }
 
-class TMP2 extends StatelessWidget {
+class TMP2 extends StatelessWidget implements IntroSlideWidget {
+  @override
+  final YTColor color;
+
+  @override
   final double offset;
-  const TMP2({Key? key, required this.offset}) : super(key: key);
+
+  const TMP2({Key? key, required this.color, required this.offset}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +57,7 @@ class TMP2 extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 Transform.translate(
-                  offset: Offset(200 - (offset - 1) * 20, 57),
+                  offset: Offset(200 - offset * 20, 57),
                   child: SizedBox(
                       height: 100,
                       width: 100,
@@ -67,7 +66,7 @@ class TMP2 extends StatelessWidget {
                           child: Image.asset('assets/images/pageItems/carousel/shelves/calendar.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(70 - (offset - 1) * 20, -157),
+                  offset: Offset(70 - offset * 20, -157),
                   child: SizedBox(
                       height: 120,
                       width: 120,
@@ -75,7 +74,7 @@ class TMP2 extends StatelessWidget {
                           fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/clock.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(0 - (offset - 1) * 400, -90),
+                  offset: Offset(0 - offset * 400, -90),
                   child: SizedBox(
                       height: 170,
                       width: 320,
@@ -84,7 +83,7 @@ class TMP2 extends StatelessWidget {
                           child: Image.asset('assets/images/pageItems/carousel/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(0 - (offset - 1) * 300, 90),
+                  offset: Offset(0 - offset * 300, 90),
                   child: SizedBox(
                       height: 90,
                       width: 320,
@@ -100,7 +99,7 @@ class TMP2 extends StatelessWidget {
             height: 90,
             width: MediaQuery.of(context).size.width,
             child: Transform.translate(
-                offset: Offset(-(offset - 1) * 200, 0),
+                offset: Offset(-offset * 200, 0),
                 child: Container(
                     padding: const EdgeInsets.only(left: 5, right: 5),
                     width: 50,
@@ -128,6 +127,44 @@ class IntroPage extends StatefulWidget {
   _IntroPageState createState() => _IntroPageState();
 }
 
+abstract class IntroSlideWidget extends StatelessWidget {
+  @protected
+  final YTColor color;
+
+  @protected
+  final double offset;
+
+  const IntroSlideWidget({Key? key, required this.color, required this.offset}) : super(key: key);
+}
+
+class Test2 extends StatelessWidget implements IntroSlideWidget {
+  @override
+  final YTColor color;
+
+  @override
+  final double offset;
+
+  const Test2({Key? key, required this.color, required this.offset}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(top: 0, left: 50.vw, child: Text("Offset: $offset", style: TextStyle(color: color.backgroundColor))),
+        Positioned(
+            top: 20, left: 50.vw - (offset * 30), child: Text("OTHER", style: TextStyle(color: color.backgroundColor))),
+      ],
+    );
+  }
+}
+
+class Test {
+  final IntroSlideWidget Function(double offset, YTColor color) widget;
+  final YTColor color;
+
+  Test(this.widget, this.color);
+}
+
 class _IntroPageState extends State<IntroPage> {
   double _pageOffset = 0.0;
   int _pageIndex = 0;
@@ -135,17 +172,20 @@ class _IntroPageState extends State<IntroPage> {
   final Duration _duration = const Duration(milliseconds: 250);
   final Curve _curve = Curves.easeInOut;
 
-  List<IntroSlide> get _pages => [
-        IntroSlide(
-            widget: TMP(
-              offset: _pageOffset,
-            ),
-            color: AppColors.blue),
-        IntroSlide(widget: Text("Orange"), color: AppColors.orange),
-        IntroSlide(widget: TMP2(offset: _pageOffset), color: AppColors.purple),
-        IntroSlide(widget: Text("Red"), color: AppColors.red),
-        IntroSlide(widget: Text("teal"), color: AppColors.teal),
-      ];
+  List<IntroSlide> get _pages {
+    final List<Test> pages = [
+      Test((double offset, YTColor color) => Test2(offset: offset, color: color), AppColors.blue),
+      Test((double offset, YTColor color) => Test2(offset: offset, color: color), AppColors.red),
+      Test((double offset, YTColor color) => Test2(offset: offset, color: color), AppColors.green),
+      Test((double offset, YTColor color) => TMP2(offset: offset, color: color), AppColors.teal),
+      Test((double offset, YTColor color) => Test2(offset: offset, color: color), AppColors.purple),
+    ];
+    return pages.asMap().entries.map((entry) {
+      final int id = entry.key;
+      final Test value = entry.value;
+      return IntroSlide(widget: value.widget(_pageOffset - id, value.color), color: value.color);
+    }).toList();
+  }
 
   YTColor get _color {
     if (_pageOffset.toInt() + 1 < _pages.length) {
@@ -163,13 +203,10 @@ class _IntroPageState extends State<IntroPage> {
       _pageOffset.toInt() + 1 < _pages.length ? _color.backgroundColor : _pages.last.color.backgroundColor;
 
   Color get _foregroundColor {
-    if (_pageOffset.toInt() + 1 < _pages.length) {
-      final Color res = _color.foregroundColor;
-      UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: res);
-      return res;
-    } else {
-      return _pages.last.color.foregroundColor;
-    }
+    final Color res =
+        _pageOffset.toInt() + 1 < _pages.length ? _color.foregroundColor : _pages.last.color.foregroundColor;
+    UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: res);
+    return res;
   }
 
   Color get _lightColor => _pageOffset.toInt() + 1 < _pages.length ? _color.lightColor : _pages.last.color.lightColor;
