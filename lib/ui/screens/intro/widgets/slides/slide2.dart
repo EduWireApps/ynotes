@@ -25,14 +25,14 @@ class Slide2 extends StatelessWidget implements IntroSlideWidget {
               )),
           Positioned(
               top: 60,
-              left: 5.vw - offset * 250,
+              left: 5.vw + offset * 800,
               child: Image.asset(
                 "assets/images/pageItems/intro/slide2/notif1.png",
                 height: 60,
               )),
           Positioned(
               top: 260,
-              left: 20.vw - offset * 325,
+              left: 20.vw - offset * 2000,
               child: Image.asset(
                 "assets/images/pageItems/intro/slide2/notif2.png",
                 height: 100,

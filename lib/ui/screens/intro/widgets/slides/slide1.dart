@@ -19,7 +19,7 @@ class Slide1 extends StatelessWidget implements IntroSlideWidget {
         offset: offset,
         children: [
           Transform.translate(
-              offset: Offset(-offset * 400, 0),
+              offset: Offset(-offset * 600, 0),
               child: Image.asset(
                 "assets/images/pageItems/intro/slide1/background.png",
               )),
