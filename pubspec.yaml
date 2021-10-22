@@ -178,3 +178,6 @@ flutter:
     - assets/appico/
     - assets/appico/foreground.png
     - assets/documents/TOS_fr.txt
+    - assets/images/pageItems/intro/slide1/background.png
+    - assets/images/pageItems/intro/slide1/bubble.png
+    - assets/images/pageItems/intro/slide1/woman.png

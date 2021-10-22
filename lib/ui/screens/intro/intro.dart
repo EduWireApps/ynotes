@@ -24,19 +24,21 @@ class _IntroPageState extends State<IntroPage> {
   final Duration _duration = const Duration(milliseconds: 500);
   final Curve _curve = Curves.easeInOut;
 
-  List<IntroSlideInfos> get _pages {
+  List<Widget> get _pages {
     final List<Slide> pages = slides;
     return pages.asMap().entries.map((entry) {
       final int id = entry.key;
       final Slide value = entry.value;
-      return IntroSlideInfos(widget: value.widget(_pageOffset - id, value.color), color: value.color);
+      return value.widget(_pageOffset - id, _color);
     }).toList();
   }
 
+  List<YTColor> get _colors => slides.map((slide) => slide.color).toList();
+
   YTColor get _color {
-    if (_pageOffset.toInt() + 1 < _pages.length) {
-      final YTColor current = _pages[_pageOffset.toInt()].color;
-      final YTColor next = _pages[_pageOffset.toInt() + 1].color;
+    if (_pageOffset.toInt() + 1 < _colors.length) {
+      final YTColor current = _colors[_pageOffset.toInt()];
+      final YTColor next = _colors[_pageOffset.toInt() + 1];
       YTColor colorLerp(YTColor _begin, YTColor _end, double t) => YTColor(
           lightColor: Color.lerp(_begin.lightColor, _end.lightColor, t) ?? _begin.lightColor,
           backgroundColor: Color.lerp(_begin.backgroundColor, _end.backgroundColor, t) ?? _begin.backgroundColor,
@@ -44,21 +46,20 @@ class _IntroPageState extends State<IntroPage> {
       final res = colorLerp(current, next, _pageOffset - _pageOffset.toInt());
       return res;
     } else {
-      return _pages.last.color;
+      return _colors.last;
     }
   }
 
   Color get _backgroundColor =>
-      _pageOffset.toInt() + 1 < _pages.length ? _color.backgroundColor : _pages.last.color.backgroundColor;
+      _pageOffset.toInt() + 1 < _colors.length ? _color.backgroundColor : _colors.last.backgroundColor;
 
   Color get _foregroundColor {
-    final Color res =
-        _pageOffset.toInt() + 1 < _pages.length ? _color.foregroundColor : _pages.last.color.foregroundColor;
+    final Color res = _pageOffset.toInt() + 1 < _colors.length ? _color.foregroundColor : _colors.last.foregroundColor;
     UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: res);
     return res;
   }
 
-  Color get _lightColor => _pageOffset.toInt() + 1 < _pages.length ? _color.lightColor : _pages.last.color.lightColor;
+  Color get _lightColor => _pageOffset.toInt() + 1 < _colors.length ? _color.lightColor : _colors.last.lightColor;
 
   void _continue() {
     Navigator.pop(context);
@@ -188,7 +189,7 @@ class _IntroPageState extends State<IntroPage> {
                         physics: const BouncingScrollPhysics(),
                         itemCount: _pages.length,
                         itemBuilder: (context, i) {
-                          return Container(child: _pages[i].widget);
+                          return Container(child: _pages[i]);
                           // return _pages[i];
                         })),
                 _bottomNavBar
