@@ -65,14 +65,18 @@ class SecureLogger {
 
   Future<String> cipher(String text) async {
     final _key = crypto.Key.fromUtf8(await getKey() ?? "");
+
+    crypto.IV iv = crypto.IV.fromLength(16);
     final encrypter = crypto.Encrypter(crypto.AES(_key));
-    return encrypter.encrypt(text).base16;
+    return encrypter.encrypt(text, iv: iv).base16;
   }
 
   Future<String> decipher(String text) async {
     final _key = crypto.Key.fromUtf8(await getKey() ?? "");
+    crypto.IV iv = crypto.IV.fromLength(16);
+
     final encrypter = crypto.Encrypter(crypto.AES(_key));
-    return encrypter.decrypt(crypto.Encrypted.fromBase16(text));
+    return encrypter.decrypt(crypto.Encrypted.fromBase16(text), iv: iv);
   }
 
   Future<String?> getKey() async {
@@ -109,7 +113,7 @@ class SecureLogger {
   Future<void> writeLog({required String logName, required String text}) async {
     File file = await loadLog(logName);
     if ((await file.exists()) == false) {
-      await file.create();
+      await file.create(recursive: true);
     }
 
     await file.writeAsString(await cipher(text), mode: FileMode.write);
