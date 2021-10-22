@@ -15,9 +15,11 @@ class SlideContent extends StatelessWidget {
       padding: YPadding.p(YScale.s2),
       child: Center(
           child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: children,
+        Expanded(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: children,
+          ),
         ),
         YVerticalSpacer(YScale.s12),
         Transform.rotate(

@@ -168,8 +168,6 @@ flutter:
     - assets/images/icons/laviescolaire/
     - assets/images/icons/app/
     - assets/images/pageItems/agenda/
-    - assets/images/pageItems/carousel/shelves/
-    - assets/images/pageItems/carousel/
     - assets/images/pageItems/grades/
     - assets/images/pageItems/homework/
     - assets/images/pageItems/persistantNotification/

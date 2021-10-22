@@ -67,7 +67,7 @@ class _IntroPageState extends State<IntroPage> {
 
   // Action to execute when the user presses `Skip` or `Continue`
   void _continue() {
-    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, "/intro/config");
   }
 
   @override
