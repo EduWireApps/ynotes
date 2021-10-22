@@ -14,5 +14,5 @@ import 'slide2.dart';
 /// In development, when this variable is upadated, the app must be restarted.
 final List<Slide> slides = [
   Slide((double offset, YTColor color) => Slide1(offset: offset, color: color), AppColors.indigo),
-  Slide((double offset, YTColor color) => Slide2(offset: offset, color: color), AppColors.deepPurple),
+  Slide((double offset, YTColor color) => Slide2(offset: offset, color: color), AppColors.teal),
 ];

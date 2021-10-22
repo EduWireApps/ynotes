@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
@@ -16,56 +15,42 @@ class Slide1 extends StatelessWidget implements IntroSlideWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: YPadding.p(YScale.s2),
-      child: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Stack(
-          children: [
-            Transform.translate(
-                offset: Offset(-offset * 400, 0),
-                child: Image.asset(
-                  "assets/images/pageItems/intro/slide1/background.png",
-                )),
-            Positioned(
-                bottom: 0,
-                left: 40.vw - offset * 200,
-                child: Image.asset(
-                  "assets/images/pageItems/intro/slide1/woman.png",
-                  height: 300,
-                )),
-            Positioned(
-                top: 60,
-                left: 25.vw - offset * 100,
-                child: Image.asset(
-                  "assets/images/pageItems/intro/slide1/bubble.png",
-                  height: 80,
-                )),
-          ],
-        ),
-        YVerticalSpacer(YScale.s6),
-        Transform.rotate(
-          angle: offset * 0.1,
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-                text: "Pssst...tu savais que ",
-                style: TextStyle(color: color.backgroundColor, fontSize: YFontSize.xl, fontFamily: theme.fonts.primary),
-                children: const [
-                  TextSpan(text: "yNotes", style: TextStyle(fontWeight: YFontWeight.bold)),
-                  TextSpan(text: " ça se prononçait "),
-                  TextSpan(
-                      text: "why notes",
-                      style: TextStyle(fontWeight: YFontWeight.semibold, fontStyle: FontStyle.italic)),
-                  TextSpan(children: [
-                    TextSpan(text: " ("),
-                    TextSpan(text: "/waɪ nəʊts/", style: TextStyle(fontStyle: FontStyle.italic, fontFamily: "")),
-                    TextSpan(text: " ) ?")
-                  ])
-                ]),
-          ),
-        )
-      ])),
-    );
+    return SlideContent(
+        offset: offset,
+        children: [
+          Transform.translate(
+              offset: Offset(-offset * 400, 0),
+              child: Image.asset(
+                "assets/images/pageItems/intro/slide1/background.png",
+              )),
+          Positioned(
+              bottom: 0,
+              left: 40.vw - offset * 200,
+              child: Image.asset(
+                "assets/images/pageItems/intro/slide1/woman.png",
+                height: 300,
+              )),
+          Positioned(
+              top: 60,
+              left: 25.vw - offset * 100,
+              child: Image.asset(
+                "assets/images/pageItems/intro/slide1/bubble.png",
+                height: 80,
+              )),
+        ],
+        text: TextSpan(
+            text: "Pssst...tu savais que ",
+            style: TextStyle(color: color.backgroundColor, fontSize: YFontSize.xl, fontFamily: theme.fonts.primary),
+            children: const [
+              TextSpan(text: "yNotes", style: TextStyle(fontWeight: YFontWeight.bold)),
+              TextSpan(text: " ça se prononçait "),
+              TextSpan(
+                  text: "why notes", style: TextStyle(fontWeight: YFontWeight.semibold, fontStyle: FontStyle.italic)),
+              TextSpan(children: [
+                TextSpan(text: " ("),
+                TextSpan(text: "/waɪ nəʊts/", style: TextStyle(fontStyle: FontStyle.italic, fontFamily: "")),
+                TextSpan(text: " ) ?")
+              ])
+            ]));
   }
 }
