@@ -4,6 +4,7 @@ import 'package:ynotes_packages/utilities.dart';
 
 import '../widgets.dart';
 
+/// Subject: yNotes prononcation
 class Slide1 extends StatelessWidget implements IntroSlideWidget {
   @override
   final YTColor color;
@@ -11,6 +12,7 @@ class Slide1 extends StatelessWidget implements IntroSlideWidget {
   @override
   final double offset;
 
+  /// Subject: yNotes prononcation
   const Slide1({Key? key, required this.color, required this.offset}) : super(key: key);
 
   @override

@@ -6,10 +6,6 @@ import 'slide1.dart';
 import 'slide2.dart';
 import 'slide3.dart';
 
-// TODO: Slide 1 : Prononciation
-// TODO: Slide 2 : Notifications
-// TODO: Slide 3 : Sécurisé
-
 /// The slides used in the app intro.
 ///
 /// In development, when this variable is upadated, the app must be restarted.

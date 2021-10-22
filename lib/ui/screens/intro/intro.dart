@@ -8,8 +8,6 @@ import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
-// TODO: document this file and all the slides and stuff
-
 class IntroPage extends StatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
 
@@ -18,9 +16,11 @@ class IntroPage extends StatefulWidget {
 }
 
 class _IntroPageState extends State<IntroPage> {
+  // Used for the slides animations.
   double _pageOffset = 0.0;
   int _pageIndex = 0;
   late final PageController _pageController = PageController(initialPage: _pageIndex);
+  // The duration and curves for the page view transition when toggled, not swiped.
   final Duration _duration = const Duration(milliseconds: 500);
   final Curve _curve = Curves.easeInOut;
 
@@ -33,8 +33,10 @@ class _IntroPageState extends State<IntroPage> {
     }).toList();
   }
 
+  // The colors generated from the slides. Used to create color transitions.
   List<YTColor> get _colors => slides.map((slide) => slide.color).toList();
 
+  // A transitionning color based on current page.
   YTColor get _color {
     if (_pageOffset.toInt() + 1 < _colors.length) {
       final YTColor current = _colors[_pageOffset.toInt()];
@@ -50,9 +52,11 @@ class _IntroPageState extends State<IntroPage> {
     }
   }
 
+  // The [YTColor]'s background color used as foreground color here.
   Color get _backgroundColor =>
       _pageOffset.toInt() + 1 < _colors.length ? _color.backgroundColor : _colors.last.backgroundColor;
 
+  // The [YTColor]'s foreground color used as background color here.
   Color get _foregroundColor {
     final Color res = _pageOffset.toInt() + 1 < _colors.length ? _color.foregroundColor : _colors.last.foregroundColor;
     UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: res);
@@ -61,6 +65,7 @@ class _IntroPageState extends State<IntroPage> {
 
   Color get _lightColor => _pageOffset.toInt() + 1 < _colors.length ? _color.lightColor : _colors.last.lightColor;
 
+  // Action to execute when the user presses `Skip` or `Continue`
   void _continue() {
     Navigator.pop(context);
   }
@@ -68,6 +73,7 @@ class _IntroPageState extends State<IntroPage> {
   @override
   void initState() {
     super.initState();
+    // When the page are being swiped, the following values are updated.
     _pageController.addListener(() {
       setState(() {
         _pageOffset = _pageController.page!;
@@ -78,11 +84,13 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   void dispose() {
+    // Set default overlay colors.
     UIUtils.setSystemUIOverlayStyle();
     _pageController.dispose();
     super.dispose();
   }
 
+  // The page header. Contains the skip button.
   Widget get _header => Padding(
         padding: YPadding.p(YScale.s2),
         child: Row(
@@ -105,6 +113,7 @@ class _IntroPageState extends State<IntroPage> {
         ),
       );
 
+  // The bottom navigation bar. Contains the previous and next button as well as the dots.
   Widget get _bottomNavBar => Padding(
       padding: YPadding.py(YScale.s2),
       child: Row(
