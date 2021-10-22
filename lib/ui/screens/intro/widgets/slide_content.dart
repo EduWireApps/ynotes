@@ -14,11 +14,12 @@ class SlideContent extends StatelessWidget {
     return Padding(
       padding: YPadding.p(YScale.s2),
       child: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: [
         Stack(
+          clipBehavior: Clip.none,
           children: children,
         ),
-        YVerticalSpacer(YScale.s6),
+        YVerticalSpacer(YScale.s12),
         Transform.rotate(
           angle: offset * 0.1,
           child: RichText(
