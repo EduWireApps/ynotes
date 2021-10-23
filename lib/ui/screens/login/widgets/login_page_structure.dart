@@ -55,7 +55,11 @@ class LoginPageStructure extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const YPageLocal(child: LogsPage(), title: "Logs")));
+                                        builder: (context) => const YPageLocal(
+                                              child: LogsPage(),
+                                              title: "Logs",
+                                              scrollable: false,
+                                            )));
                               },
                               variant: YButtonVariant.text,
                               color: YColor.secondary,
@@ -111,14 +115,14 @@ class LoginPageStructure extends StatelessWidget {
 }
 
 class _Contact extends StatelessWidget {
-  const _Contact({Key? key}) : super(key: key);
-
   static const List<_ContactItem> _items = [
     _ContactItem(icon: FontAwesomeIcons.discord, url: "https://discord.gg/pRCBs22dNX"),
     _ContactItem(icon: Icons.help_rounded, url: "https://support.ynotes.fr/"),
     _ContactItem(icon: Icons.language_rounded, url: "https://ynotes.fr/contact/"),
     _ContactItem(icon: FontAwesomeIcons.github, url: "https://github.com/EduWireApps/ynotes"),
   ];
+
+  const _Contact({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

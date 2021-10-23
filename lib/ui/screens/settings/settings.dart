@@ -363,7 +363,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       onPressed: (context) async {
                         CustomLogger.saveLog(object: "Test", text: "test");
                         SecureLogger secureLogger = SecureLogger();
-                        print(await secureLogger.decodedFileNamesList());
+                        print(await secureLogger.getCategories());
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(

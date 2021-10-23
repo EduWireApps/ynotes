@@ -19,15 +19,19 @@ class CustomLogger {
 
   static void error(Object? e) => log("ERROR", e.toString());
 
-  static void log(String object, dynamic text) => debugPrint('[${object.toUpperCase()}] ${text.toString()}');
-
-  static void logWrapped(String object, String description, String text) {
-    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
-    log(object, description);
-    pattern.allMatches(text).forEach((match) => debugPrint(match.group(0)));
+  static Future<List<YLog>> getAllLogs() async {
+    SecureLogger secureLogger = SecureLogger();
+    List<String> categories = await secureLogger.getCategories();
+    List<YLog> logs = [];
+    for (String category in categories) {
+      logs.addAll(await logsFromCategory(category));
+    }
+    return logs;
   }
 
-  static Future<List<YLog>> readLog(String category) async {
+  static void log(String object, dynamic text) => debugPrint('[${object.toUpperCase()}] ${text.toString()}');
+
+  static Future<List<YLog>> logsFromCategory(String category) async {
     SecureLogger secureLogger = SecureLogger();
     String? rawLog = await secureLogger.readLog(logName: category);
     if (rawLog != null) {
@@ -38,10 +42,16 @@ class CustomLogger {
     }
   }
 
+  static void logWrapped(String object, String description, String text) {
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    log(object, description);
+    pattern.allMatches(text).forEach((match) => debugPrint(match.group(0)));
+  }
+
   static void saveLog({required String object, required String text, String? stacktrace}) async {
     SecureLogger secureLogger = SecureLogger();
     YLog log = YLog(category: object, comment: text, date: DateTime.now());
-    List<YLog> logs = await readLog(object);
+    List<YLog> logs = await logsFromCategory(object);
     logs.add(log);
     await secureLogger.writeLog(logs: logs);
   }
@@ -50,7 +60,12 @@ class CustomLogger {
 class SecureLogger {
   String? key;
 
-  Future<List<String>> decodedFileNamesList() async {
+  Future<void> deleteLog(String logName) async {
+    File test = await loadLog(logName);
+    await test.delete();
+  }
+
+  Future<List<String>> getCategories() async {
     final directory = await FolderAppUtil.getDirectory();
     List<FileInfo> files = await FileAppUtil.getFilesList("${directory.path}/logs");
 
@@ -66,11 +81,6 @@ class SecureLogger {
       }
     });
     return names;
-  }
-
-  Future<void> deleteLog(String logName) async {
-    File test = await loadLog(logName);
-    await test.delete();
   }
 
   Future<String?> getKey() async {
