@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
-import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
@@ -362,8 +361,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Bouton magique',
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
-                        SecureLogger logger = SecureLogger();
-                        await logger.writeLog(logName: "sdf", text: "sdfsdf");
+                        CustomLogger.saveLog(object: "Test", text: "test");
+                        SecureLogger secureLogger = SecureLogger();
+                        print(await secureLogger.decodedFileNamesList());
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(
