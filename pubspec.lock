@@ -1495,11 +1495,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: rework
-      resolved-ref: bffe97367e03fe38275b182df539875a01415091
+      ref: main
+      resolved-ref: db5e1c27b4fee8e3fdd2ef1ce64854934021a245
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
-    version: "0.4.3"
+    version: "0.5.1"
 sdks:
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=2.0.4"
