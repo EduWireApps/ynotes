@@ -12,9 +12,9 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
-import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -362,10 +362,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Bouton magique',
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
-                        GradesStats stats = GradesStats(
-                            allGrades: getAllGrades(appSys.gradesController.disciplines(showAll: true),
-                                overrideLimit: true, sortByWritingDate: true));
-                        stats.lastAverages();
+                        CustomLogger.saveLog(object: "Test", text: "test");
+                        SecureLogger secureLogger = SecureLogger();
+                        print(await secureLogger.getCategories());
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(

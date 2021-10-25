@@ -8,8 +8,8 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurring_events.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -133,6 +133,24 @@ class AppAccount {
   });
   factory AppAccount.fromJson(Map<String, dynamic> json) => _$AppAccountFromJson(json);
   Map<String, dynamic> toJson() => _$AppAccountToJson(this);
+}
+
+///Main converter class
+///Every converter has to use it
+class YConverter {
+  final API_TYPE apiType;
+  final bool log;
+  final Function converter;
+  final Function? anonymizer;
+
+  YConverter({required this.apiType, required this.log, required this.converter, this.anonymizer});
+
+  convert(data) {
+    if (log != null && anonymizer != null) {
+      anonymizer!(data);
+    }
+    return converter(data);
+  }
 }
 
 @JsonSerializable()
