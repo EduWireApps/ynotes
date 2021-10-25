@@ -5,7 +5,6 @@ class EcoleDirecteDocumentConverter {
   static API_TYPE apiType = API_TYPE.ecoleDirecte;
   static YConverter documents = YConverter(
       apiType: apiType,
-      log: true,
       converter: (var filesData) {
         List<Document> documents = [];
         filesData.forEach((fileData) {

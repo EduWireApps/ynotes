@@ -48,7 +48,7 @@ android {
 
     defaultConfig {
         applicationId "fr.ynotes"
-        minSdkVersion 20
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

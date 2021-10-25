@@ -8,6 +8,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurring_events.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -135,24 +136,6 @@ class AppAccount {
   Map<String, dynamic> toJson() => _$AppAccountToJson(this);
 }
 
-///Main converter class
-///Every converter has to use it
-class YConverter {
-  final API_TYPE apiType;
-  final bool log;
-  final Function converter;
-  final Function? anonymizer;
-
-  YConverter({required this.apiType, required this.log, required this.converter, this.anonymizer});
-
-  convert(data) {
-    if (log != null && anonymizer != null) {
-      anonymizer!(data);
-    }
-    return converter(data);
-  }
-}
-
 @JsonSerializable()
 class SchoolAccount {
   //Name of the student
@@ -184,4 +167,29 @@ class SchoolAccount {
       : super();
   factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
+}
+
+///Main converter class
+///Every converter has to use it
+class YConverter {
+  final API_TYPE apiType;
+  final String? logSlot;
+  final Function converter;
+  final Function? anonymizer;
+
+  YConverter({
+    required this.apiType,
+    required this.converter,
+    this.anonymizer,
+    this.logSlot,
+  });
+
+  convert(data) async {
+    if (logSlot != null && anonymizer != null) {
+      var anonymizedData = anonymizer!(data);
+      CustomLogger.saveLog(object: logSlot!, text: anonymizedData.toString());
+      BugReportUtils.packData();
+    }
+    return converter(data);
+  }
 }

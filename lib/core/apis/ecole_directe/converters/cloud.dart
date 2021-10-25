@@ -7,7 +7,6 @@ class EcoleDirecteCloudConverter {
 
   static YConverter cloudFolders = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> cloudFoldersData) {
         List<CloudItem> cloudFolders = [];
         cloudFoldersData["data"].forEach((folderData) {

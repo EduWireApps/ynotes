@@ -17,6 +17,7 @@ import 'package:ynotes/backward_compatibility.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
@@ -31,8 +32,7 @@ Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   await backwardCompatibility();
-  configureShake();
-
+BugReportUtils.init();
   theme = YCurrentTheme(currentTheme: 1, themes: themes); // TODO: rework how theme integrates in the app
 
   appSys = ApplicationSystem();
@@ -44,12 +44,6 @@ Future main() async {
   });
 }
 
-configureShake() {
-  Shake.setInvokeShakeOnShakeDeviceEvent(true);
-  Shake.setShowFloatingReportButton(false);
-  Shake.setInvokeShakeOnScreenshot(false);
-  Shake.start('iGBaTEc4t0namXSCrwRJLihJPkMPnfco2z4Xoyi3', 'nfzb5JnoGoGVxEi75jejFhyTQL4MyyOC7yCMCYiOmKaykWdoh0kfbY8');
-}
 
 _headlessTask(HeadlessTask? task) async {
   if (task != null) {

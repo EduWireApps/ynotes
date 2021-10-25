@@ -10,7 +10,6 @@ class EcoleDirecteHomeworkConverter {
 
   static YConverter homework = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> hwData) {
         List rawData = hwData['data']['matieres'];
         List<Homework> homeworkList = [];
@@ -79,7 +78,6 @@ class EcoleDirecteHomeworkConverter {
 
   static YConverter unloadedHomework = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> uhwData) {
         Map<String, dynamic> hwData = uhwData['data'];
 

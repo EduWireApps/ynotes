@@ -7,7 +7,6 @@ class EcoleDirecteMailConverter {
 
   static YConverter mail = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> mailData) {
         List<Map<String, dynamic>> to = mailData["to"].cast<Map<String, dynamic>>();
         String id = mailData["id"].toString();
@@ -34,7 +33,6 @@ class EcoleDirecteMailConverter {
 
   static YConverter mails = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> mailData) {
         List rawMailsList = [];
         List<Mail> mails = [];
@@ -53,7 +51,6 @@ class EcoleDirecteMailConverter {
       });
   static YConverter recipients = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> recipientsData) {
         List<Recipient> recipients = [];
         recipientsData["data"]["contacts"].forEach((recipientData) {

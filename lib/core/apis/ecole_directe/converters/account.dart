@@ -9,7 +9,7 @@ class EcoleDirecteAccountConverter {
 
   static YConverter account = YConverter(
       apiType: apiType,
-      log: true,
+      
       converter: (Map<dynamic, dynamic> accountData) {
         List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"])?.cast<Map>();
 
@@ -45,7 +45,6 @@ class EcoleDirecteAccountConverter {
 
   static YConverter periods = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> periodsData) {
         List rawPeriods = periodsData['data']['periodes'];
         List<Period> periods = [];

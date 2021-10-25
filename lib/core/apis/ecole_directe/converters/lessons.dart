@@ -8,7 +8,6 @@ class EcoleDirecteLessonConverter {
 
   static YConverter lessons = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<dynamic, dynamic> lessonData) async {
         List<Lesson> lessons = [];
         List<Map> listLessons = lessonData["data"].cast<Map>();

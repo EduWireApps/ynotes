@@ -9,7 +9,6 @@ class EcoleDirecteDisciplineConverter {
 
   static YConverter disciplines = YConverter(
       apiType: apiType,
-      log: true,
       converter: (Map<String, dynamic> disciplinesData) {
         List<Discipline> disciplinesList = [];
         List periodes = disciplinesData['data']['periodes'];

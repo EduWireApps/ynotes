@@ -7,7 +7,7 @@ class EcoleDirecteSchoolLifeConverter {
 
   static YConverter schoolLife = YConverter(
       apiType: apiType,
-      log: true,
+
       converter: (Map<dynamic, dynamic> schoolLifeData) {
         List rawschoolLife = schoolLifeData['data']['absencesRetards'];
         List<SchoolLifeTicket> schoolLifeList = [];
