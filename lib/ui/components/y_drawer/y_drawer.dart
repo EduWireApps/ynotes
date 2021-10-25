@@ -12,6 +12,7 @@ import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/settings.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 class YDrawer extends StatefulWidget {
   const YDrawer({Key? key}) : super(key: key);
@@ -101,7 +102,9 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     ),
                   );
                 }),
+            YVerticalSpacer(YScale.s4),
             const YDivider(),
+            YVerticalSpacer(YScale.s4),
             ListView.builder(
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
@@ -118,7 +121,17 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     onTap: route.onTap,
                   );
                 }),
+            ListTile(
+              leading: Icon(
+                FontAwesomeIcons.handHoldingUsd,
+                color: theme.colors.foregroundLightColor,
+              ),
+              title: Text("Faire un don", style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 18)),
+              onTap: () async => await launch("https://fr.tipeee.com/jsonlines"),
+            ),
+            YVerticalSpacer(YScale.s4),
             const YDivider(),
+            YVerticalSpacer(YScale.s4),
             Row(
               children: [
                 for (final e in specialIcons)
@@ -129,7 +142,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     onPressed: e.onTap,
                   ))
               ],
-            )
+            ),
           ]),
         ),
       ),
