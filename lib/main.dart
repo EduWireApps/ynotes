@@ -11,6 +11,7 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:shake_flutter/shake_flutter.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/backward_compatibility.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
@@ -30,6 +31,8 @@ Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   await backwardCompatibility();
+  configureShake();
+
   theme = YCurrentTheme(currentTheme: 1, themes: themes); // TODO: rework how theme integrates in the app
 
   appSys = ApplicationSystem();
@@ -39,6 +42,13 @@ Future main() async {
   runZoned<Future<void>>(() async {
     runApp(Phoenix(child: const App()));
   });
+}
+
+configureShake() {
+  Shake.setInvokeShakeOnShakeDeviceEvent(true);
+  Shake.setShowFloatingReportButton(false);
+  Shake.setInvokeShakeOnScreenshot(false);
+  Shake.start('iGBaTEc4t0namXSCrwRJLihJPkMPnfco2z4Xoyi3', 'nfzb5JnoGoGVxEi75jejFhyTQL4MyyOC7yCMCYiOmKaykWdoh0kfbY8');
 }
 
 _headlessTask(HeadlessTask? task) async {

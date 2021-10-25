@@ -762,6 +762,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.1"
+  lint:
+    dependency: transitive
+    description:
+      name: lint
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.7.2"
   lints:
     dependency: transitive
     description:
@@ -979,6 +986,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
+  pigment:
+    dependency: transitive
+    description:
+      name: pigment
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   platform:
     dependency: transitive
     description:
@@ -1109,6 +1123,13 @@ packages:
       url: "https://github.com/EduWireApps/flutter-settings-ui"
     source: git
     version: "1.0.0-nullsafety.2"
+  shake_flutter:
+    dependency: "direct main"
+    description:
+      name: shake_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "14.1.2"
   share:
     dependency: "direct main"
     description:
@@ -1312,15 +1333,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  tinycolor:
+  tinycolor2:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: "8c302ef477b56747252b2c876ca6c7ad9d8b841b"
-      url: "https://github.com/lslv1243/tinycolor"
-    source: git
-    version: "1.0.3"
+      name: tinycolor2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   transparent_image:
     dependency: transitive
     description:
@@ -1501,5 +1520,5 @@ packages:
     source: git
     version: "0.5.1"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
+  dart: ">=2.14.0-360.0.dev <3.0.0"
   flutter: ">=2.0.4"
