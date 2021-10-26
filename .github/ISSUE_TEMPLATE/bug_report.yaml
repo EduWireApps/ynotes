@@ -65,9 +65,10 @@ body:
     render: markdown
   validations:
     required: true
-- type: markdown
+- type: textarea
   attributes:
     label: Context supplémentaire
     description: Des liens ? Des références ? Tout ce qui peut nous donner plus de détails sur le problème que vous rencontrez !
+    render: markdown
   validations:
     required: false
