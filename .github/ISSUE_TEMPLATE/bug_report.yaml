@@ -5,10 +5,11 @@ labels: [bug, triage]
 assignees:
   - florian-lefebvre
 body:
-- type: markdown
+- type: textarea
   attributes:
     label: Description du bug
     description: Une description claire et concise du bug.
+    render: markdown
   validations:
     required: true
 - type: markdown
