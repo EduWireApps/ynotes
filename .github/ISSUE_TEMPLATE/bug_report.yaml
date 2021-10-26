@@ -32,13 +32,6 @@ body:
     render: markdown
   validations:
     required: true
-- type: textarea
-  attributes:
-    label: "Captures d'écran / vidéo"
-    description: "Si possible, ajoutez des captures d'écran pour aider à expliquer votre problème."
-    render: markdown
-  validations:
-    required: false
 - type: input
   attributes:
     label: Appareil
@@ -71,6 +64,13 @@ body:
     placeholder: Pronote
   validations:
     required: true
+- type: textarea
+  attributes:
+    label: "Captures d'écran / vidéo"
+    description: "Si possible, ajoutez des captures d'écran pour aider à expliquer votre problème."
+    render: markdown
+  validations:
+    required: false
 - type: textarea
   attributes:
     label: Contexte supplémentaire
