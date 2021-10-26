@@ -14,7 +14,7 @@ body:
 - type: markdown
   attributes:
     label: Etapes à reproduire
-    description: Étapes pour reproduire le bug :
+    description: "Étapes pour reproduire le bug :"
     placeholder: |
       1. [ex: Etape 1]
       2. [ex: Etape 1]
