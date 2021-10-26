@@ -25,18 +25,29 @@ body:
       2. 
   validations:
     required: true
-- type: markdown
+- type: textarea
   attributes:
     label: Comportement attendu
     description: Une description claire et concise de ce que vous attendiez.
+    render: markdown
   validations:
     required: true
-- type: markdown
+- type: textarea
   attributes:
     label: "Captures d'écran / vidéo"
     description: "Si possible, ajoutez des captures d'écran pour aider à expliquer votre problème."
+    render: markdown
   validations:
     required: false
+- type: dropdown
+  id: environnemet
+  attributes:
+    label: Environnement
+    options:
+      - Beta
+      - Public
+  validations:
+    required: true
 - type: textarea
   attributes:
     label: Informations
