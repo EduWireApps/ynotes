@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/anonymizer_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 
 class EcoleDirecteHomeworkConverter {
@@ -10,6 +11,13 @@ class EcoleDirecteHomeworkConverter {
 
   static YConverter homework = YConverter(
       apiType: apiType,
+      logSlot: "Homework",
+      anonymizer: (Map<dynamic, dynamic> accountData) {
+        Map toAnonymize = {
+          "nomProf": AnonymizerUtils.generateRandomString(8),
+        };
+        return AnonymizerUtils.severalValues(jsonEncode(accountData), toAnonymize);
+      },
       converter: (Map<dynamic, dynamic> hwData) {
         List rawData = hwData['data']['matieres'];
         List<Homework> homeworkList = [];
@@ -87,7 +95,6 @@ class EcoleDirecteHomeworkConverter {
           value.forEach((var hw) {
             Map mappedHomework = hw;
             bool loaded = false;
-            CustomLogger.log("test", "b");
             String discipline = mappedHomework["matiere"];
             String disciplineCode = mappedHomework["codeMatiere"].toString();
             String id = mappedHomework["idDevoir"].toString();

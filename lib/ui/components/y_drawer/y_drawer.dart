@@ -2,8 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:shake_flutter/shake_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wiredash/wiredash.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
@@ -39,7 +40,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
     }
 
     final List<_SpecialRoute> specialRoutes = [
-      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => Wiredash.of(context)!.show()),
+      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => BugReportUtils.report()),
       _SpecialRoute(
           title: "Paramètres",
           icon: Icons.settings,

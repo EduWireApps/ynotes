@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/anonymizer_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 
 import '../../model.dart';
@@ -9,6 +12,17 @@ class EcoleDirecteDisciplineConverter {
 
   static YConverter disciplines = YConverter(
       apiType: apiType,
+      logSlot: "Disciplines",
+      anonymizer: (Map<dynamic, dynamic> accountData) {
+        Map toAnonymize = {
+          "nom": AnonymizerUtils.generateRandomString(8),
+          "valeur": "7",
+          "moyenne": "7",
+          "moyenneClasse": "5",
+          "rang": "Premier"
+        };
+        return AnonymizerUtils.severalValues(jsonEncode(accountData), toAnonymize);
+      },
       converter: (Map<String, dynamic> disciplinesData) {
         List<Discipline> disciplinesList = [];
         List periodes = disciplinesData['data']['periodes'];

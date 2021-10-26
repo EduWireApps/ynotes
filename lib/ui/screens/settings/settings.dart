@@ -14,6 +14,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
@@ -268,6 +269,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     onToggle: (bool value) async {
                       _appSys.settings.user.global.shakeToReport = value;
                       appSys.saveSettings();
+                      BugReportUtils.initShakeToReport();
                     }),
                 SettingsTile(
                   title: 'Afficher les logs',

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/anonymizer_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 
 class EcoleDirecteAccountConverter {
@@ -9,7 +12,11 @@ class EcoleDirecteAccountConverter {
 
   static YConverter account = YConverter(
       apiType: apiType,
-      
+      logSlot: "Account",
+      anonymizer: (Map<dynamic, dynamic> accountData) {
+        Map toAnonymize = {};
+        return AnonymizerUtils.severalValues(jsonEncode(accountData), toAnonymize);
+      },
       converter: (Map<dynamic, dynamic> accountData) {
         List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"])?.cast<Map>();
 

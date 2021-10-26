@@ -184,11 +184,16 @@ class YConverter {
     this.logSlot,
   });
 
-  convert(data) async {
+  convert(data) {
     if (logSlot != null && anonymizer != null) {
-      var anonymizedData = anonymizer!(data);
-      CustomLogger.saveLog(object: logSlot!, text: anonymizedData.toString());
-      BugReportUtils.packData();
+      try {
+        var anonymizedData = anonymizer!(data);
+        CustomLogger.saveLog(
+            object: logSlot!, text: anonymizedData, overWrite: true);
+        BugReportUtils.packData();
+      } catch (e) {
+        CustomLogger.log("CONVERTER", "Error anonymizing data");
+      }
     }
     return converter(data);
   }

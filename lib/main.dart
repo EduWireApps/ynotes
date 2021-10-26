@@ -11,7 +11,6 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:shake_flutter/shake_flutter.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/backward_compatibility.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
@@ -32,18 +31,19 @@ Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   await backwardCompatibility();
-BugReportUtils.init();
   theme = YCurrentTheme(currentTheme: 1, themes: themes); // TODO: rework how theme integrates in the app
 
   appSys = ApplicationSystem();
   await appSys.initApp();
+
+  await BugReportUtils.init();
+
   if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
   runZoned<Future<void>>(() async {
     runApp(Phoenix(child: const App()));
   });
 }
-
 
 _headlessTask(HeadlessTask? task) async {
   if (task != null) {

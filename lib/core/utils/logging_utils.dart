@@ -48,10 +48,11 @@ class CustomLogger {
     pattern.allMatches(text).forEach((match) => debugPrint(match.group(0)));
   }
 
-  static void saveLog({required String object, required String text, String? stacktrace}) async {
+  static void saveLog(
+      {required String object, required String text, String? stacktrace, bool overWrite = false}) async {
     SecureLogger secureLogger = SecureLogger();
     YLog log = YLog(category: object, comment: text, date: DateTime.now());
-    List<YLog> logs = await logsFromCategory(object);
+    List<YLog> logs = overWrite ? [] : await logsFromCategory(object);
     logs.add(log);
     await secureLogger.writeLog(logs: logs);
   }
@@ -109,7 +110,7 @@ class SecureLogger {
   Future<String?> readLog({required String logName}) async {
     File file = await loadLog(logName);
     if ((await file.exists()) == false) {
-      await file.create();
+      await file.create(recursive: true);
     }
     return _decipher(await file.readAsString());
   }
@@ -176,7 +177,7 @@ class YLog {
   Map<String, dynamic> toJson() {
     return {
       'category': category,
-      'comment': comment,
+      'comment': comment.toString(),
       'stacktrace': stacktrace,
       'date': date.toString(),
     };
