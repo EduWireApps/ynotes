@@ -11,6 +11,11 @@ import 'package:ynotes/globals.dart';
 class BugReportUtils {
   const BugReportUtils._();
 
+  static Future<File> getLogsFile() async {
+    final directory = await FolderAppUtil.getDirectory();
+    return File('${directory.path}/logs/temp.json');
+  }
+
   /// Initializes the bug report client
   static init() {
     initShakeToReport();
@@ -29,12 +34,9 @@ class BugReportUtils {
   static packData() async {
     try {
       String json = jsonEncode(await CustomLogger.getAllLogs());
-      final directory = await FolderAppUtil.getDirectory();
       //create a temp file containing logs as json
-      final File file = File('${directory.path}/logs/temp.json');
-      if (await file.exists()) {
-        await file.delete();
-      }
+      final File file = await getLogsFile();
+      await _deleteLogsFile();
       file.create(recursive: true);
       await file.writeAsString(json);
       List<ShakeFile> shakeFiles = [];
@@ -52,5 +54,12 @@ class BugReportUtils {
   static report() async {
     await packData();
     Shake.show();
+  }
+
+  static Future<void> _deleteLogsFile() async {
+    final File file = await getLogsFile();
+    if (await file.exists()) {
+      await file.delete();
+    }
   }
 }
