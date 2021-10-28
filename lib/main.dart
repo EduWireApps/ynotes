@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/foundation.dart';
@@ -38,7 +39,7 @@ Future main() async {
 
   await BugReportUtils.init();
 
-  if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
+  if (!kIsWeb && !Platform.isLinux && !Platform.isWindows) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
   runZoned<Future<void>>(() async {
     runApp(Phoenix(child: const App()));

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
@@ -12,6 +13,7 @@ import 'package:ynotes/useful_methods.dart';
 class BackgroundService {
 //Background task when when app is closed
   static Future<void> backgroundFetchHeadlessTask(String a, {bool headless = false}) async {
+    assert(Platform.isIOS || Platform.isAndroid);
     //await LocalNotification.showDebugNotification();
     try {
       //Ensure that grades notification are enabled and battery saver disabled
