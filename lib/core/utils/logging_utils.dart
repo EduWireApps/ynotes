@@ -6,22 +6,24 @@ import 'package:encrypt/encrypt.dart' as crypto;
 import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid_util.dart';
 import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core/utils/file_utils.dart';
 
-import 'file_utils.dart';
+// TODO: document and split the file in a small library
 
+final SecureLogger _secureLogger = SecureLogger();
+
+/// A custom logger to make debugging much easier. Use this instead of `print()` in production.
 class CustomLogger {
   CustomLogger._();
 
   static void deleteLog(String category) async {
-    SecureLogger secureLogger = SecureLogger();
-    await secureLogger.deleteLog(category);
+    await _secureLogger.deleteLog(category);
   }
 
   static void error(Object? e) => log("ERROR", e.toString());
 
   static Future<List<YLog>> getAllLogs() async {
-    SecureLogger secureLogger = SecureLogger();
-    List<String> categories = await secureLogger.getCategories();
+    List<String> categories = await _secureLogger.getCategories();
     List<YLog> logs = [];
     for (String category in categories) {
       logs.addAll(await logsFromCategory(category));
@@ -32,8 +34,7 @@ class CustomLogger {
   static void log(String object, dynamic text) => debugPrint('[${object.toUpperCase()}] ${text.toString()}');
 
   static Future<List<YLog>> logsFromCategory(String category) async {
-    SecureLogger secureLogger = SecureLogger();
-    String? rawLog = await secureLogger.readLog(logName: category);
+    String? rawLog = await _secureLogger.readLog(logName: category);
     if (rawLog != null) {
       Iterable l = jsonDecode(rawLog);
       return List<YLog>.from(l.map((model) => YLog.fromJson(model)));
@@ -50,16 +51,15 @@ class CustomLogger {
 
   static void saveLog(
       {required String object, required String text, String? stacktrace, bool overWrite = false}) async {
-    SecureLogger secureLogger = SecureLogger();
     YLog log = YLog(category: object, comment: text, date: DateTime.now());
     List<YLog> logs = overWrite ? [] : await logsFromCategory(object);
     logs.add(log);
-    await secureLogger.writeLog(logs: logs);
+    await _secureLogger.writeLog(logs: logs);
   }
 }
 
 class SecureLogger {
-  String? key;
+  String? _key;
 
   Future<void> deleteLog(String logName) async {
     File test = await loadLog(logName);
@@ -78,25 +78,25 @@ class SecureLogger {
           names.add((await _decipher(file.fileName!.substring(00, (file.fileName?.length ?? 0) - 4)))!);
         }
       } catch (e) {
-        print(e);
+        CustomLogger.error(e);
       }
     });
     return names;
   }
 
   Future<String?> getKey() async {
-    if (key != null) {
-      return key;
+    if (_key != null) {
+      return _key;
     }
     if (await KVS.containsKey(key: "loggingKey")) {
-      key = await KVS.read(key: "loggingKey");
-      return key;
+      _key = await KVS.read(key: "loggingKey");
+      return _key;
     } else {
-      key = conv.hex.encode(UuidUtil.cryptoRNG());
-      if (key != null) {
-        await KVS.write(key: "loggingKey", value: key!);
+      _key = conv.hex.encode(UuidUtil.cryptoRNG());
+      if (_key != null) {
+        await KVS.write(key: "loggingKey", value: _key!);
       }
-      return key;
+      return _key;
     }
   }
 
@@ -149,13 +149,13 @@ class SecureLogger {
 }
 
 class YLog {
-  ///Log category I.E : "notifications"
+  /// Log category I.E : "notifications"
   final String category;
 
-  ///Human readable comment
+  /// Human readable comment
   final String comment;
 
-  ///Log stacktrace
+  /// Log stacktrace
   final String? stacktrace;
 
   final DateTime date;

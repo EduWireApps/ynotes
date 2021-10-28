@@ -365,7 +365,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
                         CustomLogger.saveLog(object: "Test", text: "test");
-                        SecureLogger secureLogger = SecureLogger();
+                        final SecureLogger secureLogger = SecureLogger();
                         print(await secureLogger.getCategories());
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
