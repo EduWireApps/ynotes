@@ -61,7 +61,6 @@ class _LoadingPageState extends State<LoadingPage> {
     String? u = await KVS.read(key: "username");
     String? p = await KVS.read(key: "password");
     String? z = await KVS.read(key: "agreedTermsAndConfiguredApp");
-    CustomLogger.log("LOADING", "${[u, p, z]}");
     // The user is authenticated
     if (u != null && p != null) {
       // The user has agreed to the terms and the app is configured
