@@ -7,7 +7,11 @@ import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
+/// The class that handles the bug reporting process
 class BugReportUtils {
+  const BugReportUtils._();
+
+  /// Initializes the bug report client
   static init() {
     initShakeToReport();
     Shake.setShowFloatingReportButton(false);
@@ -19,6 +23,7 @@ class BugReportUtils {
     Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
   }
 
+  /// Saves and anonymizes the bug data to send it to the report platform
   static packData() async {
     try {
       String json = jsonEncode(await CustomLogger.getAllLogs());
@@ -34,9 +39,12 @@ class BugReportUtils {
       List<ShakeFile> shakeFiles = [];
       shakeFiles.add(ShakeFile.create(file.path, 'userLogs'));
       Shake.setShakeReportData(shakeFiles);
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e);
+    }
   }
 
+  /// Opens the report widget
   static report() async {
     await packData();
     Shake.show();
