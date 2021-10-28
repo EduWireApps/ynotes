@@ -41,7 +41,6 @@ class _LogsPageState extends State<LogsPage> {
                         label: "Filtrer",
                         properties: YFormFieldProperties(textInputAction: TextInputAction.search),
                         onChanged: (onChange) {
-                          print(onChange);
                           setState(() {
                             search = onChange;
                           });
@@ -70,17 +69,19 @@ class _LogsPageState extends State<LogsPage> {
                                             children: [
                                               if (log.stacktrace != null)
                                                 ListTile(
-                                                  title: const Text('Copier la stack-trace'),
+                                                  title: Text('Copier la stack-trace', style: theme.texts.body1),
                                                   onTap: () {
                                                     Clipboard.setData(
                                                         ClipboardData(text: snapshot.data![index].stacktrace));
+                                                    Navigator.pop(context);
                                                   },
                                                 ),
                                               ListTile(
-                                                title: const Text('Copier en tant que JSON'),
+                                                title: Text('Copier en tant que JSON', style: theme.texts.body1),
                                                 onTap: () {
                                                   Clipboard.setData(
                                                       ClipboardData(text: jsonEncode(snapshot.data![index])));
+                                                  Navigator.pop(context);
                                                 },
                                               ),
                                             ],
