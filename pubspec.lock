@@ -466,10 +466,47 @@ packages:
   flutter_secure_storage:
     dependency: "direct main"
     description:
-      name: flutter_secure_storage
+      path: flutter_secure_storage
+      ref: develop
+      resolved-ref: a220b467b55757e95cfaabfdf58269c4052956e8
+      url: "https://github.com/mogol/flutter_secure_storage"
+    source: git
+    version: "5.0.0-beta.5"
+  flutter_secure_storage_linux:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.1"
+    version: "1.1.0"
+  flutter_secure_storage_macos:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  flutter_secure_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  flutter_secure_storage_web:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
+  flutter_secure_storage_windows:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -1436,15 +1473,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  wiredash:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: stable
-      resolved-ref: "9cb1afafdbd5b15d2e482e6d298476771b739db1"
-      url: "https://github.com/wiredashio/wiredash-sdk"
-    source: git
-    version: "0.6.2"
   wkt_parser:
     dependency: transitive
     description:
