@@ -1,3 +1,11 @@
+
+## Correctif 0.13.4
+Petit correctif que nous documentons ici car néanmoins important :
+- Ajout d'une carte pour la géolocalisation Pronote
+- Redesign du carousel de présentation de l'application
+- Nouvel utilitaire de rapport de bugs : nous avons changé d'utilitaires de rapport de bugs. L'ancien ne nous permettait pas d'avoir assez de données utiles [regardez ici pour en savoir plus.](https://support.ynotes.fr/confidentialite-securite/notre-outil-de-rapports-de-bug)
+- Nous en avons profité pour donner un coup de neuf à l'écran des logs (pour les experts)
+
 ## Mise à jour 0.13
 
 Outre la correction de divers problèmes mineurs, cette mise à jour se concentre sur 2 points :

@@ -10,10 +10,10 @@ YTTexts texts(YTColors colors, YTFonts fonts) => YTTexts(
           fonts: fonts),
       title: YTextStyle(
           TextStyle(
-              fontWeight: YFontWeight.bold,
-              fontSize: YFontSize.xl,
-              letterSpacing: YLetterSpacing.wide,
-              color: colors.foregroundColor),
+            color: colors.foregroundColor,
+            fontWeight: YFontWeight.semibold,
+            fontSize: YFontSize.xl,
+          ),
           primaryfontFamily: true,
           fonts: fonts),
       body1: YTextStyle(

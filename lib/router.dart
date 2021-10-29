@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/app_config/models.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/screens/agenda/agenda.dart';
-import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/cloud/cloud.dart';
 import 'package:ynotes/ui/screens/downloads/downloads.dart';
 import 'package:ynotes/ui/screens/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
 import 'package:ynotes/ui/screens/homework/homework.dart';
+import 'package:ynotes/ui/screens/intro/routes.dart';
 import 'package:ynotes/ui/screens/login/routes.dart';
 import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
@@ -31,7 +31,7 @@ class CustomRoute {
 
 final List<CustomRoute> routes = [
   ...loginRoutes,
-  CustomRoute(path: "/intro", icon: Icons.info, page: const Carousel(), relatedApi: -1, show: false),
+  ...introRoutes,
   CustomRoute(path: "/terms", icon: Icons.info, page: const TermsPage(), relatedApi: -1, show: false),
   CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: const SummaryPage(), tab: appTabs.summary),
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),

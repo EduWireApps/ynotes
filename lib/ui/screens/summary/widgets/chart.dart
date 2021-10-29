@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 
 class SummaryChart extends StatefulWidget {
@@ -220,7 +221,9 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
             20 /
             double.tryParse(grade.scale!.replaceAll(",", "."))!);
         return double.parse(toReturn.toStringAsFixed(2));
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e);
+      }
     }
   }
 }

@@ -47,10 +47,18 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
                   ),
                   onChanged: (newValue) {
                     setState(() {
+                      final String v = newValue.replaceAll(",", ".");
+                      final double? valid = double.tryParse(v);
+                      if (valid == null) {
+                        if (v.isNotEmpty) {
+                          textController.text = v.substring(0, v.length - 1);
+                        }
+                        return;
+                      }
                       if (widget.isDouble) {
-                        value = double.parse(newValue);
+                        value = double.parse(v);
                       } else {
-                        value = int.parse(newValue);
+                        value = int.parse(v);
                       }
                     });
                   },

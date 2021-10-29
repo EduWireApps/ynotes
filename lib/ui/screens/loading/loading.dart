@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -61,7 +60,6 @@ class _LoadingPageState extends State<LoadingPage> {
     String? u = await KVS.read(key: "username");
     String? p = await KVS.read(key: "password");
     String? z = await KVS.read(key: "agreedTermsAndConfiguredApp");
-    CustomLogger.log("LOADING", "${[u, p, z]}");
     // The user is authenticated
     if (u != null && p != null) {
       // The user has agreed to the terms and the app is configured

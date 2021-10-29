@@ -1,42 +1,65 @@
+import 'dart:convert';
+
+import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/anonymizer_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
-import 'package:uuid/uuid.dart';
 
 class EcoleDirecteAccountConverter {
-  static AppAccount account(Map<dynamic, dynamic> accountData) {
-    List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"])?.cast<Map>();
+  static API_TYPE apiType = API_TYPE.ecoleDirecte;
 
-    if (rawSchoolAccounts != null) {
-      var data = mapGet(accountData, ["data", "accounts", 0]);
-      String? name = utf8convert(mapGet(data, ["prenom"]));
-      String? surname = utf8convert(mapGet(data, ["nom"]));
-      String? id = const Uuid().v1();
-      bool isParentMainAccount = true;
-      List<SchoolAccount> _schoolAccountsList = schoolAccounts(rawSchoolAccounts);
-      return AppAccount(
-          name: name,
-          surname: surname,
-          id: id,
-          managableAccounts: _schoolAccountsList,
-          isParentMainAccount: isParentMainAccount,
-          apiType: API_TYPE.ecoleDirecte);
-    } else {
-      SchoolAccount _account = singleSchoolAccount(accountData);
-      String? name = _account.name;
-      String? surname = _account.surname;
-      String? id = const Uuid().v1();
-      bool isParentMainAccount = false;
-      return AppAccount(
-          name: name,
-          surname: surname,
-          id: id,
-          managableAccounts: [_account],
-          isParentMainAccount: isParentMainAccount,
-          apiType: API_TYPE.ecoleDirecte);
-    }
-  }
+  static YConverter account = YConverter(
+      apiType: apiType,
+      logSlot: "Account",
+      anonymizer: (Map<dynamic, dynamic> accountData) {
+        Map toAnonymize = {};
+        return AnonymizerUtils.severalValues(jsonEncode(accountData), toAnonymize);
+      },
+      converter: (Map<dynamic, dynamic> accountData) {
+        List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"])?.cast<Map>();
+
+        if (rawSchoolAccounts != null) {
+          var data = mapGet(accountData, ["data", "accounts", 0]);
+          String? name = utf8convert(mapGet(data, ["prenom"]));
+          String? surname = utf8convert(mapGet(data, ["nom"]));
+          String? id = const Uuid().v1();
+          bool isParentMainAccount = true;
+          List<SchoolAccount> _schoolAccountsList = schoolAccounts(rawSchoolAccounts);
+          return AppAccount(
+              name: name,
+              surname: surname,
+              id: id,
+              managableAccounts: _schoolAccountsList,
+              isParentMainAccount: isParentMainAccount,
+              apiType: API_TYPE.ecoleDirecte);
+        } else {
+          SchoolAccount _account = singleSchoolAccount(accountData);
+          String? name = _account.name;
+          String? surname = _account.surname;
+          String? id = const Uuid().v1();
+          bool isParentMainAccount = false;
+          return AppAccount(
+              name: name,
+              surname: surname,
+              id: id,
+              managableAccounts: [_account],
+              isParentMainAccount: isParentMainAccount,
+              apiType: API_TYPE.ecoleDirecte);
+        }
+      });
+
+  static YConverter periods = YConverter(
+      apiType: apiType,
+      converter: (Map<dynamic, dynamic> periodsData) {
+        List rawPeriods = periodsData['data']['periodes'];
+        List<Period> periods = [];
+        for (var element in rawPeriods) {
+          periods.add(Period(element["periode"], element["idPeriode"]));
+        }
+        return periods;
+      });
 
   static List<appTabs> availableTabs(List? modules) {
     List<appTabs> tabs = [];
@@ -73,15 +96,6 @@ class EcoleDirecteAccountConverter {
       tabs.add(appTabs.summary);
     }
     return tabs;
-  }
-
-  static List<Period> periods(Map<dynamic, dynamic> periodsData) {
-    List rawPeriods = periodsData['data']['periodes'];
-    List<Period> periods = [];
-    for (var element in rawPeriods) {
-      periods.add(Period(element["periode"], element["idPeriode"]));
-    }
-    return periods;
   }
 
   static List<SchoolAccount> schoolAccounts(List<Map<dynamic, dynamic>> schoolAccountsData) {

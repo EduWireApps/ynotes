@@ -435,6 +435,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_map:
+    dependency: "direct main"
+    description:
+      name: flutter_map
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.14.0"
   flutter_markdown:
     dependency: "direct main"
     description:
@@ -450,7 +457,7 @@ packages:
     source: hosted
     version: "1.0.0"
   flutter_responsive_breakpoints:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_responsive_breakpoints
       url: "https://pub.dartlang.org"
@@ -461,24 +468,24 @@ packages:
     description:
       path: flutter_secure_storage
       ref: develop
-      resolved-ref: e059da25a93abdd4c703e13b680c1a7ee02eeed6
+      resolved-ref: a220b467b55757e95cfaabfdf58269c4052956e8
       url: "https://github.com/mogol/flutter_secure_storage"
     source: git
-    version: "5.0.0-beta.4"
+    version: "5.0.0-beta.5"
   flutter_secure_storage_linux:
     dependency: transitive
     description:
       name: flutter_secure_storage_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   flutter_secure_storage_macos:
     dependency: transitive
     description:
       name: flutter_secure_storage_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   flutter_secure_storage_platform_interface:
     dependency: transitive
     description:
@@ -748,6 +755,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.1"
+  latlong2:
+    dependency: "direct main"
+    description:
+      name: latlong2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.1"
+  lint:
+    dependency: transitive
+    description:
+      name: lint
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.7.2"
   lints:
     dependency: transitive
     description:
@@ -762,6 +783,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  lists:
+    dependency: transitive
+    description:
+      name: lists
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   logger:
     dependency: "direct main"
     description:
@@ -811,6 +839,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  mgrs_dart:
+    dependency: transitive
+    description:
+      name: mgrs_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   mime:
     dependency: "direct overridden"
     description:
@@ -839,13 +874,48 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  package_info:
+  package_info_plus:
     dependency: "direct main"
     description:
-      name: package_info
+      name: package_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "1.3.0"
+  package_info_plus_linux:
+    dependency: transitive
+    description:
+      name: package_info_plus_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
+  package_info_plus_macos:
+    dependency: transitive
+    description:
+      name: package_info_plus_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.3.0"
+  package_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: package_info_plus_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
+  package_info_plus_web:
+    dependency: transitive
+    description:
+      name: package_info_plus_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
+  package_info_plus_windows:
+    dependency: transitive
+    description:
+      name: package_info_plus_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   path:
     dependency: transitive
     description:
@@ -916,13 +986,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
-  pin_code_fields:
-    dependency: "direct main"
+  pigment:
+    dependency: transitive
     description:
-      name: pin_code_fields
+      name: pigment
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.2.0"
+    version: "1.0.4"
   platform:
     dependency: transitive
     description:
@@ -951,6 +1021,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
+  positioned_tap_detector_2:
+    dependency: transitive
+    description:
+      name: positioned_tap_detector_2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   postgrest:
     dependency: transitive
     description:
@@ -972,6 +1049,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.1"
+  proj4dart:
+    dependency: transitive
+    description:
+      name: proj4dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   provider:
     dependency: "direct main"
     description:
@@ -1000,6 +1084,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.1"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1+1"
   realtime_client:
     dependency: transitive
     description:
@@ -1032,6 +1123,13 @@ packages:
       url: "https://github.com/EduWireApps/flutter-settings-ui"
     source: git
     version: "1.0.0-nullsafety.2"
+  shake_flutter:
+    dependency: "direct main"
+    description:
+      name: shake_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "14.1.2"
   share:
     dependency: "direct main"
     description:
@@ -1111,13 +1209,6 @@ packages:
       url: "https://github.com/felixblaschke/simple_animations"
     source: git
     version: "3.0.0-nullsafety.5"
-  sizer:
-    dependency: "direct main"
-    description:
-      name: sizer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.13"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1242,15 +1333,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  tinycolor:
+  tinycolor2:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: "8c302ef477b56747252b2c876ca6c7ad9d8b841b"
-      url: "https://github.com/lslv1243/tinycolor"
-    source: git
-    version: "1.0.3"
+      name: tinycolor2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  transparent_image:
+    dependency: transitive
+    description:
+      name: transparent_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  tuple:
+    dependency: transitive
+    description:
+      name: tuple
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   typed_data:
     dependency: transitive
     description:
@@ -1258,6 +1361,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  unicode:
+    dependency: transitive
+    description:
+      name: unicode
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   universal_io:
     dependency: transitive
     description:
@@ -1363,15 +1473,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  wiredash:
-    dependency: "direct main"
+  wkt_parser:
+    dependency: transitive
     description:
-      path: "."
-      ref: stable
-      resolved-ref: "9cb1afafdbd5b15d2e482e6d298476771b739db1"
-      url: "https://github.com/wiredashio/wiredash-sdk"
-    source: git
-    version: "0.6.2"
+      name: wkt_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   xdg_directories:
     dependency: transitive
     description:
@@ -1397,11 +1505,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: rework
-      resolved-ref: "8885899c34323a5ed3d7a407bae552dfcfc74096"
+      ref: main
+      resolved-ref: db5e1c27b4fee8e3fdd2ef1ce64854934021a245
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
-    version: "0.4.3"
+    version: "0.5.1"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
+  dart: ">=2.14.0-360.0.dev <3.0.0"
   flutter: ">=2.0.4"

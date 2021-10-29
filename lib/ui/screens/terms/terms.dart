@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/components/NEW/buttons/buttons.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -36,7 +38,8 @@ class TermsPage extends StatelessWidget {
               YVerticalSpacer(YScale.s8),
               YButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, "/intro");
+                    Navigator.pushReplacementNamed(
+                        context, (Platform.isAndroid || Platform.isIOS) ? "/intro" : "/intro/config");
                   },
                   text: "J'ACCEPTE",
                   block: true,

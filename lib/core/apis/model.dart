@@ -8,8 +8,9 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurring_events.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -166,4 +167,33 @@ class SchoolAccount {
       : super();
   factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
+}
+
+///Main converter class
+///Every converter has to use it
+class YConverter {
+  final API_TYPE apiType;
+  final String? logSlot;
+  final Function converter;
+  final Function? anonymizer;
+
+  YConverter({
+    required this.apiType,
+    required this.converter,
+    this.anonymizer,
+    this.logSlot,
+  });
+
+  convert(data) {
+    if (logSlot != null && anonymizer != null) {
+      try {
+        var anonymizedData = anonymizer!(data);
+        CustomLogger.saveLog(object: logSlot!, text: anonymizedData, overWrite: true);
+        BugReportUtils.packData();
+      } catch (e) {
+        CustomLogger.log("CONVERTER", "Error anonymizing data");
+      }
+    }
+    return converter(data);
+  }
 }

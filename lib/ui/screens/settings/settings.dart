@@ -6,15 +6,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
-import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -268,6 +269,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     onToggle: (bool value) async {
                       _appSys.settings.user.global.shakeToReport = value;
                       appSys.saveSettings();
+                      BugReportUtils.initShakeToReport();
                     }),
                 SettingsTile(
                   title: 'Afficher les logs',
@@ -362,10 +364,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Bouton magique',
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
-                        GradesStats stats = GradesStats(
-                            allGrades: getAllGrades(appSys.gradesController.disciplines(showAll: true),
-                                overrideLimit: true, sortByWritingDate: true));
-                        stats.lastAverages();
+                        CustomLogger.saveLog(object: "Test", text: "test");
+                        CustomLogger.log("SECURE LOGGER", "Categories: ${await SecureLogger.getCategories()}");
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(
