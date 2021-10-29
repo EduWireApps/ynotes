@@ -5,7 +5,7 @@ import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 

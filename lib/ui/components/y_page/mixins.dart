@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 
 mixin YPageMixin<T extends StatefulWidget> on State<T> {

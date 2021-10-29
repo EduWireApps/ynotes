@@ -7,12 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:flutter_responsive_breakpoints/flutter_responsive_breakpoints.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:logger/logger.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/backward_compatibility.dart';
+import 'package:ynotes/config.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -25,7 +24,6 @@ import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/themes/themes.dart';
 import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
-import 'package:ynotes_packages/utilities.dart';
 
 Future main() async {
   Logger.level = Level.warning;
@@ -36,7 +34,7 @@ Future main() async {
   appSys = ApplicationSystem();
   await appSys.initApp();
 
-  await BugReportUtils.init();
+  BugReportUtils.init();
 
   if (!kIsWeb && !Platform.isLinux && !Platform.isWindows) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
@@ -64,11 +62,10 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    AppConfig.navigatorKey = GlobalKey<NavigatorState>();
 
     return FocusDetector(
       onForegroundGained: () {
@@ -81,35 +78,30 @@ class _AppState extends State<App> {
                 value: appSys,
                 child: Consumer<ApplicationSystem>(builder: (context, model, child) {
                   return HiveLifecycleManager(
-                    child: Responsive(
-                      builder: (context) {
-                        return MaterialApp(
-                          localizationsDelegates: const [
-                            // ... app-specific localization delegate[s] here
-                            GlobalMaterialLocalizations.delegate,
-                            GlobalWidgetsLocalizations.delegate,
-                            GlobalCupertinoLocalizations.delegate,
-                          ],
-                          supportedLocales: const [
-                            Locale('fr'), //French
-                          ],
-                          debugShowCheckedModeBanner: false,
-                          theme: model.themeData?.copyWith(
-                            colorScheme: theme.themeData.colorScheme,
-                            splashColor: theme.themeData.splashColor,
-                            highlightColor: theme.themeData.highlightColor,
-                            splashFactory: theme.themeData.splashFactory,
-                            textSelectionTheme: theme.themeData.textSelectionTheme,
-                          ),
-                          title: kDebugMode ? "yNotes DEV" : "yNotes",
-                          navigatorKey: _navigatorKey,
-                          home: const LoadingPage(),
-                          themeMode: ThemeMode.light,
-                          onGenerateRoute: onGenerateRoute,
-                        );
-                      },
+                      child: MaterialApp(
+                    localizationsDelegates: const [
+                      // ... app-specific localization delegate[s] here
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: const [
+                      Locale('fr'), //French
+                    ],
+                    debugShowCheckedModeBanner: false,
+                    theme: model.themeData?.copyWith(
+                      colorScheme: theme.themeData.colorScheme,
+                      splashColor: theme.themeData.splashColor,
+                      highlightColor: theme.themeData.highlightColor,
+                      splashFactory: theme.themeData.splashFactory,
+                      textSelectionTheme: theme.themeData.textSelectionTheme,
                     ),
-                  );
+                    title: kDebugMode ? "yNotes DEV" : "yNotes",
+                    navigatorKey: AppConfig.navigatorKey,
+                    home: const LoadingPage(),
+                    themeMode: ThemeMode.light,
+                    onGenerateRoute: onGenerateRoute,
+                  ));
                 }),
               )),
     );

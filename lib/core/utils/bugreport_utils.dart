@@ -4,10 +4,13 @@ import 'dart:io';
 import 'package:shake_flutter/models/shake_file.dart';
 import 'package:shake_flutter/shake_flutter.dart';
 import 'package:uuid/uuid.dart';
+import 'package:ynotes/config.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes_packages/components.dart';
 
 /// The class that handles the bug reporting process
 class BugReportUtils {
@@ -19,17 +22,24 @@ class BugReportUtils {
   }
 
   /// Initializes the bug report client
-  static init() {
+  static void init() {
+    final config = AppConfig.shake;
+    if (!config.isSupported) {
+      return;
+    }
     initShakeToReport();
     Shake.setShowFloatingReportButton(false);
     Shake.setInvokeShakeOnScreenshot(false);
     initUser();
 
-    //Shake clients ids
-    Shake.start('iGBaTEc4t0namXSCrwRJLihJPkMPnfco2z4Xoyi3', 'nfzb5JnoGoGVxEi75jejFhyTQL4MyyOC7yCMCYiOmKaykWdoh0kfbY8');
+    // Configure Shake
+    Shake.start(config.clientID, config.clientSecret);
   }
 
-  static initShakeToReport() {
+  static void initShakeToReport() {
+    if (!AppConfig.shake.isSupported) {
+      return;
+    }
     Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
   }
 
@@ -38,7 +48,10 @@ class BugReportUtils {
   }
 
   /// Saves and anonymizes the bug data to send it to the report platform
-  static packData() async {
+  static Future<void> packData() async {
+    if (!AppConfig.shake.isSupported) {
+      return;
+    }
     try {
       String json = jsonEncode(await CustomLogger.getAllLogs());
       //create a temp file containing logs as json
@@ -58,11 +71,17 @@ class BugReportUtils {
   }
 
   /// Opens the report widget
-  static report() async {
-    await packData();
-    Shake.show();
+  static Future<void> report() async {
+    if (AppConfig.shake.isSupported) {
+      await packData();
+      Shake.show();
+    } else {
+      YSnackbars.error(AppConfig.navigatorKey.currentContext!,
+          title: "Oups !", message: "Indisponible sur ${Platform.operatingSystem.capitalize()}");
+    }
   }
 
+  /// Retrieves the user id
   static Future<String> userId() async {
     if (await KVS.containsKey(key: "shakeUserID") && await KVS.read(key: "shakeUserID") != null) {
       return (await KVS.read(key: "shakeUserID"))!;

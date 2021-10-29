@@ -15,7 +15,7 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -221,7 +221,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         ),
                         mainButton: TextButton(
                           onPressed: () {
-                            const url = 'https://ynotes.fr/help/notifications';
+                            const url = 'https://support.ynotes.fr/divers/notifications';
                             launchURL(url);
                           },
                           child: const Text(
@@ -347,8 +347,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
                         CustomLogger.saveLog(object: "Test", text: "test");
-                        final SecureLogger secureLogger = SecureLogger();
-                        CustomLogger.log("SECURE LOGGER", "Categories: ${await secureLogger.getCategories()}");
+                        CustomLogger.log("SECURE LOGGER", "Categories: ${await SecureLogger.getCategories()}");
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(

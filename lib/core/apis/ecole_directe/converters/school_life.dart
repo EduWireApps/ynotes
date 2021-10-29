@@ -1,13 +1,12 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class EcoleDirecteSchoolLifeConverter {
   static API_TYPE apiType = API_TYPE.ecoleDirecte;
 
   static YConverter schoolLife = YConverter(
       apiType: apiType,
-
       converter: (Map<dynamic, dynamic> schoolLifeData) {
         List rawschoolLife = schoolLifeData['data']['absencesRetards'];
         List<SchoolLifeTicket> schoolLifeList = [];

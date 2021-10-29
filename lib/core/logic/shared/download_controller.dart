@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 ///Class download to notify view when download is ended

@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class PinnedHomeworkOffline {
   late Offline parent;

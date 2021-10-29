@@ -5,9 +5,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -79,7 +79,6 @@ class _AccountPageState extends State<AccountPage> {
                             await appSys.exitApp();
                             appSys.api = null;
                             appSys.buildControllers();
-                            setState(() {});
                             Phoenix.rebirth(context);
                           }
                         },
@@ -353,7 +352,7 @@ class _LoginStatusState extends State<LoginStatus> {
               YButton(onPressed: () => model.login(), text: "Reconnexion", color: YColor.success),
               YHorizontalSpacer(YScale.s2),
               YButton(
-                onPressed: () => Wiredash.of(context)!.show(),
+                onPressed: () => BugReportUtils.report(),
                 text: "Support",
               ),
             ],

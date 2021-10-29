@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';

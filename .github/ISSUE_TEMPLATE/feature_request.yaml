@@ -1,0 +1,25 @@
+name: 💡 Demande de fonctionnalité / idée
+description: "Demandez une nouvelle fonctionnalité ou faites part d'une idée."
+title: '[Feature]: '
+labels: [feature, triage]
+assignees:
+  - florian-lefebvre
+body:
+- type: textarea
+  attributes:
+    label: Votre demande de fonctionnalité est-elle liée à un problème ? Veuillez le décrire.
+    description: "Une description claire et concise de ce que vous voulez et de votre cas d'utilisation."
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Décrivez la solution que vous souhaitez
+    description: Une description claire et concise de ce que vous voulez.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Contexte supplémentaire
+    description: "Ajoutez tout autre contexte ou capture d'écran permettant de clarifier votre question."
+  validations:
+    required: false

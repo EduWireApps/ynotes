@@ -1,5 +1,5 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class GradesUtils {
   //Get average

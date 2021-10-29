@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';

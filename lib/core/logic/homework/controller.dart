@@ -7,7 +7,7 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/data/disciplines_filter.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {

@@ -4,7 +4,7 @@ import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/anonymizer_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class EcoleDirecteHomeworkConverter {
   static API_TYPE apiType = API_TYPE.ecoleDirecte;

@@ -8,7 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/controller.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/ui.dart';
 
 /// The status of the geolocation
