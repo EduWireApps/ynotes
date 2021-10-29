@@ -5,7 +5,7 @@ import 'package:shake_flutter/models/shake_file.dart';
 import 'package:shake_flutter/shake_flutter.dart';
 import 'package:ynotes/config.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes_packages/components.dart';

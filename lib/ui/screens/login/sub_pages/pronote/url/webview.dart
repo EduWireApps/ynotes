@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';

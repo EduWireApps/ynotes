@@ -10,7 +10,7 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurring_events.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -188,8 +188,7 @@ class YConverter {
     if (logSlot != null && anonymizer != null) {
       try {
         var anonymizedData = anonymizer!(data);
-        CustomLogger.saveLog(
-            object: logSlot!, text: anonymizedData, overWrite: true);
+        CustomLogger.saveLog(object: logSlot!, text: anonymizedData, overWrite: true);
         BugReportUtils.packData();
       } catch (e) {
         CustomLogger.log("CONVERTER", "Error anonymizing data");
