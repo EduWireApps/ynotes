@@ -16,7 +16,6 @@ import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
-import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';

@@ -12,7 +12,6 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/backward_compatibility.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/background.dart';
@@ -81,67 +80,34 @@ class _AppState extends State<App> {
           builder: (context) => ChangeNotifierProvider<ApplicationSystem>.value(
                 value: appSys,
                 child: Consumer<ApplicationSystem>(builder: (context, model, child) {
-                  return Wiredash(
-                    projectId: "ynotes-giw0qs2",
-                    secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
-                    navigatorKey: _navigatorKey,
-                    theme: WiredashThemeData(
-                      backgroundColor: theme.colors.backgroundColor,
-                      primaryBackgroundColor: theme.colors.backgroundLightColor,
-                      secondaryBackgroundColor: theme.colors.backgroundColor,
-                      primaryColor: theme.colors.primary.backgroundColor,
-                      secondaryColor: theme.colors.primary.backgroundColor,
-                      primaryTextColor: theme.colors.foregroundColor,
-                      secondaryTextColor: theme.colors.foregroundLightColor,
-                      brightness: Brightness.dark,
-                      sheetBorderRadius: BorderRadius.vertical(top: Radius.circular(YScale.s6)),
-                      fontFamily: theme.fonts.primary,
-                      tertiaryTextColor: theme.colors.foregroundColor,
-                      dividerColor: theme.colors.primary.foregroundColor,
-                      errorColor: theme.colors.danger.backgroundColor,
-                      firstPenColor: theme.colors.info.backgroundColor,
-                      secondPenColor: theme.colors.success.backgroundColor,
-                      thirdPenColor: theme.colors.warning.backgroundColor,
-                      fourthPenColor: theme.colors.danger.backgroundColor,
-                    ),
-                    options: WiredashOptionsData(
-                      /// You can set your own locale to override device default (`window.locale` by default)
-                      locale: const Locale.fromSubtags(languageCode: 'fr'),
-                    ),
-                    child: HiveLifecycleManager(
-                      child: Responsive(
-                        builder: (context) {
-                          PackageInfo.fromPlatform().then((value) {
-                            Wiredash.of(context)?.setBuildProperties(
-                                buildNumber: "[API] ${model.api?.apiName ?? 'None'}", buildVersion: value.version);
-                          });
-
-                          return MaterialApp(
-                            localizationsDelegates: const [
-                              // ... app-specific localization delegate[s] here
-                              GlobalMaterialLocalizations.delegate,
-                              GlobalWidgetsLocalizations.delegate,
-                              GlobalCupertinoLocalizations.delegate,
-                            ],
-                            supportedLocales: const [
-                              Locale('fr'), //French
-                            ],
-                            debugShowCheckedModeBanner: false,
-                            theme: model.themeData?.copyWith(
-                              colorScheme: theme.themeData.colorScheme,
-                              splashColor: theme.themeData.splashColor,
-                              highlightColor: theme.themeData.highlightColor,
-                              splashFactory: theme.themeData.splashFactory,
-                              textSelectionTheme: theme.themeData.textSelectionTheme,
-                            ),
-                            title: kDebugMode ? "yNotes DEV" : "yNotes",
-                            navigatorKey: _navigatorKey,
-                            home: const LoadingPage(),
-                            themeMode: ThemeMode.light,
-                            onGenerateRoute: onGenerateRoute,
-                          );
-                        },
-                      ),
+                  return HiveLifecycleManager(
+                    child: Responsive(
+                      builder: (context) {
+                        return MaterialApp(
+                          localizationsDelegates: const [
+                            // ... app-specific localization delegate[s] here
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                          ],
+                          supportedLocales: const [
+                            Locale('fr'), //French
+                          ],
+                          debugShowCheckedModeBanner: false,
+                          theme: model.themeData?.copyWith(
+                            colorScheme: theme.themeData.colorScheme,
+                            splashColor: theme.themeData.splashColor,
+                            highlightColor: theme.themeData.highlightColor,
+                            splashFactory: theme.themeData.splashFactory,
+                            textSelectionTheme: theme.themeData.textSelectionTheme,
+                          ),
+                          title: kDebugMode ? "yNotes DEV" : "yNotes",
+                          navigatorKey: _navigatorKey,
+                          home: const LoadingPage(),
+                          themeMode: ThemeMode.light,
+                          onGenerateRoute: onGenerateRoute,
+                        );
+                      },
                     ),
                   );
                 }),
