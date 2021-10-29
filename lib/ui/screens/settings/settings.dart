@@ -319,23 +319,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     iosChevron: const Icon(Icons.chevron_right),
                   ),
                   SettingsTile(
-                    title: 'Forcer la restauration des anciens paramètres',
-                    leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
-                    onPressed: (context) async {
-                      var temp = await SettingsUtils.forceRestoreOldSettings();
-                      setState(() {
-                        appSys.settings = temp;
-                        appSys.saveSettings();
-                      });
-                      CustomDialogs.showAnyDialog(context, "Anciens paramètres restaurés.");
-                    },
-                    titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                    subtitleTextStyle: TextStyle(
-                        fontFamily: "Asap",
-                        color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: const Icon(Icons.chevron_right),
-                  ),
-                  SettingsTile(
                     title: 'A propos de cette application',
                     leading: Icon(MdiIcons.information, color: ThemeUtils.textColor()),
                     iosChevron: const Icon(Icons.chevron_right),
