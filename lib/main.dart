@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:flutter_responsive_breakpoints/flutter_responsive_breakpoints.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -79,35 +78,30 @@ class _AppState extends State<App> {
                 value: appSys,
                 child: Consumer<ApplicationSystem>(builder: (context, model, child) {
                   return HiveLifecycleManager(
-                    child: Responsive(
-                      builder: (context) {
-                        return MaterialApp(
-                          localizationsDelegates: const [
-                            // ... app-specific localization delegate[s] here
-                            GlobalMaterialLocalizations.delegate,
-                            GlobalWidgetsLocalizations.delegate,
-                            GlobalCupertinoLocalizations.delegate,
-                          ],
-                          supportedLocales: const [
-                            Locale('fr'), //French
-                          ],
-                          debugShowCheckedModeBanner: false,
-                          theme: model.themeData?.copyWith(
-                            colorScheme: theme.themeData.colorScheme,
-                            splashColor: theme.themeData.splashColor,
-                            highlightColor: theme.themeData.highlightColor,
-                            splashFactory: theme.themeData.splashFactory,
-                            textSelectionTheme: theme.themeData.textSelectionTheme,
-                          ),
-                          title: kDebugMode ? "yNotes DEV" : "yNotes",
-                          navigatorKey: AppConfig.navigatorKey,
-                          home: const LoadingPage(),
-                          themeMode: ThemeMode.light,
-                          onGenerateRoute: onGenerateRoute,
-                        );
-                      },
+                      child: MaterialApp(
+                    localizationsDelegates: const [
+                      // ... app-specific localization delegate[s] here
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: const [
+                      Locale('fr'), //French
+                    ],
+                    debugShowCheckedModeBanner: false,
+                    theme: model.themeData?.copyWith(
+                      colorScheme: theme.themeData.colorScheme,
+                      splashColor: theme.themeData.splashColor,
+                      highlightColor: theme.themeData.highlightColor,
+                      splashFactory: theme.themeData.splashFactory,
+                      textSelectionTheme: theme.themeData.textSelectionTheme,
                     ),
-                  );
+                    title: kDebugMode ? "yNotes DEV" : "yNotes",
+                    navigatorKey: AppConfig.navigatorKey,
+                    home: const LoadingPage(),
+                    themeMode: ThemeMode.light,
+                    onGenerateRoute: onGenerateRoute,
+                  ));
                 }),
               )),
     );

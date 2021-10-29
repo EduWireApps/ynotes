@@ -457,7 +457,7 @@ packages:
     source: hosted
     version: "1.0.0"
   flutter_responsive_breakpoints:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_responsive_breakpoints
       url: "https://pub.dartlang.org"
