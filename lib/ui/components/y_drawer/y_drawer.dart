@@ -43,7 +43,8 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
       _SpecialRoute(
           title: "Paramètres",
           icon: Icons.settings,
-          onTap: () => openLocalPage(const YPageLocal(title: "Paramètres", child: SettingsPage()))),
+          // onTap: () => openLocalPage(const YPageLocal(title: "Paramètres", child: SettingsPage()))
+          onTap: () => Navigator.pushNamed(context, "/settings")),
     ];
 
     final List<_SpecialRoute> specialIcons = [
