@@ -10,6 +10,7 @@ class LoginContent {
   static final widgets = _Widgets();
   static final login = _Login();
   static final ecoleDirecte = _EcoleDirecte();
+  static final lvs = _Lvs();
   static final demos = _Demos();
   static final pronote = _Pronote();
 }
@@ -23,6 +24,10 @@ class _Login {
 
 class _EcoleDirecte {
   final subtitle = "EcoleDirecte";
+}
+
+class _Lvs {
+  final subtitle = "La vie scolaire";
 }
 
 class _Demos {
