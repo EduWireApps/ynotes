@@ -105,7 +105,7 @@ abstract class API {
   Future uploadFile(String context, String id, String filepath);
 }
 
-enum API_TYPE { ecoleDirecte, pronote }
+enum API_TYPE { ecoleDirecte, pronote, Lvs }
 
 @JsonSerializable()
 class AppAccount {
