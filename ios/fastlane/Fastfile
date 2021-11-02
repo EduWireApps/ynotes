@@ -24,7 +24,7 @@ platform :ios do
     lane :beta do
         
         setup_ci
-        match(type: "appstore")
+        match(type: "AppStore")
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         api_key = app_store_connect_api_key(
             key_id: "5R2MFY6PX4",
@@ -36,7 +36,7 @@ platform :ios do
     end
     lane :prod do
         setup_ci
-        match(type: "appstore")
+        match(type: "AppStore")
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         api_key = app_store_connect_api_key(
             key_id: "5R2MFY6PX4",
