@@ -1,18 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/y_page/mixins.dart';
-import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -24,35 +15,7 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> with YPageMixin {
-  Future<void> notificationSetting({required ApplicationSystem controller, required Function fn}) async {
-    if (controller.settings.user.global.batterySaver) {
-      YSnackbars.info(context,
-          title: "Paramètre désactivé",
-          message: "Tu as activé l'économiseur de batterie, qui désactive l'envoi de notifications.");
-      return;
-    }
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      final notificationPermission = await Permission.notification.request();
-      final batteryPermission = await Permission.ignoreBatteryOptimizations.request();
-      UIUtils.setSystemUIOverlayStyle();
-      if (notificationPermission.isGranted && batteryPermission.isGranted) {
-        fn();
-        appSys.saveSettings();
-      } else {
-        YDialogs.showInfo(
-            context,
-            YInfoDialog(
-                title: "Oups !",
-                body: Text("Tu n'as pas accordé à yNotes toutes les permissions nécessaires.",
-                    style: theme.texts.body1)));
-      }
-    } else {
-      fn();
-      appSys.saveSettings();
-    }
-  }
-
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return YPage(
@@ -60,37 +23,25 @@ class _SettingsPageState extends State<SettingsPage> with YPageMixin {
         body: ControllerConsumer<ApplicationSystem>(
             controller: appSys,
             builder: (context, controller, _) => YSettingsSections(sections: [
-                  // TODO: move to a new page "account"
-                  YSettingsSection(title: "Compte", tiles: [
-                    YSettingsTile(
-                        title: controller.currentSchoolAccount?.name ?? "Invité",
-                        leading: Icons.account_circle_rounded,
-                        onTap: () => openLocalPage(const YPageLocal(child: AccountPage(), title: "Compte"))),
-                    YSettingsTile(
-                      title: "Spécialités",
-                      subtitle:
-                          "Si tu es en classe de Première ou Terminale, sélectionner tes spécialités te permet d'avoir accès à des filtres supplémentaires",
-                      onTap: () => CustomDialogs.showSpecialtiesChoice(context),
-                    ),
-                    YSettingsTile(
-                        title: "Supprimer les données hors ligne",
-                        color: YColor.danger,
-                        onTap: () async {
-                          final bool res = await YDialogs.getChoice(
-                              context,
-                              YChoiceDialog(
-                                  color: YColor.danger,
-                                  title: "Attention",
-                                  body: Text(
-                                      "Êtes vous sûr de vouloir supprimer les données hors ligne ? Cette action est irréversible",
-                                      style: theme.texts.body1)));
-                          if (res) {
-                            await controller.offline.clearAll();
-                            controller.api = apiManager(controller.offline);
-                          }
-                        })
-                  ]),
                   YSettingsSection(tiles: [
+                    YSettingsTile(
+                        title: "Compte",
+                        leading: Icons.account_circle_rounded,
+                        onTap: () => Navigator.pushNamed(context, "/settings/account")),
+                    YSettingsTile(
+                        title: "Notifications",
+                        leading: Icons.notifications_rounded,
+                        onTap: () => Navigator.pushNamed(context, "/settings/notifications")),
+                    YSettingsTile(
+                        title: "Assistance",
+                        leading: Icons.support_rounded,
+                        onTap: () => Navigator.pushNamed(context, "/settings/support")),
+                    YSettingsTile(
+                        title: "A propos",
+                        leading: Icons.info_rounded,
+                        onTap: () => Navigator.pushNamed(context, "/settings/about")),
+                  ]),
+                  YSettingsSection(title: "Divers", tiles: [
                     YSettingsTile.switchTile(
                       title: 'Mode nuit',
                       switchValue: theme.isDark,
@@ -108,23 +59,6 @@ class _SettingsPageState extends State<SettingsPage> with YPageMixin {
                         appSys.saveSettings();
                       },
                     ),
-                  ]),
-                  // TODO: move to a new page maybe?
-                  YSettingsSection(title: "Notifications", tiles: [
-                    YSettingsTile.switchTile(
-                      title: "Nouvel email",
-                      switchValue: controller.settings.user.global.notificationNewMail,
-                      onSwitchValueChanged: (bool value) async => await notificationSetting(
-                          controller: controller,
-                          fn: () => controller.settings.user.global.notificationNewMail = value),
-                    ),
-                    YSettingsTile.switchTile(
-                      title: "Nouvelle note",
-                      switchValue: controller.settings.user.global.notificationNewGrade,
-                      onSwitchValueChanged: (bool value) async => await notificationSetting(
-                          controller: controller,
-                          fn: () => controller.settings.user.global.notificationNewGrade = value),
-                    )
                   ]),
                   if (!kReleaseMode)
                     YSettingsSection(title: "[DEV ONLY]", tiles: [
