@@ -457,7 +457,7 @@ packages:
     source: hosted
     version: "1.0.0"
   flutter_responsive_breakpoints:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_responsive_breakpoints
       url: "https://pub.dartlang.org"
@@ -466,10 +466,47 @@ packages:
   flutter_secure_storage:
     dependency: "direct main"
     description:
-      name: flutter_secure_storage
+      path: flutter_secure_storage
+      ref: develop
+      resolved-ref: a220b467b55757e95cfaabfdf58269c4052956e8
+      url: "https://github.com/mogol/flutter_secure_storage"
+    source: git
+    version: "5.0.0-beta.5"
+  flutter_secure_storage_linux:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.1"
+    version: "1.1.0"
+  flutter_secure_storage_macos:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  flutter_secure_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  flutter_secure_storage_web:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
+  flutter_secure_storage_windows:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -1092,7 +1129,7 @@ packages:
       name: shake_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "15.0.0"
+    version: "14.1.2"
   share:
     dependency: "direct main"
     description:
