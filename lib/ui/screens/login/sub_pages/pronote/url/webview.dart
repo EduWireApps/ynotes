@@ -8,8 +8,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
-import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -92,7 +92,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                           ),
                           YVerticalSpacer(YScale.s2),
                           YButton(
-                            onPressed: () => Wiredash.of(context)!.show(),
+                            onPressed: () => BugReportUtils.report(),
                             color: YColor.secondary,
                             text: LoginContent.pronote.url.webview.dialog.report,
                             icon: MdiIcons.forum,

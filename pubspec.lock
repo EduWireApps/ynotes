@@ -1436,15 +1436,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  wiredash:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: stable
-      resolved-ref: "9cb1afafdbd5b15d2e482e6d298476771b739db1"
-      url: "https://github.com/wiredashio/wiredash-sdk"
-    source: git
-    version: "0.6.2"
   wkt_parser:
     dependency: transitive
     description:
