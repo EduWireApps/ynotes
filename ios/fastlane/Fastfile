@@ -36,7 +36,7 @@ platform :ios do
     
     lane :prod do
         setup_ci
-        sync_code_signing        
+        sync_code_signing(type: 'appstore')        
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         api_key = app_store_connect_api_key(
             key_id: "5R2MFY6PX4",
