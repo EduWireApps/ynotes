@@ -63,8 +63,6 @@ jobs:
 
       - name: Decrypt iOS keys
         run: sh ./.github/scripts/decrypt_ios_keys.sh
-        env:
-          ANDROID_KEYS_SECRET_PASSPHRASE: ${{ secrets.ANDROID_KEYS_SECRET_PASSPHRASE }}  
 
       - name: Install Pods
         working-directory: ios

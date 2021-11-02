@@ -22,7 +22,6 @@ platform :ios do
     end
     desc "Push a new beta build to TestFlight"
     lane :beta do
-        
         setup_ci
         match(type: "AppStore")
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
