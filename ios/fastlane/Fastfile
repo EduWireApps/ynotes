@@ -33,6 +33,7 @@ platform :ios do
         )
         upload_to_testflight(api_key: api_key, changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
     end
+    
     lane :prod do
         setup_ci
         match(type: "AppStore")
