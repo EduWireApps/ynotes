@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -36,10 +39,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         title: "Assistance",
                         leading: Icons.support_rounded,
                         onTap: () => Navigator.pushNamed(context, "/settings/support")),
-                    YSettingsTile(
-                        title: "A propos",
-                        leading: Icons.info_rounded,
-                        onTap: () => Navigator.pushNamed(context, "/settings/about")),
                   ]),
                   YSettingsSection(title: "Divers", tiles: [
                     YSettingsTile.switchTile(
@@ -58,6 +57,18 @@ class _SettingsPageState extends State<SettingsPage> {
                         controller.settings.user.global.batterySaver = value;
                         appSys.saveSettings();
                       },
+                    ),
+                  ]),
+                  YSettingsSection(title: "Informations", tiles: [
+                    YSettingsTile(
+                      title: "Note de mise à jour",
+                      leading: MdiIcons.file,
+                      onTap: () => CustomDialogs.showUpdateNoteDialog(context),
+                    ),
+                    YSettingsTile(
+                      title: "A propos de cette application",
+                      leading: Icons.info_rounded,
+                      onTap: () => AppDialogs.showAboutDialog(context),
                     ),
                   ]),
                   if (!kReleaseMode)

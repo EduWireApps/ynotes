@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/y_page/mixins.dart';
-import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
@@ -13,13 +10,13 @@ class AccountHeader extends StatefulWidget {
   _AccountHeaderState createState() => _AccountHeaderState();
 }
 
-class _AccountHeaderState extends State<AccountHeader> with YPageMixin {
+class _AccountHeaderState extends State<AccountHeader> {
   final account = appSys.currentSchoolAccount;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => openLocalPage(const YPageLocal(child: AccountPage(), title: "Compte")),
+      onTap: () => Navigator.pushNamed(context, "/settings/account"),
       child: Container(
           padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
           color: theme.colors.primary.backgroundColor,

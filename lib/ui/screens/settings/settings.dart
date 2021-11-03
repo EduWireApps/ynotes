@@ -21,7 +21,6 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 
 import '../../../tests.dart';
@@ -81,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       subtitle: appSys.currentSchoolAccount?.name ?? "Invité",
                       leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                       trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
-                      onPressed: (context) => openLocalPage(const YPageLocal(child: AccountPage(), title: "Compte")),
+                      onPressed: (context) => Navigator.pushNamed(context, "/settings/account"),
                       iosChevron: const Icon(Icons.chevron_right)),
                 ],
               ),
