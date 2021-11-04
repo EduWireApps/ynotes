@@ -1,5 +1,5 @@
 # cd.yml
-name: CD
+name: Android Deployment
 
 on:
   push:
