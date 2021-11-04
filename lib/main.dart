@@ -20,7 +20,6 @@ import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
-import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/themes/themes.dart';
 import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -98,7 +97,7 @@ class _AppState extends State<App> {
                     ),
                     title: kDebugMode ? "yNotes DEV" : "yNotes",
                     navigatorKey: AppConfig.navigatorKey,
-                    home: const LoadingPage(),
+                    initialRoute: "/loading",
                     themeMode: ThemeMode.light,
                     onGenerateRoute: onGenerateRoute,
                   ));

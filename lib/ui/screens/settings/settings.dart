@@ -79,7 +79,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: () async {
                             CustomLogger.saveLog(object: "Test", text: "test");
                             CustomLogger.log("SECURE LOGGER", "Categories: ${await SecureLogger.getCategories()}");
-                          })
+                          }),
+                      YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, ""))
                     ])
                 ])));
   }
