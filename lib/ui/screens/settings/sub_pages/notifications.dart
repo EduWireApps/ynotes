@@ -11,7 +11,6 @@ import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -81,11 +80,10 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                           enabled: !controller.settings.user.global.batterySaver,
                         )
                       ]),
-                      // TODO: rework
                       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
-                        YSettingsSection(tiles: [
+                        YSettingsSection(title: "Dépannage", tiles: [
                           YSettingsTile(
-                              title: "Je ne reçois pas de notifications",
+                              title: "Réparer",
                               leading: MdiIcons.bellAlert,
                               onTap: () async {
                                 if (Platform.isIOS) {
@@ -93,32 +91,63 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                                   return;
                                 }
 
-                                //Check battery optimization setting
-                                if (!await Permission.ignoreBatteryOptimizations.isGranted &&
-                                    await CustomDialogs.showAuthorizationsDialog(
+                                final batteryOptimizationStatus = await Permission.ignoreBatteryOptimizations.status;
+                                if (!batteryOptimizationStatus.isGranted) {
+                                  if (batteryOptimizationStatus.isDenied) {
+                                    final res = await Permission.ignoreBatteryOptimizations.request();
+                                    UIUtils.setSystemUIOverlayStyle();
+                                    if (!res.isGranted) {
+                                      await YDialogs.showInfo(
+                                          context,
+                                          YInfoDialog(
+                                              title: "Oups !",
+                                              body: Text(
+                                                  "Les notifications risquent de ne pas fonctionner correctement si tu n'accordes pas cette permission à yNotes.",
+                                                  style: theme.texts.body1),
+                                              confirmLabel: "OK"));
+                                    }
+                                  }
+                                  if (batteryOptimizationStatus.isPermanentlyDenied) {
+                                    await YDialogs.showInfo(
                                         context,
-                                        "la configuration d'optimisation de batterie",
-                                        "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
-                                  await Permission.ignoreBatteryOptimizations.request().isGranted;
+                                        YInfoDialog(
+                                            title: "Oups !",
+                                            body: Text(
+                                                "Tu as bloqué cette permission de façon définitive, les notifications risquent par conséquent de ne pas fonctionner correctement.",
+                                                style: theme.texts.body1),
+                                            confirmLabel: "OK"));
+                                  }
                                 }
 
-                                if (await CustomDialogs.showAuthorizationsDialog(
-                                        context,
-                                        "la liste blanche de lancement en arrière plan / démarrage",
-                                        "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.") ??
-                                    false) {
+                                final bool res = await YDialogs.getChoice(
+                                    context,
+                                    YChoiceDialog(
+                                      title: "Permission",
+                                      body: Text(
+                                          "Pour pourvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan, tu dois ajouter yNotes à la liste blanche de lancement en arrière plan / démarrage.",
+                                          style: theme.texts.body1),
+                                      confirmLabel: "OK",
+                                    ));
+
+                                if (res) {
                                   await AndroidPlatformChannel.openAutoStartSettings();
+                                } else {
+                                  await YDialogs.showInfo(
+                                      context,
+                                      YInfoDialog(
+                                          title: "Oups !",
+                                          body: Text("Les notifications risquent de ne pas fonctionner correctement.",
+                                              style: theme.texts.body1),
+                                          confirmLabel: "OK"));
                                 }
+
                                 await AppNotification.showDebugNotification();
-                                YSnackBar(context,
-                                    title: "Toujours pas de notifications ?",
-                                    message: "Consulte notre guide",
-                                    color: YColor.info,
-                                    action: YSnackbarAction(
-                                        text: "Voir",
-                                        onPressed: () async =>
-                                            await launch("https://support.ynotes.fr/divers/notifications"))).show();
-                              })
+                              }),
+                          YSettingsTile(
+                              title: "Consulter notre guide",
+                              subtitle:
+                                  "Si malgré l'outil de dépannage tu ne reçois pas de notifications correctement, consultre notre guide en ligne. Si le problème persiste, contacte le support.",
+                              onTap: () async => await launch("https://support.ynotes.fr/divers/notifications"))
                         ])
                     ])
                   ],
