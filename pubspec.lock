@@ -1114,15 +1114,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.18"
-  settings_ui:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: f9d0639494f591cad9fc77783b052b56d29e9dcf
-      url: "https://github.com/EduWireApps/flutter-settings-ui"
-    source: git
-    version: "1.0.0-nullsafety.2"
   shake_flutter:
     dependency: "direct main"
     description:

@@ -26,10 +26,6 @@ dependencies:
     git:
       url: https://github.com/ianmaciel/requests
       ref: feature/null-safety
-  settings_ui:
-    git:
-      url: https://github.com/EduWireApps/flutter-settings-ui
-      ref: master
   simple_animations:
     git:
       url: https://github.com/felixblaschke/simple_animations
