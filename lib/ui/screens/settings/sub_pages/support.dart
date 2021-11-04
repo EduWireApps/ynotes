@@ -36,6 +36,7 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> with YPageMix
                               appSys.saveSettings();
                               BugReportUtils.initShakeToReport();
                             }),
+                        // TODO: rework logs page
                         YSettingsTile(
                           title: "Logs",
                           leading: MdiIcons.bug,
