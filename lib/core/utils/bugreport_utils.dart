@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:shake_flutter/models/shake_file.dart';
 import 'package:shake_flutter/shake_flutter.dart';
+import 'package:uuid/uuid.dart';
 import 'package:ynotes/config.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
@@ -28,6 +30,7 @@ class BugReportUtils {
     initShakeToReport();
     Shake.setShowFloatingReportButton(false);
     Shake.setInvokeShakeOnScreenshot(false);
+    initUser();
 
     // Configure Shake
     Shake.start(config.clientID, config.clientSecret);
@@ -38,6 +41,10 @@ class BugReportUtils {
       return;
     }
     Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
+  }
+
+  static Future<void> initUser() async {
+    Shake.registerUser(await userId());
   }
 
   /// Saves and anonymizes the bug data to send it to the report platform
@@ -71,6 +78,16 @@ class BugReportUtils {
     } else {
       YSnackbars.error(AppConfig.navigatorKey.currentContext!,
           title: "Oups !", message: "Indisponible sur ${Platform.operatingSystem.capitalize()}");
+    }
+  }
+
+  static Future<String> userId() async {
+    if (await KVS.containsKey(key: "shakeUserID") && await KVS.read(key: "shakeUserID") != null) {
+      return (await KVS.read(key: "shakeUserID"))!;
+    } else {
+      String id = const Uuid().v4();
+      await KVS.write(key: "shakeUserID", value: id);
+      return id;
     }
   }
 
