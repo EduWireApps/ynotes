@@ -77,10 +77,7 @@ jobs:
           bundle install   
         working-directory: ios/fastlane
 
-      - name: Build for iOS
-        run: flutter build ios --release
-
-      - name: Update to App Store
+      - name: Upload to App Store
         working-directory: ios
         run: |
           export LC_ALL=fr_FR.UTF-8

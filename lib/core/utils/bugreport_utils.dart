@@ -30,7 +30,6 @@ class BugReportUtils {
     initShakeToReport();
     Shake.setShowFloatingReportButton(false);
     Shake.setInvokeShakeOnScreenshot(false);
-    initUser();
 
     // Configure Shake
     Shake.start(config.clientID, config.clientSecret);
@@ -41,10 +40,6 @@ class BugReportUtils {
       return;
     }
     Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
-  }
-
-  static Future<void> initUser() async {
-    Shake.registerUser(await userId());
   }
 
   /// Saves and anonymizes the bug data to send it to the report platform
