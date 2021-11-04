@@ -5,13 +5,15 @@ on:
   push:
     branches:
       - beta-releases
+      - debugworkflow
+
 
 jobs:
   # CD
   deploy_ios:
     runs-on: macos-latest
     # Beta release only
-    if: github.ref == 'refs/heads/beta-releases'
+    if: github.ref == 'refs/heads/debugworkflow'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -77,10 +79,7 @@ jobs:
           bundle install   
         working-directory: ios/fastlane
 
-      - name: Build for iOS
-        run: flutter build ios --release
-
-      - name: Update to App Store
+      - name: Upload to App Store
         working-directory: ios
         run: |
           export LC_ALL=fr_FR.UTF-8
