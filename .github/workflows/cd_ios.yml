@@ -5,15 +5,13 @@ on:
   push:
     branches:
       - beta-releases
-      - debugworkflow
-
 
 jobs:
   # CD
   deploy_ios:
     runs-on: macos-latest
     # Beta release only
-    if: github.ref == 'refs/heads/debugworkflow'
+    if: github.ref == 'refs/heads/beta-releases'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
