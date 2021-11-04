@@ -4,9 +4,6 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/y_page/mixins.dart';
-import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 
@@ -17,7 +14,7 @@ class SettingsSupportPage extends StatefulWidget {
   _SettingsSupportPageState createState() => _SettingsSupportPageState();
 }
 
-class _SettingsSupportPageState extends State<SettingsSupportPage> with YPageMixin {
+class _SettingsSupportPageState extends State<SettingsSupportPage> {
   @override
   Widget build(BuildContext context) {
     return YPage(
@@ -36,14 +33,10 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> with YPageMix
                               appSys.saveSettings();
                               BugReportUtils.initShakeToReport();
                             }),
-                        // TODO: rework logs page
                         YSettingsTile(
-                          title: "Logs",
-                          leading: MdiIcons.bug,
-                          onTap: () {
-                            openLocalPage(const YPageLocal(child: LogsPage(), title: "Logs"));
-                          },
-                        ),
+                            title: "Logs",
+                            leading: MdiIcons.file,
+                            onTap: () => Navigator.pushNamed(context, "/settings/logs")),
                       ]),
                     ])
                   ],

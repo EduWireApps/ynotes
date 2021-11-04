@@ -1506,7 +1506,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: fe07dcb26a32180704ed19c9dad2e50236cbd9f2
+      resolved-ref: "7878a8b1c82c5ae73524c2339919b38faf95e254"
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
     version: "0.5.2"
