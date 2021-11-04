@@ -22,12 +22,12 @@ class _SettingsLicensesPageState extends State<SettingsLicensesPage> {
         .then((_LicenseData licenseData) => licenseData..sortPackages());
     return YPage(
         appBar: const YAppBar(title: "Licenses"),
+        showScrollbar: true,
         body: FutureBuilder(
             future: licenses,
             builder: (_, AsyncSnapshot<_LicenseData> snapshot) {
               if (snapshot.hasData) {
-                return ListView(
-                  shrinkWrap: true,
+                return Column(
                   children: [
                     ...snapshot.data!.packages.asMap().entries.map((entry) {
                       final String packageName = entry.value;

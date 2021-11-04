@@ -117,7 +117,7 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                                     action: YSnackbarAction(
                                         text: "Voir",
                                         onPressed: () async =>
-                                            await launch("https://support.ynotes.fr/divers/notifications")));
+                                            await launch("https://support.ynotes.fr/divers/notifications"))).show();
                               })
                         ])
                     ])

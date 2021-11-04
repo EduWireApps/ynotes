@@ -19,7 +19,7 @@ class TermsPage extends StatelessWidget {
       showScrollbar: true,
       appBar: const YAppBar(title: "Termes et conditions", removeLeading: true),
       body: Padding(
-          padding: YPadding.p(YScale.s2),
+          padding: EdgeInsets.fromLTRB(YScale.s2, YScale.s2, YScale.s4, YScale.s2),
           child: Column(
             children: [
               FutureBuilder<String>(
