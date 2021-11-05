@@ -123,6 +123,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                       padding: YPadding.px(YScale.s2),
                       child: YButton(
                           onPressed: () async {
+                            controller.loginController.login();
                             await KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
                             Navigator.pushReplacementNamed(context, "/summary");
                           },
