@@ -26,7 +26,7 @@ class SchoolLifeController extends Controller {
     try {
       final tickets = await _api!.getSchoolLife(forceReload: force);
       setState(() {
-        _tickets = null;
+        _tickets = tickets;
       });
     } catch (e) {
       CustomLogger.log("SCHOOL LIFE", "An error occured while refreshing");
