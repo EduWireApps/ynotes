@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:shake_flutter/models/shake_file.dart';
 import 'package:shake_flutter/shake_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/config.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
@@ -11,6 +13,7 @@ import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 /// The class that handles the bug reporting process
 class BugReportUtils {
@@ -71,8 +74,18 @@ class BugReportUtils {
       await packData();
       Shake.show();
     } else {
-      YSnackbars.error(AppConfig.navigatorKey.currentContext!,
-          title: "Oups !", message: "Indisponible sur ${Platform.operatingSystem.capitalize()}");
+      final bool res = await YDialogs.getChoice(
+          AppConfig.navigatorKey.currentContext!,
+          YChoiceDialog(
+              title: "Oups !",
+              body: Text(
+                  "Cette fonctionnalité est indisponible sur ${Platform.operatingSystem.capitalize()}. Veux-tu aller sur la page \"Contact\" de notre site internet à la place ?",
+                  style: theme.texts.body1),
+              confirmLabel: "Oui",
+              cancelLabel: "Non"));
+      if (res) {
+        launch("https://ynotes.fr/contact");
+      }
     }
   }
 
