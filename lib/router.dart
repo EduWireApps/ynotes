@@ -13,7 +13,7 @@ import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/screens/login/routes.dart';
 import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
-import 'package:ynotes/ui/screens/school_life/school_life.dart';
+import 'package:ynotes/ui/screens/school_life/routes.dart';
 import 'package:ynotes/ui/screens/settings/routes.dart';
 import 'package:ynotes/ui/screens/summary/summary.dart';
 import 'package:ynotes/ui/screens/terms/terms.dart';
@@ -49,13 +49,7 @@ final List<CustomRoute> routes = [
       page: const MailPage(),
       relatedApi: 0,
       tab: appTabs.messaging),
-  CustomRoute(
-      path: "/school_life",
-      icon: MdiIcons.stamper,
-      title: "Vie scolaire",
-      page: const SchoolLifePage(),
-      relatedApi: 0,
-      tab: appTabs.schoolLife),
+  ...schoolLifeRoutes,
   CustomRoute(
       path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: const CloudPage(), relatedApi: 0, tab: appTabs.cloud),
   CustomRoute(
