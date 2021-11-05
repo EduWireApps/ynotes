@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes_packages/components.dart';
@@ -82,15 +85,49 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                               ),
                               ...filteredLogs
                                   .map((log) => ListTile(
-                                        title: Text(_generateTitle(log),
-                                            style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
-                                        subtitle: Text(
-                                          log.comment,
-                                          style: theme.texts.body2,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ))
+                                      title: Text(_generateTitle(log),
+                                          style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
+                                      subtitle: Text(
+                                        log.comment,
+                                        style: theme.texts.body2,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      trailing: Icon(Icons.copy_rounded, color: theme.colors.foregroundLightColor),
+                                      onTap: () {
+                                        if (log.stacktrace == null) {
+                                          Clipboard.setData(ClipboardData(text: jsonEncode(log)));
+                                          YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                        } else {
+                                          YModalBottomSheets.show(
+                                              context: context,
+                                              child: Column(
+                                                children: [
+                                                  ListTile(
+                                                    title: Text("Copier en tant que JSON", style: theme.texts.body1),
+                                                    leading: Icon(Icons.code_rounded,
+                                                        color: theme.colors.foregroundLightColor),
+                                                    onTap: () {
+                                                      Clipboard.setData(ClipboardData(text: jsonEncode(log)));
+                                                      Navigator.pop(context);
+                                                      YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                                    },
+                                                  ),
+                                                  ListTile(
+                                                    title: Text("Copier la stack-trace", style: theme.texts.body1),
+                                                    leading: Icon(Icons.bug_report_rounded,
+                                                        color: theme.colors.foregroundLightColor),
+                                                    onTap: () {
+                                                      Clipboard.setData(
+                                                          ClipboardData(text: jsonEncode(log.stacktrace)));
+                                                      Navigator.pop(context);
+                                                      YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                                    },
+                                                  )
+                                                ],
+                                              ));
+                                        }
+                                      }))
                                   .toList()
                             ],
                           );
