@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
-import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';

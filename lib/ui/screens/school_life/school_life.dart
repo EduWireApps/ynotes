@@ -6,7 +6,7 @@ import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
-import 'package:ynotes/ui/components/NEW/app_components.dart';
+import 'package:ynotes/ui/components/NEW/navigation/navigation.dart';
 import 'package:ynotes/ui/screens/school_life/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -42,8 +42,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
         controller: appSys.schoolLifeController,
         builder: (context, controller, _) {
           final bool noTickets = controller.tickets == null || controller.tickets!.isEmpty;
-          return AppComponents.page(
-              context: context,
+          return ZApp(
               page: YPage(
                   appBar: YAppBar(
                     title: "Vie scolaire",

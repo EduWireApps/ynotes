@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes_packages/components.dart';
@@ -18,32 +16,6 @@ class AccountLoginStatus extends StatefulWidget {
 
 class _AccountLoginStatusState extends State<AccountLoginStatus> {
   loginStatus get state => widget.controller.actualState;
-
-  YTColor get color {
-    switch (state) {
-      case loginStatus.loggedIn:
-        return theme.colors.success;
-      case loginStatus.loggedOff:
-        return theme.colors.secondary;
-      case loginStatus.error:
-        return theme.colors.danger;
-      case loginStatus.offline:
-        return theme.colors.warning;
-    }
-  }
-
-  Widget get icon {
-    switch (state) {
-      case loginStatus.loggedIn:
-        return Icon(Icons.check_rounded, color: color.foregroundColor);
-      case loginStatus.loggedOff:
-        return SpinKitThreeBounce(color: color.foregroundColor);
-      case loginStatus.error:
-        return Icon(Icons.new_releases_rounded, color: color.foregroundColor);
-      case loginStatus.offline:
-        return Icon(MdiIcons.networkStrengthOff, color: color.foregroundColor);
-    }
-  }
 
   final String loggedTitle = "Tout va bien vous êtes connecté !";
   final String loggedLabel = "Les petits oiseaux chantent et le ciel est bleu.";
@@ -87,7 +59,7 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: color.backgroundColor,
+      tileColor: widget.controller.color.backgroundColor,
       minVerticalPadding: YScale.s2,
       leading: Container(
         height: YScale.s12,
@@ -95,15 +67,15 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
         padding: YPadding.p(YScale.s2),
         decoration: BoxDecoration(
           borderRadius: YBorderRadius.full,
-          color: color.lightColor,
+          color: widget.controller.color.lightColor,
         ),
-        child: FittedBox(child: icon),
+        child: FittedBox(child: widget.controller.icon),
       ),
       title: Text(
         title,
         textAlign: TextAlign.start,
         style: theme.texts.body1.copyWith(
-          color: color.foregroundColor,
+          color: widget.controller.color.foregroundColor,
           fontWeight: YFontWeight.semibold,
         ),
       ),
@@ -115,7 +87,7 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
             label,
             textAlign: TextAlign.start,
             style: theme.texts.body1.copyWith(
-              color: color.foregroundColor,
+              color: widget.controller.color.foregroundColor,
             ),
           ),
           if ([loginStatus.error, loginStatus.loggedOff].contains(state)) errorDetails(context)
