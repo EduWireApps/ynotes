@@ -39,7 +39,7 @@ class LoginController extends ChangeNotifier {
   void connectionChanged(dynamic hasConnection) async {
     if (hasConnection == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
-      _details = "Vous êtes hors ligne";
+      _details = "Tu es hors ligne";
       notifyListeners();
     } else {
       _actualState = loginStatus.loggedOff;
@@ -55,7 +55,7 @@ class LoginController extends ChangeNotifier {
 
     if (await _connectivity.checkConnectivity() == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
-      _details = "Vous êtes hors ligne";
+      _details = "Tu es hors ligne";
       notifyListeners();
     }
     if (_actualState != loginStatus.offline && appSys.api!.loggedIn == false) {

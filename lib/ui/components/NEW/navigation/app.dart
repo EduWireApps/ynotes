@@ -24,43 +24,37 @@ class ZApp extends StatelessWidget {
               child: const YDrawer(),
             ),
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const ZConnectionStatus(),
-                Expanded(
-                  child: YPage(
-                    key: page.key,
-                    drawer: const YDrawer(),
-                    appBar: Builder(builder: (context) {
-                      if (_showDrawer && Scaffold.of(context).isDrawerOpen) {
-                        Future.delayed(const Duration(seconds: 0), () {
-                          Scaffold.of(context).openEndDrawer();
-                        });
-                      }
-                      final YAppBar appBar = page.appBar as YAppBar;
-                      return YAppBar(
-                        title: appBar.title,
-                        actions: appBar.actions,
-                        bottom: appBar.bottom,
-                        leading: YIconButton(
-                            icon: Icons.menu_rounded,
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer();
-                            }),
-                        removeLeading: _showDrawer,
-                      );
-                    }),
-                    body: page.body,
-                    floatingButtons: page.floatingButtons,
-                    bottomNavigationElements: page.bottomNavigationElements,
-                    bottomNavigationInitialIndex: page.bottomNavigationInitialIndex,
-                    scrollable: page.scrollable,
-                    showScrollbar: page.showScrollbar,
-                    onRefresh: page.onRefresh,
-                  ),
-                ),
-              ],
+            child: ZConnectionStatus(
+              child: YPage(
+                key: page.key,
+                drawer: const YDrawer(),
+                appBar: Builder(builder: (context) {
+                  if (_showDrawer && Scaffold.of(context).isDrawerOpen) {
+                    Future.delayed(const Duration(seconds: 0), () {
+                      Scaffold.of(context).openEndDrawer();
+                    });
+                  }
+                  final YAppBar appBar = page.appBar as YAppBar;
+                  return YAppBar(
+                    title: appBar.title,
+                    actions: appBar.actions,
+                    bottom: appBar.bottom,
+                    leading: YIconButton(
+                        icon: Icons.menu_rounded,
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        }),
+                    removeLeading: _showDrawer,
+                  );
+                }),
+                body: page.body,
+                floatingButtons: page.floatingButtons,
+                bottomNavigationElements: page.bottomNavigationElements,
+                bottomNavigationInitialIndex: page.bottomNavigationInitialIndex,
+                scrollable: page.scrollable,
+                showScrollbar: page.showScrollbar,
+                onRefresh: page.onRefresh,
+              ),
             ),
           ),
         ],
