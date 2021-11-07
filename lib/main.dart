@@ -21,6 +21,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
 import 'package:ynotes/ui/themes/themes.dart';
+import 'package:ynotes/ui/themes/utils/fonts.dart';
 import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -90,12 +91,12 @@ class _AppState extends State<App> {
                       ],
                       debugShowCheckedModeBanner: false,
                       theme: model.themeData?.copyWith(
-                        colorScheme: theme.themeData.colorScheme,
-                        splashColor: theme.themeData.splashColor,
-                        highlightColor: theme.themeData.highlightColor,
-                        splashFactory: theme.themeData.splashFactory,
-                        textSelectionTheme: theme.themeData.textSelectionTheme,
-                      ),
+                          colorScheme: theme.themeData.colorScheme,
+                          splashColor: theme.themeData.splashColor,
+                          highlightColor: theme.themeData.highlightColor,
+                          splashFactory: theme.themeData.splashFactory,
+                          textSelectionTheme: theme.themeData.textSelectionTheme,
+                          textTheme: temporaryTextTheme),
                       title: kDebugMode ? "yNotes DEV" : "yNotes",
                       navigatorKey: AppConfig.navigatorKey,
                       initialRoute: "/loading",

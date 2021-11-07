@@ -4,19 +4,20 @@ import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 YTTexts texts(YTColors colors, YTFonts fonts) => YTTexts(
-      headline: YTextStyle(
-          TextStyle(fontWeight: YFontWeight.bold, color: colors.foregroundColor, fontSize: YFontSize.xl2),
-          primaryfontFamily: true,
-          fonts: fonts),
-      title: YTextStyle(
+      headline:
+          getTextStyle(TextStyle(fontWeight: YFontWeight.bold, color: colors.foregroundColor, fontSize: YFontSize.xl2),
+              // primaryfontFamily: true,
+              primaryFontFamily: true,
+              fonts: fonts),
+      title: getTextStyle(
           TextStyle(
             color: colors.foregroundColor,
             fontWeight: YFontWeight.semibold,
             fontSize: YFontSize.xl,
           ),
-          primaryfontFamily: true,
+          primaryFontFamily: true,
           fonts: fonts),
-      body1: YTextStyle(
+      body1: getTextStyle(
           TextStyle(
               fontWeight: YFontWeight.normal,
               fontSize: YFontSize.base,
@@ -24,7 +25,7 @@ YTTexts texts(YTColors colors, YTFonts fonts) => YTTexts(
               height: 1.2,
               color: colors.foregroundLightColor),
           fonts: fonts),
-      body2: YTextStyle(
+      body2: getTextStyle(
           TextStyle(
               fontWeight: YFontWeight.normal,
               fontSize: YFontSize.xs,
@@ -34,11 +35,11 @@ YTTexts texts(YTColors colors, YTFonts fonts) => YTTexts(
           fonts: fonts),
       data1: const TextStyle(),
       data2: const TextStyle(),
-      button: YTextStyle(
+      button: getTextStyle(
           TextStyle(fontWeight: YFontWeight.medium, fontSize: YFontSize.sm, letterSpacing: YLetterSpacing.wide),
-          primaryfontFamily: true,
+          primaryFontFamily: true,
           fonts: fonts),
-      link: YTextStyle(
+      link: getTextStyle(
           TextStyle(
               color: colors.primary.backgroundColor,
               fontWeight: FontWeight.w600,
