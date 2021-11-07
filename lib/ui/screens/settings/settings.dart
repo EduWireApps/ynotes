@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -80,7 +82,21 @@ class _SettingsPageState extends State<SettingsPage> {
                             CustomLogger.saveLog(object: "Test", text: "test");
                             CustomLogger.log("SECURE LOGGER", "Categories: ${await SecureLogger.getCategories()}");
                           }),
-                      YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, ""))
+                      YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, "")),
+                      YSettingsTile(
+                          title: "Trigger notification",
+                          subtitle: "Canceled lesson",
+                          onTap: () {
+                            final DateTime start = DateTime.now();
+                            final DateTime end = DateTime.now().add(const Duration(hours: 1));
+                            AppNotification.showNewLessonCancellationNotification(Lesson(
+                                room: '110',
+                                canceled: true,
+                                start: start,
+                                end: end,
+                                discipline: 'Physique',
+                                teachers: ['M. José']));
+                          }),
                     ])
                 ])));
   }

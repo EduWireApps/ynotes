@@ -573,4 +573,36 @@ class AppNotification {
       }
     }
   }
+
+  static Future<void> showNewLessonCancellationNotification(Lesson? lesson) async {
+    int id = 444;
+
+    await AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'canceled',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelName: 'Cours annulé',
+          importance: NotificationImportance.High,
+          channelDescription: "Notification d'annulation de cours",
+          defaultColor: theme.colors.primary.backgroundColor,
+          ledColor: Colors.red,
+          onlyAlertOnce: true)
+    ]);
+
+    try {
+      await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+        id: id,
+        notificationLayout: NotificationLayout.Default,
+        channelKey: 'canceled',
+        title: 'Annulation de cours',
+        body:
+            'Le cours de ${lesson!.discipline} de ${lesson.start!.hour}h${lesson.start!.minute} à ${lesson.end!.hour}h${lesson.end!.minute} a été annulé !',
+        locked: false,
+      ));
+    } catch (e) {
+      CustomLogger.log("NOTIFICATIONS", "An error occurred while setting ongoin notification");
+      CustomLogger.error(e);
+    }
+  }
 }

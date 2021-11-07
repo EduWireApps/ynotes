@@ -1,5 +1,8 @@
+import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class RemindersOffline {
@@ -64,6 +67,18 @@ class RemindersOffline {
       List<AgendaReminder>? offline = [];
       if (old != null) {
         offline.addAll(old.cast<AgendaReminder>());
+      }
+      Offline _offline = Offline();
+      API api = apiManager(_offline);
+      final lessons = await api.getNextLessons(DateTime.now());
+      if (lessons != null) {
+        for (var reminder in offline) {
+          var lesson = lessons.firstWhere((element) => element.id == reminder.id);
+          var newLesson = lessons.firstWhere((element) => element.id == reminder.id);
+          if (newLesson.canceled != lesson.canceled && newLesson.canceled == true) {
+            AppNotification.showNewLessonCancellationNotification(newLesson);
+          }
+        }
       }
       offline.removeWhere((a) => a.id == newData.id);
       offline.add(newData);
