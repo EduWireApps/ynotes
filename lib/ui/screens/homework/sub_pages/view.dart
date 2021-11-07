@@ -228,22 +228,21 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
 
                       setState(() {});
                     }),
-              Expanded(
-                child: (hw.toReturn ?? false)
-                    ? AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return ScaleTransition(child: child, scale: animation);
-                        },
-                        child: YButton(
-                          onPressed: () => CustomDialogs.showUnimplementedSnackBar(context),
-                          text: "RENDRE MON DEVOIR",
-                          icon: MdiIcons.fileMoveOutline,
-                          color: YColor.secondary,
-                          invertColors: true,
-                        ))
-                    : Container(),
-              ),
+              if (hw.toReturn ?? false)
+                Expanded(
+                  child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(child: child, scale: animation);
+                      },
+                      child: YButton(
+                        onPressed: () => CustomDialogs.showUnimplementedSnackBar(context),
+                        text: "RENDRE MON DEVOIR",
+                        icon: MdiIcons.fileMoveOutline,
+                        color: YColor.secondary,
+                        invertColors: true,
+                      )),
+                ),
             ],
           ),
         ],
