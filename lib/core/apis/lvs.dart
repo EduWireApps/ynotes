@@ -40,7 +40,7 @@ class APILVS extends API {
     //   url = "";
     // }
 
-    var url = 'https://institutsaintpierresaintpaul28.la-vie-scolaire.fr';
+    var url = 'https://institut.la-vie-scolaire.fr';
 
     Map<String, dynamic> credentials = {
       'url': Uri.parse(url),
