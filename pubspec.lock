@@ -971,14 +971,14 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "8.2.6"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "3.7.0"
   petitparser:
     dependency: transitive
     description:
@@ -1511,5 +1511,5 @@ packages:
     source: git
     version: "0.5.1"
 sdks:
-  dart: ">=2.14.0-360.0.dev <3.0.0"
-  flutter: ">=2.0.4"
+  dart: ">=2.14.0 <3.0.0"
+  flutter: ">=2.5.0"

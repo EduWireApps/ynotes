@@ -33,31 +33,31 @@ class BackgroundService {
         if (headless) {
           CustomLogger.log("BACKGROUND", "headless");
           appSys = ApplicationSystem();
-          CustomLogger.saveLog(object: "BACKGROUND", text: "Headless task triggered.");
+          CustomLogger.log("BACKGROUND", "Headless task triggered.");
           await appSys.initApp();
         } else {
           //We have to refresh offline
           await appSys.initOffline();
           appSys.refreshControllersAPI();
         }
-        CustomLogger.saveLog(object: "BACKGROUND", text: "Initiated appSys.");
+        CustomLogger.log("BACKGROUND", "Initiated appSys.");
         await writeLastFetchStatus(appSys);
       }
       if (gradesFetchEnabled) {
-        CustomLogger.saveLog(object: "BACKGROUND", text: "New grade test triggered.");
+        CustomLogger.log("BACKGROUND", "New grade test triggered.");
         var res = (await testNewGrades());
         if (res[0]) {
           await Future.forEach(res[1], (Grade grade) async {
             await AppNotification.showNewGradeNotification(grade);
           });
         } else {
-          CustomLogger.saveLog(object: "BACKGROUND", text: "Grades: nothing updated.");
+          CustomLogger.log("BACKGROUND", "Grades: nothing updated.");
         }
       } else {
         CustomLogger.log("BACKGROUND", "New grade notification disabled");
       }
       if (mailsFetchEnabled) {
-        CustomLogger.saveLog(object: "BACKGROUND", text: "New mail test triggered.");
+        CustomLogger.log("BACKGROUND", "New mail test triggered.");
 
         Mail? mail = await testNewMails();
         if (mail != null) {
@@ -76,11 +76,11 @@ class BackgroundService {
       } else {
         CustomLogger.log("BACKGROUND", "On going notification disabled");
       }
-      CustomLogger.saveLog(object: "BACKGROUND", text: "Background fetch occured.");
+      CustomLogger.log("BACKGROUND", "Background fetch occured.");
       await AppNotification.cancelNotification(a.hashCode);
     } catch (e) {
       await AppNotification.cancelNotification(a.hashCode);
-      CustomLogger.saveLog(object: "ERROR", text: "An error occured during the background fetch : " + e.toString());
+      CustomLogger.error("An error occured during the background fetch : " + e.toString());
     }
   }
 
@@ -130,7 +130,7 @@ class BackgroundService {
         return [false];
       }
     } catch (e) {
-      CustomLogger.saveLog(object: "ERROR", text: "An error occured during the new grades test : " + e.toString());
+      CustomLogger.error("An error occured during the new grades test : " + e.toString());
       return [false];
     }
   }
@@ -154,7 +154,7 @@ class BackgroundService {
       });
       var newMailLength = mails?.length ?? 0;
 
-      CustomLogger.saveLog(object: "BACKGROUND", text: "Mails checking triggered.");
+      CustomLogger.log("BACKGROUND", "Mails checking triggered.");
       CustomLogger.log("BACKGROUND", "New length is $newMailLength");
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength)) {

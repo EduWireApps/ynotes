@@ -14,26 +14,19 @@ import 'package:ynotes_packages/components.dart';
 class BugReportUtils {
   const BugReportUtils._();
 
-  static Future<File> getLogsFile() async {
-    final directory = await FolderAppUtil.getDirectory();
-    return File('${directory.path}/logs/temp.json');
-  }
-
   /// Initializes the bug report client
   static void init() {
     final config = AppConfig.shake;
     if (!config.isSupported) {
       return;
     }
-    initShakeToReport();
+    updateShakeFeatureStatus();
     Shake.setShowFloatingReportButton(false);
     Shake.setInvokeShakeOnScreenshot(false);
-
-    // Configure Shake
     Shake.start(config.clientID, config.clientSecret);
   }
 
-  static void initShakeToReport() {
+  static void updateShakeFeatureStatus() {
     if (!AppConfig.shake.isSupported) {
       return;
     }
@@ -41,15 +34,18 @@ class BugReportUtils {
   }
 
   /// Saves and anonymizes the bug data to send it to the report platform
-  static Future<void> packData() async {
+  static Future<void> prepareReportData() async {
     if (!AppConfig.shake.isSupported) {
       return;
     }
     try {
-      String json = jsonEncode(await CustomLogger.getAllLogs());
+      String json = jsonEncode(await LogsManager.getLogs());
       //create a temp file containing logs as json
-      final File file = await getLogsFile();
-      await _deleteLogsFile();
+      final directory = await FolderAppUtil.getDirectory();
+      final File file = File('${directory.path}/logs/temp.json');
+      if (await file.exists()) {
+        await file.delete();
+      }
       file.create(recursive: true);
       await file.writeAsString(json);
       List<ShakeFile> shakeFiles = [];
@@ -66,18 +62,11 @@ class BugReportUtils {
   /// Opens the report widget
   static Future<void> report() async {
     if (AppConfig.shake.isSupported) {
-      await packData();
+      await prepareReportData();
       Shake.show();
     } else {
       YSnackbars.error(AppConfig.navigatorKey.currentContext!,
           title: "Oups !", message: "Indisponible sur ${Platform.operatingSystem.capitalize()}");
-    }
-  }
-
-  static Future<void> _deleteLogsFile() async {
-    final File file = await getLogsFile();
-    if (await file.exists()) {
-      await file.delete();
     }
   }
 }

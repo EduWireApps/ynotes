@@ -42,7 +42,6 @@
     - [Architecture](#architecture)
     - [Précisions](#précisions)
     - [Déboguer une application déjà installée](#déboguer-une-application-déjà-installée)
-      - [Android](#android-1)
 - [Contributeurs](#contributeurs)
     - [Mentions spéciales](#mentions-spéciales)
 
@@ -165,17 +164,7 @@ N'utilisez pas de `print(text);` mais plutôt:
 
 ### Déboguer une application déjà installée
 
-#### Android
-
-**Prérequis :**
-
-- [adb](https://developer.android.com/studio/command-line/adb). Si vous avez Android Studio, il faut aller dans : `Paramètres > Appearance and behavior > System settings > Android SDK` puis cliquer sur la tab `SDK Tools`. Vérifiez que vous ayez bien le package `Android SDK Platforms-Tools` installé.
-  Lorsque cela est fait, ouvrez votre explorateur de fichier à l'emplacement du SDK Android. Ouvrez ensuite le dossier `platform-tools` et ouvrez un interpéteur de commandes. Vous pouvez alors exécuter des commandes adb en commençant par `./adb`
-- L'application déjà installée depuis le Play Store
-
-**Procédure :**
-- Lancez yNotes
-- Exécutez `./adb logcat *:S flutter:V`
+Exécutez `flutter logs`.
 
 # Contributeurs
 

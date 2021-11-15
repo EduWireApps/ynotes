@@ -4,7 +4,7 @@ import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 
 mixin YPageMixin<T extends StatefulWidget> on State<T> {
   openLocalPage(YPageLocal page) {
-    CustomLogger.saveLog(object: "ROUTING", text: 'Opening local page "${page.title}".');
+    CustomLogger.log("ROUTING", 'Opening local page "${page.title}".');
     Navigator.push(
         context,
         PageRouteBuilder(

@@ -227,8 +227,6 @@ class APIEcoleDirecte extends API {
           prefs.setBool('firstUse', false);
         } catch (e) {
           CustomLogger.log("ED", "Error while getting user info " + e.toString());
-          //log in file
-          CustomLogger.saveLog(object: "ERROR", text: "Ecole Directe: " + e.toString());
         }
         loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
