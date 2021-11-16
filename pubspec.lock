@@ -15,13 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.2"
-  android_alarm_manager:
+  android_alarm_manager_plus:
     dependency: "direct main"
     description:
-      name: android_alarm_manager
+      name: android_alarm_manager_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.3"
   another_flushbar:
     dependency: "direct main"
     description:
