@@ -169,8 +169,25 @@ class APIEcoleDirecte extends API {
     methods = EcoleDirecteMethod(offlineController, demo: additionnalSettings?["demo"]);
 
     final prefs = await SharedPreferences.getInstance();
+
+    String encodeData(String data) {
+      final List<List<String>> chars = [
+        ["%", "%25"],
+        ["&", "%26"],
+        ["\\", "\\\\"],
+        ["\"", "\\\""],
+      ];
+      for (var i = 0; i < chars.length; i++) {
+        data = data.replaceAll(chars[i][0], chars[i][1]);
+      }
+      return data;
+    }
+
     username ??= "";
     password ??= "";
+
+    username = encodeData(username);
+    password = encodeData(password);
 
     var url = methods.endpoints.login;
     CustomLogger.log("ED LOGIN", ["", ""]);
