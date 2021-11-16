@@ -1,15 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-abstract class Controller extends ChangeNotifier {
-  Controller();
-
-  void setState(VoidCallback fn) {
-    fn();
-    notifyListeners();
-  }
-}
-
 /// A widget that consumes a [ChangeNotifier].
 class ControllerConsumer<T extends ChangeNotifier> extends StatelessWidget {
   /// A controller of type [T] that extends [ChangeNotifier].

@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:convert/convert.dart' as conv;
 import 'package:crypto/crypto.dart';
+import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/pronote/pronote_api.dart';
-import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/core/utils/ui.dart';
@@ -16,7 +16,7 @@ import 'package:ynotes/globals.dart';
 enum QrStatus { initial, loading, success, error }
 
 /// A class that handles the QR code method for Pronote login
-class QrLoginController extends Controller {
+class QrLoginController extends ChangeNotifier {
   /// A class that handles the QR code method for Pronote login
   QrLoginController();
 
@@ -56,10 +56,9 @@ class QrLoginController extends Controller {
       Map? raw = jsonDecode(barCode.code);
       if (raw != null) {
         if (mapGet(raw, ["jeton"]) != null && mapGet(raw, ["login"]) != null && mapGet(raw, ["url"]) != null) {
-          setState(() {
-            _status = QrStatus.loading;
-            _loginData = raw;
-          });
+          _status = QrStatus.loading;
+          _loginData = raw;
+          notifyListeners();
           return true;
         } else {
           return false;
@@ -74,9 +73,8 @@ class QrLoginController extends Controller {
 
   /// Decrypts the [_loginData] with the pin code set on the Pronote website/app
   List<String>? decrypt(String code) {
-    setState(() {
-      _status = QrStatus.loading;
-    });
+    _status = QrStatus.loading;
+    notifyListeners();
     final Encryption encrypt = Encryption();
     // We set the key
     encrypt.aesKey = md5.convert(utf8.encode(code));
@@ -86,14 +84,12 @@ class QrLoginController extends Controller {
       final String password = encrypt.aesDecrypt(conv.hex.decode(_loginData?["jeton"]));
       appSys.settings.system.uuid = const Uuid().v4();
       appSys.saveSettings();
-      setState(() {
-        _status = QrStatus.success;
-      });
+      _status = QrStatus.success;
+      notifyListeners();
       return [login, password];
     } catch (e) {
-      setState(() {
-        _status = QrStatus.error;
-      });
+      _status = QrStatus.error;
+      notifyListeners();
       CustomLogger.log("LOGIN", "(QR Code) An error occured with the PIN");
       CustomLogger.error(e);
     }
@@ -101,9 +97,8 @@ class QrLoginController extends Controller {
 
   /// Reset the controller
   void reset() {
-    setState(() {
-      _status = QrStatus.initial;
-      _loginData = null;
-    });
+    _status = QrStatus.initial;
+    _loginData = null;
+    notifyListeners();
   }
 }
