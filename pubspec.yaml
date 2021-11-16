@@ -34,11 +34,6 @@ dependencies:
     git:
       url: https://github.com/EduWireApps/ynotes-packages
       ref: main
-  flutter_secure_storage:
-    git:
-      url: https://github.com/mogol/flutter_secure_storage
-      path: flutter_secure_storage
-      ref: develop
   android_alarm_manager: ^2.0.0
   another_flushbar: ^1.10.17
   auto_size_text: ^3.0.0-nullsafety.0
@@ -103,6 +98,7 @@ dependencies:
   url_launcher: ^6.0.3
   uuid: ^3.0.3
   google_fonts: ^2.1.0
+  flutter_secure_storage: ^5.0.2
 
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
