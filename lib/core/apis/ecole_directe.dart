@@ -173,7 +173,6 @@ class APIEcoleDirecte extends API {
     password ??= "";
 
     var url = methods.endpoints.login;
-    CustomLogger.log("ED LOGIN", ["", ""]);
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON

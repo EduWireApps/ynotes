@@ -1,7 +1,7 @@
 part of logging_utils;
 
 String? _encryptionKey;
-final _queue = Queue<YLog>();
+bool _editingFile = false;
 
 /// Manages logs storage and encryption
 class LogsManager {
@@ -17,9 +17,12 @@ class LogsManager {
 
   /// Saves [logs] of a [category] to the right log file.
   static Future<void> saveLogs({required List<YLog> logs, required String category, bool? overwrite}) async {
-    // TODO: remove temp return
-    return;
-    // TODO: implement a queue
+    if (_editingFile) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      saveLogs(logs: logs, category: category, overwrite: overwrite);
+      return;
+    }
+    _editingFile = true;
     final File file = await _readLogFile(category);
     if (!(await file.exists())) {
       await file.create(recursive: true);
@@ -27,28 +30,13 @@ class LogsManager {
     final String fileContent = await file.readAsString();
     List<YLog> existingLogs = [];
     if (fileContent.isNotEmpty) {
-      final List<dynamic> decoded = json.decode(await _decrypt(fileContent));
+      final String content = await _decrypt(fileContent);
+      final List<dynamic> decoded = json.decode(content);
       existingLogs = decoded.map((dynamic log) => YLog.fromJson(log)).toList();
     }
-    // print("----DECODED----");
-    // // print(decoded.runtimeType);
-    // print(decoded);
-    // if (decoded.isNotEmpty) {
-    //   print(jsonDecode(decoded));
-    //   var x = jsonDecode(decoded);
-    //   print(x.runtimeType);
-    //   for (var y in x) {
-    //     print(y.runtimeType);
-    //     print(y);
-    //     var z = YLog.fromJson(y);
-    //     print(z);
-    //     print(z.runtimeType);
-    //   }
-    // }
-    // print("---------------");
-    final String content = await _encrypt(jsonEncode(<YLog>[...existingLogs, ...logs]));
-    final FileMode mode = /*overwrite == true ?*/ FileMode.write /*: FileMode.append*/;
-    await file.writeAsString(content, mode: mode);
+    final String content = await _encrypt(jsonEncode(overwrite == true ? logs : <YLog>[...existingLogs, ...logs]));
+    await file.writeAsString(content, mode: FileMode.write);
+    _editingFile = false;
   }
 
   /// Deletes all logs or from one [category].
@@ -119,9 +107,6 @@ class LogsManager {
     final iv = crypto.IV.fromLength(16);
     final aes = crypto.AES(key, padding: null);
     final encrypter = crypto.Encrypter(aes);
-    print("----ENCRYPTED DATA----");
-    print(data);
-    print("----------------------");
     return encrypter.encrypt(data, iv: iv).base16;
   }
 
