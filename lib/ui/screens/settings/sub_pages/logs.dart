@@ -23,12 +23,16 @@ class _LogsPageState extends State<LogsPage> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return FutureBuilder<List<YLog>>(
-        future: CustomLogger.getAllLogs(),
+        future: LogsManager.getLogs(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            List<YLog> filteredLogs = snapshot.data!.where((log) {
-              return log.category.toUpperCase().contains(search.toUpperCase());
-            }).toList();
+            List<YLog> filteredLogs = snapshot.data!
+                .where((log) {
+                  return log.category.toUpperCase().contains(search.toUpperCase());
+                })
+                .toList()
+                .reversed
+                .toList();
             return SizedBox(
               height: screenSize.size.height,
               width: screenSize.size.width,

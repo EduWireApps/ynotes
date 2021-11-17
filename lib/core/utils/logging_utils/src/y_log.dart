@@ -11,16 +11,20 @@ class YLog {
   /// The log stacktrace
   final String? stacktrace;
 
+  late DateTime _date;
+
   /// The log's date.
-  final DateTime date;
+  DateTime get date => _date;
 
   /// A data model for logging.
   YLog({
     required this.category,
     required this.comment,
-    required this.date,
+    DateTime? date,
     this.stacktrace,
-  });
+  }) {
+    _date = date ?? DateTime.now();
+  }
 
   /// Creates a new [YLog] from a json object.
   factory YLog.fromJson(Map<String, dynamic> json) => YLog(

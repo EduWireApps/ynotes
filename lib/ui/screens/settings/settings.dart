@@ -269,7 +269,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     onToggle: (bool value) async {
                       _appSys.settings.user.global.shakeToReport = value;
                       appSys.saveSettings();
-                      BugReportUtils.initShakeToReport();
+                      BugReportUtils.updateShakeFeatureStatus();
                     }),
                 SettingsTile(
                   title: 'Afficher les logs',
@@ -364,8 +364,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Bouton magique',
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
-                        CustomLogger.saveLog(object: "Test", text: "test");
-                        CustomLogger.log("SECURE LOGGER", "Categories: ${await SecureLogger.getCategories()}");
+                        CustomLogger.log("Test", "test");
+                        CustomLogger.log("SECURE LOGGER", "Categories: ${await LogsManager.getCategories()}");
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(

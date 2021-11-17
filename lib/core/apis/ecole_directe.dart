@@ -190,7 +190,6 @@ class APIEcoleDirecte extends API {
     password = encodeData(password);
 
     var url = methods.endpoints.login;
-    CustomLogger.log("ED LOGIN", ["", ""]);
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
@@ -244,8 +243,6 @@ class APIEcoleDirecte extends API {
           prefs.setBool('firstUse', false);
         } catch (e) {
           CustomLogger.log("ED", "Error while getting user info " + e.toString());
-          //log in file
-          CustomLogger.saveLog(object: "ERROR", text: "Ecole Directe: " + e.toString());
         }
         loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
