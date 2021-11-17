@@ -42,9 +42,9 @@ class CustomDialogs {
     ).show(context);
   }
 
-  static Future showAuthorizationsDialog(BuildContext context, String authName, String goal) {
+  static Future<bool?> showAuthorizationsDialog(BuildContext context, String authName, String goal) async {
     // show the dialog
-    return showDialog(
+    return await showDialog<bool>(
       barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {

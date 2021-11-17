@@ -6,8 +6,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class PersistantNotificationConfigDialog extends StatefulWidget {
   const PersistantNotificationConfigDialog({Key? key}) : super(key: key);
@@ -86,11 +89,10 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     await AppNotification.cancelOnGoingNotification();
                   }
                 } else {
-                  if (await (CustomDialogs.showAuthorizationsDialog(
-                              context,
-                              "la configuration d'optimisation de batterie",
-                              "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                          as Future<bool?>) ??
+                  if (await CustomDialogs.showAuthorizationsDialog(
+                          context,
+                          "la configuration d'optimisation de batterie",
+                          "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                       false) {
                     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                       appSys.settings.user.agendaPage.agendaOnGoingNotification = value;
@@ -119,8 +121,24 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
+                final status = await Permission.accessNotificationPolicy.status;
+                if (!status.isGranted) {
+                  final res = await Permission.accessNotificationPolicy.request();
+                  UIUtils.setSystemUIOverlayStyle();
+                  if (!res.isGranted) {
+                    await YDialogs.showInfo(
+                        context,
+                        YInfoDialog(
+                          title: "Oups !",
+                          body: Text("Pour utiliser cette fonctionnalité, tu dois accorder cette permission à yNotes.",
+                              style: theme.texts.body1),
+                          confirmLabel: "OK",
+                        ));
+                    return;
+                  }
+                }
                 appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled = value;
-                appSys.saveSettings();
+                await appSys.saveSettings();
                 setState(() {});
               },
               secondary: Icon(
