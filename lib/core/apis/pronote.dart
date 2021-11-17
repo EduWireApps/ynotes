@@ -245,7 +245,7 @@ class APIPronote extends API {
         if (err.contains("Failed login request")) {
           error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
         }
-        CustomLogger.saveLog(object: "ERROR", text: "Pronote: " + error);
+        CustomLogger.error("Pronote: " + error);
         return ([0, error, localClient.stepsLogger]);
       }
     } else {

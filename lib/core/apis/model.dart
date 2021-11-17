@@ -187,9 +187,10 @@ class YConverter {
   convert(data) {
     if (logSlot != null && anonymizer != null) {
       try {
-        var anonymizedData = anonymizer!(data);
-        CustomLogger.saveLog(object: logSlot!, text: anonymizedData, overWrite: true);
-        BugReportUtils.packData();
+        final String anonymizedData = anonymizer!(data);
+        LogsManager.saveLogs(
+            logs: [YLog(category: logSlot!, comment: anonymizedData)], category: logSlot!, overwrite: true);
+        BugReportUtils.prepareReportData();
       } catch (e) {
         CustomLogger.log("CONVERTER", "Error anonymizing data");
       }

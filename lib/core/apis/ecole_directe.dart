@@ -169,11 +169,27 @@ class APIEcoleDirecte extends API {
     methods = EcoleDirecteMethod(offlineController, demo: additionnalSettings?["demo"]);
 
     final prefs = await SharedPreferences.getInstance();
+
+    String encodeData(String data) {
+      final List<List<String>> chars = [
+        ["%", "%25"],
+        ["&", "%26"],
+        ["\\", "\\\\"],
+        ["\"", "\\\""],
+      ];
+      for (var i = 0; i < chars.length; i++) {
+        data = data.replaceAll(chars[i][0], chars[i][1]);
+      }
+      return data;
+    }
+
     username ??= "";
     password ??= "";
 
+    username = encodeData(username);
+    password = encodeData(password);
+
     var url = methods.endpoints.login;
-    CustomLogger.log("ED LOGIN", ["", ""]);
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
@@ -227,8 +243,6 @@ class APIEcoleDirecte extends API {
           prefs.setBool('firstUse', false);
         } catch (e) {
           CustomLogger.log("ED", "Error while getting user info " + e.toString());
-          //log in file
-          CustomLogger.saveLog(object: "ERROR", text: "Ecole Directe: " + e.toString());
         }
         loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];

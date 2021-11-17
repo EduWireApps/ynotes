@@ -34,7 +34,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
     return YPage(
         appBar: const YAppBar(title: "Logs"),
         body: FutureBuilder(
-          future: SecureLogger.getCategories(),
+          future: LogsManager.getCategories(),
           builder: (_, AsyncSnapshot<List<String>> snapshot) {
             List<YConfirmationDialogOption<int>> _options = [];
             List<String>? _categories;
@@ -65,7 +65,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                 Padding(
                   padding: YPadding.py(YScale.s4),
                   child: FutureBuilder(
-                      future: CustomLogger.getAllLogs(),
+                      future: LogsManager.getLogs(),
                       builder: (_, AsyncSnapshot<List<YLog>> snapshot) {
                         if (snapshot.hasData) {
                           final List<YLog> logs = snapshot.data!;

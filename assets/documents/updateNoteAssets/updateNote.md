@@ -1,3 +1,10 @@
+## Correctif 0.13.7
+
+Les logs, implémentés dans la 0.13.4, ne fonctionnaient pas tout à fait correctement. C'est maintenant corrigé, ce qui nous permettra de mieux vous assister en cas d'éventuel problème.
+
+## Correctif 0.13.6
+
+Nous avons résolu un bug empêchant la connexion à EcoleDirecte de certains utilisateurs depuis le 12/11/2021.
 
 ## Correctif 0.13.4
 Petit correctif que nous documentons ici car néanmoins important :

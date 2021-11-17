@@ -115,7 +115,7 @@ class Offline {
   ///Deletes corrupted box
   deleteCorruptedBox(String boxName) async {
     await Hive.deleteBoxFromDisk(boxName);
-    CustomLogger.saveLog(object: "OFFLINE", text: "Recovered $boxName");
+    CustomLogger.log("OFFLINE", "Recovered $boxName");
   }
 
   //Called when instanciated
@@ -148,7 +148,7 @@ class Offline {
     try {
       Box box = await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
         final String errorMessage = "Error while opening $boxName";
-        CustomLogger.saveLog(object: "OFFLINE", text: errorMessage);
+        CustomLogger.error("OFFLINE: $errorMessage");
         throw (errorMessage);
       });
       CustomLogger.log("OFFLINE", "Correctly opened $boxName");

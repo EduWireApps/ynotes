@@ -25,7 +25,7 @@ import 'package:ynotes/ui/themes/utils/fonts.dart';
 import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
 
-Future main() async {
+Future<void> main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   await backwardCompatibility();

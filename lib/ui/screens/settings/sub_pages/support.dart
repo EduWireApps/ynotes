@@ -30,8 +30,8 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
                             switchValue: controller.settings.user.global.shakeToReport,
                             onSwitchValueChanged: (bool value) async {
                               controller.settings.user.global.shakeToReport = value;
-                              appSys.saveSettings();
-                              BugReportUtils.initShakeToReport();
+                              await appSys.saveSettings();
+                              BugReportUtils.updateShakeFeatureStatus();
                             }),
                         YSettingsTile(
                             title: "Logs",

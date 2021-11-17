@@ -126,8 +126,8 @@ class ApplicationSystem extends ChangeNotifier {
     //Set controllers
   }
 
-  saveSettings() {
-    SettingsUtils.setSetting(settings);
+  Future<void> saveSettings() async {
+    await SettingsUtils.setSetting(settings);
     notifyListeners();
   }
 

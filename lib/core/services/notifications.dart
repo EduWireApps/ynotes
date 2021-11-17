@@ -109,13 +109,10 @@ class AppNotification {
     }
     //Logs for tests
     if (lesson != null) {
-      CustomLogger.saveLog(
-          object: "NOTIFICATIONS",
-          text:
-              "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
+      CustomLogger.log("NOTIFICATIONS",
+          "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
     } else {
-      CustomLogger.saveLog(
-          object: "NOTIFICATIONS", text: "Persistant notification next lesson callback triggered : you are in break.");
+      CustomLogger.log("NOTIFICATIONS", "Persistant notification next lesson callback triggered : you are in break.");
     }
   }
 
@@ -295,7 +292,7 @@ class AppNotification {
   ///Set an on going notification which is automatically refreshed (online or not) each hour
   static Future<void> setOnGoingNotification({bool dontShowActual = false}) async {
     //Logs for tests
-    CustomLogger.saveLog(object: "NOTIFICATIONS", text: "Setting on going notification.");
+    CustomLogger.log("NOTIFICATIONS", "Setting on going notification.");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? lessons = [];
     API api = apiManager(appSys.offline);
