@@ -66,7 +66,8 @@ class LogsManager {
     } else {
       final File file = await _readLogFile(category);
       final String content = await file.readAsString();
-      return jsonDecode(await _decrypt(content));
+      final List<dynamic> decoded = jsonDecode(await _decrypt(content));
+      return decoded.map((dynamic log) => YLog.fromJson(log)).toList();
     }
   }
 

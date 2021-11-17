@@ -12,6 +12,7 @@ import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -44,8 +45,8 @@ class BugReportUtils {
       return;
     }
     try {
-      String json = jsonEncode(await LogsManager.getLogs());
-      //create a temp file containing logs as json
+      final String json = jsonEncode(await LogsManager.getLogs());
+      // create a temp file containing logs as json
       final directory = await FolderAppUtil.getDirectory();
       final File file = File('${directory.path}/logs/temp.json');
       if (await file.exists()) {
@@ -53,7 +54,7 @@ class BugReportUtils {
       }
       file.create(recursive: true);
       await file.writeAsString(json);
-      List<ShakeFile> shakeFiles = [];
+      final List<ShakeFile> shakeFiles = [];
       shakeFiles.add(ShakeFile.create(file.path, 'userLogs'));
       //set shake report files
       Shake.setShakeReportData(shakeFiles);
@@ -67,7 +68,9 @@ class BugReportUtils {
   /// Opens the report widget
   static Future<void> report() async {
     if (AppConfig.shake.isSupported) {
-      await prepareReportData();
+      final Future<void> future = prepareReportData();
+      AppDialogs.showReportLoaderDialog<void>(AppConfig.navigatorKey.currentContext!, future: future);
+      await future;
       Shake.show();
     } else {
       final bool res = await YDialogs.getChoice(

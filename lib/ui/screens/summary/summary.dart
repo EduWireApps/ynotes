@@ -156,9 +156,9 @@ class SummaryPageState extends State<SummaryPage> with LayoutMixin, YPageMixin {
   }
 
   showUpdateNote() async {
-    if ((appSys.settings.system.lastReadUpdateNote != "0.13")) {
+    if ((appSys.settings.system.lastReadUpdateNote != "0.13.7")) {
       appSys.settings.system.lastReadUpdateNote = "0.13.7";
-      appSys.saveSettings();
+      await appSys.saveSettings();
       await CustomDialogs.showUpdateNoteDialog(context);
     }
   }
