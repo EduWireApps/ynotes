@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
-import 'package:ynotes/core/utils/controller.dart';
+import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';

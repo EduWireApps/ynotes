@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
-import 'package:ynotes/core/utils/controller.dart';
+import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';

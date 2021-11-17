@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/controller.dart';
+import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
