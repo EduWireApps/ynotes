@@ -27,7 +27,7 @@ class LvsClient extends SessionClient {
         headers: {"Content-Type": "application/json"},
         token: false,
         baseUrl: false);
-    CustomLogger.saveLog(object: 'LVS', text: rep.body.toString());
+    // CustomLogger.saveLog(object: 'LVS', text: rep.body.toString());
     if (rep.statusCode == 200) {
       CustomLogger.log('LVS', 'successful authentication for Lvs');
       this.token = rep.headers['set-cookie'].toString();
@@ -104,7 +104,7 @@ class HwClient extends SessionClient {
     var entry =
         await Function.apply(credentials['method'], [credentials['args']]);
     var entry_url = jsonDecode(entry.body)['location'];
-    CustomLogger.saveLog(object: 'Entry Url for Hw', text: entry_url);
+    // CustomLogger.saveLog(object: 'Entry Url for Hw', text: entry_url);
     if (entry.statusCode == 200) {
       this.base_url = entry_url.substring(0, entry_url.indexOf('.fr') + 3) +
           '/eliot-textes';

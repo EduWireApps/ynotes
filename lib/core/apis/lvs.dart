@@ -29,7 +29,8 @@ class APILVS extends API {
 
   @override
   Future<List> login(username, password, {Map? additionnalSettings}) async {
-    CustomLogger.saveLog(object: 'LVS', text: 'Login called');
+    print('wooow');
+    //  CustomLogger.saveLog(object: 'LVS', text: 'Login called');
     if (username == null) {
       username = "";
     }
@@ -40,7 +41,7 @@ class APILVS extends API {
     //   url = "";
     // }
 
-    var url = 'https://institut.la-vie-scolaire.fr';
+    var url = 'https://institut';
 
     Map<String, dynamic> credentials = {
       'url': Uri.parse(url),
