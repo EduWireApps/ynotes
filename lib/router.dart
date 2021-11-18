@@ -7,6 +7,7 @@ import 'package:ynotes/ui/screens/cloud/cloud.dart';
 import 'package:ynotes/ui/screens/downloads/downloads.dart';
 import 'package:ynotes/ui/screens/error/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
+import 'package:ynotes/ui/screens/home/routes.dart';
 import 'package:ynotes/ui/screens/homework/homework.dart';
 import 'package:ynotes/ui/screens/intro/routes.dart';
 import 'package:ynotes/ui/screens/loading/loading.dart';
@@ -37,7 +38,8 @@ final List<CustomRoute> routes = [
   ...settingsRoutes,
   CustomRoute(path: "/loading", icon: Icons.info, page: const LoadingPage(), relatedApi: -1, show: false),
   CustomRoute(path: "/terms", icon: Icons.info, page: const TermsPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: const SummaryPage(), tab: appTabs.summary),
+  ...homeRoutes,
+  // CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: const SummaryPage(), tab: appTabs.summary),
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
       path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),

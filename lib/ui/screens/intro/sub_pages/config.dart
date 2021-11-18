@@ -125,7 +125,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                           onPressed: () async {
                             controller.loginController.login();
                             await KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
-                            Navigator.pushReplacementNamed(context, "/summary");
+                            Navigator.pushReplacementNamed(context, "/home");
                           },
                           text: "Allons-y !",
                           block: true),

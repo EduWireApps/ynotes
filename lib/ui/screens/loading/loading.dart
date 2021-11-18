@@ -64,7 +64,7 @@ class _LoadingPageState extends State<LoadingPage> {
     if (u != null && p != null) {
       // The user has agreed to the terms and the app is configured
       if (z != null) {
-        Navigator.pushReplacementNamed(context, "/summary");
+        Navigator.pushReplacementNamed(context, "/home");
       } else {
         Navigator.pushReplacementNamed(context, "/terms");
       }
