@@ -209,7 +209,7 @@ class APIPronote extends API {
         loginLock = false;
         final String err = e.toString();
         localClient.stepsLogger.add("❌ Pronote login failed : " + err);
-        CustomLogger.log("PRONOTE", "Login failed."); // TODO: see why it fails here
+        CustomLogger.log("PRONOTE", "Login failed.");
         CustomLogger.error(e);
         String error = "Une erreur a eu lieu. " + err;
         if (err.contains("invalid url")) {
