@@ -771,7 +771,8 @@ class PronoteClient {
         "Using following credentials : " +
             username +
             " , " +
-            password.toString().substring(0, password.toString().length - 2));
+            password.toString().substring(0, password.toString().length - 2),
+        save: false);
     var challenge = idr['donneesSec']['donnees']['challenge'];
     var e = Encryption();
     e.aesSetIV(communication!.encryption.aesIV);
