@@ -84,7 +84,7 @@ class _ZConnectionStatusState extends State<ZConnectionStatus> with TickerProvid
                                         YHorizontalSpacer(YScale.s2),
                                         RichText(
                                             text: TextSpan(
-                                                text: "${controller.details}. ",
+                                                text: "${controller.details} ",
                                                 style:
                                                     theme.texts.body1.copyWith(color: controller.color.foregroundColor),
                                                 children: [
