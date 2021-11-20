@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
@@ -71,6 +72,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: "A propos de cette application",
                       leading: Icons.info_rounded,
                       onTap: () => AppDialogs.showAboutDialog(context),
+                    ),
+                    YSettingsTile(
+                      title: "Donateurs",
+                      leading: FontAwesomeIcons.handHoldingUsd,
+                      onTap: () => Navigator.pushNamed(context, "/settings/donors"),
                     ),
                   ]),
                   if (!kReleaseMode)

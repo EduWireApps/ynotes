@@ -41,8 +41,10 @@ Future<void> _fromV12ToV13() async {
   if (!logsReset0) {
     final String directoryPath = await FolderAppUtil.getDirectory(download: true);
     final Directory logsDirectory = Directory("$directoryPath/logs");
-    if (await logsDirectory.exists()) {
-      await logsDirectory.delete(recursive: true);
+    if (!Platform.isWindows) {
+      if (await logsDirectory.exists()) {
+        await logsDirectory.delete(recursive: true);
+      }
     }
     await KVS.write(key: "logsReset0", value: "true");
   }
