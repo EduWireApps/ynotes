@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -12,6 +13,7 @@ class ErrorPage extends StatefulWidget {
 }
 
 class _ErrorPageState extends State<ErrorPage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

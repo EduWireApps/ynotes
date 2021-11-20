@@ -5,14 +5,6 @@ import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
 
-class _Credentials {
-  String username;
-  String password;
-  String url;
-
-  _Credentials({this.username = "", this.password = "", required this.url});
-}
-
 class LoginForm extends StatefulWidget {
   final String subtitle;
   final String url;
@@ -23,11 +15,70 @@ class LoginForm extends StatefulWidget {
   _LoginFormState createState() => _LoginFormState();
 }
 
+class _Credentials {
+  String username;
+  String password;
+  String url;
+
+  _Credentials({this.username = "", this.password = "", required this.url});
+}
+
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _loading = false;
   late final _Credentials _credentials = _Credentials(url: widget.url);
   bool _canNavigate = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return LoginPageStructure(
+      backButton: _canNavigate,
+      subtitle: widget.subtitle,
+      body: Column(
+        children: [
+          YForm(
+            formKey: _formKey,
+            onSubmit: submit,
+            autoSubmit: _canNavigate,
+            fields: [
+              YFormField(
+                  properties: YFormFieldProperties(),
+                  autofillHints: const [AutofillHints.username],
+                  label: LoginContent.widgets.form.id,
+                  type: YFormFieldInputType.text,
+                  validator: (String? value) {
+                    return value == null || value.isEmpty ? LoginContent.widgets.form.requiredField : null;
+                  },
+                  onSaved: (String? value) {
+                    _credentials.username = value ?? "";
+                  }),
+              YFormField(
+                  properties: YFormFieldProperties(),
+                  autofillHints: const [AutofillHints.password],
+                  label: LoginContent.widgets.form.password,
+                  type: YFormFieldInputType.password,
+                  validator: (String? value) {
+                    return value == null || value.isEmpty ? LoginContent.widgets.form.requiredField : null;
+                  },
+                  onSaved: (String? value) {
+                    _credentials.password = value ?? "";
+                  }),
+            ],
+          ),
+          YVerticalSpacer(YScale.s6),
+          YButton(
+            text: LoginContent.widgets.form.logIn,
+            onPressed: () {
+              submit(_formKey.currentState!.validate());
+            },
+            block: true,
+            isLoading: _loading,
+            isDisabled: !_canNavigate,
+          )
+        ],
+      ),
+    );
+  }
 
   Future<void> submit(bool b) async {
     setState(() {
@@ -56,54 +107,5 @@ class _LoginFormState extends State<LoginForm> {
     setState(() {
       _loading = false;
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LoginPageStructure(
-      backButton: _canNavigate,
-      subtitle: widget.subtitle,
-      body: Column(
-        children: [
-          YForm(
-            formKey: _formKey,
-            onSubmit: submit,
-            autoSubmit: _canNavigate,
-            fields: [
-              YFormField(
-                  properties: YFormFieldProperties(),
-                  label: LoginContent.widgets.form.id,
-                  type: YFormFieldInputType.text,
-                  validator: (String? value) {
-                    return value == null || value.isEmpty ? LoginContent.widgets.form.requiredField : null;
-                  },
-                  onSaved: (String? value) {
-                    _credentials.username = value ?? "";
-                  }),
-              YFormField(
-                  properties: YFormFieldProperties(),
-                  label: LoginContent.widgets.form.password,
-                  type: YFormFieldInputType.password,
-                  validator: (String? value) {
-                    return value == null || value.isEmpty ? LoginContent.widgets.form.requiredField : null;
-                  },
-                  onSaved: (String? value) {
-                    _credentials.password = value ?? "";
-                  }),
-            ],
-          ),
-          YVerticalSpacer(YScale.s6),
-          YButton(
-            text: LoginContent.widgets.form.logIn,
-            onPressed: () {
-              submit(_formKey.currentState!.validate());
-            },
-            block: true,
-            isLoading: _loading,
-            isDisabled: !_canNavigate,
-          )
-        ],
-      ),
-    );
   }
 }
