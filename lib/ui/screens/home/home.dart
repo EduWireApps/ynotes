@@ -17,6 +17,6 @@ class _HomePageState extends State<HomePage> {
     return ZApp(
         page: YPage(
             appBar: const YAppBar(title: "Accueil"),
-            body: Column(mainAxisSize: MainAxisSize.max, children: const [CountDown()])));
+            body: Column(mainAxisSize: MainAxisSize.max, children: const [CountDown(), Grades()])));
   }
 }
