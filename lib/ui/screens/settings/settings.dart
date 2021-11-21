@@ -352,7 +352,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           applicationVersion:
                               packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion,
                           applicationLegalese:
-                              "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
+                              "Developpé avec amour en France.\n\nAPI Pronote adaptée de l'API pronotepy développée par Bain sous licence MIT.\n\nNous tenons à remercier les beta-testeurs ainsi que chaque personne ayant participé à cette application.");
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

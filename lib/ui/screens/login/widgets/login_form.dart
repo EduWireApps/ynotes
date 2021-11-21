@@ -72,6 +72,7 @@ class _LoginFormState extends State<LoginForm> {
             fields: [
               YFormField(
                   properties: YFormFieldProperties(),
+                  autofillHints: const [AutofillHints.username],
                   label: LoginContent.widgets.form.id,
                   type: YFormFieldInputType.text,
                   validator: (String? value) {
@@ -82,6 +83,7 @@ class _LoginFormState extends State<LoginForm> {
                   }),
               YFormField(
                   properties: YFormFieldProperties(),
+                  autofillHints: const [AutofillHints.password],
                   label: LoginContent.widgets.form.password,
                   type: YFormFieldInputType.password,
                   validator: (String? value) {

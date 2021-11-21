@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -121,14 +123,15 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     onTap: route.onTap,
                   );
                 }),
-            ListTile(
-              leading: Icon(
-                FontAwesomeIcons.handHoldingUsd,
-                color: theme.colors.foregroundLightColor,
+            if (!Platform.isIOS)
+              ListTile(
+                leading: Icon(
+                  FontAwesomeIcons.handHoldingUsd,
+                  color: theme.colors.foregroundLightColor,
+                ),
+                title: Text("Faire un don", style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 18)),
+                onTap: () async => await launch("https://fr.tipeee.com/jsonlines"),
               ),
-              title: Text("Faire un don", style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 18)),
-              onTap: () async => await launch("https://fr.tipeee.com/jsonlines"),
-            ),
             YVerticalSpacer(YScale.s4),
             const YDivider(),
             YVerticalSpacer(YScale.s4),
