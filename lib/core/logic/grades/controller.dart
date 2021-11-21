@@ -70,7 +70,7 @@ class GradesController extends ChangeNotifier {
   }
 
   //Get school periods;
-  Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
+  Future<void> refresh({bool force = false, bool refreshFromOffline = false}) async {
     CustomLogger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
     if (isSimulating && force) {
       isSimulating = false;

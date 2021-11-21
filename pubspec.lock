@@ -317,7 +317,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.3"
   expandable:
     dependency: "direct main"
     description:
@@ -375,7 +375,7 @@ packages:
       name: fl_chart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.35.0"
+    version: "0.40.2"
   flare_flutter:
     dependency: "direct main"
     description:

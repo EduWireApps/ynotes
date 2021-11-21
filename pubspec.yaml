@@ -31,7 +31,7 @@ dependencies:
     git:
       ref: master
       url: "https://github.com/GitJournal/ext_storage"
-  fl_chart: ^0.35.0
+  fl_chart: ^0.40.2
   flare_flutter: ^3.0.0
   flutter:
     sdk: flutter

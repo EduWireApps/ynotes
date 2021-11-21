@@ -42,7 +42,7 @@ class SummaryChartState extends State<SummaryChart> with LayoutMixin {
         leftTitles: SideTitles(
           interval: 1.0,
           showTitles: true,
-          getTextStyles: (value) => const TextStyle(
+          getTextStyles: (context, value) => const TextStyle(
             color: Color(0xff67727d),
             fontWeight: FontWeight.bold,
             fontSize: 15,
