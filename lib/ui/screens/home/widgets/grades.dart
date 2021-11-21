@@ -1,3 +1,4 @@
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
@@ -121,18 +122,38 @@ class _GradesState extends State<Grades> {
                                       fontWeight: YFontWeight.extrabold)),
                               Text("Moyenne", style: theme.texts.body2),
                               YVerticalSpacer(YScale.s4),
-                              Text(
-                                  "+${(chartElements.last.value - chartElements[chartElements.length - 2].value).toStringAsFixed(2)}",
-                                  style: theme.texts.title.copyWith(color: theme.colors.success.backgroundColor)),
+                              _DiffText(chartElements.last.value - chartElements[chartElements.length - 2].value),
                               Text("Semaine dernière", style: theme.texts.body2),
                             ],
                           )
                         ]),
                       )
                     ])),
-              const YDivider()
+              Padding(
+                  padding: YPadding.p(YScale.s4),
+                  child: Row(
+                    children: grades
+                        .where((grade) => CalendarTime(grade.entryDate!).isToday)
+                        .map((grade) => Expanded(child: Text(grade.testName!)))
+                        .toList(),
+                  )),
+              const YDivider(),
             ],
           );
         });
+  }
+}
+
+class _DiffText extends StatelessWidget {
+  final double value;
+  const _DiffText(this.value, {Key? key}) : super(key: key);
+
+  String get sign => value >= 0 ? "+" : "";
+
+  Color get color => value >= 0 ? theme.colors.success.backgroundColor : theme.colors.danger.backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("$sign${value.toStringAsFixed(2)}", style: theme.texts.title.copyWith(color: color));
   }
 }
