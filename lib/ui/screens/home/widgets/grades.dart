@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
@@ -98,48 +100,55 @@ class _GradesState extends State<Grades> {
     return ControllerConsumer<GradesController>(
         controller: controller,
         builder: (context, controller, _) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (chartElements.isNotEmpty)
-                Padding(
-                    padding: EdgeInsets.fromLTRB(YScale.s4, YScale.s4, YScale.s8, YScale.s4),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text("Notes", style: theme.texts.title),
-                      YVerticalSpacer(YScale.s8),
-                      SizedBox(
-                        height: r<double>(def: YScale.s28, lg: YScale.s36, xl: YScale.s48),
-                        child: Row(mainAxisSize: MainAxisSize.max, children: [
-                          if (grades.isNotEmpty) Expanded(child: GradesChart(chartElements)),
-                          YHorizontalSpacer(r<double>(def: YScale.s6, lg: YScale.s12)),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(chartElements.last.value.toString(),
-                                  style: theme.texts.title.copyWith(
-                                      fontSize: r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4),
-                                      fontWeight: YFontWeight.extrabold)),
-                              Text("Moyenne", style: theme.texts.body2),
-                              YVerticalSpacer(YScale.s4),
-                              _DiffText(chartElements.last.value - chartElements[chartElements.length - 2].value),
-                              Text("Semaine dernière", style: theme.texts.body2),
-                            ],
+          return chartElements.isNotEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(YScale.s4, YScale.s4, YScale.s8, YScale.s4),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text("Notes", style: theme.texts.title),
+                          YVerticalSpacer(YScale.s8),
+                          SizedBox(
+                            height: r<double>(def: YScale.s28, lg: YScale.s36, xl: YScale.s48),
+                            child: Row(mainAxisSize: MainAxisSize.max, children: [
+                              if (grades.isNotEmpty) Expanded(child: GradesChart(chartElements)),
+                              YHorizontalSpacer(r<double>(def: YScale.s6, lg: YScale.s12)),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(chartElements.last.value.toString(),
+                                      style: theme.texts.title.copyWith(
+                                          fontSize: r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4),
+                                          fontWeight: YFontWeight.extrabold)),
+                                  Text("Moyenne", style: theme.texts.body2),
+                                  YVerticalSpacer(YScale.s4),
+                                  _DiffText(chartElements.last.value - chartElements[chartElements.length - 2].value),
+                                  Text("Semaine dernière", style: theme.texts.body2),
+                                ],
+                              )
+                            ]),
                           )
-                        ]),
-                      )
-                    ])),
-              Padding(
-                  padding: YPadding.p(YScale.s4),
-                  child: Row(
-                    children: grades
-                        .where((grade) => CalendarTime(grade.entryDate!).isToday)
-                        .map((grade) => Expanded(child: Text(grade.testName!)))
-                        .toList(),
-                  )),
-              const YDivider(),
-            ],
-          );
+                        ])),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(YScale.s4, YScale.s4, 0, YScale.s4),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: grades.reversed
+                                .toList()
+                                .sublist(0, min(grades.length - 1, 5))
+                                .map((grade) => Row(
+                                      children: [GradeContainer(grade), YHorizontalSpacer(YScale.s6)],
+                                    ))
+                                .toList(),
+                          ),
+                        )),
+                    const YDivider(),
+                  ],
+                )
+              : Container();
         });
   }
 }

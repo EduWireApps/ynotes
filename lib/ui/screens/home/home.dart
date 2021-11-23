@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/NEW/navigation/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -17,6 +18,7 @@ class _HomePageState extends State<HomePage> {
     return ZApp(
         page: YPage(
             appBar: const YAppBar(title: "Accueil"),
+            onRefresh: () async => await Future.wait([appSys.gradesController.refresh(force: true)]),
             body: Column(mainAxisSize: MainAxisSize.max, children: const [CountDown(), Grades()])));
   }
 }
