@@ -21,7 +21,8 @@ class _HomePageState extends State<HomePage> {
             onRefresh: () async => await Future.wait([
                   appSys.api!.getEvents(DateTime.now(), forceReload: false),
                   appSys.gradesController.refresh(force: true),
+                  appSys.homeworkController.refresh(force: true),
                 ]),
-            body: Column(mainAxisSize: MainAxisSize.max, children: const [CountDown(), Grades()])));
+            body: Column(mainAxisSize: MainAxisSize.max, children: const [CountDown(), Grades(), Homeworks()])));
   }
 }

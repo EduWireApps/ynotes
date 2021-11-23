@@ -29,7 +29,11 @@ class GradesChart extends StatelessWidget {
       ),
       lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
-              tooltipBgColor: theme.colors.primary.lightColor.withOpacity(.2), tooltipRoundedRadius: YScale.s2)),
+              tooltipBgColor: theme.colors.backgroundLightColor,
+              tooltipRoundedRadius: YScale.s2,
+              getTooltipItems: (spots) => spots
+                  .map((spot) => LineTooltipItem(spot.y.toString(), TextStyle(color: theme.colors.foregroundColor)))
+                  .toList())),
       borderData: FlBorderData(show: false),
       titlesData: FlTitlesData(
         show: true,
