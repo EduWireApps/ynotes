@@ -18,7 +18,10 @@ class _HomePageState extends State<HomePage> {
     return ZApp(
         page: YPage(
             appBar: const YAppBar(title: "Accueil"),
-            onRefresh: () async => await Future.wait([appSys.gradesController.refresh(force: true)]),
+            onRefresh: () async => await Future.wait([
+                  appSys.api!.getEvents(DateTime.now(), forceReload: false),
+                  appSys.gradesController.refresh(force: true),
+                ]),
             body: Column(mainAxisSize: MainAxisSize.max, children: const [CountDown(), Grades()])));
   }
 }

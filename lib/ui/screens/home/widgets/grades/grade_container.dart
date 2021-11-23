@@ -17,29 +17,36 @@ class GradeContainer extends StatelessWidget {
   const GradeContainer(this.grade, {Key? key}) : super(key: key);
 
   String get date {
-    final ct = CalendarTime(grade.entryDate!);
-    if (ct.isToday) {
+    final date = grade.entryDate!;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    if (date == today) {
       return "Aujourd'hui";
-    } else if (ct.isYesterday) {
+    } else if (date == yesterday) {
       return "Hier";
     } else {
       return DateFormat("EEEE dd MMMM", "fr_FR").format(grade.entryDate!).capitalize();
     }
   }
 
-  Widget bubble(String text) => Container(
-        height: YScale.s4,
-        padding: YPadding.px(YScale.s1),
-        decoration: BoxDecoration(
-          color: theme.colors.foregroundColor,
-          borderRadius: YBorderRadius.full,
-        ),
-        child: AutoSizeText(
-          text,
-          style: theme.texts.body2.copyWith(fontWeight: YFontWeight.bold, color: theme.colors.backgroundColor),
-          textAlign: TextAlign.center,
-        ),
-      );
+  Widget bubble(String text, [bool danger = false]) {
+    final Color backgroundColor = danger ? theme.colors.danger.backgroundColor : theme.colors.foregroundColor;
+    final Color foregroundColor = danger ? theme.colors.danger.foregroundColor : theme.colors.backgroundColor;
+    return Container(
+      height: YScale.s4,
+      padding: YPadding.px(YScale.s1),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: YBorderRadius.full,
+      ),
+      child: AutoSizeText(
+        text,
+        style: theme.texts.body2.copyWith(fontWeight: YFontWeight.bold, color: foregroundColor),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +85,7 @@ class GradeContainer extends StatelessWidget {
                             )),
                       ),
                       if (grade.weight! != "1")
-                        Positioned(top: -YScale.s3, right: -YScale.s2, child: bubble(grade.weight!)),
+                        Positioned(top: -YScale.s3, right: -YScale.s2, child: bubble(grade.weight!, true)),
                       if (grade.scale! != "20")
                         Positioned(bottom: -YScale.s3, right: -YScale.s2, child: bubble("/${grade.scale!}"))
                     ],
