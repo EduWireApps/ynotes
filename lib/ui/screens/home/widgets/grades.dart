@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
@@ -132,17 +133,23 @@ class _GradesState extends State<Grades> {
                           )
                         ])),
                     Padding(
-                        padding: EdgeInsets.fromLTRB(YScale.s4, YScale.s4, 0, YScale.s4),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: grades.reversed
-                                .toList()
-                                .sublist(0, min(grades.length - 1, 5))
-                                .map((grade) => Row(
-                                      children: [GradeContainer(grade), YHorizontalSpacer(YScale.s6)],
-                                    ))
-                                .toList(),
+                        padding: YPadding.py(YScale.s4),
+                        child: ScrollConfiguration(
+                          behavior: DragScrollBehavior(),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                YHorizontalSpacer(YScale.s4),
+                                ...grades.reversed
+                                    .toList()
+                                    .sublist(0, min(grades.length - 1, 5))
+                                    .map((grade) => Row(
+                                          children: [GradeContainer(grade), YHorizontalSpacer(YScale.s6)],
+                                        ))
+                                    .toList()
+                              ],
+                            ),
                           ),
                         )),
                     const YDivider(),
