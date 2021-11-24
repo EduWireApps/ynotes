@@ -16,7 +16,6 @@ import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
 import 'package:ynotes/ui/screens/school_life/routes.dart';
 import 'package:ynotes/ui/screens/settings/routes.dart';
-import 'package:ynotes/ui/screens/summary/summary.dart';
 import 'package:ynotes/ui/screens/terms/terms.dart';
 
 class CustomRoute {
@@ -39,7 +38,6 @@ final List<CustomRoute> routes = [
   CustomRoute(path: "/loading", page: const LoadingPage(), relatedApi: -1, show: false),
   CustomRoute(path: "/terms", page: const TermsPage(), relatedApi: -1, show: false),
   ...homeRoutes,
-  // CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: const SummaryPage(), tab: appTabs.summary),
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
       path: "/homework", icon: Icons.class__rounded, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
