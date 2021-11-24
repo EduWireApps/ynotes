@@ -71,7 +71,7 @@ class _GradesState extends State<Grades> {
     // We prepare the map used to store grades by week
     final Map<int, List<Grade>> gradesByWeekMap = {};
     // We put all grades in the map
-    for (var grade in fetchedGrades) {
+    for (final grade in fetchedGrades) {
       if (gradesByWeekMap.containsKey(grade.entryDate!.weekyear)) {
         gradesByWeekMap[grade.entryDate!.weekyear]!.add(grade);
       } else {

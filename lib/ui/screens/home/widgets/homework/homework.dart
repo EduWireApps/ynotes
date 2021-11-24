@@ -1,29 +1,13 @@
-import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart';
-import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
-
-List<List<Homework>> groupHomeworkByDate(List<Homework> homeworkList) {
-  final List<DateTime> dates = [];
-  for (var hw in homeworkList) {
-    if (!dates.contains(hw.date) && hw.date != null) {
-      dates.add(hw.date!);
-    }
-  }
-  final List<DateTime> formattedDates =
-      dates.map((date) => DateTime.parse(DateFormat("yyyy-MM-dd").format(date))).toSet().toList();
-  return formattedDates
-      .map((date) => homeworkList.where((hw) => CalendarTime(hw.date).isSameDayAs(date)).toList())
-      .toList();
-}
 
 class Homeworks extends StatefulWidget {
   const Homeworks({Key? key}) : super(key: key);
@@ -44,7 +28,45 @@ class _HomeworksState extends State<Homeworks> {
   }
 
   List<Homework> get homework => controller.homework(showAll: true) ?? [];
-  List<List<Homework>> get homeworkByDate => groupHomeworkByDate(homework);
+  List<List<Homework>> get homeworkByWeek {
+    final Map<int, List<Homework>> homeworkByWeekMap = {};
+    for (final hw in homework) {
+      if (homeworkByWeekMap.containsKey(hw.date!.weekyear)) {
+        homeworkByWeekMap[hw.date!.weekyear]!.add(hw);
+      } else {
+        homeworkByWeekMap[hw.date!.weekyear] = [hw];
+      }
+    }
+    return homeworkByWeekMap.entries.map((e) => e.value).toList();
+  }
+
+  bool get isCurrentWeek {
+    final DateTime now = DateTime.now();
+    return now.weekday < 6 || now.hour < 18;
+  }
+
+  List<Homework> get week {
+    final DateTime date = DateTime.now().add(Duration(days: isCurrentWeek ? 0 : 7));
+    int? i;
+    int index = 0;
+    for (final week in homeworkByWeek) {
+      if (week.first.date!.weekyear == date.weekyear) {
+        i = index;
+        break;
+      }
+      index += 1;
+    }
+    return i == null ? [] : homeworkByWeek[i];
+  }
+
+  Widget counter({
+    required int done,
+    required int total,
+  }) =>
+      Text("$done/$total",
+          style: theme.texts.body1.copyWith(
+              color: done == total ? theme.colors.success.backgroundColor : theme.colors.foregroundColor,
+              fontWeight: YFontWeight.semibold));
 
   @override
   Widget build(BuildContext context) {
@@ -60,51 +82,73 @@ class _HomeworksState extends State<Homeworks> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Devoirs", style: theme.texts.title),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("Devoirs", style: theme.texts.title),
+                                Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: YBorderRadius.lg,
+                                      color: theme.colors.backgroundLightColor,
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: YScale.s2, vertical: YScale.s1),
+                                    child: RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                            text: "${homework.where((hw) => hw.isATest!).length}",
+                                            style: TextStyle(
+                                                fontWeight: homework.where((hw) => hw.isATest!).isNotEmpty
+                                                    ? YFontWeight.semibold
+                                                    : null)),
+                                        const TextSpan(text: " évaluations")
+                                      ], style: theme.texts.body2),
+                                    ))
+                              ],
+                            ),
                             YVerticalSpacer(YScale.s6),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: YBorderRadius.xl, color: theme.colors.backgroundLightColor),
-                              child: Column(children: [
-                                Padding(
-                                  padding: YPadding.p(YScale.s3),
+                            Column(children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.vertical(top: (Radius.circular(0.75.rem))),
+                                    color: theme.colors.backgroundLightColor),
+                                child: Padding(
+                                  padding: YPadding.p(YScale.s4),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Pour demain",
+                                      Text(isCurrentWeek ? "Pour cette semaine" : "Pour la semaine prochaine",
                                           style: theme.texts.body1.copyWith(
                                               color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold)),
-                                      Text(
-                                          "${homeworkByDate.first.where((hw) => hw.done!).length}/${homeworkByDate.first.length}",
-                                          style: theme.texts.body1.copyWith(
-                                              color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold))
+                                      if (week.isNotEmpty)
+                                        counter(done: week.where((hw) => hw.done!).length, total: week.length)
                                     ],
                                   ),
                                 ),
-                                Column(
-                                    children: homeworkByDate.first.asMap().entries.map((entry) {
-                                  final int index = entry.key;
-                                  final Homework hw = entry.value;
-                                  return ListTile(
-                                    leading: Text("$index."),
-                                    title: Text(hw.discipline!,
-                                        style: theme.texts.body1
-                                            .copyWith(decoration: hw.done! ? TextDecoration.lineThrough : null),
-                                        overflow: TextOverflow.ellipsis),
-                                    subtitle: hw.rawContent != null
-                                        ? Text(parse(hw.rawContent!).documentElement!.text,
-                                            style: theme.texts.body2, overflow: TextOverflow.ellipsis)
-                                        : null,
-                                    trailing: YCheckbox(
-                                        value: hw.done!,
-                                        onChanged: (bool value) async {
-                                          await HomeworkOffline(appSys.offline).updateSingleHW(hw);
-                                          controller.refresh();
-                                        }),
-                                  );
-                                }).toList())
-                              ]),
-                            )
+                              ),
+                              week.isNotEmpty
+                                  ? Column(
+                                      children: week
+                                          .map((hw) => HomeworkElement(
+                                                hw,
+                                              ))
+                                          .toList())
+                                  : Container(
+                                      width: double.infinity,
+                                      color: theme.colors.backgroundLightColor,
+                                      padding: YPadding.px(YScale.s4),
+                                      child: Text(
+                                        "Aucun devoir",
+                                        style: theme.texts.body2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                              Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.vertical(bottom: (Radius.circular(0.75.rem))),
+                                      color: theme.colors.backgroundLightColor),
+                                  height: YScale.s4),
+                            ])
                           ],
                         )),
                     const YDivider()
