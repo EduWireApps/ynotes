@@ -13,14 +13,14 @@ import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
-class Grades extends StatefulWidget {
-  const Grades({Key? key}) : super(key: key);
+class GradesSection extends StatefulWidget {
+  const GradesSection({Key? key}) : super(key: key);
 
   @override
-  _GradesState createState() => _GradesState();
+  _GradesSectionState createState() => _GradesSectionState();
 }
 
-class _GradesState extends State<Grades> {
+class _GradesSectionState extends State<GradesSection> {
   final GradesController controller = appSys.gradesController;
 
   @override
@@ -41,6 +41,9 @@ class _GradesState extends State<Grades> {
   double calculateGlobalAverage(List<Grade> grades) {
     // Will keep the averages of the disciplines
     final List<double> avgs = [];
+    grades = grades
+        .where((grade) => !grade.value!.toUpperCase().contains('ABS') && !grade.value!.toUpperCase().contains('DISP'))
+        .toList();
     // We iterate through each discipline
     for (final discipline in controller.disciplines()!) {
       // We get the grades for the current discipline
@@ -140,15 +143,16 @@ class _GradesState extends State<Grades> {
                         child: ScrollConfiguration(
                           behavior: DragScrollBehavior(),
                           child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                YHorizontalSpacer(YScale.s6),
+                                YHorizontalSpacer(YScale.s4),
                                 ...grades.reversed
                                     .toList()
                                     .sublist(0, min(grades.length - 1, 5))
                                     .map((grade) => Row(
-                                          children: [GradeContainer(grade), YHorizontalSpacer(YScale.s6)],
+                                          children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
                                         ))
                                     .toList()
                               ],

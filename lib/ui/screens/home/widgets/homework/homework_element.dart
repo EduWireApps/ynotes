@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
@@ -62,13 +64,16 @@ class HomeworkElement extends StatelessWidget {
                                     child: Text(
                                       homework.discipline!,
                                       style: theme.texts.body1.copyWith(
-                                          color:
-                                              controller.disciplines() != null && controller.disciplines()!.isNotEmpty
-                                                  ? Color(controller
-                                                      .disciplines()!
-                                                      .firstWhere((e) => e.disciplineCode == homework.disciplineCode)
-                                                      .color!)
-                                                  : null,
+                                          color: controller.disciplines() != null &&
+                                                  controller.disciplines()!.isNotEmpty &&
+                                                  controller.disciplines()!.firstWhereOrNull(
+                                                          (e) => e.disciplineCode == homework.disciplineCode) !=
+                                                      null
+                                              ? Color(controller
+                                                  .disciplines()!
+                                                  .firstWhereOrNull((e) => e.disciplineCode == homework.disciplineCode)!
+                                                  .color!)
+                                              : null,
                                           fontWeight: YFontWeight.semibold,
                                           decoration: homework.done! ? TextDecoration.lineThrough : null),
                                       overflow: TextOverflow.ellipsis,

@@ -9,14 +9,14 @@ import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
-class Homeworks extends StatefulWidget {
-  const Homeworks({Key? key}) : super(key: key);
+class HomeworkSection extends StatefulWidget {
+  const HomeworkSection({Key? key}) : super(key: key);
 
   @override
-  _HomeworksState createState() => _HomeworksState();
+  _HomeworkSectionState createState() => _HomeworkSectionState();
 }
 
-class _HomeworksState extends State<Homeworks> {
+class _HomeworkSectionState extends State<HomeworkSection> {
   final controller = appSys.homeworkController;
 
   @override
@@ -151,7 +151,6 @@ class _HomeworksState extends State<Homeworks> {
                             ])
                           ],
                         )),
-                    const YDivider()
                   ],
                 )
               : Container();
