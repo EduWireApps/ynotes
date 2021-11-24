@@ -16,7 +16,6 @@ class TermsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return YPage(
-      showScrollbar: !Platform.isWindows,
       appBar: const YAppBar(title: "Termes et conditions", removeLeading: true),
       body: Padding(
           padding: EdgeInsets.fromLTRB(YScale.s2, YScale.s2, Platform.isWindows ? YScale.s4 : YScale.s2, YScale.s2),
