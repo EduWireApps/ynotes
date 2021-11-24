@@ -8,17 +8,9 @@ import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
-import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
-import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
-
-class LoginPronoteUrlPageArguments {
-  final String url;
-
-  const LoginPronoteUrlPageArguments(this.url);
-}
 
 class LoginPronoteUrlPage extends StatefulWidget {
   const LoginPronoteUrlPage({Key? key}) : super(key: key);
@@ -43,12 +35,11 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
       if (response.message == null) {
         switch (response.route!) {
           case _Route.form:
-            Navigator.pushNamed(context, "/login/pronote/url/form",
-                arguments: LoginPronoteUrlFormPageArguments(response.url));
+            Navigator.pushNamed(context, "/login/pronote/url/form", arguments: response.url);
             break;
           case _Route.webview:
-            final dynamic res = await Navigator.pushNamed(context, "/login/pronote/url/webview",
-                arguments: LoginPronoteUrlWebviewPageArguments(response.url));
+            final dynamic res =
+                await Navigator.pushNamed(context, "/login/pronote/url/webview", arguments: response.url);
             if (res != null) {
               final List<dynamic>? data = await appSys.api!.login(res["login"], res["mdp"], additionnalSettings: {
                 "url": response.url,
@@ -78,10 +69,10 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = RoutingUtils.getArgs<LoginPronoteUrlPageArguments?>(context);
-    if (args != null) {
+    final url = RoutingUtils.getArgs<String?>(context);
+    if (url != null) {
       setState(() {
-        _url = args.url;
+        _url = url;
       });
     }
     return LoginPageStructure(
@@ -94,7 +85,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
               fields: [
                 YFormField(
                   type: YFormFieldInputType.url,
-                  defaultValue: args?.url,
+                  defaultValue: _url,
                   label: LoginContent.pronote.url.fieldLabel,
                   properties: YFormFieldProperties(),
                   onSaved: (String? value) {

@@ -5,6 +5,14 @@ import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/utilities.dart';
 
+class _Credentials {
+  String username;
+  String password;
+  String url;
+
+  _Credentials({this.username = "", this.password = "", required this.url});
+}
+
 class LoginForm extends StatefulWidget {
   final String subtitle;
   final String url;
@@ -15,19 +23,40 @@ class LoginForm extends StatefulWidget {
   _LoginFormState createState() => _LoginFormState();
 }
 
-class _Credentials {
-  String username;
-  String password;
-  String url;
-
-  _Credentials({this.username = "", this.password = "", required this.url});
-}
-
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _loading = false;
   late final _Credentials _credentials = _Credentials(url: widget.url);
   bool _canNavigate = true;
+
+  Future<void> submit(bool b) async {
+    setState(() {
+      _loading = true;
+    });
+    if (b) {
+      _formKey.currentState!.save();
+      final List<dynamic>? data =
+          await appSys.api!.login(_credentials.username.trim(), _credentials.password.trim(), additionnalSettings: {
+        "url": _credentials.url.trim(),
+        "demo": false,
+        "mobileCasLogin": false,
+      });
+      if (data != null && data[0] == 1) {
+        setState(() {
+          _canNavigate = false;
+        });
+        YSnackbars.success(context, title: LoginContent.widgets.form.connected, message: data[1]);
+        await Future.delayed(const Duration(seconds: 3));
+        Navigator.pushReplacementNamed(context, "/terms");
+        // success
+      } else {
+        YSnackbars.error(context, title: LoginContent.widgets.form.error, message: data![1]);
+      }
+    }
+    setState(() {
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,34 +107,5 @@ class _LoginFormState extends State<LoginForm> {
         ],
       ),
     );
-  }
-
-  Future<void> submit(bool b) async {
-    setState(() {
-      _loading = true;
-    });
-    if (b) {
-      _formKey.currentState!.save();
-      final List<dynamic>? data =
-          await appSys.api!.login(_credentials.username.trim(), _credentials.password.trim(), additionnalSettings: {
-        "url": _credentials.url.trim(),
-        "demo": false,
-        "mobileCasLogin": false,
-      });
-      if (data != null && data[0] == 1) {
-        setState(() {
-          _canNavigate = false;
-        });
-        YSnackbars.success(context, title: LoginContent.widgets.form.connected, message: data[1]);
-        await Future.delayed(const Duration(seconds: 3));
-        Navigator.pushReplacementNamed(context, "/terms");
-        // success
-      } else {
-        YSnackbars.error(context, title: LoginContent.widgets.form.error, message: data![1]);
-      }
-    }
-    setState(() {
-      _loading = false;
-    });
   }
 }

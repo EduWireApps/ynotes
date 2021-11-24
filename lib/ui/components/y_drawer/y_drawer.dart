@@ -115,14 +115,6 @@ class _YDrawerState extends State<YDrawer> {
                     onTap: route.onTap,
                   );
                 }),
-            ListTile(
-              leading: Icon(
-                FontAwesomeIcons.handHoldingUsd,
-                color: theme.colors.foregroundLightColor,
-              ),
-              title: Text("Faire un don", style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 18)),
-              onTap: () async => await launch("https://fr.tipeee.com/jsonlines"),
-            ),
             YVerticalSpacer(YScale.s4),
             const YDivider(),
             YVerticalSpacer(YScale.s4),

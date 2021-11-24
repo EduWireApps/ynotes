@@ -174,6 +174,7 @@ class APIEcoleDirecte extends API {
       final List<List<String>> chars = [
         ["%", "%25"],
         ["&", "%26"],
+        ["+", "%2B"],
         ["\\", "\\\\"],
         ["\"", "\\\""],
       ];

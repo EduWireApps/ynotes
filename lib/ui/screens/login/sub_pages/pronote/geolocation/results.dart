@@ -4,7 +4,6 @@ import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controll
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
-import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -153,7 +152,7 @@ class _SchoolTile extends StatelessWidget {
             url = spaces[0].spaceUrl;
           }
           if (url != null) {
-            Navigator.pushNamed(context, "/login/pronote/url", arguments: LoginPronoteUrlPageArguments(url));
+            Navigator.pushNamed(context, "/login/pronote/url", arguments: url);
           }
         }
       },
