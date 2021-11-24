@@ -16,18 +16,12 @@ class SettingsDonorsPage extends StatelessWidget {
         appBar: const YAppBar(title: "Donateurs"),
         body: Column(
           children: [
-            Container(
+            Padding(
               padding: YPadding.p(YScale.s4),
               child: Text(
-                  """Les donateurs nous donnent chaque jour envie de développer des fonctionnalités plus poussées et de rendre l'application plus belle encore. C'est super sympa, et nous les remercions infinement de nous soutenir ♡ \n\nNous ajoutons nous-même leurs noms dans cette liste, si vous venez de faire un don laissez-nous donc le temps de vous remercier !""",
+                  """Les donateurs nous donnent chaque jour envie de développer des fonctionnalités plus poussées et de rendre l'application plus belle encore. C'est super sympa, et nous les remercions infinement de nous soutenir ❤ \n\nNous ajoutons nous-même leurs noms dans cette liste, si tu viens de faire un don laisse-nous donc le temps de te remercier !""",
                   style: theme.texts.body1),
             ),
-            YButton(
-                icon: FontAwesomeIcons.handHoldingUsd,
-                onPressed: () {
-                  launchURL("https://fr.tipeee.com/jsonlines");
-                },
-                text: "Je veux soutenir yNotes"),
             YVerticalSpacer(YScale.s10),
             ...donors
                 .map((donor) => ListTile(
