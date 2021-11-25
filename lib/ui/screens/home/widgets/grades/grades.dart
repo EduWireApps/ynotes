@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
@@ -27,7 +25,7 @@ class _GradesSectionState extends State<GradesSection> {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      controller.refresh(force: true);
+      controller.refresh();
     });
   }
 

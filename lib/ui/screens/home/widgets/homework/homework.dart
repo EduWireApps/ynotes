@@ -23,7 +23,7 @@ class _HomeworkSectionState extends State<HomeworkSection> {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      controller.refresh(force: true);
+      controller.refresh();
     });
   }
 
