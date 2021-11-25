@@ -149,7 +149,7 @@ class SettingsUtils {
     return FormSettings.fromJson((await getSavedSettings()) ?? {});
   }
 
-  static setSetting(FormSettings newSettings) async {
+  static Future<void> setSetting(FormSettings newSettings) async {
     final prefs = await SharedPreferences.getInstance();
     String encoded = json.encode(newSettings);
     CustomLogger.log("SETTINGS", "Set setting: $encoded");

@@ -5,15 +5,17 @@ import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/screens/agenda/agenda.dart';
 import 'package:ynotes/ui/screens/cloud/cloud.dart';
 import 'package:ynotes/ui/screens/downloads/downloads.dart';
-import 'package:ynotes/ui/screens/error.dart';
+import 'package:ynotes/ui/screens/error/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
+import 'package:ynotes/ui/screens/home/routes.dart';
 import 'package:ynotes/ui/screens/homework/homework.dart';
 import 'package:ynotes/ui/screens/intro/routes.dart';
+import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/screens/login/routes.dart';
 import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
-import 'package:ynotes/ui/screens/school_life/school_life.dart';
-import 'package:ynotes/ui/screens/summary/summary.dart';
+import 'package:ynotes/ui/screens/school_life/routes.dart';
+import 'package:ynotes/ui/screens/settings/routes.dart';
 import 'package:ynotes/ui/screens/terms/terms.dart';
 
 class CustomRoute {
@@ -32,11 +34,13 @@ class CustomRoute {
 final List<CustomRoute> routes = [
   ...loginRoutes,
   ...introRoutes,
-  CustomRoute(path: "/terms", icon: Icons.info, page: const TermsPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: const SummaryPage(), tab: appTabs.summary),
+  ...settingsRoutes,
+  CustomRoute(path: "/loading", page: const LoadingPage(), relatedApi: -1, show: false),
+  CustomRoute(path: "/terms", page: const TermsPage(), relatedApi: -1, show: false),
+  ...homeRoutes,
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
-      path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
+      path: "/homework", icon: Icons.class__rounded, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
   CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: const AgendaPage(), tab: appTabs.agenda),
   CustomRoute(
       path: "/mailbox",
@@ -45,13 +49,7 @@ final List<CustomRoute> routes = [
       page: const MailPage(),
       relatedApi: 0,
       tab: appTabs.messaging),
-  CustomRoute(
-      path: "/school_life",
-      icon: MdiIcons.stamper,
-      title: "Vie scolaire",
-      page: const SchoolLifePage(),
-      relatedApi: 0,
-      tab: appTabs.schoolLife),
+  ...schoolLifeRoutes,
   CustomRoute(
       path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: const CloudPage(), relatedApi: 0, tab: appTabs.cloud),
   CustomRoute(

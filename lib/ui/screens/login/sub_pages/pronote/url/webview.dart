@@ -18,12 +18,6 @@ import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
-class LoginPronoteUrlWebviewPageArguments {
-  final String url;
-
-  const LoginPronoteUrlWebviewPageArguments(this.url);
-}
-
 class LoginPronoteUrlWebviewPage extends StatefulWidget {
   const LoginPronoteUrlWebviewPage({Key? key}) : super(key: key);
 
@@ -31,42 +25,43 @@ class LoginPronoteUrlWebviewPage extends StatefulWidget {
   _LoginPronoteUrlWebviewPageState createState() => _LoginPronoteUrlWebviewPageState();
 }
 
-enum _AuthState { setCookie, authenticate, test }
-
 class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage> {
   InAppWebViewController? _controller;
   late String url;
-  Map? loginStatus;
+  bool cookiesSet = false;
   bool authenticated = false;
-  _AuthState step = _AuthState.setCookie;
+  Timer? timer;
 
-  //Checking the profile and getting the credentials
-  authAndValidateProfile() async {
-    CustomLogger.log("LOGIN", "(Web view) Validating profile");
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
 
-    Timer(const Duration(milliseconds: 1500), () async {
-      setState(() {
-        authenticated = true;
-      });
-      const String script =
-          "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : '';})();";
-      final String? result = await (_controller!.evaluateJavascript(source: script));
-      getCredentials(result);
-      if (loginStatus != null) {
-        setState(() {
-          step = _AuthState.test;
-        });
-        await _controller!
-            .loadUrl(urlRequest: URLRequest(url: Uri.parse(url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
-      }
-    });
+  getCredentials(String credsData) {
+    if (credsData.isNotEmpty) {
+      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData, save: false);
+      final Map<String, dynamic> decoded = json.decode(credsData);
+      CustomLogger.log("LOGIN", "(Web view) Status: ${decoded["status"]}");
+      if (decoded["status"] == 0) {
+        if (!authenticated) {
+          Navigator.of(context).pop(decoded);
+          setState(() {
+            authenticated = true;
+          });
+        }
+      } else {}
+    } else {
+      //This can happen if the page is not fully loaded
+      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = RoutingUtils.getArgs<LoginPronoteUrlWebviewPageArguments>(context);
+    final _url = RoutingUtils.getArgs<String>(context);
     setState(() {
-      url = args.url;
+      url = _url;
     });
     final String infoUrl = getInfoUrl(url);
     return YPage(
@@ -111,7 +106,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
             child: Stack(
               children: [
                 Opacity(
-                  opacity: authenticated ? 1 : 0,
+                  opacity: cookiesSet ? 1 : 0,
                   child: InAppWebView(
                     initialUrlRequest: URLRequest(
                       url: Uri.parse(infoUrl),
@@ -136,12 +131,59 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                     onLoadHttpError: (d, c, a, f) {},
                     onLoadError: (a, b, c, d) {},
                     onLoadStop: (controller, url) async {
-                      await stepper();
+                      if (!cookiesSet) {
+                        CustomLogger.log("LOGIN", "(Web view) Setting cookie");
+                        // generate UUID
+                        appSys.settings.system.uuid = const Uuid().v4();
+                        appSys.saveSettings();
+                        // We use the window function to create a cookie
+                        // Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
+                        final String script = """
+                        (function(){try{
+                        var lJetonCas = "", lJson = JSON.parse(document.body.innerText);
+                        lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;
+                        document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();
+                        if(!!lJetonCas) {
+                        document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();
+                        document.cookie = "uuidAppliMobile=${appSys.settings.system.uuid!};expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();
+                        document.cookie = "ielang=1036;expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();
+                        return true;
+                        } else return false;
+                        } catch(e){return false;}})();
+                        """;
+
+                        // We evaluate the cookie function
+                        final bool _authenticated = await (_controller?.evaluateJavascript(source: script)) ?? false;
+                        setState(() {
+                          cookiesSet = _authenticated;
+                        });
+                        if (cookiesSet) {
+                          // We use this window function to redirect to the special login page
+                          final String redirectScript = 'location.assign("$_url?fd=1")';
+                          await (_controller!.evaluateJavascript(source: redirectScript));
+                        }
+                      } else {
+                        CustomLogger.log("LOGIN", "(Web view) Validating profile");
+                        timer ??= Timer.periodic(const Duration(milliseconds: 2000), (_) async {
+                          if (!authenticated) {
+                            const String script =
+                                "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : '';})();";
+                            final String? result = await (_controller!.evaluateJavascript(source: script));
+                            if (result != null) {
+                              getCredentials(result);
+                            }
+                          } else {
+                            if (timer != null && !timer!.isActive) {
+                              timer?.cancel();
+                            }
+                          }
+                        });
+                      }
                     },
                     onProgressChanged: (InAppWebViewController controller, int progress) {},
                   ),
                 ),
-                if (!authenticated)
+                if (!cookiesSet)
                   Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -159,87 +201,5 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
         ],
       ),
     );
-  }
-
-  getCredentials(String? credsData) {
-    if (credsData != null && credsData.isNotEmpty) {
-      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData);
-      final Map temp = json.decode(credsData);
-      CustomLogger.log("LOGIN", "(Web view) Status: ${temp["status"]}");
-      if (temp["status"] == 0) {
-        loginStatus = temp;
-        Navigator.of(context).pop(loginStatus);
-      } else {}
-    } else {
-      //This can happen if the page is not fully loaded
-      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
-    }
-  }
-
-  // TODO: Test in beta if that's required
-  //IDK if it's still useful, but It redirects the user to the Pronote official page and log in
-  loginTest() async {
-    CustomLogger.log("LOGIN", "(Web view) Login test");
-    Timer(const Duration(milliseconds: 1500), () async {
-      const String script = 'if(!window.messageData) /*window.messageData = [];*/';
-      await _controller!.evaluateJavascript(source: script);
-    });
-  }
-
-  //We set the login cookie here
-  setCookie() async {
-    CustomLogger.log("LOGIN", "(Web view) Setting cookie");
-    //generate UUID
-    appSys.settings.system.uuid = const Uuid().v4();
-    appSys.saveSettings();
-    //We use the window function to create a cookie
-    //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
-    final String script = """
-    (function(){try{
-        var lJetonCas = "", lJson = JSON.parse(document.body.innerText);
-        lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;
-        document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();
-        if(!!lJetonCas) {
-        document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();
-        document.cookie = "uuidAppliMobile=${appSys.settings.system.uuid!};expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();
-        document.cookie = "ielang=1036;expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();
-        return true;
-        } else return false;
-        } catch(e){return false;}})();
-        """;
-
-    //We evaluate the cookie function
-    final bool? _authenticated = await (_controller?.evaluateJavascript(source: script));
-    if (_authenticated != null && _authenticated) {
-      //We use this window function to redirect to the special login page
-      String authFunction = 'location.assign("' + url + '?fd=1")';
-      //We logically set the next step before redirecting the page
-      setState(() {
-        step = _AuthState.authenticate;
-      });
-      await (_controller!.evaluateJavascript(source: authFunction));
-      stepper();
-    }
-  }
-
-  ///Called at each page load stop
-  ///Represents login steps
-  stepper() async {
-    switch (step) {
-      case _AuthState.setCookie:
-        {
-          await setCookie();
-        }
-        break;
-      case _AuthState.authenticate:
-        {
-          await authAndValidateProfile();
-        }
-        break;
-      case _AuthState.test:
-        {
-          await loginTest();
-        }
-    }
   }
 }

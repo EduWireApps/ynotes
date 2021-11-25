@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:html_unescape/html_unescape.dart';
@@ -7,7 +8,6 @@ import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/ui.dart';
 
@@ -32,7 +32,7 @@ class GeolocationError {
 }
 
 /// A class that handles the geolocation method for Pronote login.
-class PronoteGeolocationController extends Controller {
+class PronoteGeolocationController extends ChangeNotifier {
   /// A class that handles the geolocation method for Pronote login.
   PronoteGeolocationController();
 
@@ -53,9 +53,8 @@ class PronoteGeolocationController extends Controller {
   LatLng? _coordinates;
 
   void updateCoordinates(LatLng? coordinates) {
-    setState(() {
-      _coordinates = coordinates;
-    });
+    _coordinates = coordinates;
+    notifyListeners();
   }
 
   /// Convert the data received from the Pronote API to a list of [PronoteSchool].
@@ -82,18 +81,16 @@ class PronoteGeolocationController extends Controller {
     _schools.sort(
         (a, b) => (double.tryParse(a.coordinates![2]) ?? 0.0).compareTo(double.tryParse(b.coordinates![2]) ?? 0.0));
     // We set the class' schools
-    setState(() {
-      this._schools = _schools;
-    });
+    this._schools = _schools;
+    notifyListeners();
   }
 
   /// Get the schools around the user's location or not depending on the permissions.
   Future<void> geolocateSchools() async {
     // We initialize the variables
-    setState(() {
-      _status = GeolocationStatus.loading;
-      _error = null;
-    });
+    _status = GeolocationStatus.loading;
+    _error = null;
+    notifyListeners();
     LocationPermission permission;
 
     // We check if the user has granted the permission. Based on the result,
@@ -102,24 +99,22 @@ class PronoteGeolocationController extends Controller {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.deniedForever) {
-        setState(() {
-          _error = const GeolocationError(
-              title: "Permission refusée",
-              message:
-                  "Vous avez bloqué l'accès à la localisation de façon permanente pour yNotes. Pour accéder à cette fonctionnalité, veuillez la modifier dans les paramètres de votre téléphone.");
-          _status = GeolocationStatus.error;
-        });
+        _error = const GeolocationError(
+            title: "Permission refusée",
+            message:
+                "Vous avez bloqué l'accès à la localisation de façon permanente pour yNotes. Pour accéder à cette fonctionnalité, veuillez la modifier dans les paramètres de votre téléphone.");
+        _status = GeolocationStatus.error;
+        notifyListeners();
         return;
       }
 
       if (permission == LocationPermission.denied) {
-        setState(() {
-          _error = const GeolocationError(
-              title: "Permission refusée",
-              message:
-                  "Vous avez refusé l'accès à la localisation pour yNotes. Cette fonctionnalité repose sur la localisation, veuillez réessayer et accepter.");
-          _status = GeolocationStatus.error;
-        });
+        _error = const GeolocationError(
+            title: "Permission refusée",
+            message:
+                "Vous avez refusé l'accès à la localisation pour yNotes. Cette fonctionnalité repose sur la localisation, veuillez réessayer et accepter.");
+        _status = GeolocationStatus.error;
+        notifyListeners();
         return;
       }
     }
@@ -132,24 +127,21 @@ class PronoteGeolocationController extends Controller {
       CustomLogger.log("PRONOTE", "Current position: ${pos.longitude} ${pos.latitude}");
       try {
         // await _locateSchoolsAround(longitude: pos.longitude, latitude: pos.latitude);
-        setState(() {
-          _status = GeolocationStatus.success;
-        });
+        _status = GeolocationStatus.success;
+        notifyListeners();
         updateCoordinates(LatLng(pos.latitude, pos.longitude));
       } catch (e) {
-        setState(() {
-          _error = GeolocationError(title: "Une erreur est survenue", message: "$e");
-        });
+        _error = GeolocationError(title: "Une erreur est survenue", message: "$e");
+        notifyListeners();
       }
     } catch (e) {
       final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        setState(() {
-          _error = const GeolocationError(
-              title: "Oups !",
-              message: "La géolocalisation est désactivée, tu en as besoin pour accéder à cette fonctionnalité.");
-          _status = GeolocationStatus.error;
-        });
+        _error = const GeolocationError(
+            title: "Oups !",
+            message: "La géolocalisation est désactivée, tu en as besoin pour accéder à cette fonctionnalité.");
+        _status = GeolocationStatus.error;
+        notifyListeners();
       }
     }
     // Set the system ui because the native dialog modifies it
@@ -158,9 +150,8 @@ class PronoteGeolocationController extends Controller {
 
   /// Get the schools around the user's location.
   Future<void> locateSchoolsAround() async {
-    setState(() {
-      _status = GeolocationStatus.loading;
-    });
+    _status = GeolocationStatus.loading;
+    notifyListeners();
     final LatLng coordinates = this.coordinates!;
     // We setup the url and request body
     const String url = "https://www.index-education.com/swie/geoloc.php";
@@ -175,17 +166,15 @@ class PronoteGeolocationController extends Controller {
     if (response.statusCode == 200) {
       // If request has completed successfully, we convert the data to a list of [PronoteSchool]
       _convertDataToSchool(body: response.body, longitude: coordinates.longitude, latitude: coordinates.latitude);
-      setState(() {
-        _status = GeolocationStatus.success;
-      });
+      _status = GeolocationStatus.success;
+      notifyListeners();
     } else {
-      setState(() {
-        _error = const GeolocationError(
-            title: "Oups !",
-            message:
-                "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
-        _status = GeolocationStatus.error;
-      });
+      _error = const GeolocationError(
+          title: "Oups !",
+          message:
+              "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
+      _status = GeolocationStatus.error;
+      notifyListeners();
     }
     CustomLogger.log("PRONOTE", "(Schools) Request response status code: ${response.statusCode}");
   }
@@ -220,24 +209,21 @@ class PronoteGeolocationController extends Controller {
         return spaces;
       }
     } catch (e) {
-      setState(() {
-        _error = GeolocationError(title: "Une erreur est survenue", message: "$e");
-      });
+      _error = GeolocationError(title: "Une erreur est survenue", message: "$e");
+      notifyListeners();
       return null;
     }
   }
 
   /// Retrieves locations near a location as [String] from the Open Street Map api
   Future<List<OSMLocation>> locateNearPlaces(String location) async {
-    setState(() {
-      _status = GeolocationStatus.loading;
-    });
+    _status = GeolocationStatus.loading;
+    notifyListeners();
     final String url = Uri.encodeFull("https://nominatim.openstreetmap.org/search.php?q=$location&format=json");
     final Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      setState(() {
-        _status = GeolocationStatus.success;
-      });
+      _status = GeolocationStatus.success;
+      notifyListeners();
       final List<dynamic> results = jsonDecode(response.body);
       final List<OSMLocation> locations = results
           .map((result) => OSMLocation(
@@ -246,23 +232,21 @@ class PronoteGeolocationController extends Controller {
           .toList();
       return locations;
     } else {
-      setState(() {
-        _error = const GeolocationError(
-            title: "Oups !",
-            message:
-                "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
-        _status = GeolocationStatus.error;
-      });
+      _error = const GeolocationError(
+          title: "Oups !",
+          message:
+              "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
+      _status = GeolocationStatus.error;
+      notifyListeners();
       return [];
     }
   }
 
   /// Reset the controller
   void reset() {
-    setState(() {
-      _status = GeolocationStatus.initial;
-      _error = null;
-      _schools = [];
-    });
+    _status = GeolocationStatus.initial;
+    _error = null;
+    _schools = [];
+    notifyListeners();
   }
 }

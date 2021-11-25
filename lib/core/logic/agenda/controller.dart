@@ -54,7 +54,7 @@ class AgendaController extends ChangeNotifier {
     }
   }
 
-  getAgendaEvents() async {
+  Future<void> getAgendaEvents() async {
     List<List<AgendaEvent>?>? oldEvents = [];
     //We clone the old events
     oldEvents.addAll((_cachedEvents ?? []));

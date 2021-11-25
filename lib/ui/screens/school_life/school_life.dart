@@ -1,218 +1,152 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/school_life/controller.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/column_generator.dart';
-import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes/router.dart';
+import 'package:ynotes/ui/components/NEW/navigation/navigation.dart';
+import 'package:ynotes/ui/screens/school_life/widgets/widgets.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
+
+const String routePath = "/school_life";
 
 class SchoolLifePage extends StatefulWidget {
   const SchoolLifePage({Key? key}) : super(key: key);
+
   @override
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
 
-class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
-  @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-
-    return YPage(
-        title: "Vie scolaire",
-        isScrollable: false,
-        body: RefreshIndicator(
-          onRefresh: refreshTickets,
-          child: SizedBox(
-              width: screenSize.size.width,
-              child: ChangeNotifierProvider<SchoolLifeController>.value(
-                  value: appSys.schoolLifeController,
-                  child: Consumer<SchoolLifeController>(builder: (context, model, child) {
-                    //if there is no tickets
-                    if ((model.tickets ?? []).isEmpty || model.tickets == null) {
-                      return buildNoTickets();
-                    } else {
-                      return Container(
-                        height: screenSize.size.height,
-                        width: screenSize.size.width,
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
-                        child: SingleChildScrollView(
-                          child: ColumnBuilder(
-                              itemCount: (model.tickets)!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return buildTicket((model.tickets)!.reversed.toList()[index]);
-                              }),
-                        ),
-                      );
-                    }
-                  }))),
-        ));
-  }
-
-  Widget buildCircle(SchoolLifeTicket ticket) {
-    IconData? icon;
-    if (ticket.type == "Absence") {
-      icon = MdiIcons.alert;
-    }
-    if (ticket.type == "Retard") {
-      icon = MdiIcons.clockAlertOutline;
-    }
-    if (ticket.type == "Repas") {
-      icon = MdiIcons.foodOff;
-    }
-
-    return Container(
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColorDark),
-        child: FittedBox(
-            child: Icon(
-          icon,
-          color: ThemeUtils.textColor(),
-        )),
-        padding: const EdgeInsets.all(15),
-        width: 90,
-        height: 90,
-        margin: const EdgeInsets.all(10));
-  }
-
-  Widget buildNoTickets() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return ChangeNotifierProvider<SchoolLifeController>.value(
-      value: appSys.schoolLifeController,
-      child: Consumer<SchoolLifeController>(builder: (context, model, child) {
-        return Center(
-          child: SizedBox(
-            height: screenSize.size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  MdiIcons.stamper,
-                  size: screenSize.size.height / 10 * 2.5,
-                  color: ThemeUtils.textColor(),
-                ),
-                Text(
-                  "Pas de données.",
-                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
-                ),
-                SizedBox(
-                  width: 90,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: ThemeUtils.textColor())),
-                    ),
-                    onPressed: () {
-                      model.refresh(force: true);
-                    },
-                    child: !model.loading
-                        ? Text("Recharger",
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor(),
-                                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                        : FittedBox(
-                            child: SpinKitThreeBounce(
-                                color: ThemeUtils.textColor(), size: screenSize.size.width / 5 * 0.4)),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      }),
-    );
-  }
-
-  Widget buildTicket(SchoolLifeTicket ticket) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-      color: Theme.of(context).primaryColor,
-      child: Row(
-        children: [
-          buildCircle(ticket),
-          SizedBox(width: screenSize.size.width / 5 * 0.1),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8, top: 8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    ticket.libelle!,
-                    style: TextStyle(
-                        color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 16),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    "Motif : " + (ticket.motif ?? "(Sans motif)"),
-                    style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    "Date : " + (ticket.displayDate ?? "(Sans date)"),
-                    style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
-                    textAlign: TextAlign.left,
-                  ),
-                  RichText(
-                      text: TextSpan(
-                          style: TextStyle(
-                              color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange,
-                              fontFamily: "Asap",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                          children: [
-                        TextSpan(
-                          text: ticket.isJustified! ? "Justifié " : "A justifier ",
-                        ),
-                        WidgetSpan(
-                            child: Icon((ticket.isJustified ?? false) ? MdiIcons.check : MdiIcons.exclamation,
-                                color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange))
-                      ])),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
+class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   void initState() {
     super.initState();
-    appSys.schoolLifeController.refresh();
-    refreshTickets();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      appSys.schoolLifeController.refresh();
+    });
   }
 
-  Future<void> refreshTickets() async {
-    await appSys.schoolLifeController.refresh(force: true);
+  Future<void> forceRefresh() async {
+    if (!appSys.schoolLifeController.loading) {
+      await appSys.schoolLifeController.refresh(force: true);
+    }
   }
 
-  Widget separator(BuildContext context, String text) {
-    MediaQueryData screenSize = MediaQuery.of(context);
+  @override
+  Widget build(BuildContext context) {
+    return ControllerConsumer<SchoolLifeController>(
+        controller: appSys.schoolLifeController,
+        builder: (context, controller, _) {
+          final bool noTickets = controller.tickets == null || controller.tickets!.isEmpty;
+          return ZApp(
+              page: YPage(
+                  appBar: YAppBar(
+                    title: "Vie scolaire",
+                    bottom: controller.loading ? const YLinearProgressBar() : null,
+                  ),
+                  onRefresh: forceRefresh,
+                  scrollable: !noTickets,
+                  body: noTickets
+                      ? Padding(
+                          padding: YPadding.p(YScale.s2),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(routes.where((element) => element.path == routePath).first.icon,
+                                    color: theme.colors.foregroundColor, size: YScale.s32),
+                                YVerticalSpacer(YScale.s4),
+                                Text(
+                                  "Aucun ticket, rien à déclarer !",
+                                  style: theme.texts.body1,
+                                  textAlign: TextAlign.center,
+                                ),
+                                YVerticalSpacer(YScale.s6),
+                                YButton(
+                                  onPressed: forceRefresh,
+                                  text: "Rafraîchir".toUpperCase(),
+                                  color: YColor.secondary,
+                                  isDisabled: controller.loading,
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : Column(
+                          children: controller.tickets!.map((ticket) => _Ticket(ticket: ticket)).toList(),
+                        )));
+        });
+  }
+}
 
+class _Ticket extends StatelessWidget {
+  final SchoolLifeTicket ticket;
+
+  const _Ticket({Key? key, required this.ticket}) : super(key: key);
+
+  bool get justified => ticket.isJustified ?? false;
+
+  Widget get _leading {
+    late final IconData? icon;
+    switch (ticket.type) {
+      case "Absence":
+        icon = Icons.warning_rounded;
+        break;
+      case "Retard":
+        icon = MdiIcons.clockAlertOutline;
+        break;
+      case "Repas":
+        icon = MdiIcons.foodOff;
+        break;
+      default:
+        icon = Icons.warning_rounded;
+        break;
+    }
     return Container(
-      height: screenSize.size.height / 10 * 0.35,
-      margin: EdgeInsets.only(
-        top: screenSize.size.height / 10 * 0.1,
-        left: screenSize.size.width / 5 * 0.25,
-        bottom: screenSize.size.height / 10 * 0.1,
+        decoration: BoxDecoration(color: theme.colors.backgroundLightColor, borderRadius: YBorderRadius.lg),
+        padding: YPadding.p(YScale.s2),
+        child: Icon(icon, color: theme.colors.foregroundColor, size: YScale.s6));
+  }
+
+  Widget get _trailing {
+    final YTColor color = justified ? theme.colors.success : theme.colors.danger;
+    return Container(
+      decoration: BoxDecoration(color: color.lightColor, borderRadius: YBorderRadius.full),
+      margin: YPadding.p(YScale.s2),
+      padding: YPadding.p(YScale.s1),
+      child: Icon(justified ? Icons.check_rounded : Icons.close_rounded, color: color.backgroundColor, size: YScale.s5),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: _leading,
+      title: Text((ticket.type ?? "Inconnu".capitalize()),
+          style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold)),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("${ticket.displayDate} (${ticket.libelle})", style: theme.texts.body1),
+          if (justified)
+            Padding(
+              padding: YPadding.pt(YScale.s1),
+              child: RichText(
+                  text: TextSpan(style: theme.texts.body1, children: [
+                const TextSpan(text: "Motif : ", style: TextStyle(fontWeight: YFontWeight.semibold)),
+                TextSpan(text: ticket.motif ?? "Aucun"),
+              ])),
+            )
+        ],
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-        Text(
-          text,
-          style:
-              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
-        ),
-      ]),
+      onTap: () => YModalBottomSheets.show(context: context, child: TicketBottomSheet(ticket: ticket)),
+      trailing: _trailing,
+      isThreeLine: true,
     );
   }
 }

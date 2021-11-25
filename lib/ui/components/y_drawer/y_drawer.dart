@@ -7,9 +7,6 @@ import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
-import 'package:ynotes/ui/components/y_page/mixins.dart';
-import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/settings.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -29,7 +26,7 @@ class _SpecialRoute {
   _SpecialRoute({required this.title, required this.icon, required this.onTap});
 }
 
-class _YDrawerState extends State<YDrawer> with YPageMixin {
+class _YDrawerState extends State<YDrawer> {
   @override
   Widget build(BuildContext context) {
     bool availableRoute(CustomRoute route) {
@@ -40,10 +37,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
 
     final List<_SpecialRoute> specialRoutes = [
       _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => BugReportUtils.report()),
-      _SpecialRoute(
-          title: "Paramètres",
-          icon: Icons.settings,
-          onTap: () => openLocalPage(const YPageLocal(title: "Paramètres", child: SettingsPage()))),
+      _SpecialRoute(title: "Paramètres", icon: Icons.settings, onTap: () => Navigator.pushNamed(context, "/settings")),
     ];
 
     final List<_SpecialRoute> specialIcons = [
@@ -121,14 +115,6 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     onTap: route.onTap,
                   );
                 }),
-            ListTile(
-              leading: Icon(
-                FontAwesomeIcons.handHoldingUsd,
-                color: theme.colors.foregroundLightColor,
-              ),
-              title: Text("Faire un don", style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 18)),
-              onTap: () async => await launch("https://fr.tipeee.com/jsonlines"),
-            ),
             YVerticalSpacer(YScale.s4),
             const YDivider(),
             YVerticalSpacer(YScale.s4),

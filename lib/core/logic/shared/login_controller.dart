@@ -1,13 +1,16 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes_packages/theme.dart';
 
 ///Login change notifier
 class LoginController extends ChangeNotifier {
   //Login state
-  var _actualState = loginStatus.loggedOff;
+  loginStatus _actualState = loginStatus.loggedOff;
   //Login status details
   String _details = "Déconnecté";
   //Error logs
@@ -36,7 +39,7 @@ class LoginController extends ChangeNotifier {
   void connectionChanged(dynamic hasConnection) async {
     if (hasConnection == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
-      _details = "Vous êtes hors ligne";
+      _details = "Tu es hors ligne";
       notifyListeners();
     } else {
       _actualState = loginStatus.loggedOff;
@@ -52,7 +55,7 @@ class LoginController extends ChangeNotifier {
 
     if (await _connectivity.checkConnectivity() == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
-      _details = "Vous êtes hors ligne";
+      _details = "Tu es hors ligne";
       notifyListeners();
     }
     if (_actualState != loginStatus.offline && appSys.api!.loggedIn == false) {
@@ -121,6 +124,32 @@ class LoginController extends ChangeNotifier {
       }
     } catch (e) {
       CustomLogger.error(e);
+    }
+  }
+
+  YTColor get color {
+    switch (actualState) {
+      case loginStatus.loggedIn:
+        return theme.colors.success;
+      case loginStatus.loggedOff:
+        return theme.colors.secondary;
+      case loginStatus.error:
+        return theme.colors.danger;
+      case loginStatus.offline:
+        return theme.colors.warning;
+    }
+  }
+
+  Widget get icon {
+    switch (actualState) {
+      case loginStatus.loggedIn:
+        return Icon(Icons.check_rounded, color: color.foregroundColor);
+      case loginStatus.loggedOff:
+        return SpinKitThreeBounce(color: color.foregroundColor);
+      case loginStatus.error:
+        return Icon(Icons.new_releases_rounded, color: color.foregroundColor);
+      case loginStatus.offline:
+        return Icon(MdiIcons.networkStrengthOff, color: color.foregroundColor);
     }
   }
 }

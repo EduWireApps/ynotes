@@ -62,11 +62,16 @@ class LogsManager {
         final List<YLog> logsFromCategory = await getLogs(category: category);
         logs.addAll(logsFromCategory);
       }
-      return logs;
+      return logs..sort((YLog a, YLog b) => b.date.compareTo(a.date));
     } else {
       final File file = await _readLogFile(category);
+      if (!(await file.exists())) {
+        return [];
+      }
       final String content = await file.readAsString();
-      return jsonDecode(await _decrypt(content));
+      final List<dynamic> decoded = jsonDecode(await _decrypt(content));
+      return decoded.map((dynamic log) => YLog.fromJson(log)).toList()
+        ..sort((YLog a, YLog b) => b.date.compareTo(a.date));
     }
   }
 

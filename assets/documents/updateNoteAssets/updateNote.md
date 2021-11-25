@@ -1,30 +1,17 @@
-## Correctif 0.13.7
+# Mise à jour 0.14.0
 
-Les logs, implémentés dans la 0.13.4, ne fonctionnaient pas tout à fait correctement. C'est maintenant corrigé, ce qui nous permettra de mieux vous assister en cas d'éventuel problème.
+Enfin une nouvelle mise à jour avec plein de nouveautés !
 
-## Correctif 0.13.6
+## Pages refaites
 
-Nous avons résolu un bug empêchant la connexion à EcoleDirecte de certains utilisateurs depuis le 12/11/2021.
+4 pages ont été retravaillées :
 
-## Correctif 0.13.4
-Petit correctif que nous documentons ici car néanmoins important :
-- Ajout d'une carte pour la géolocalisation Pronote
-- Redesign du carousel de présentation de l'application
-- Nouvel utilitaire de rapport de bugs : nous avons changé d'utilitaires de rapport de bugs. L'ancien ne nous permettait pas d'avoir assez de données utiles [regardez ici pour en savoir plus.](https://support.ynotes.fr/confidentialite-securite/notre-outil-de-rapports-de-bug)
-- Nous en avons profité pour donner un coup de neuf à l'écran des logs (pour les experts)
+- Le **résumé**, renommé en **accueil**, fait peau neuve ! Tu peux enfin voir d'un coup d'oeil dans **quelle salle** tu as cours et dans **combien de temps**. Les statistiques ont été revues afin de les rendre **plus pertinentes**. Tu peux toujours voir quelles sont les dernières notes et nous avons remis les devoirs, pour la semaine en cours cette fois-ci
+- La **vie scolaire** (Ecole Directe uniquement), sans ajout particulier
+- Tous les **paramètres** on été refaits afin de mieux s'y retrouver
+- La page d'**erreur** (si tu l'as jamais vue c'est plutôt bon signe xd) a aussi été refaite. Tu n'es pas sensé la rencontrer mais il est possible que nous ayons fait une erreur quelque part. Dans ce cas, fais-nous un retour !
 
-## Mise à jour 0.13
+## Divers
 
-Outre la correction de divers problèmes mineurs, cette mise à jour se concentre sur 2 points :
-
-# Connexion à Pronote
-
-Les utilisateurs Pronote disposent désormais de **3 méthodes de connexion**:
-
-- Par **url**: c'était l'unique manière de se connecter jusqu'à présent
-- Par **géolocalisation**: nous vous fournissons la liste de tous les établissements les plus proches de vous
-- Avec un **QR code**: utilisez un QR code généré depuis votre espace Pronote en ligne
-
-# Interface
-
-Toutes les pages de connexion ont été refaites ! Il se peut que d'autres pages de l'application contiennent des bugs mais ne t'inquiète pas, nous allons nous en occuper dans les semaines à venir !
+- Plusieurs problèmes en rapport avec les paramètres de l'**agenda** et la **notification constante** ont été corrigés
+- On utilise un système différent pour les polices d'écriture. C'est possible que ce soit un peu bizarre par endroit mais ce sera corrigé au fil des prochaines mises à jour

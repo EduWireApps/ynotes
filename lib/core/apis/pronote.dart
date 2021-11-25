@@ -157,7 +157,6 @@ class APIPronote extends API {
 
   @override
   Future<List> login(username, password, {Map? additionnalSettings}) async {
-    CustomLogger.log("PRONOTE", "username: $username / pwd: $password / url: ${additionnalSettings?["url"] ?? 'null'}");
     int req = 0;
 
     //we wait a random time (0 to 1 second) to never trigger the function at the same time

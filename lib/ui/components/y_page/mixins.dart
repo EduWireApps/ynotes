@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 
+@Deprecated("Use Navigator instead")
 mixin YPageMixin<T extends StatefulWidget> on State<T> {
   openLocalPage(YPageLocal page) {
     CustomLogger.log("ROUTING", 'Opening local page "${page.title}".');
