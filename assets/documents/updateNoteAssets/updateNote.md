@@ -1,3 +1,8 @@
+# 0.14.1
+
+- Correction d'un bug sur la page d'accueil de Pronote qui la rendait complètement inutilisable
+- Correction (*fingers crossed*) des problèmes liés au logs corrompus
+
 # Mise à jour 0.14.0
 
 Enfin une nouvelle mise à jour avec plein de nouveautés !
