@@ -7,6 +7,7 @@ import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 /// A function that migrates things from an implementation to another
 Future<void> backwardCompatibility() async {
   await _fromV12ToV13();
+  await _fromV13ToV14();
 }
 
 Future<void> _fromV12ToV13() async {
@@ -41,17 +42,45 @@ Future<void> _fromV12ToV13() async {
   if (!logsReset0) {
     final String directoryPath = await FolderAppUtil.getDirectory(download: true);
     final Directory logsDirectory = Directory("$directoryPath/logs");
-    if (!Platform.isWindows) {
+    try {
       if (await logsDirectory.exists()) {
         await logsDirectory.delete(recursive: true);
       }
+      await KVS.write(key: "logsReset0", value: "true");
+    } catch (e) {
+      CustomLogger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
     }
-    await KVS.write(key: "logsReset0", value: "true");
   }
   // Logging is done in another check because the logs would have been removed
   // more or less at the same time otherwise, and would cause application crash.
   if (!logsReset0) {
-    CustomLogger.log("BACKWARD COMPATIBILITY", "Reset logs");
+    CustomLogger.log("BACKWARD COMPATIBILITY", "Reset logs (0)");
   }
   CustomLogger.log("BACKWARD COMPATIBILITY", "End of process: v12 to v13");
+}
+
+Future<void> _fromV13ToV14() async {
+  CustomLogger.log("BACKWARD COMPATIBILITY", "Start process: v13 to v14");
+  // There was an issue with new logs that can be corrupted.
+  // In order to get the new system working, the old `logs` folder
+  // is deleted.
+  final bool logsReset1 = (await KVS.read(key: "logsReset1")) == "true";
+  if (!logsReset1) {
+    final String directoryPath = await FolderAppUtil.getDirectory(download: true);
+    final Directory logsDirectory = Directory("$directoryPath/logs");
+    try {
+      if (await logsDirectory.exists()) {
+        await logsDirectory.delete(recursive: true);
+      }
+      await KVS.write(key: "logsReset1", value: "true");
+    } catch (e) {
+      CustomLogger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
+    }
+  }
+  // Logging is done in another check because the logs would have been removed
+  // more or less at the same time otherwise, and would cause application crash.
+  if (!logsReset1) {
+    CustomLogger.log("BACKWARD COMPATIBILITY", "Reset logs (1)");
+  }
+  CustomLogger.log("BACKWARD COMPATIBILITY", "End of process: v13 to v14");
 }

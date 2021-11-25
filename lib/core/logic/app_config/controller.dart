@@ -16,6 +16,7 @@ import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/model.dart';
@@ -95,6 +96,11 @@ class ApplicationSystem extends ChangeNotifier {
       //Import secureStorage
       //Delete all
       await KVS.deleteAll();
+      final String directoryPath = await FolderAppUtil.getDirectory(download: true);
+      final Directory logsDirectory = Directory("$directoryPath/logs");
+      if (await logsDirectory.exists()) {
+        await logsDirectory.delete(recursive: true);
+      }
       updateTheme("clair");
     } catch (e) {
       CustomLogger.log("APPSYS", "Error occured when exiting the app");
