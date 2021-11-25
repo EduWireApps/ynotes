@@ -127,6 +127,9 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                       child: YButton(
                           onPressed: () async {
                             controller.loginController.login();
+                            controller.api!.getEvents(DateTime.now(), forceReload: false);
+                            controller.gradesController.refresh(force: true);
+                            controller.homeworkController.refresh(force: true);
                             await KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
                             Navigator.pushReplacementNamed(context, "/home");
                           },
