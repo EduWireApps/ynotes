@@ -39,7 +39,7 @@ class _GradesSectionState extends State<GradesSection> {
   double calculateGlobalAverage(List<Grade> grades) {
     // Will keep the averages of the disciplines
     final List<double> avgs = [];
-    grades = grades.where((grade) => double.tryParse(grade.value!) != null).toList();
+    grades = grades.where((grade) => double.tryParse(grade.value!.replaceAll(",", ".")) != null).toList();
     // We iterate through each discipline
     for (final discipline in controller.disciplines()!) {
       // We get the grades for the current discipline
