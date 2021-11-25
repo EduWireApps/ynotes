@@ -6,6 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/school_life/controller.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/NEW/navigation/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
@@ -29,6 +30,12 @@ class _HomePageState extends State<HomePage> {
       if (appSys.settings.system.chosenParser == 0) appSys.mailsController.refresh(force: true),
       if (appSys.settings.system.chosenParser == 0) appSys.schoolLifeController.refresh(force: true),
     ]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    UIUtils.showPatchNotes(context);
   }
 
   @override
