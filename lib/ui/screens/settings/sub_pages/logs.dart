@@ -83,7 +83,58 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                                 child: Text("${filteredLogs.length} log${filteredLogs.length > 1 ? 's' : ''}",
                                     style: theme.texts.body1),
                               ),
-                              ...filteredLogs
+                              ListView.builder(
+                                  itemCount: filteredLogs.length,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    final YLog log = filteredLogs[index];
+                                    return ListTile(
+                                        title: Text(_generateTitle(log),
+                                            style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
+                                        subtitle: Text(
+                                          log.comment,
+                                          style: theme.texts.body2,
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        trailing: Icon(Icons.copy_rounded, color: theme.colors.foregroundLightColor),
+                                        onTap: () {
+                                          if (log.stacktrace == null) {
+                                            Clipboard.setData(ClipboardData(text: jsonEncode(log)));
+                                            YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                          } else {
+                                            YModalBottomSheets.show(
+                                                context: context,
+                                                child: Column(
+                                                  children: [
+                                                    ListTile(
+                                                      title: Text("Copier en tant que JSON", style: theme.texts.body1),
+                                                      leading: Icon(Icons.code_rounded,
+                                                          color: theme.colors.foregroundLightColor),
+                                                      onTap: () {
+                                                        Clipboard.setData(ClipboardData(text: jsonEncode(log)));
+                                                        Navigator.pop(context);
+                                                        YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                                      },
+                                                    ),
+                                                    ListTile(
+                                                      title: Text("Copier la stack-trace", style: theme.texts.body1),
+                                                      leading: Icon(Icons.bug_report_rounded,
+                                                          color: theme.colors.foregroundLightColor),
+                                                      onTap: () {
+                                                        Clipboard.setData(
+                                                            ClipboardData(text: jsonEncode(log.stacktrace)));
+                                                        Navigator.pop(context);
+                                                        YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                                      },
+                                                    )
+                                                  ],
+                                                ));
+                                          }
+                                        });
+                                  }),
+                              /*...filteredLogs
                                   .map((log) => ListTile(
                                       title: Text(_generateTitle(log),
                                           style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
@@ -128,7 +179,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                                               ));
                                         }
                                       }))
-                                  .toList()
+                                  .toList()*/
                             ],
                           );
                         }
