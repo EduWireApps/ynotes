@@ -148,9 +148,8 @@ class _GradesSectionState extends State<GradesSection> {
                             child: Row(
                               children: [
                                 YHorizontalSpacer(YScale.s4),
-                                ...grades.reversed
+                                ...(getAllGrades(controller.disciplines(), sortByWritingDate: true) ?? [])
                                     .toList()
-                                    .sublist(0, min(grades.length - 1, 5))
                                     .map((grade) => Row(
                                           children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
                                         ))
