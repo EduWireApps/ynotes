@@ -75,13 +75,14 @@ class GradeContainer extends StatelessWidget {
                     alignment: Alignment.center,
                     clipBehavior: Clip.none,
                     children: [
-                      SizedBox(
-                        child: Text(grade.value!,
-                            style: TextStyle(
-                              fontWeight: YFontWeight.semibold,
-                              color: theme.colors.foregroundColor,
-                              fontSize: YFontSize.xl,
-                            )),
+                      AutoSizeText(
+                        grade.value!,
+                        style: TextStyle(
+                          fontWeight: YFontWeight.semibold,
+                          color: theme.colors.foregroundColor,
+                          fontSize: YFontSize.xl,
+                        ),
+                        softWrap: false,
                       ),
                       if (grade.weight! != "1")
                         Positioned(top: -YScale.s3, right: -YScale.s2, child: bubble(grade.weight!, true)),
