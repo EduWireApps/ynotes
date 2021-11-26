@@ -101,10 +101,13 @@ class Discipline {
       if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == periodName) {
         counter += double.parse(grade.weight!);
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
-        average += double.parse(gradeStringValue.replaceAll(',', '.')) *
-            20 /
-            double.parse(grade.scale!.replaceAll(',', '.')) *
-            double.parse(grade.weight!.replaceAll(',', '.'));
+        final double? value = double.tryParse(gradeStringValue.replaceAll(',', '.'));
+        if (value != null) {
+          average += value *
+              20 /
+              double.parse(grade.scale!.replaceAll(',', '.')) *
+              double.parse(grade.weight!.replaceAll(',', '.'));
+        }
       }
     }
     average = double.parse((average / counter).toStringAsFixed(2));

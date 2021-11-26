@@ -30,11 +30,14 @@ class GradesStats {
       //Before selected grade
       if (_grade.testName != grade?.testName || _grade.entryDate != grade?.entryDate) {
         if (!_grade.notSignificant! && !_grade.letters!) {
-          double gradeOver20 =
-              double.parse(_grade.value!.replaceAll(',', '.')) * 20 / double.parse(_grade.scale!.replaceAll(',', '.'));
-          beforeAverage += gradeOver20 * double.parse(_grade.weight!.replaceAll(',', '.'));
-          afterAverage += gradeOver20 * double.parse(_grade.weight!.replaceAll(',', '.'));
-          coeffCounter += double.tryParse(_grade.weight!.replaceAll(',', '.'))!;
+          final double? value = double.tryParse(_grade.value!.replaceAll(',', '.'));
+          final double? scale = double.tryParse(_grade.scale!.replaceAll(',', '.'));
+          if (value != null && scale != null) {
+            final double gradeOver20 = value * 20 / scale;
+            beforeAverage += gradeOver20 * double.parse(_grade.weight!.replaceAll(',', '.'));
+            afterAverage += gradeOver20 * double.parse(_grade.weight!.replaceAll(',', '.'));
+            coeffCounter += double.tryParse(_grade.weight!.replaceAll(',', '.'))!;
+          }
         }
       }
       //At selected grade

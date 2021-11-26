@@ -35,7 +35,11 @@ class LogsManager {
       existingLogs = decoded.map((dynamic log) => YLog.fromJson(log)).toList();
     }
     final String content = await _encrypt(jsonEncode(overwrite == true ? logs : <YLog>[...existingLogs, ...logs]));
-    await file.writeAsString(content, mode: FileMode.write);
+    try {
+      await file.writeAsString(content, mode: FileMode.write);
+    } catch (e) {
+      CustomLogger.error(e);
+    }
     _editingFile = false;
   }
 
