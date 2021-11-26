@@ -147,13 +147,15 @@ class __CountDownContentState extends State<_CountDownContent> {
                         Text("Prochain cours", style: theme.texts.body2),
                         RichText(
                             text: TextSpan(
+                                text: widget.event.name,
                                 style: theme.texts.body1
                                     .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold),
-                                children: [
-                              TextSpan(text: widget.event.name),
-                              const TextSpan(text: " en ", style: TextStyle(fontWeight: YFontWeight.normal)),
-                              TextSpan(text: widget.event.location),
-                            ])),
+                                children: widget.event.location != null
+                                    ? [
+                                        const TextSpan(text: " en ", style: TextStyle(fontWeight: YFontWeight.normal)),
+                                        TextSpan(text: widget.event.location),
+                                      ]
+                                    : null)),
                       ],
                     ),
                   ),
