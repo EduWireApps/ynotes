@@ -47,9 +47,10 @@ class BackgroundService {
         CustomLogger.log("BACKGROUND", "New grade test triggered.");
         var res = (await testNewGrades());
         if (res[0]) {
-          await Future.forEach(res[1], (Grade grade) async {
-            await AppNotification.showNewGradeNotification(grade);
-          });
+          // TODO: Fix grades notifications
+          // await Future.forEach(res[1], (Grade grade) async {
+          //   await AppNotification.showNewGradeNotification(grade);
+          // });
         } else {
           CustomLogger.log("BACKGROUND", "Grades: nothing updated.");
         }
