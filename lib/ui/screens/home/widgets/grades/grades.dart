@@ -54,7 +54,9 @@ class _GradesSectionState extends State<GradesSection> {
               double.parse(g.weight!.replaceAll(",", "."));
           d += double.parse(g.weight!.replaceAll(",", "."));
         }
-        avgs.add(double.parse((n / d).toStringAsFixed(2)));
+        if (d != 0.0) {
+          avgs.add(double.parse((n / d).toStringAsFixed(2)));
+        }
       }
     }
     // We calculate the average of the averages

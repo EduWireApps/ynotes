@@ -214,7 +214,7 @@ class Communication {
 
   post(String functionName, {var data, bool recursive = false, var decryptionChange}) async {
     client.stepsLogger.add("✅ Posting " + functionName);
-    if (data != null) {
+    if (data != null && data! is String) {
       if (data["_Signature_"] != null &&
           !authorizedTabs.toString().contains(data['_Signature_']['onglet'].toString())) {
         throw ('Action not permitted. (onglet is not normally accessible)');
