@@ -606,9 +606,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
   }
 
   getInitialPath() async {
-    var a = await FolderAppUtil.getDirectory(download: true);
+    final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
     setState(() {
-      initialPath = a + "/yNotesDownloads";
+      initialPath = "${dir.path}/yNotesDownloads";
       path = "";
     });
     await refreshFileListFuture();

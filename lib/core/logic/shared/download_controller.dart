@@ -50,8 +50,8 @@ class DownloadController extends ChangeNotifier {
           _progress = 100;
           notifyListeners();
           CustomLogger.log("DOWNLOAD", "Téléchargement du fichier terminé : ${file.path}");
-          final dir = await FolderAppUtil.getDirectory(download: true);
-          final Directory _appDocDirFolder = Directory('$dir/yNotesDownloads/');
+          final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+          final Directory _appDocDirFolder = Directory('${dir.path}/yNotesDownloads/');
 
           if (!await _appDocDirFolder.exists()) {
             //if folder already exists return path
@@ -83,9 +83,8 @@ class DownloadController extends ChangeNotifier {
   Future<bool> fileExists(filename) async {
     try {
       if (await Permission.storage.request().isGranted) {
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        FolderAppUtil.createDirectory("$dir/yNotesDownloads/");
-        Directory downloadsDir = Directory("$dir/yNotesDownloads/");
+        final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+        final Directory downloadsDir = await FolderAppUtil.createDirectory("${dir.path}/yNotesDownloads/");
         List<FileSystemEntity> list = downloadsDir.listSync();
         bool toReturn = false;
         await Future.forEach(list, (dynamic element) async {

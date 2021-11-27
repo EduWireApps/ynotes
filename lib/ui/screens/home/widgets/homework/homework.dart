@@ -42,7 +42,7 @@ class _HomeworkSectionState extends State<HomeworkSection> {
 
   bool get isCurrentWeek {
     final DateTime now = DateTime.now();
-    return now.weekday < 6 || now.hour < 18;
+    return now.weekday < 5 || now.hour < 18;
   }
 
   List<Homework> get week {

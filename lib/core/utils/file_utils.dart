@@ -60,15 +60,15 @@ class FileAppUtil {
 
   ///Get new file path
   static Future<File> getFilePath(String? filename) async {
-    final dir = await FolderAppUtil.getDirectory(download: true);
-    return File("$dir/yNotesDownloads/$filename");
+    final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+    return File("${dir.path}/yNotesDownloads/$filename");
   }
 
   static Future<List<FileInfo>> getFilesList(String path) async {
     try {
       List file = [];
 
-      if (!kIsWeb && (Platform.isLinux || await Permission.storage.request().isGranted)) {
+      if (!kIsWeb && (Platform.isLinux || Platform.isWindows || await Permission.storage.request().isGranted)) {
         try {
           file = Directory(path).listSync();
         } catch (e) {
@@ -121,8 +121,8 @@ class FileAppUtil {
 
       //Get root dir path
       if (usingFileName) {
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        path = '$dir/yNotesDownloads/$filePath';
+        final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+        path = '${dir.path}/yNotesDownloads/$filePath';
       } else {
         path = filePath;
       }
@@ -165,39 +165,33 @@ class FileInfo {
 }
 
 class FolderAppUtil {
-  static createDirectory(String path) async {
-    final Directory _appDocDirFolder = Directory(path);
-
-    if (!await _appDocDirFolder.exists()) {
-      await _appDocDirFolder.create(recursive: true);
+  static Future<Directory> createDirectory(String path) async {
+    final Directory dir = Directory(path);
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
       CustomLogger.log("FILE UTILS", "Created $path folder");
     }
-  }
-
-  static getDirectory({bool download = false}) async {
-    if (download && !kIsWeb && Platform.isAndroid) {
-      final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
-
-      return dir;
-    }
-    if (!kIsWeb && Platform.isAndroid) {
-      var dir = await getExternalStorageDirectory();
-
-      return download ? dir!.path : dir;
-    }
-    if (!kIsWeb && Platform.isIOS) {
-      var dir = await getApplicationDocumentsDirectory();
-      return download ? dir.path : dir;
-    }
-    if (!kIsWeb && (Platform.isLinux || Platform.isWindows)) {
-      var dir = await getApplicationDocumentsDirectory();
-      Directory realDir = Directory(dir.path + "/" + "yNotesApp" + "/" + "files");
-      return download ? realDir.path : realDir;
-    }
-  }
-
-  static getTempDirectory() async {
-    final dir = await getTemporaryDirectory();
     return dir;
   }
+
+  /// Returns the directory of the app
+  ///
+  /// On Android, if [downloads] is set to `true`, it will return the downloads directory
+  static Future<Directory> getDirectory({bool downloads = false}) async {
+    if (!kIsWeb) {
+      if (Platform.isAndroid) {
+        return downloads
+            ? Directory((await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS))!)
+            : (await getExternalStorageDirectory())!;
+      } else if (Platform.isIOS) {
+        return await getApplicationDocumentsDirectory();
+      } else if (Platform.isLinux || Platform.isWindows) {
+        final Directory appDirectory = await getApplicationDocumentsDirectory();
+        return Directory("${appDirectory.path}/yNotesApp/files");
+      }
+    }
+    throw 'Unsupported on web';
+  }
+
+  static Future<Directory> getTempDirectory() async => await getTemporaryDirectory();
 }

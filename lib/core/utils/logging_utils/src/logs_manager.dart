@@ -52,8 +52,13 @@ class LogsManager {
         await log.delete();
       }
     } else {
-      final File file = await _readLogFile(category);
-      await file.delete();
+      final File log = await _readLogFile(category);
+      await log.delete();
+      final Directory appDir = await FolderAppUtil.getDirectory();
+      final Directory dir = Directory("${appDir.path}/logs");
+      if (!dir.existsSync()) {
+        dir.createSync();
+      }
     }
   }
 

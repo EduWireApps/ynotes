@@ -96,8 +96,8 @@ class ApplicationSystem extends ChangeNotifier {
       //Import secureStorage
       //Delete all
       await KVS.deleteAll();
-      final String directoryPath = await FolderAppUtil.getDirectory(download: true);
-      final Directory logsDirectory = Directory("$directoryPath/logs");
+      final Directory dir = await FolderAppUtil.getDirectory();
+      final Directory logsDirectory = Directory("${dir.path}/logs");
       if (await logsDirectory.exists()) {
         await logsDirectory.delete(recursive: true);
       }
