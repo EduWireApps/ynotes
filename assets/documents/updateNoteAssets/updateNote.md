@@ -1,3 +1,18 @@
+# 0.14.2
+
+## Accueil
+
+- Sur le compte à rebours, le texte est adapté si la salle n'est pas renseignée
+- Le graphique ne devrait plus être remplacé par un rectangle gris moche
+- La bonne semaine est désormais affichée dans la section des devoirs
+- Une interface dédiée est affichée lorsqu'il n'y a pas de données (Aucun devoir pour la semaine en cours par exemple)
+
+## Divers
+
+- La notification de nouvelle note a été desactivée car dysfonctionnelle. Elle sera corrigée dans une mise à jour ultérieure (prévue pour la 0.16 début 2022 pour le moment)
+- Nous essayons de régler les problèmes liés aux logs corrompus
+- La page des notes devrait fonctionner correctement désormais (problèmes liés aux compétences)
+
 # 0.14.1
 
 - Correction d'un bug sur la page d'accueil de Pronote qui la rendait complètement inutilisable
