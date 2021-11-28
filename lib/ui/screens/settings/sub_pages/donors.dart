@@ -4,7 +4,7 @@ import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class SettingsDonorsPage extends StatelessWidget {
-  static const List<String> donors = ["MaitreRouge", "AlexTheKing", "Gabriel", "Nino Galea"];
+  static const List<String> donors = ["MaitreRouge", "AlexTheKing", "Gabriel", "Nino Galea", "Killiane Letellier"];
 
   const SettingsDonorsPage({Key? key}) : super(key: key);
 
