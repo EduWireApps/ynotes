@@ -17,32 +17,35 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: YPadding.p(YScale.s6),
+        padding: YPadding.p(r<double>(def: YScale.s4, sm: YScale.s6)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(routes.firstWhere((element) => element.path == iconRoutePath).icon,
-                color: theme.colors.backgroundLightColor, size: YScale.s32),
+                color: theme.colors.backgroundLightColor,
+                size: r<double>(def: YScale.s16, sm: YScale.s24, md: YScale.s32)),
             YHorizontalSpacer(YScale.s6),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  text,
-                  style: theme.texts.body1,
-                  textAlign: TextAlign.start,
-                ),
-                YVerticalSpacer(YScale.s2),
-                ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: YScale.s32),
-                  child: YButton(
-                    onPressed: onPressed,
-                    text: "Rafraîchir".toUpperCase(),
-                    color: YColor.secondary,
-                    isLoading: loading,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    text,
+                    style: theme.texts.body1,
+                    textAlign: TextAlign.start,
                   ),
-                )
-              ],
+                  YVerticalSpacer(YScale.s2),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: YScale.s32),
+                    child: YButton(
+                      onPressed: onPressed,
+                      text: "Rafraîchir".toUpperCase(),
+                      color: YColor.secondary,
+                      isLoading: loading,
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ));
