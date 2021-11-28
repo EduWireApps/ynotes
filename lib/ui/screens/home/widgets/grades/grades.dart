@@ -159,7 +159,11 @@ class _GradesSectionState extends State<GradesSection> {
                     const YDivider(),
                   ],
                 )
-              : Container();
+              : EmptyState(
+                  iconRoutePath: "/grades",
+                  onPressed: () async => await controller.refresh(force: true),
+                  text: "Pas de notes... Et bah alors ça bosse pas ? ;)",
+                  loading: controller.isFetching);
         });
   }
 }

@@ -76,12 +76,14 @@ class _HomeworkSectionState extends State<HomeworkSection> {
               color: done == total ? theme.colors.success.backgroundColor : theme.colors.foregroundColor,
               fontWeight: YFontWeight.semibold));
 
+  String get text => isCurrentWeek ? "pour cette semaine" : "pour la semaine prochaine";
+
   @override
   Widget build(BuildContext context) {
     return ControllerConsumer<HomeworkController>(
         controller: controller,
         builder: (context, controller, _) {
-          return homework.isNotEmpty
+          return week.isNotEmpty
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -125,32 +127,20 @@ class _HomeworkSectionState extends State<HomeworkSection> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(isCurrentWeek ? "Pour cette semaine" : "Pour la semaine prochaine",
+                                      Text(text.capitalize(),
                                           style: theme.texts.body1.copyWith(
                                               color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold)),
-                                      if (week.isNotEmpty)
-                                        counter(done: week.where((hw) => hw.done!).length, total: week.length)
+                                      counter(done: week.where((hw) => hw.done!).length, total: week.length)
                                     ],
                                   ),
                                 ),
                               ),
-                              week.isNotEmpty
-                                  ? Column(
-                                      children: week
-                                          .map((hw) => HomeworkElement(
-                                                hw,
-                                              ))
-                                          .toList())
-                                  : Container(
-                                      width: double.infinity,
-                                      color: theme.colors.backgroundLightColor,
-                                      padding: YPadding.px(YScale.s4),
-                                      child: Text(
-                                        "Aucun devoir",
-                                        style: theme.texts.body2,
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
+                              Column(
+                                  children: week
+                                      .map((hw) => HomeworkElement(
+                                            hw,
+                                          ))
+                                      .toList()),
                               Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.vertical(bottom: (Radius.circular(0.75.rem))),
@@ -161,7 +151,11 @@ class _HomeworkSectionState extends State<HomeworkSection> {
                         )),
                   ],
                 )
-              : Container();
+              : EmptyState(
+                  iconRoutePath: "/homework",
+                  onPressed: () async => await controller.refresh(force: true),
+                  text: "Pas de devoir $text, quelle chance !",
+                  loading: controller.isFetching);
         });
   }
 }
