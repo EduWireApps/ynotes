@@ -1,3 +1,8 @@
+# 0.14.3
+
+- Corrections mineurs
+- Sur la page d'accueil, lorsque le compte à rebours n'est pas actif, des petits messages amusants (*on l'espère*) sont affichés à la place
+
 # 0.14.2
 
 ## Accueil
