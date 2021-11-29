@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, controller, _) {
                         return Stack(alignment: Alignment.center, children: [
                           YIconButton(
-                              icon: MdiIcons.ticket, onPressed: () => Navigator.pushNamed(context, "/school_life")),
+                              icon: MdiIcons.stamper, onPressed: () => Navigator.pushNamed(context, "/school_life")),
                           if ((controller.tickets ?? []).where((ticket) => !ticket.isJustified!).isNotEmpty)
                             Positioned(
                                 child: Container(

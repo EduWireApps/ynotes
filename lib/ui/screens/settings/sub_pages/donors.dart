@@ -17,7 +17,7 @@ class SettingsDonorsPage extends StatelessWidget {
             Padding(
               padding: YPadding.p(YScale.s4),
               child: Text(
-                  """Les donateurs nous donnent chaque jour envie de développer des fonctionnalités plus poussées et de rendre l'application plus belle encore. C'est super sympa, et nous les remercions infinement de nous soutenir ❤ \n\nNous ajoutons nous-même leurs noms dans cette liste, si tu viens de faire un don laisse-nous donc le temps de te remercier !""",
+                  """Les donateurs nous donnent chaque jour envie de développer des fonctionnalités plus poussées et de rendre l'application plus belle encore. C'est super sympa, et nous les remercions infiniment de nous soutenir ❤ \n\nNous ajoutons nous-même leurs noms dans cette liste, si tu viens de faire un don laisse-nous donc le temps de te remercier !""",
                   style: theme.texts.body1),
             ),
             YVerticalSpacer(YScale.s10),

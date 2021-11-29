@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,23 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
+
+String? _emoji;
+String? _text;
+
+const List<String> _texts = [
+  "Temps calme",
+  "Pas de cours, on révise ?",
+  "C'est la sieste (ou pas)",
+  "Il n'y a jamais vraiment rien à faire",
+  "Il fait beau dehors ?",
+  "Flûte, le cours de maths est fini",
+  "Après l'effort le réconfort",
+  "Alors, ça se la coule douce ?"
+];
+const List<String> _emojis = ["😊", "😎", "😴", "👌", "🌞", "📚", "💪", "💤"];
+Random get _random => Random();
+String _getRandomElement(List<String> list) => list[_random.nextInt(list.length)];
 
 /// A class that manages the next lesson's countdown
 class CountDown extends StatefulWidget {
@@ -31,16 +49,18 @@ class _CountDownState extends State<CountDown> {
   DateTime now = DateTime.now();
 
   /// The difference between [date] and [now].
-  Duration time(DateTime date) => date.difference(now);
+  Duration timeDifference(DateTime date) => date.difference(now);
 
   /// Checks if a date respects the condition. Those conditions are:
   /// - the event is no more than 1 hour in the future
   /// - the event is no more than 10 minutes in the past
-  bool condition(DateTime date) => time(date).inSeconds < 3600 && time(date).inSeconds > (-10 * 60);
+  bool condition(DateTime date) => timeDifference(date).inSeconds < 5400 && timeDifference(date).inSeconds > (-10 * 60);
 
   @override
   void initState() {
     super.initState();
+    _text = _getRandomElement(_texts);
+    _emoji = _getRandomElement(_emojis);
     // We fetch the events of the day.
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       init();
@@ -56,6 +76,8 @@ class _CountDownState extends State<CountDown> {
   @override
   void dispose() {
     timer.cancel();
+    _emoji = null;
+    _text = null;
     super.dispose();
   }
 
@@ -74,27 +96,18 @@ class _CountDownState extends State<CountDown> {
 
   @override
   Widget build(BuildContext context) {
-    return (event != null && condition(event!.start!))
-        ? _CountDownContent(
-            event: event!,
-            remainingTime: time(event!.start!),
-          )
-        : Container();
+    return _CountDownContent(
+      event: event,
+      time: timeDifference(event?.start! ?? DateTime.now()),
+    );
   }
 }
 
-class _CountDownContent extends StatefulWidget {
-  final AgendaEvent event;
-  final Duration remainingTime;
+class _CountDownContent extends StatelessWidget {
+  final AgendaEvent? event;
+  final Duration time;
 
-  const _CountDownContent({Key? key, required this.event, required this.remainingTime}) : super(key: key);
-
-  @override
-  __CountDownContentState createState() => __CountDownContentState();
-}
-
-class __CountDownContentState extends State<_CountDownContent> {
-  Duration get time => widget.remainingTime;
+  const _CountDownContent({Key? key, required this.event, required this.time}) : super(key: key);
 
   YTColor get color {
     if (time.inSeconds < 60) {
@@ -117,45 +130,57 @@ class __CountDownContentState extends State<_CountDownContent> {
               padding: YPadding.p(YScale.s4),
               child: Row(
                 children: [
-                  Stack(
-                    children: [
-                      SizedBox(
-                        width: YScale.s14,
-                        height: YScale.s14,
-                        child: CircularProgressIndicator(
-                          value: time.inSeconds >= 0
-                              ? 1.0 - 1.0 * time.inSeconds / 3600
-                              : 1.0 - 1.0 * (3600 - time.inSeconds.abs()) / 3600,
-                          color: color.backgroundColor,
-                          backgroundColor: color.lightColor,
-                          strokeWidth: YScale.s1,
+                  event == null
+                      ? Text(
+                          _emoji!,
+                          style: TextStyle(fontSize: YScale.s14),
+                        )
+                      : Stack(
+                          children: [
+                            SizedBox(
+                              width: YScale.s14,
+                              height: YScale.s14,
+                              child: CircularProgressIndicator(
+                                value: time.inSeconds >= 0
+                                    ? 1.0 - 1.0 * time.inSeconds / 5400
+                                    : 1.0 - 1.0 * (5400 - time.inSeconds.abs()) / 5400,
+                                color: color.backgroundColor,
+                                backgroundColor: color.lightColor,
+                                strokeWidth: YScale.s1,
+                              ),
+                            ),
+                            Positioned.fill(
+                                child: Center(
+                              child: Text(
+                                  "${time.inMinutes.abs().toString().padLeft(2, '0')}:${(time.inSeconds.abs() - (time.inMinutes.abs() * 60)).toString().padLeft(2, '0')}",
+                                  style: theme.texts.body1.copyWith(fontSize: YFontSize.base)),
+                            ))
+                          ],
                         ),
-                      ),
-                      Positioned.fill(
-                          child: Center(
-                        child: Text(
-                            "${time.inMinutes.abs().toString().padLeft(2, '0')}:${(time.inSeconds.abs() - (time.inMinutes.abs() * 60)).toString().padLeft(2, '0')}",
-                            style: theme.texts.body1.copyWith(fontSize: YFontSize.base)),
-                      ))
-                    ],
-                  ),
                   YHorizontalSpacer(YScale.s6),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Prochain cours", style: theme.texts.body2),
-                        RichText(
-                            text: TextSpan(
-                                text: widget.event.name,
+                        Text(event == null ? "Pas de cours d'ici 1h30" : "Prochain cours", style: theme.texts.body2),
+                        event == null
+                            ? Text(
+                                _text!,
                                 style: theme.texts.body1
                                     .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold),
-                                children: widget.event.location != null
-                                    ? [
-                                        const TextSpan(text: " en ", style: TextStyle(fontWeight: YFontWeight.normal)),
-                                        TextSpan(text: widget.event.location),
-                                      ]
-                                    : null)),
+                              )
+                            : RichText(
+                                text: TextSpan(
+                                    text: event!.name,
+                                    style: theme.texts.body1.copyWith(
+                                        color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold),
+                                    children: event!.location != null || event!.location! == ""
+                                        ? [
+                                            const TextSpan(
+                                                text: " en ", style: TextStyle(fontWeight: YFontWeight.normal)),
+                                            TextSpan(text: event!.location),
+                                          ]
+                                        : null)),
                       ],
                     ),
                   ),
