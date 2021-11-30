@@ -91,6 +91,6 @@ class _PollsPageState extends State<PollsPage> {
                     itemCount: polls!.length,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemBuilder: (context, i) => Poll(polls![i]))));
+                    itemBuilder: (context, i) => Poll(poll: polls![i], api: _api))));
   }
 }

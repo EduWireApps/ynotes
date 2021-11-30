@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ynotes/core/apis/pronote.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/extensions.dart';
+import 'package:ynotes/ui/screens/polls/sub_pages/details.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class Poll extends StatelessWidget {
   final PollInfo poll;
-  const Poll(this.poll, {Key? key}) : super(key: key);
+  final APIPronote api;
+  const Poll({Key? key, required this.poll, required this.api}) : super(key: key);
 
   String get date {
     final date = poll.start!;
@@ -54,7 +57,8 @@ class Poll extends StatelessWidget {
       ),
       subtitle: Text(date, style: theme.texts.body2),
       trailing: _trailing,
-      onTap: () => Navigator.pushNamed(context, "/polls/details", arguments: poll),
+      onTap: () =>
+          Navigator.pushNamed(context, "/polls/details", arguments: PollsDetailsPageArguments(poll: poll, api: api)),
     );
   }
 }
