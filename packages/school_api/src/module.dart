@@ -1,14 +1,24 @@
 part of school_api;
 
-abstract class Module<T> {
-  final bool isSupported;
-  final bool isAvailable;
+abstract class Module<R extends Repository> extends ChangeNotifier {
+  final bool _isSupported;
+  final bool _isAvailable;
+  bool get isEnabled => _isSupported && _isAvailable;
 
-  Module({required this.isSupported, required this.isAvailable});
-
-  bool get isFetching => _isFetching;
-  bool _isFetching = false;
+  Module({required bool isSupported, required bool isAvailable, required this.repository, required this.api})
+      : _isSupported = isSupported,
+        _isAvailable = isAvailable;
 
   @protected
-  Future<Response<List<T>>> fetch({bool force = false});
+  final R repository;
+
+  @protected
+  final SchoolApi api;
+
+  bool get isFetching => fetching;
+
+  @protected
+  bool fetching = false;
+
+  Future<Response<void>> fetch({bool online = false});
 }

@@ -2,35 +2,47 @@ part of ecole_directe_client;
 
 // dart run packages/tmp.dart
 
-class EcoleDirecteClient {
-  String? _token;
+String? _token;
+const String _baseUrl = "https://api.ecoledirecte.com/v3/";
 
+class EcoleDirecteClient {
   EcoleDirecteClient();
 
-  Future<Response<String>> login({required String username, required String password}) async {
-    final res = await _request(
-        url: "https://api.ecoledirecte.com/v3/login.awp",
-        body: {
-          "identifiant": username,
-          "motdepasse": password,
-        },
-        auth: false);
-    if (res.statusCode == 200) {
-      final String body = decodeBody(res);
-      final Map<String, dynamic> json = jsonDecode(body);
-      if (json["token"] == "") {
-        return Response(error: json["message"]);
-      }
-      return Response(data: body);
-    }
-    return const Response(error: "An error occured");
-  }
+  Account? get account => _account;
+  Account? _account;
 
-  Future<http.Response> _request(
-      {required String url, required Map<String, String> body, Map<String, String>? headers, bool auth = true}) async {
-    final String _body = encodeBody(body, auth ? _token! : null);
-    headers ??= {};
-    headers["Content-type"] = "text/plain";
-    return await http.post(Uri.parse(url), headers: headers, body: _body);
-  }
+  Future<Response<Account>> login({required String username, required String password}) async =>
+      await handleNetworkError(() async {
+        final res = await _request(
+            url: "login.awp",
+            body: {
+              "identifiant": username,
+              "motdepasse": password,
+            },
+            auth: false);
+        if (res.statusCode == 200) {
+          final String body = _decodeBody(res);
+          final Map<String, dynamic> json = jsonDecode(body);
+          if (json["token"] == "") {
+            return Response(error: json["message"]);
+          }
+          _token = json["token"];
+          _account = Account.fromMap(json["data"]["accounts"][0]);
+          return Response(data: account);
+        }
+        return const Response(error: "An error occured");
+      });
+
+  Future<Response<String>> getGrades() async => await handleNetworkError(() async {
+        final res = await _request(url: "eleves/${account!.id}/notes.awp?verbe=get");
+        if (res.statusCode == 200) {
+          final String body = _decodeBody(res);
+          final Map<String, dynamic> json = jsonDecode(body);
+          if (json["code"] != 200) {
+            return Response(error: json["message"]);
+          }
+          return Response(data: body);
+        }
+        return const Response(error: "En error occured");
+      });
 }

@@ -2,8 +2,11 @@ part of school_api;
 
 abstract class SchoolApi<T> {
   bool get isLoggedIn => _isLoggedIn;
+  @protected
+  // ignore: prefer_final_fields
   bool _isLoggedIn = false;
-  late final T client;
+  @protected
+  T get client;
 
   final Offline offline;
 
@@ -11,13 +14,17 @@ abstract class SchoolApi<T> {
 
   final ModulesAvailability modulesAvailability;
 
+  List<Module> get modules => [authModule, gradesModule, schoolLifeModule];
+
   SchoolApi({required this.metadata})
       : offline = Offline(),
         modulesAvailability = ModulesAvailability();
 
-  @protected
+  AuthModule get authModule;
+
   GradesModule get gradesModule;
 
-  @protected
+  SchoolLifeModule get schoolLifeModule;
+
   Future<Response<String>> login({required String username, required String password});
 }
