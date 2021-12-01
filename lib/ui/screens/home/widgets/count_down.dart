@@ -132,7 +132,7 @@ class _CountDownContent extends StatelessWidget {
                 children: [
                   event == null
                       ? Text(
-                          _emoji!,
+                          _emoji ?? "",
                           style: TextStyle(fontSize: YScale.s14),
                         )
                       : Stack(
@@ -165,7 +165,7 @@ class _CountDownContent extends StatelessWidget {
                         Text(event == null ? "Pas de cours d'ici 1h30" : "Prochain cours", style: theme.texts.body2),
                         event == null
                             ? Text(
-                                _text!,
+                                _text ?? "",
                                 style: theme.texts.body1
                                     .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold),
                               )
