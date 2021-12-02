@@ -43,7 +43,8 @@ class _CountDownState extends State<CountDown> {
   late final Timer timer;
 
   /// The nearest event from [now]. Based on [condition].
-  AgendaEvent? get event => events.firstWhereOrNull((event) => condition(event.start!));
+  // AgendaEvent? get event => events.firstWhereOrNull((event) => condition(event.start!));
+  AgendaEvent? get event => events.isNotEmpty ? events.last : null;
 
   /// Now obvoiusly.
   DateTime now = DateTime.now();
@@ -174,7 +175,7 @@ class _CountDownContent extends StatelessWidget {
                                     text: event!.name,
                                     style: theme.texts.body1.copyWith(
                                         color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold),
-                                    children: event!.location != null || event!.location! == ""
+                                    children: event!.location != null || event!.location == ""
                                         ? [
                                             const TextSpan(
                                                 text: " en ", style: TextStyle(fontWeight: YFontWeight.normal)),
