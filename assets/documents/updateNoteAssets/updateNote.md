@@ -1,3 +1,7 @@
+# 0.14.5
+
+- Le bug mentionné en 0.14.4 a vraiment été corrigé cette fois ;)
+
 # 0.14.4
 
 - Correction d'un bug rendant la page d'accueil inutilisable introduit en 0.14.3
