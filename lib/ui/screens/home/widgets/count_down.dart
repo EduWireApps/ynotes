@@ -43,8 +43,7 @@ class _CountDownState extends State<CountDown> {
   late final Timer timer;
 
   /// The nearest event from [now]. Based on [condition].
-  // AgendaEvent? get event => events.firstWhereOrNull((event) => condition(event.start!));
-  AgendaEvent? get event => events.isNotEmpty ? events.last : null;
+  AgendaEvent? get event => events.firstWhereOrNull((event) => condition(event.start!));
 
   /// Now obvoiusly.
   DateTime now = DateTime.now();
