@@ -7,6 +7,6 @@ class _SchoolLifeTicketsProvider extends Provider {
     if (!api.authModule.authenticated) {
       return const Response(error: "Not authenticated");
     }
-    return await _request(url: "eleves/${api.authModule.account!.id}/notes.awp?verbe=get");
+    return await _request(url: "eleves/${api.authModule.schoolAccount!.id}/viescolaire.awp?verbe=get");
   }
 }

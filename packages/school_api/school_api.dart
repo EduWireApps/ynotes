@@ -14,6 +14,7 @@ part 'src/metadata.dart';
 part 'src/model.dart';
 part 'src/module.dart';
 part 'src/modules_availability.dart';
+part 'src/school_api_modules.dart';
 part 'src/school_api.dart';
 part 'src/modules/auth.dart';
 part 'src/modules/grades.dart';

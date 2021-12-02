@@ -14,7 +14,8 @@ class _AuthModule extends AuthModule<_AuthRepository> {
       return Response(error: res.error);
     }
     authenticated = true;
-    account = res.data!;
+    account = res.data!["appAccount"];
+    schoolAccount = res.data!["schoolAccount"];
     notifyListeners();
     return const Response();
   }

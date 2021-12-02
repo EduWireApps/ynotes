@@ -3,7 +3,7 @@ part of ecole_directe;
 String? _token;
 const String _baseUrl = "https://api.ecoledirecte.com/v3/";
 
-class EcoleDirecteApi extends SchoolApi<EcoleDirecteClient> {
+class EcoleDirecteApi extends SchoolApi implements SchoolApiModules {
   EcoleDirecteApi()
       : super(
             metadata: Metadata(
@@ -15,22 +15,12 @@ class EcoleDirecteApi extends SchoolApi<EcoleDirecteClient> {
                     lightColor: Colors.blue[600]!.withOpacity(.5))));
 
   @override
-  AuthModule get authModule => _AuthModule(this);
+  late AuthModule authModule = _AuthModule(this);
 
   @override
-  GradesModule get gradesModule => _GradesModule(this, isSupported: true, isAvailable: modulesAvailability.schoolLife);
+  late GradesModule gradesModule = _GradesModule(this, isSupported: true, isAvailable: modulesAvailability.schoolLife);
 
   @override
-  SchoolLifeModule get schoolLifeModule =>
+  late SchoolLifeModule schoolLifeModule =
       _SchoolLifeModule(this, isSupported: true, isAvailable: modulesAvailability.grades);
-
-  @override
-  EcoleDirecteClient get client => EcoleDirecteClient();
-
-  @override
-  Future<Response<String>> login({required String username, required String password}) async {
-    return const Response<String>(
-      error: "Not implemented",
-    );
-  }
 }

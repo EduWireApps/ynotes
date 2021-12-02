@@ -6,7 +6,7 @@ class _AuthRepository extends Repository {
 
   _AuthRepository(SchoolApi api) : super(api);
 
-  Future<Response<AppAccount>> login(Map<String, String> body) async {
+  Future<Response<Map<String, dynamic>>> login(Map<String, String> body) async {
     // TODO: implement offline support
     final res = await authProvider.get(body);
     if (res.error != null) {
@@ -15,9 +15,29 @@ class _AuthRepository extends Repository {
     try {
       _token = res.data!["token"];
       final Map<String, dynamic> account = res.data!["data"]["accounts"][0];
-      return Response(
-          data: AppAccount(
-              firstName: account["prenom"], lastName: account["prenom"], accounts: account["profile"]["eleves"] ?? []));
+      final List<SchoolAccount> accounts = account["profile"]["eleves"] ??
+          []
+              .map<SchoolAccount>((e) => SchoolAccount(
+                  firstName: e["prenom"],
+                  lastName: e["nom"],
+                  className: e["classe"]["libelle"],
+                  id: e["id"].toString(),
+                  profilePicture: e["photo"]))
+              .toList();
+      final AppAccount appAccount =
+          AppAccount(id: account["uid"], firstName: account["prenom"], lastName: account["nom"], accounts: accounts);
+      final Map<String, dynamic> map = {
+        "appAccount": appAccount,
+        "schoolAccount": accounts.isEmpty
+            ? SchoolAccount(
+                firstName: appAccount.firstName,
+                lastName: appAccount.lastName,
+                className: account["profile"]["classe"]["libelle"],
+                id: account["id"].toString(),
+                profilePicture: account["profile"]["photo"])
+            : accounts[0]
+      };
+      return Response(data: map);
     } catch (e) {
       return Response(error: "$e");
     }

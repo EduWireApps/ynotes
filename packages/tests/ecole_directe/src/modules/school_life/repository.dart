@@ -13,15 +13,17 @@ class _SchoolLifeRepository extends Repository {
       return Response(error: res.error);
     }
     try {
-      final List<SchoolLifeTicket> tickets = (res.data!["data"]["absencesRetards"] as List<Map<String, dynamic>>)
-          .map((e) => SchoolLifeTicket(
+      // TODO: implement sanctions
+      final List<SchoolLifeTicket> tickets = res.data!["data"]["absencesRetards"]
+          .map<SchoolLifeTicket>((e) => SchoolLifeTicket(
               duration: e["libelle"],
-              date: e["displayDate"],
+              displayDate: e["displayDate"],
               reason: e["motif"],
               type: e["typeElement"],
-              isJustified: e["justifie"]))
+              isJustified: e["justifie"],
+              date: DateTime.parse(e["date"])))
           .toList();
-      return Response(data: tickets);
+      return Response(data: tickets..sort((a, b) => a.date.compareTo(b.date)));
     } catch (e) {
       return Response(error: "$e");
     }

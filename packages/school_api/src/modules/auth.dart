@@ -5,6 +5,7 @@ abstract class AuthModule<R extends Repository> extends Module<R> {
       : super(isSupported: true, isAvailable: true, repository: repository, api: api);
 
   AppAccount? account;
+  SchoolAccount? schoolAccount;
 
   bool authenticated = false;
 

@@ -8,7 +8,6 @@ import 'package:ynotes_packages/theme.dart';
 
 import '../../school_api/school_api.dart';
 import '../../shared/shared.dart';
-import '../../ecole_directe_client/ecole_directe_client.dart';
 
 part 'src/api.dart';
 part 'src/utils.dart';
