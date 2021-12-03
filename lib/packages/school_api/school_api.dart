@@ -11,6 +11,7 @@ import '../shared/shared.dart';
 
 // TODO: refactor like in tests/ecole_directe
 
+// COMMON
 part 'src/provider.dart';
 part 'src/repository.dart';
 part 'src/metadata.dart';
@@ -18,13 +19,20 @@ part 'src/module.dart';
 part 'src/modules_availability.dart';
 part 'src/school_api_modules.dart';
 part 'src/school_api.dart';
-part 'src/modules/auth.dart';
-part 'src/modules/grades.dart';
-part 'src/modules/school_life.dart';
-part 'src/models/grade.dart';
-part 'src/models/app_account.dart';
-part 'src/models/school_account.dart';
-part 'src/models/school_life_sanction.dart';
-part 'src/models/school_life_ticket.dart';
 
+// AUTH MODULE
+part 'src/modules/auth/module.dart';
+part 'src/modules/auth/models/app_account.dart';
+part 'src/modules/auth/models/school_account.dart';
+
+// GRADES MODULE
+part 'src/modules/grades/module.dart';
+part 'src/modules/grades/models/grade.dart';
+
+// SCHOOL LIFE MDOULE
+part 'src/modules/school_life/module.dart';
+part 'src/modules/school_life/models/school_life_sanction.dart';
+part 'src/modules/school_life/models/school_life_ticket.dart';
+
+// HIVE GENERATED FILE
 part "school_api.g.dart";
