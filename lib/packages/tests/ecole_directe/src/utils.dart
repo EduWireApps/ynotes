@@ -31,3 +31,6 @@ Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
     return const Response(error: "En error occured");
   });
 }
+
+String parseHtml(String str) =>
+    html_parser.parse(str).documentElement!.text.replaceAll("\n\n", ". ").replaceAll("\n", "");

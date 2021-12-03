@@ -25,6 +25,7 @@ class Offline {
 
   static void _registerAdapters() {
     Hive.registerAdapter(SchoolLifeTicketAdapter());
+    Hive.registerAdapter(SchoolLifeSanctionAdapter());
   }
 }
 
