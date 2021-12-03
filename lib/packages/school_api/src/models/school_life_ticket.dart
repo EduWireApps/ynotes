@@ -1,14 +1,21 @@
 part of school_api;
 
-class SchoolLifeTicket {
+@HiveType(typeId: 0)
+class SchoolLifeTicket extends HiveObject {
+  @HiveField(0)
   final String duration;
+  @HiveField(1)
   final String displayDate;
+  @HiveField(2)
   final String reason;
+  @HiveField(3)
   final String type;
+  @HiveField(4)
   final bool isJustified;
+  @HiveField(5)
   final DateTime date;
 
-  const SchoolLifeTicket({
+  SchoolLifeTicket({
     required this.duration,
     required this.displayDate,
     required this.reason,

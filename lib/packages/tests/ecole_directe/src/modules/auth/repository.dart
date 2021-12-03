@@ -7,7 +7,6 @@ class _AuthRepository extends Repository {
   _AuthRepository(SchoolApi api) : super(api);
 
   Future<Response<Map<String, dynamic>>> login(Map<String, String> body) async {
-    // TODO: implement offline support
     final res = await authProvider.get(body);
     if (res.error != null) {
       return Response(error: res.error);

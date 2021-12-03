@@ -8,11 +8,16 @@ class _SchoolLifeModule extends SchoolLifeModule<_SchoolLifeRepository> {
   Future<Response<void>> fetch({bool online = false}) async {
     fetching = true;
     notifyListeners();
-    final res = await repository.getTickets();
-    if (res.error != null) {
-      return Response(error: res.error);
+    if (online) {
+      final res = await repository.getTickets();
+      if (res.error != null) {
+        return Response(error: res.error);
+      }
+      tickets = res.data!;
+      offline.setTickets(tickets);
+    } else {
+      tickets = await offline.getTickets();
     }
-    tickets = res.data!;
     fetching = false;
     notifyListeners();
     return const Response();

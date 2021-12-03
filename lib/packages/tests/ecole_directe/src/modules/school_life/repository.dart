@@ -16,12 +16,13 @@ class _SchoolLifeRepository extends Repository {
       // TODO: implement sanctions
       final List<SchoolLifeTicket> tickets = res.data!["data"]["absencesRetards"]
           .map<SchoolLifeTicket>((e) => SchoolLifeTicket(
-              duration: e["libelle"],
-              displayDate: e["displayDate"],
-              reason: e["motif"],
-              type: e["typeElement"],
-              isJustified: e["justifie"],
-              date: DateTime.parse(e["date"])))
+                duration: e["libelle"],
+                displayDate: e["displayDate"],
+                reason: e["motif"],
+                type: e["typeElement"],
+                isJustified: e["justifie"],
+                date: DateTime.parse(e["date"]),
+              ))
           .toList();
       return Response(data: tickets..sort((a, b) => a.date.compareTo(b.date)));
     } catch (e) {

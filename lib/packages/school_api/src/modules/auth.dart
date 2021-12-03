@@ -1,8 +1,8 @@
 part of school_api;
 
-abstract class AuthModule<R extends Repository> extends Module<R> {
+abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
   AuthModule({required R repository, required SchoolApi api})
-      : super(isSupported: true, isAvailable: true, repository: repository, api: api);
+      : super(isSupported: true, isAvailable: true, repository: repository, api: api, offline: OfflineAuth());
 
   AppAccount? account;
   SchoolAccount? schoolAccount;
