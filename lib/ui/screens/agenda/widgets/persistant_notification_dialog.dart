@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:battery_optimization/battery_optimization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:optimization_battery/optimization_battery.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
@@ -171,13 +171,13 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
               ),
               onTap: () async {
-                if (!((await BatteryOptimization.isIgnoringBatteryOptimizations()) ?? false) &&
+                if (!((await OptimizationBattery.isIgnoringBatteryOptimizations())) &&
                     await (CustomDialogs.showAuthorizationsDialog(
                             context,
                             "la configuration d'optimisation de batterie",
                             "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
                         as Future<bool>)) {
-                  await BatteryOptimization.openBatteryOptimizationSettings();
+                  await OptimizationBattery.openBatteryOptimizationSettings();
                 }
                 await getAuth();
               },
@@ -193,7 +193,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
   }
 
   getAuth() async {
-    await BatteryOptimization.isIgnoringBatteryOptimizations().then((onValue) {
+    await OptimizationBattery.isIgnoringBatteryOptimizations().then((onValue) {
       setState(() {
         if (onValue!) {
           setState(() {
