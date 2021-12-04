@@ -26,7 +26,6 @@ import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
 
 Future<void> main() async {
-  AppConfig.navigatorKey = GlobalKey<NavigatorState>();
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   await backwardCompatibility();
@@ -63,6 +62,12 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  @override
+  initState() {
+    super.initState();
+    AppConfig.navigatorKey = GlobalKey<NavigatorState>();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -107,10 +112,5 @@ class _AppState extends State<App> {
                 ));
       }),
     );
-  }
-
-  @override
-  initState() {
-    super.initState();
   }
 }
