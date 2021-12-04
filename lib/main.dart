@@ -26,6 +26,7 @@ import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
 
 Future<void> main() async {
+  AppConfig.navigatorKey = GlobalKey<NavigatorState>();
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   await backwardCompatibility();
@@ -65,7 +66,6 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    AppConfig.navigatorKey = GlobalKey<NavigatorState>();
 
     return FocusDetector(
       onForegroundGained: () {
