@@ -15,7 +15,7 @@ class OfflineSchoolLife extends OfflineModel {
   }
 
   Future<List<SchoolLifeSanction>> getSanctions() async {
-    return box?.get(sanctionsKey) as List<SchoolLifeSanction>? ?? [];
+    return (box?.get(sanctionsKey) as List<dynamic>?)?.map<SchoolLifeSanction>((e) => e).toList() ?? [];
   }
 
   Future<void> setSanctions(List<SchoolLifeSanction> sanctions) async {

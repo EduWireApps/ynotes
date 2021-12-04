@@ -14,18 +14,7 @@ Future<void> main() async {
   final res1 = await api.schoolLifeModule.fetch(online: true);
   print("Error: ${res1.error}");
   print(api.schoolLifeModule.tickets);
-  for (var t in api.schoolLifeModule.tickets) {
-    print("${t.reason} ${t.date}");
+  for (var s in api.schoolLifeModule.sanctions) {
+    print("${s.reason} ${s.date}");
   }
-  await api.schoolLifeModule.reset(offline: true);
-  print(api.schoolLifeModule.tickets);
-  await api.schoolLifeModule.fetch();
-  print(api.schoolLifeModule.tickets);
-  // print("----------------------------------------");
-  // final res2 = await api.schoolLifeModule.fetch(online: false);
-  // print("Error: ${res2.error}");
-  // print(api.schoolLifeModule.tickets);
-  // for (var t in api.schoolLifeModule.tickets) {
-  //   print("${t.reason} ${t.date}");
-  // }
 }
