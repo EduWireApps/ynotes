@@ -1,7 +1,15 @@
+# 0.14.5
+
+- Le bug mentionné en 0.14.4 a vraiment été corrigé cette fois ;)
+
+# 0.14.4
+
+- Correction d'un bug rendant la page d'accueil inutilisable introduit en 0.14.3
+
 # 0.14.3
 
-- Corrections mineurs
-- Sur la page d'accueil, lorsque le compte à rebours n'est pas actif, des petits messages amusants (*on l'espère*) sont affichés à la place
+- Corrections mineures
+- Sur la page d'accueil, lorsque le compte à rebours n'est pas actif, des petits messages amusants (_on l'espère_) sont affichés à la place
 
 # 0.14.2
 
@@ -21,7 +29,7 @@
 # 0.14.1
 
 - Correction d'un bug sur la page d'accueil de Pronote qui la rendait complètement inutilisable
-- Correction (*fingers crossed*) des problèmes liés au logs corrompus
+- Correction (_fingers crossed_) des problèmes liés au logs corrompus
 
 # Mise à jour 0.14.0
 
