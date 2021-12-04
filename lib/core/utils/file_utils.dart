@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
@@ -61,7 +60,7 @@ class FileAppUtil {
   ///Get new file path
   static Future<File> getFilePath(String? filename) async {
     final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
-    return File("${dir.path}/yNotesDownloads/$filename");
+    return File("${dir.path}/$filename");
   }
 
   static Future<List<FileInfo>> getFilesList(String path) async {
@@ -122,7 +121,7 @@ class FileAppUtil {
       //Get root dir path
       if (usingFileName) {
         final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
-        path = '${dir.path}/yNotesDownloads/$filePath';
+        path = '${dir.path}/$filePath';
       } else {
         path = filePath;
       }
@@ -180,8 +179,15 @@ class FolderAppUtil {
   static Future<Directory> getDirectory({bool downloads = false}) async {
     if (!kIsWeb) {
       if (Platform.isAndroid) {
+        if (downloads) {
+          if ((await (Directory(((await getExternalStorageDirectory())?.path ?? "") + "/downloads")).exists()) ==
+              false) {
+            await Directory(((await getExternalStorageDirectory())?.path ?? "") + "/downloads").create(recursive: true);
+          }
+        }
+
         return downloads
-            ? Directory((await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS))!)
+            ? Directory(((await getExternalStorageDirectory())?.path ?? "") + "/downloads")
             : (await getExternalStorageDirectory())!;
       } else if (Platform.isIOS) {
         return await getApplicationDocumentsDirectory();
