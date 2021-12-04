@@ -51,7 +51,7 @@ class DownloadController extends ChangeNotifier {
           notifyListeners();
           CustomLogger.log("DOWNLOAD", "Téléchargement du fichier terminé : ${file.path}");
           final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
-          final Directory _appDocDirFolder = Directory('${dir.path}/yNotesDownloads/');
+          final Directory _appDocDirFolder = Directory('${dir.path}/');
 
           if (!await _appDocDirFolder.exists()) {
             //if folder already exists return path

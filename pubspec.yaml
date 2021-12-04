@@ -16,10 +16,8 @@ dependencies:
   auto_size_text: ^3.0.0-nullsafety.0
   awesome_notifications: ^0.0.6+7
   background_fetch: ^1.0.0-nullsafety.2
-  battery_optimization:
-    git:
-      ref: master
-      url: "https://github.com/ChangJoo-Park/battery_optimization"
+    
+  optimization_battery: ^0.0.4
   calendar_time: ^2.0.0-nullsafety.0
   connectivity_plus: ^1.0.2
   csv: ^5.0.0

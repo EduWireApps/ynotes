@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ext_storage/ext_storage.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
@@ -8,6 +9,33 @@ import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 Future<void> backwardCompatibility() async {
   await _fromV12ToV13();
   await _fromV13ToV14();
+  await _extRemovalMigration();
+}
+
+Future<void> _extRemovalMigration() async {
+  if (Platform.isAndroid) {
+    try {
+      final bool migratedOldExtFiles0 = (await KVS.read(key: "migratedOldExtFiles0")) == "true";
+      if (migratedOldExtFiles0) {
+        ///Olds download directory
+        Directory oldDownloadsDirectory = Directory(
+            (await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS))! + "/yNotesDownloads");
+
+        List<FileSystemEntity>? files = await oldDownloadsDirectory.list().toList();
+
+        if ((files ?? []).isNotEmpty) {
+          String path = (await FolderAppUtil.getDirectory(downloads: true)).path;
+          Future.forEach(files, (FileSystemEntity element) async {
+            String? fileName = await FileAppUtil.getFileNameWithExtension(element);
+            var result = await Process.run('cp', ['-r', element.path, path + "/"]);
+          });
+        }
+        await KVS.write(key: "migratedOldExtFiles0", value: "true");
+      }
+    } catch (e) {
+      CustomLogger.log("BACKWARD COMPATIBILITY NO EXT MIGRATION", "Error while moving files: $e");
+    }
+  }
 }
 
 Future<void> _fromV12ToV13() async {
