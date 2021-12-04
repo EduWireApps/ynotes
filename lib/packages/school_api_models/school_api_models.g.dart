@@ -174,6 +174,46 @@ class GradeAdapter extends TypeAdapter<Grade> {
           typeId == other.typeId;
 }
 
+class SubjectsFilterAdapter extends TypeAdapter<SubjectsFilter> {
+  @override
+  final int typeId = 5;
+
+  @override
+  SubjectsFilter read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SubjectsFilter(
+      name: fields[0] as String,
+      color: fields[1] as YTColor,
+      subjects: (fields[2] as HiveList).castHiveList(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SubjectsFilter obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.color)
+      ..writeByte(2)
+      ..write(obj.subjects);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SubjectsFilterAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 class PeriodAdapter extends TypeAdapter<Period> {
   @override
   final int typeId = 3;

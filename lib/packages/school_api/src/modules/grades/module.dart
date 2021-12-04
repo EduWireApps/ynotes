@@ -9,14 +9,25 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
             api: api,
             offline: OfflineGrades());
 
-  @protected
-  Response<double> calculateAverage();
+  List<Grade> grades = [];
+  List<Period> periods = [];
+  List<Subject> subjects = [];
+  Period? currentPeriod;
+  List<SubjectsFilter> filters = [];
+  bool simulating = false;
 
-  List<Grade> get grades => _grades;
+  // TODO: calculate method
 
-  @protected
-  // ignore: prefer_final_fields
-  List<Grade> _grades = [];
+  @override
+  Future<void> reset({bool offline = false}) async {
+    grades = [];
+    periods = [];
+    subjects = [];
+    filters = [];
+    currentPeriod = null;
+    simulating = false;
+    await super.reset(offline: offline);
+  }
 }
 
 /* 
@@ -26,7 +37,6 @@ Things to do:
 - handle custom grades.
 - handle custom subjects.
 - handle filters
-- handle sorting
 - handle averages calculations
 - handle offline
 */

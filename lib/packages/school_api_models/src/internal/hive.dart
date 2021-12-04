@@ -8,4 +8,5 @@ class _HiveTypeIds {
   static const int grade = 2;
   static const int period = 3;
   static const int subject = 4;
+  static const int subjectsFilter = 5;
 }
