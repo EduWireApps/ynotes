@@ -1,6 +1,6 @@
-part of school_api;
+part of models;
 
-@HiveType(typeId: 1)
+@HiveType(typeId: _HiveTypeIds.schoolLifeSanction)
 class SchoolLifeSanction extends HiveObject {
   @HiveField(0)
   final String type;

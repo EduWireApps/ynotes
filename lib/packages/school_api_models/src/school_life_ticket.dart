@@ -1,6 +1,6 @@
-part of school_api;
+part of models;
 
-@HiveType(typeId: 0)
+@HiveType(typeId: _HiveTypeIds.schoolLifeTicket)
 class SchoolLifeTicket extends HiveObject {
   @HiveField(0)
   final String duration;

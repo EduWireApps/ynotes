@@ -1,4 +1,4 @@
-part of school_api;
+part of models;
 
 class SchoolAccount {
   final String firstName;
