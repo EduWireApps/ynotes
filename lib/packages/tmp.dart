@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 
-import 'tests/ecole_directe/ecole_directe.dart';
+import 'package:ynotes/packages/apis/ecole_directe/ecole_directe.dart';
 
 const String username = 'aaa';
 const String password = 'aaa';
