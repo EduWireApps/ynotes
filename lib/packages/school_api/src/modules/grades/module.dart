@@ -15,13 +15,6 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
   Period? currentPeriod;
   SubjectsFilter? currentFilter;
 
-  @override
-  Future<void> init() async {
-    await super.init();
-    await setCurrentPeriod();
-    await setCurrentFilter();
-  }
-
   Future<void> setCurrentPeriod({Period? period}) async {
     if (period == null) {
       final Period? offlinePeriod = await offline.getCurrentPeriod();

@@ -3,6 +3,7 @@ library ecole_directe;
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/packages/school_api/school_api.dart';
 import 'package:ynotes/packages/school_api_models/school_api_models.dart';

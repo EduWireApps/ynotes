@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/packages/apis/ecole_directe/ecole_directe.dart';
 
-const String username = 'aaa';
+const String username = 'aaaa';
 const String password = 'aaa';
 
 Future<void> main() async {
@@ -20,6 +20,6 @@ Future<void> main() async {
   for (var s in api.schoolLifeModule.sanctions) {
     print("${s.reason} ${s.date}");
   }
-  final res2 = await api.gradesModule.fetch();
+  final res2 = await api.gradesModule.fetch(online: true);
   print("Error: ${res2.error}");
 }

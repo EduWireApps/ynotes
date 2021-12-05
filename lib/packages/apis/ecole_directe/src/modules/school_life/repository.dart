@@ -2,12 +2,12 @@ part of ecole_directe;
 
 class _SchoolLifeRepository extends Repository {
   @protected
-  late final _SchoolLifeTicketsProvider ticketsProvider = _SchoolLifeTicketsProvider(api);
+  late final _SchoolLifeProvider schoolLifeProvider = _SchoolLifeProvider(api);
 
   _SchoolLifeRepository(SchoolApi api) : super(api);
 
-  Future<Response<Map<String, dynamic>>> getTickets() async {
-    final res = await ticketsProvider.get();
+  Future<Response<Map<String, dynamic>>> get() async {
+    final res = await schoolLifeProvider.get();
     if (res.error != null) {
       return Response(error: res.error);
     }

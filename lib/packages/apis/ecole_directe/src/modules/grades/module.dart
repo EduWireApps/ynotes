@@ -6,9 +6,13 @@ class _GradesModule extends GradesModule<_GradesRepository> {
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    repository.x;
-    return const Response(
-      error: "Not implemented",
-    );
+    fetching = true;
+    notifyListeners();
+    if (online) {
+      final res = await repository.get();
+    } else {}
+    fetching = false;
+    notifyListeners();
+    return const Response();
   }
 }

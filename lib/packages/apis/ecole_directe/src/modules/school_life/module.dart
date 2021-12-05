@@ -9,7 +9,7 @@ class _SchoolLifeModule extends SchoolLifeModule<_SchoolLifeRepository> {
     fetching = true;
     notifyListeners();
     if (online) {
-      final res = await repository.getTickets();
+      final res = await repository.get();
       if (res.error != null) {
         return Response(error: res.error);
       }
