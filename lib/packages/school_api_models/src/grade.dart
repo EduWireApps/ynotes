@@ -42,3 +42,25 @@ class Grade extends HiveObject {
     required this.minAverage,
   });
 }
+
+class CustomGrade extends Grade {
+  CustomGrade({
+    required Subject subject,
+    required double coefficient,
+    required double outOf,
+    required double value,
+  }) : super(
+          name: "Simulée",
+          subject: subject,
+          type: "Simulation",
+          coefficient: coefficient,
+          outOf: outOf,
+          value: value,
+          significant: true,
+          date: DateTime.now(),
+          entryDate: DateTime.now(),
+          classAverage: double.nan,
+          maxAverage: double.nan,
+          minAverage: double.nan,
+        );
+}

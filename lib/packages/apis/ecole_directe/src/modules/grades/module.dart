@@ -11,7 +11,4 @@ class _GradesModule extends GradesModule<_GradesRepository> {
       error: "Not implemented",
     );
   }
-
-  @override
-  Response<double> calculateAverage({List<Grade>? grades}) => const Response(error: "Not implemented");
 }

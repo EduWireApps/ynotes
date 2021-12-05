@@ -295,13 +295,14 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       teachers: fields[6] as String,
       grades: (fields[7] as HiveList).castHiveList(),
       periods: (fields[8] as HiveList).castHiveList(),
+      api: fields[9] as SchoolApi,
     );
   }
 
   @override
   void write(BinaryWriter writer, Subject obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -319,7 +320,9 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       ..writeByte(7)
       ..write(obj.grades)
       ..writeByte(8)
-      ..write(obj.periods);
+      ..write(obj.periods)
+      ..writeByte(9)
+      ..write(obj.api);
   }
 
   @override
