@@ -2,17 +2,30 @@ part of school_api;
 
 class _OfflineStore {
   bool initialized = false;
+  HiveAesCipher? cipher;
 }
 
 class Offline {
   Offline._();
 
   static final store = _OfflineStore();
+  static const String _encryptionKeyName = 'hiveEncryptionKey';
 
   static Future<void> init() async {
     if (store.initialized) {
       return;
     }
+    // Encryption
+    if (store.cipher == null) {
+      final bool containsEncryptionKey = await KVS.containsKey(key: _encryptionKeyName);
+      if (!containsEncryptionKey) {
+        final List<int> key = Hive.generateSecureKey();
+        await KVS.write(key: _encryptionKeyName, value: base64UrlEncode(key));
+      }
+      final List<int> encryptionKey = base64Url.decode((await KVS.read(key: _encryptionKeyName))!);
+      store.cipher = HiveAesCipher(encryptionKey);
+    }
+    // Init Hive
     if (kIsWeb) {
       await Hive.initFlutter();
     } else {
@@ -38,7 +51,7 @@ abstract class OfflineModel {
     if (!Offline.store.initialized) {
       await Offline.init();
     }
-    box = Hive.isBoxOpen(key) ? Hive.box(key) : await Hive.openBox(key);
+    box = Hive.isBoxOpen(key) ? Hive.box(key) : await Hive.openBox(key, encryptionCipher: Offline.store.cipher);
     print("init $key");
   }
 
