@@ -863,13 +863,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
-  optimization_battery:
+  optimize_battery:
     dependency: "direct main"
     description:
-      name: optimization_battery
+      name: optimize_battery
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.1"
   package_config:
     dependency: transitive
     description:
