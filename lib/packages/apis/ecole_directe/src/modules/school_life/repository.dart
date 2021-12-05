@@ -7,13 +7,11 @@ class _SchoolLifeRepository extends Repository {
   _SchoolLifeRepository(SchoolApi api) : super(api);
 
   Future<Response<Map<String, dynamic>>> getTickets() async {
-    // TODO: implement offline support
     final res = await ticketsProvider.get();
     if (res.error != null) {
       return Response(error: res.error);
     }
     try {
-      // TODO: implement sanctions
       final List<SchoolLifeTicket> tickets = res.data!["data"]["absencesRetards"]
           .map<SchoolLifeTicket>((e) => SchoolLifeTicket(
                 duration: e["libelle"],

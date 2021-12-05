@@ -9,4 +9,5 @@ class _HiveTypeIds {
   static const int period = 3;
   static const int subject = 4;
   static const int subjectsFilter = 5;
+  static const int ytcolor = 6;
 }

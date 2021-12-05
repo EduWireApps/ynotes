@@ -8,10 +8,8 @@ class SubjectsFilter extends HiveObject {
   final YTColor color;
   @HiveField(2)
   final HiveList<Subject> subjects;
+  @HiveField(3)
+  final bool custom;
 
-  SubjectsFilter({
-    required this.name,
-    required this.color,
-    required this.subjects,
-  });
+  SubjectsFilter({required this.name, required this.color, required this.subjects, required this.custom});
 }

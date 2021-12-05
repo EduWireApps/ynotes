@@ -13,12 +13,21 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
   List<Period> periods = [];
   List<Subject> subjects = [];
   Period? currentPeriod;
+  SubjectsFilter? currentFilter;
+
+  @override
+  Future<void> init() async {
+    await super.init();
+    await setCurrentPeriod();
+    await setCurrentFilter();
+  }
 
   Future<void> setCurrentPeriod({Period? period}) async {
     if (period == null) {
       final Period? offlinePeriod = await offline.getCurrentPeriod();
       if (offlinePeriod != null) {
         currentPeriod = offlinePeriod;
+        notifyListeners();
         return;
       }
       final DateTime now = DateTime.now();
@@ -33,7 +42,30 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     notifyListeners();
   }
 
-  List<SubjectsFilter> filters = [];
+  Future<void> setCurrentFilter({SubjectsFilter? filter}) async {
+    if (filter == null) {
+      final SubjectsFilter? offlineFilter = await offline.getCurrentFilter();
+      if (offlineFilter != null) {
+        currentFilter = offlineFilter;
+        notifyListeners();
+        return;
+      }
+      currentFilter = filters[0];
+    } else {
+      currentFilter = filter;
+    }
+    await offline.setCurrentFilter(currentFilter);
+    notifyListeners();
+  }
+
+  late List<SubjectsFilter> filters = [..._defaultFilters];
+  late final List<SubjectsFilter> _defaultFilters = [
+    SubjectsFilter(
+        name: "Toutes matières",
+        color: AppColors.blue,
+        subjects: HiveList(offline.box!, objects: subjects),
+        custom: false)
+  ];
 
   double calculateAverage(List<double> numerators, List<double> denominators) {
     double n = 0;
@@ -65,13 +97,3 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     await super.reset(offline: offline);
   }
 }
-
-/* 
-Things to do:
-X current period. Saved to offline or KVS
-- handle custom grades.
-- handle custom subjects.
-- handle filters
-X handle averages calculations
-- handle offline
-*/

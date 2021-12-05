@@ -30,7 +30,7 @@ class Offline {
       await Hive.initFlutter();
     } else {
       var dir = await FolderAppUtil.getDirectory();
-      Hive.init("${dir.path}/offlineTest"); // TODO: change this
+      Hive.init("${dir.path}/offlineTest"); // TODO: change offline path
     }
     _registerAdapters();
     store.initialized = true;
@@ -39,6 +39,12 @@ class Offline {
   static void _registerAdapters() {
     Hive.registerAdapter(SchoolLifeTicketAdapter());
     Hive.registerAdapter(SchoolLifeSanctionAdapter());
+    Hive.registerAdapter(GradeAdapter());
+    Hive.registerAdapter(SubjectsFilterAdapter());
+    Hive.registerAdapter(PeriodAdapter());
+    Hive.registerAdapter(SubjectAdapter());
+    Hive.registerAdapter(ColorAdapter());
+    Hive.registerAdapter(YTColorAdapter());
   }
 }
 
@@ -52,7 +58,7 @@ abstract class OfflineModel {
       await Offline.init();
     }
     box = Hive.isBoxOpen(key) ? Hive.box(key) : await Hive.openBox(key, encryptionCipher: Offline.store.cipher);
-    print("init $key");
+    debugPrint("[HIVE BOX] Init $key");
   }
 
   Future<void> delete(String key) async {

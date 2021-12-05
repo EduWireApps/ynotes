@@ -188,19 +188,22 @@ class SubjectsFilterAdapter extends TypeAdapter<SubjectsFilter> {
       name: fields[0] as String,
       color: fields[1] as YTColor,
       subjects: (fields[2] as HiveList).castHiveList(),
+      custom: fields[3] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, SubjectsFilter obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.color)
       ..writeByte(2)
-      ..write(obj.subjects);
+      ..write(obj.subjects)
+      ..writeByte(3)
+      ..write(obj.custom);
   }
 
   @override
