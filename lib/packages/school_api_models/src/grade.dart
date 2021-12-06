@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.grade)
-class Grade extends HiveObject {
+class Grade {
   @HiveField(0)
   final String name;
   @HiveField(1)
@@ -26,21 +26,23 @@ class Grade extends HiveObject {
   final double maxAverage;
   @HiveField(11)
   final double minAverage;
+  @HiveField(12)
+  final String subjectId;
 
-  Grade({
-    required this.name,
-    required this.subject,
-    required this.type,
-    required this.coefficient,
-    required this.outOf,
-    required this.value,
-    required this.significant,
-    required this.date,
-    required this.entryDate,
-    required this.classAverage,
-    required this.maxAverage,
-    required this.minAverage,
-  });
+  Grade(
+      {required this.name,
+      required this.subject,
+      required this.type,
+      required this.coefficient,
+      required this.outOf,
+      required this.value,
+      required this.significant,
+      required this.date,
+      required this.entryDate,
+      required this.classAverage,
+      required this.maxAverage,
+      required this.minAverage,
+      required this.subjectId});
 }
 
 class CustomGrade extends Grade {
@@ -49,6 +51,7 @@ class CustomGrade extends Grade {
     required double coefficient,
     required double outOf,
     required double value,
+    required String subjectId,
   }) : super(
           name: "Simulée",
           subject: subject,
@@ -62,5 +65,6 @@ class CustomGrade extends Grade {
           classAverage: double.nan,
           maxAverage: double.nan,
           minAverage: double.nan,
+          subjectId: subjectId,
         );
 }

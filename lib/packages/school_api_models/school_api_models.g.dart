@@ -130,13 +130,14 @@ class GradeAdapter extends TypeAdapter<Grade> {
       classAverage: fields[9] as double,
       maxAverage: fields[10] as double,
       minAverage: fields[11] as double,
+      subjectId: fields[12] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Grade obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -160,7 +161,9 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(10)
       ..write(obj.maxAverage)
       ..writeByte(11)
-      ..write(obj.minAverage);
+      ..write(obj.minAverage)
+      ..writeByte(12)
+      ..write(obj.subjectId);
   }
 
   @override
@@ -237,14 +240,13 @@ class PeriodAdapter extends TypeAdapter<Period> {
       classAverage: fields[6] as double,
       maxAverage: fields[7] as double,
       minAverage: fields[8] as double,
-      subjects: (fields[9] as HiveList).castHiveList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Period obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -262,9 +264,7 @@ class PeriodAdapter extends TypeAdapter<Period> {
       ..writeByte(7)
       ..write(obj.maxAverage)
       ..writeByte(8)
-      ..write(obj.minAverage)
-      ..writeByte(9)
-      ..write(obj.subjects);
+      ..write(obj.minAverage);
   }
 
   @override
@@ -296,8 +296,6 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       minAverage: fields[4] as double,
       coefficient: fields[5] as double,
       teachers: fields[6] as String,
-      grades: (fields[7] as HiveList).castHiveList(),
-      periods: (fields[8] as HiveList).castHiveList(),
       api: fields[9] as SchoolApi,
     );
   }
@@ -305,7 +303,7 @@ class SubjectAdapter extends TypeAdapter<Subject> {
   @override
   void write(BinaryWriter writer, Subject obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -320,10 +318,6 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       ..write(obj.coefficient)
       ..writeByte(6)
       ..write(obj.teachers)
-      ..writeByte(7)
-      ..write(obj.grades)
-      ..writeByte(8)
-      ..write(obj.periods)
       ..writeByte(9)
       ..write(obj.api);
   }

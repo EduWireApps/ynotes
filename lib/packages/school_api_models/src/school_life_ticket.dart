@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.schoolLifeTicket)
-class SchoolLifeTicket extends HiveObject {
+class SchoolLifeTicket {
   @HiveField(0)
   final String duration;
   @HiveField(1)

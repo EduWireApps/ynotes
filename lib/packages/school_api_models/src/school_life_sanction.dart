@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.schoolLifeSanction)
-class SchoolLifeSanction extends HiveObject {
+class SchoolLifeSanction {
   @HiveField(0)
   final String type;
   @HiveField(1)

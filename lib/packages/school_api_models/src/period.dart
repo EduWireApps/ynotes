@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.period)
-class Period extends HiveObject {
+class Period {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -20,8 +20,6 @@ class Period extends HiveObject {
   final double maxAverage;
   @HiveField(8)
   final double minAverage;
-  @HiveField(9)
-  final HiveList<Subject> subjects;
 
   Period({
     required this.id,
@@ -33,6 +31,5 @@ class Period extends HiveObject {
     required this.classAverage,
     required this.maxAverage,
     required this.minAverage,
-    required this.subjects,
   });
 }

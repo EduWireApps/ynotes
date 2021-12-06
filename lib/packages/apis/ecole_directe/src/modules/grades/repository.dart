@@ -23,8 +23,7 @@ class _GradesRepository extends Repository {
               overallAverage: e["ensembleMatieres"]["moyenneGenerale"],
               classAverage: e["ensembleMatieres"]["moyenneClasse"],
               maxAverage: e["ensembleMatieres"]["moyenneMax"],
-              minAverage: e["ensembleMatieres"]["moyenneMin"],
-              subjects: HiveList(box, objects: [])))
+              minAverage: e["ensembleMatieres"]["moyenneMin"]))
           .toList();
       return Response(data: {});
     } catch (e) {
