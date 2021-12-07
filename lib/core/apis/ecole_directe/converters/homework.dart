@@ -78,7 +78,7 @@ class EcoleDirecteHomeworkConverter {
               homeworkList.add(hw);
             }
           } catch (e) {
-            CustomLogger.error(e);
+            CustomLogger.error(e, stackHint:"MTI=");
           }
         }
         return homeworkList;

@@ -24,7 +24,7 @@ class GradesUtils {
           averages.add(_average);
         }
       } catch (e) {
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"MjM=");
       }
     });
     double sum = 0.0;

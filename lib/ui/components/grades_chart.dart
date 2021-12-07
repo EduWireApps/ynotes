@@ -98,7 +98,7 @@ getHeight(var listValues, index, var screenSize, var lineSize, var gradeContaine
     }
   } catch (e) {
     CustomLogger.log("GRADES CHART", "An error occured while getting height");
-    CustomLogger.error(e);
+    CustomLogger.error(e, stackHint:"OTI=");
     return screenSize.size.height / 10 * 0.4;
   }
 }
