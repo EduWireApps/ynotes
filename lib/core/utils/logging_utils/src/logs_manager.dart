@@ -38,7 +38,7 @@ class LogsManager {
     try {
       await file.writeAsString(content, mode: FileMode.write);
     } catch (e) {
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"OTE=");
     }
     _editingFile = false;
   }

@@ -27,7 +27,7 @@ class MailsController extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       CustomLogger.log("MAILS", "An error occured while refreshing");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mjc=");
       loading = false;
     }
     loading = false;
