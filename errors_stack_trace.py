@@ -1,17 +1,13 @@
-from os import replace
 import os.path
 import re
 import base64
-
-
-
-
 
 
 # README : The goal of this file is to get a list of every files containing a call to CustomLogger.
 # We are then able to get a full stacktrace (with file name and line) at each call of CustomLogger.error()
 # This script should be runned at each add of a CustomLogger.error()
 rootdir=('./lib')
+stacklist_path=(rootdir + 'logs_stacklist.dart')
 
 
 # In this function we will walk into the whole directory to search for CustomLogger.error calls
@@ -22,6 +18,7 @@ def metas():
     dic = {}
     for folder, dirs, files in os.walk(rootdir):
         for file in files:
+            # eliminate other files to optimise the script
             if file.endswith('.dart'):
                 fullpath = os.path.join(folder, file)
                 replacement = ""
@@ -46,14 +43,9 @@ def metas():
 
     return dic    
 
-def stackListExists():
-    if os.path.isfile('./lib/logsStackLists.dart') == False:
-        f = open("./lib/logsStackLists.dart", "w")
-
 def writeInStackList(dic):
-    f = open("./lib/logsStackLists.dart", "w")
+    f = open(stacklist_path, "w")
     # Lets write our super stack list file
     f.write("Map stackList = " + str(dic) + ";")
 stack_dic = metas()
 writeInStackList(stack_dic)
-stackListExists()
