@@ -13,7 +13,6 @@ abstract class Module<R extends Repository, T extends OfflineModel> extends Chan
       required this.offline}) {
     _isSupported = isSupported;
     _isAvailable = isAvailable;
-    _init();
   }
 
   Future<void> _init() async {
