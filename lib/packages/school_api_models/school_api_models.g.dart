@@ -119,7 +119,6 @@ class GradeAdapter extends TypeAdapter<Grade> {
     };
     return Grade(
       name: fields[0] as String,
-      subject: fields[1] as Subject,
       type: fields[2] as String,
       coefficient: fields[3] as double,
       outOf: fields[4] as double,
@@ -128,9 +127,10 @@ class GradeAdapter extends TypeAdapter<Grade> {
       date: fields[7] as DateTime,
       entryDate: fields[8] as DateTime,
       classAverage: fields[9] as double,
-      maxAverage: fields[10] as double,
-      minAverage: fields[11] as double,
+      classMax: fields[10] as double,
+      classMin: fields[11] as double,
       subjectId: fields[12] as String,
+      periodId: fields[13] as String,
     );
   }
 
@@ -140,8 +140,6 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(13)
       ..writeByte(0)
       ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.subject)
       ..writeByte(2)
       ..write(obj.type)
       ..writeByte(3)
@@ -159,11 +157,13 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(9)
       ..write(obj.classAverage)
       ..writeByte(10)
-      ..write(obj.maxAverage)
+      ..write(obj.classMax)
       ..writeByte(11)
-      ..write(obj.minAverage)
+      ..write(obj.classMin)
       ..writeByte(12)
-      ..write(obj.subjectId);
+      ..write(obj.subjectId)
+      ..writeByte(13)
+      ..write(obj.periodId);
   }
 
   @override
@@ -296,7 +296,7 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       minAverage: fields[4] as double,
       coefficient: fields[5] as double,
       teachers: fields[6] as String,
-      api: fields[9] as SchoolApi,
+      average: fields[7] as double,
     );
   }
 
@@ -318,8 +318,8 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       ..write(obj.coefficient)
       ..writeByte(6)
       ..write(obj.teachers)
-      ..writeByte(9)
-      ..write(obj.api);
+      ..writeByte(7)
+      ..write(obj.average);
   }
 
   @override

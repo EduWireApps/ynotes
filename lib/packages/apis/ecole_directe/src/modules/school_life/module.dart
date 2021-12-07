@@ -14,8 +14,8 @@ class _SchoolLifeModule extends SchoolLifeModule<_SchoolLifeRepository> {
         return Response(error: res.error);
       }
       tickets = res.data!["tickets"];
-      offline.setTickets(tickets);
       sanctions = res.data!["sanctions"];
+      offline.setTickets(tickets);
       offline.setSanctions(sanctions);
     } else {
       tickets = await offline.getTickets();

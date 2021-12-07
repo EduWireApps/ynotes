@@ -16,11 +16,10 @@ class Subject extends HiveObject {
   final double coefficient;
   @HiveField(6)
   final String teachers;
-  List<Grade> grades(List<Grade> grades) => grades.where((g) => g.subjectId == id).toList();
-
-  @protected
-  @HiveField(9)
-  final SchoolApi api;
+  List<Grade> grades(List<Grade> grades, [Period? period]) =>
+      grades.where((g) => g.subjectId == id && (period == null ? true : g.periodId == period.id)).toList();
+  @HiveField(7)
+  final double average;
 
   Subject(
       {required this.id,
@@ -30,7 +29,7 @@ class Subject extends HiveObject {
       required this.minAverage,
       required this.coefficient,
       required this.teachers,
-      required this.api});
+      required this.average});
 }
 
 class CustomSubject extends Subject {
@@ -47,5 +46,5 @@ class CustomSubject extends Subject {
             minAverage: double.nan,
             coefficient: coefficient,
             teachers: teachers,
-            api: api);
+            average: double.nan);
 }

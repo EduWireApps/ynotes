@@ -7,5 +7,12 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
 
   SchoolApi({required this.metadata});
 
-  List<Module> get modules => [authModule, gradesModule, schoolLifeModule];
+  late final List<Module> modules = [authModule, gradesModule, schoolLifeModule];
+
+  Future<void> init() async {
+    await Offline.init();
+    for (final module in modules) {
+      await module._init();
+    }
+  }
 }

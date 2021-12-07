@@ -4,8 +4,6 @@ part of models;
 class Grade {
   @HiveField(0)
   final String name;
-  @HiveField(1)
-  final Subject subject;
   @HiveField(2)
   final String type;
   @HiveField(3)
@@ -23,15 +21,16 @@ class Grade {
   @HiveField(9)
   final double classAverage;
   @HiveField(10)
-  final double maxAverage;
+  final double classMax;
   @HiveField(11)
-  final double minAverage;
+  final double classMin;
   @HiveField(12)
   final String subjectId;
+  @HiveField(13)
+  final String periodId;
 
   Grade(
       {required this.name,
-      required this.subject,
       required this.type,
       required this.coefficient,
       required this.outOf,
@@ -40,31 +39,31 @@ class Grade {
       required this.date,
       required this.entryDate,
       required this.classAverage,
-      required this.maxAverage,
-      required this.minAverage,
-      required this.subjectId});
+      required this.classMax,
+      required this.classMin,
+      required this.subjectId,
+      required this.periodId});
 }
 
 class CustomGrade extends Grade {
   CustomGrade({
-    required Subject subject,
     required double coefficient,
     required double outOf,
     required double value,
     required String subjectId,
+    required String periodId,
   }) : super(
-          name: "Simulée",
-          subject: subject,
-          type: "Simulation",
-          coefficient: coefficient,
-          outOf: outOf,
-          value: value,
-          significant: true,
-          date: DateTime.now(),
-          entryDate: DateTime.now(),
-          classAverage: double.nan,
-          maxAverage: double.nan,
-          minAverage: double.nan,
-          subjectId: subjectId,
-        );
+            name: "Simulée",
+            type: "Simulation",
+            coefficient: coefficient,
+            outOf: outOf,
+            value: value,
+            significant: true,
+            date: DateTime.now(),
+            entryDate: DateTime.now(),
+            classAverage: double.nan,
+            classMax: double.nan,
+            classMin: double.nan,
+            subjectId: subjectId,
+            periodId: periodId);
 }

@@ -10,7 +10,21 @@ class _GradesModule extends GradesModule<_GradesRepository> {
     notifyListeners();
     if (online) {
       final res = await repository.get();
-    } else {}
+      if (res.error != null) {
+        return Response(error: res.error);
+      }
+      periods = res.data!["periods"];
+      subjects = res.data!["subjects"];
+      grades = res.data!["grades"];
+      // TODO: check before setting values
+      offline.setPeriods(periods);
+      offline.setSubjects(subjects);
+      offline.setGrades(grades);
+    } else {
+      periods = await offline.getPeriods();
+      subjects = await offline.getSubjects();
+      grades = await offline.getGrades();
+    }
     fetching = false;
     notifyListeners();
     return const Response();

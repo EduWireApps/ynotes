@@ -20,6 +20,7 @@ class Period {
   final double maxAverage;
   @HiveField(8)
   final double minAverage;
+  List<Grade> grades(List<Grade> grades) => grades.where((g) => g.periodId == id).toList();
 
   Period({
     required this.id,
