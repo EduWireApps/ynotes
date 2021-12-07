@@ -5,7 +5,12 @@ class CustomLogger {
   CustomLogger._();
 
   /// Makes error logging much easier.
-  static void error(Object? e) => log("ERROR", e.toString());
+  static void error(Object? e, {String? stackHint}) => log(
+      "ERROR" +
+          ((stackHint != null)
+              ? " " +stackList[stackHint]["file_path"] + ":" + stackList[stackHint]["line"].toString()
+              : ""),
+      e.toString());
 
   /// Logs a title and a message.
   static void log(String object, dynamic text, {bool save = true}) {
