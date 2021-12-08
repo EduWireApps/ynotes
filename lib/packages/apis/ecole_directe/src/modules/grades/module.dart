@@ -25,6 +25,7 @@ class _GradesModule extends GradesModule<_GradesRepository> {
       grades = await offline.getGrades();
     }
     await setCurrentPeriod();
+    await offline.setCustomFilters(filters);
     await setCurrentFilter();
     fetching = false;
     notifyListeners();

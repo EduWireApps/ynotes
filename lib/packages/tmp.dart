@@ -23,16 +23,16 @@ Future<void> main() async {
   //   print("${s.reason} ${s.date}");
   // }
 
-  final res2 = await api.gradesModule.fetch(online: true);
+  final res2 = await api.gradesModule.fetch(online: false);
   // print("Error: ${res2.error}");
   // for (var g in api.gradesModule.subjects
   //     .firstWhere((e) => e.id == "PHILO")
   //     .grades(api.gradesModule.grades, api.gradesModule.periods.firstWhere((e) => e.id == "A001"))) {
   //   print("${g.name} ${g.value}");
   // }
-  for (var p in api.gradesModule.periods) {
-    print("${p.name} ${p.id}");
-  }
   print(api.gradesModule.currentPeriod?.name);
-  print(api.gradesModule.currentFilter?.name);
+  // print(api.gradesModule
+  //     .calculateAverageFromGrades(api.gradesModule.currentPeriod?.grades(api.gradesModule.grades) ?? []));
+  // print(api.gradesModule.calculateAverageFromGrades(api.gradesModule.periods[0].grades(api.gradesModule.grades)));
+  print(api.gradesModule.calculateAverageFromPeriod(api.gradesModule.periods[0]));
 }

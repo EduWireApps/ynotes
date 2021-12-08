@@ -12,6 +12,8 @@ class SubjectsFilter extends HiveObject {
   final bool custom;
   @HiveField(4)
   final String id;
+  List<Subject> subjects(List<Subject> s) =>
+      subjectsIds == null ? s : s.where((subject) => subjectsIds!.contains(subject.id)).toList();
 
   SubjectsFilter(
       {required this.name, required this.color, required this.subjectsIds, required this.custom, required this.id});

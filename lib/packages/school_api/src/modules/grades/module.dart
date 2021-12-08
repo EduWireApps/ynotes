@@ -50,9 +50,9 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
       if (offlineFilter != null) {
         currentFilter = offlineFilter;
         notifyListeners();
-        return;
+      } else {
+        currentFilter = filters[0];
       }
-      currentFilter = filters[0];
     } else {
       currentFilter = filter;
     }
@@ -60,25 +60,36 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     notifyListeners();
   }
 
-  double calculateAverage(List<double> numerators, List<double> denominators) {
+  double calculateAverage(List<double> values, List<double> coefficients) {
+    if (values.isEmpty) return double.nan;
     double n = 0;
     double d = 0;
-    for (int i = 0; i < numerators.length; i++) {
-      n += numerators[i] * denominators[i];
-      d += denominators[i];
+    for (int i = 0; i < values.length; i++) {
+      n += values[i] * coefficients[i];
+      d += coefficients[i];
     }
-    return n / d;
+    if (d == 0) return 0;
+    return (n / d).asFixed(2);
   }
 
   double calculateAverageFromGrades(List<Grade> grades) {
-    List<double> numerators = [];
-    List<double> denominators = [];
+    List<double> values = [];
+    List<double> coefficients = [];
     for (Grade grade in grades) {
-      numerators.add(grade.value);
-      denominators.add(grade.coefficient);
+      values.add(grade.realValue);
+      coefficients.add(grade.coefficient);
     }
-    return calculateAverage(numerators, denominators);
+    return calculateAverage(values, coefficients);
   }
+
+  double calculateAverageFromSubjects(List<Subject> subjects, [Period? period]) {
+    final List<List<Grade>> _grades = subjects.map((e) => e.grades(grades, period)).toList();
+    final List<double> values = _grades.map((e) => calculateAverageFromGrades(e)).toList();
+    final List<double> coefficients = subjects.map((e) => e.coefficient).toList();
+    return calculateAverage(values, coefficients);
+  }
+
+  double calculateAverageFromPeriod(Period period) => calculateAverageFromSubjects(subjects, period);
 
   @override
   Future<void> reset({bool offline = false}) async {

@@ -8,6 +8,7 @@ class OfflineGrades extends OfflineModel {
   static const String periodsKey = "periods";
   static const String subjectsKey = "subjects";
   static const String gradesKey = "grades";
+  static const String customFiltersKey = "customFilters";
 
   Future<String?> getCurrentPeriodId() async {
     return (box?.get(currentPeriodKey) as String?);
@@ -47,5 +48,13 @@ class OfflineGrades extends OfflineModel {
 
   Future<void> setGrades(List<Grade> grades) async {
     box?.put(gradesKey, grades);
+  }
+
+  Future<List<SubjectsFilter>> getCustomFilters() async {
+    return (box?.get(customFiltersKey) as List<dynamic>?)?.map<SubjectsFilter>((e) => e).toList() ?? [];
+  }
+
+  Future<void> setCustomFilters(List<SubjectsFilter> filters) async {
+    box?.put(customFiltersKey, filters);
   }
 }

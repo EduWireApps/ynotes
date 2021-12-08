@@ -10,6 +10,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/utils/app_colors.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/packages/school_api_models/school_api_models.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes/packages/shared/shared.dart';

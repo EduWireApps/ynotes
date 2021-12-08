@@ -28,6 +28,7 @@ class Grade {
   final String subjectId;
   @HiveField(13)
   final String periodId;
+  double get realValue => 20 * value / outOf;
 
   Grade(
       {required this.name,

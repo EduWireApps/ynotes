@@ -57,3 +57,7 @@ extension HexColor on Color {
 extension StringToDouble on String {
   double? toDouble() => double.tryParse(replaceAll(",", "."));
 }
+
+extension DoubleToFixed on double {
+  double asFixed(int length) => double.parse(toStringAsFixed(length));
+}
