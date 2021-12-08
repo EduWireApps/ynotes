@@ -35,4 +35,10 @@ Future<void> main() async {
   //     .calculateAverageFromGrades(api.gradesModule.currentPeriod?.grades(api.gradesModule.grades) ?? []));
   // print(api.gradesModule.calculateAverageFromGrades(api.gradesModule.periods[0].grades(api.gradesModule.grades)));
   print(api.gradesModule.calculateAverageFromPeriod(api.gradesModule.periods[0]));
+  final res3 = await api.emailsModule.fetch(online: true);
+  print("Error: ${res3.error}");
+  print(api.emailsModule.emailsReceived.length);
+  print(api.emailsModule.emailsReceived.last.subject);
+  print(api.emailsModule.emailsSent.first.subject);
+  print(api.emailsModule.recipients.first.fullName);
 }

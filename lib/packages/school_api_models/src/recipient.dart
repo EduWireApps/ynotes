@@ -8,7 +8,7 @@ class Recipient {
   final String firstName;
   @HiveField(2)
   final String lastName;
-  String get fullName => '$firstName $lastName';
+  String get fullName => '$civility $firstName $lastName';
   @HiveField(3)
   final String civility;
   @HiveField(4)

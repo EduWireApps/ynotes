@@ -1,7 +1,6 @@
 library school_api;
 
 import 'dart:convert';
-import 'dart:html';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/foundation.dart';

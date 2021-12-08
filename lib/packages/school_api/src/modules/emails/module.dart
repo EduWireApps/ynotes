@@ -9,10 +9,10 @@ abstract class EmailsModule<R extends Repository> extends Module<R, OfflineEmail
             api: api,
             offline: OfflineEmails());
 
-  List<dynamic> emailsSent = [];
-  List<dynamic> recipients = [];
-  List<dynamic> emailsReceived = [];
-  List<dynamic> favoriteEmails = [];
+  List<Email> emailsSent = [];
+  List<Email> emailsReceived = [];
+  List<Email> favoriteEmails = [];
+  List<Recipient> recipients = [];
 
 // TODO: set right types
   Future<void> read(int id) async {

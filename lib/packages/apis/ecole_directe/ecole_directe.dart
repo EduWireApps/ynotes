@@ -18,12 +18,12 @@ part 'src/utils.dart';
 // GRADES MODULE
 part 'src/modules/grades/module.dart';
 part 'src/modules/grades/repository.dart';
-part 'src/modules/grades/providers.dart';
+part 'src/modules/grades/provider.dart';
 
 // SCHOOL LIFE MODULE
 part 'src/modules/school_life/module.dart';
 part 'src/modules/school_life/repository.dart';
-part 'src/modules/school_life/providers.dart';
+part 'src/modules/school_life/provider.dart';
 
 // AUTH MODULE
 part 'src/modules/auth/module.dart';
@@ -33,4 +33,4 @@ part 'src/modules/auth/providers.dart';
 // EMAILS MODULE
 part 'src/modules/emails/module.dart';
 part 'src/modules/emails/repository.dart';
-part 'src/modules/emails/providers.dart';
+part 'src/modules/emails/provider.dart';
