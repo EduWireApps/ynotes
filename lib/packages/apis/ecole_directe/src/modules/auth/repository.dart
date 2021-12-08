@@ -7,6 +7,23 @@ class _AuthRepository extends Repository {
   _AuthRepository(SchoolApi api) : super(api);
 
   Future<Response<Map<String, dynamic>>> login(Map<String, String> body) async {
+    String encodeData(String data) {
+      final List<List<String>> chars = [
+        ["%", "%25"],
+        ["&", "%26"],
+        ["+", "%2B"],
+        ["\\", "\\\\"],
+        ["\"", "\\\""],
+      ];
+      for (var i = 0; i < chars.length; i++) {
+        data = data.replaceAll(chars[i][0], chars[i][1]);
+      }
+      return data;
+    }
+
+    for (String k in body.keys) {
+      body[k] = encodeData(body[k]!);
+    }
     final res = await authProvider.get(body);
     if (res.error != null) {
       return Response(error: res.error);

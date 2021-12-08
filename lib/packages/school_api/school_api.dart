@@ -1,6 +1,7 @@
 library school_api;
 
 import 'dart:convert';
+import 'dart:html';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/foundation.dart';
@@ -34,6 +35,11 @@ part 'src/modules/auth/offline.dart';
 // GRADES MODULE
 part 'src/modules/grades/module.dart';
 part 'src/modules/grades/offline.dart';
+
 // SCHOOL LIFE MDOULE
 part 'src/modules/school_life/module.dart';
 part 'src/modules/school_life/offline.dart';
+
+// EMAILS MODULE
+part 'src/modules/emails/module.dart';
+part 'src/modules/emails/offline.dart';

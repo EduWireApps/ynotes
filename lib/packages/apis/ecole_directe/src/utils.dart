@@ -21,9 +21,14 @@ Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
     headers!["Content-type"] = "text/plain";
     final res = await http.post(Uri.parse("$_baseUrl$url"), headers: headers, body: _body);
     if (res.statusCode == 200) {
-      final String body = _decodeBody(res);
-      final Map<String, dynamic> json = jsonDecode(body);
+      final String resBody = _decodeBody(res);
+      final Map<String, dynamic> json = jsonDecode(resBody);
       if (json["code"] != 200) {
+        if (json["message"] == "Token invalide !") {
+          // TODO: load credentials
+          await api.authModule.login(username: "", password: "");
+          return await _request(api, url: url, body: body, headers: headers, auth: false);
+        }
         return Response(error: json["message"]);
       }
       return Response(data: json);
