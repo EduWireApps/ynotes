@@ -14,30 +14,39 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
   List<Subject> subjects = [];
   Period? currentPeriod;
   SubjectsFilter? currentFilter;
+  List<SubjectsFilter> customFilters = [];
+  List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
+  late final List<SubjectsFilter> _defaultFilters = [
+    SubjectsFilter(name: "Toutes matières", color: AppColors.blue, subjectsIds: null, custom: false, id: "all")
+  ];
 
   Future<void> setCurrentPeriod({Period? period}) async {
     if (period == null) {
-      final Period? offlinePeriod = await offline.getCurrentPeriod();
+      final String? periodId = await offline.getCurrentPeriodId();
+      final Period? offlinePeriod = periodId == null ? null : periods.firstWhereOrNull((e) => e.id == periodId);
       if (offlinePeriod != null) {
         currentPeriod = offlinePeriod;
         notifyListeners();
-        return;
+      } else {
+        final DateTime now = DateTime.now();
+        currentPeriod = periods.firstWhereOrNull((period) =>
+            now.isAfter(period.startDate) &&
+            (now.isBefore(period.endDate) ||
+                (now.year == period.endDate.year &&
+                    now.month == period.endDate.month &&
+                    now.day == period.endDate.day)));
       }
-      final DateTime now = DateTime.now();
-      currentPeriod = periods.firstWhereOrNull((period) =>
-          now.isAfter(period.startDate) &&
-          (now.isBefore(period.endDate) ||
-              (now.year == period.endDate.year && now.month == period.endDate.month && now.day == period.endDate.day)));
     } else {
       currentPeriod = period;
     }
-    await offline.setCurrentPeriod(currentPeriod);
+    await offline.setCurrentPeriodId(currentPeriod?.id);
     notifyListeners();
   }
 
   Future<void> setCurrentFilter({SubjectsFilter? filter}) async {
     if (filter == null) {
-      final SubjectsFilter? offlineFilter = await offline.getCurrentFilter();
+      final String? filterId = await offline.getCurrentFilterId();
+      final SubjectsFilter? offlineFilter = filterId == null ? null : filters.firstWhereOrNull((e) => e.id == filterId);
       if (offlineFilter != null) {
         currentFilter = offlineFilter;
         notifyListeners();
@@ -47,18 +56,9 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     } else {
       currentFilter = filter;
     }
-    await offline.setCurrentFilter(currentFilter);
+    await offline.setCurrentFilterId(currentFilter?.id);
     notifyListeners();
   }
-
-  late List<SubjectsFilter> filters = [..._defaultFilters];
-  late final List<SubjectsFilter> _defaultFilters = [
-    SubjectsFilter(
-        name: "Toutes matières",
-        color: AppColors.blue,
-        subjects: HiveList(offline.box!, objects: subjects),
-        custom: false)
-  ];
 
   double calculateAverage(List<double> numerators, List<double> denominators) {
     double n = 0;
@@ -85,7 +85,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     grades = [];
     periods = [];
     subjects = [];
-    filters = [];
+    customFilters = [];
     currentPeriod = null;
     await super.reset(offline: offline);
   }

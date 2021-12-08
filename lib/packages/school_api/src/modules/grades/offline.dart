@@ -9,20 +9,20 @@ class OfflineGrades extends OfflineModel {
   static const String subjectsKey = "subjects";
   static const String gradesKey = "grades";
 
-  Future<Period?> getCurrentPeriod() async {
-    return (box?.get(currentPeriodKey) as Period?);
+  Future<String?> getCurrentPeriodId() async {
+    return (box?.get(currentPeriodKey) as String?);
   }
 
-  Future<void> setCurrentPeriod(Period? period) async {
-    box?.put(currentPeriodKey, period);
+  Future<void> setCurrentPeriodId(String? periodId) async {
+    box?.put(currentPeriodKey, periodId);
   }
 
-  Future<SubjectsFilter?> getCurrentFilter() async {
-    return (box?.get(currentFilterKey) as SubjectsFilter?);
+  Future<String?> getCurrentFilterId() async {
+    return (box?.get(currentFilterKey) as String?);
   }
 
-  Future<void> setCurrentFilter(SubjectsFilter? filter) async {
-    box?.put(currentFilterKey, filter);
+  Future<void> setCurrentFilterId(String? filterId) async {
+    box?.put(currentFilterKey, filterId);
   }
 
   Future<List<Period>> getPeriods() async {

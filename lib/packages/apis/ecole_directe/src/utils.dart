@@ -34,3 +34,14 @@ Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
 
 String parseHtml(String str) =>
     html_parser.parse(str).documentElement!.text.replaceAll("\n\n", ". ").replaceAll("\n", "");
+
+List<X> getDifference<X>(List<X> x, List<X> y) {
+  final int lx = x.length;
+  final int ly = y.length;
+  if (lx == ly) {
+    return [];
+  }
+  final List<X> l1 = lx > ly ? x : y;
+  final List<X> l2 = lx > ly ? y : x;
+  return l1.toSet().difference(l2.toSet()).toList();
+}
