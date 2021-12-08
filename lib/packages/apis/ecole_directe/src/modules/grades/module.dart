@@ -15,7 +15,12 @@ class _GradesModule extends GradesModule<_GradesRepository> {
       }
       periods = res.data!["periods"];
       subjects = res.data!["subjects"];
-      grades = res.data!["grades"];
+      final List<Grade> _grades = res.data!["grades"];
+      if (_grades.length > grades.length) {
+        final List<Grade> newGrades = _grades.toSet().difference(grades.toSet()).toList();
+        // TODO: trigger notification
+      }
+      grades = _grades;
       await offline.setPeriods(periods);
       await offline.setSubjects(subjects);
       await offline.setGrades(grades);

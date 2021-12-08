@@ -335,3 +335,104 @@ class SubjectAdapter extends TypeAdapter<Subject> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class EmailAdapter extends TypeAdapter<Email> {
+  @override
+  final int typeId = 7;
+
+  @override
+  Email read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Email(
+      id: fields[0] as String,
+      read: fields[1] as bool,
+      sender: fields[2] as String,
+      subject: fields[3] as String,
+      date: fields[4] as DateTime,
+      content: fields[5] as String?,
+      files: (fields[6] as List).cast<dynamic>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Email obj) {
+    writer
+      ..writeByte(7)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.read)
+      ..writeByte(2)
+      ..write(obj.sender)
+      ..writeByte(3)
+      ..write(obj.subject)
+      ..writeByte(4)
+      ..write(obj.date)
+      ..writeByte(5)
+      ..write(obj.content)
+      ..writeByte(6)
+      ..write(obj.files);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EmailAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class RecipientAdapter extends TypeAdapter<Recipient> {
+  @override
+  final int typeId = 8;
+
+  @override
+  Recipient read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Recipient(
+      id: fields[0] as String,
+      firstName: fields[1] as String,
+      lastName: fields[2] as String,
+      civility: fields[3] as String,
+      headTeacher: fields[4] as bool,
+      subjects: (fields[5] as List).cast<String>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Recipient obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.firstName)
+      ..writeByte(2)
+      ..write(obj.lastName)
+      ..writeByte(3)
+      ..write(obj.civility)
+      ..writeByte(4)
+      ..write(obj.headTeacher)
+      ..writeByte(5)
+      ..write(obj.subjects);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RecipientAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

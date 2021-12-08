@@ -22,6 +22,8 @@ part 'src/grade.dart';
 part 'src/subjects_filter.dart';
 part 'src/period.dart';
 part 'src/subject.dart';
+part 'src/email.dart';
+part 'src/recipient.dart';
 
 part 'src/internal/adapters.dart';
 part 'src/internal/hive.dart';

@@ -14,12 +14,23 @@ import 'package:html/parser.dart' as html_parser;
 
 part 'src/api.dart';
 part 'src/utils.dart';
+
+// GRADES MODULE
 part 'src/modules/grades/module.dart';
 part 'src/modules/grades/repository.dart';
 part 'src/modules/grades/providers.dart';
+
+// SCHOOL LIFE MODULE
 part 'src/modules/school_life/module.dart';
 part 'src/modules/school_life/repository.dart';
 part 'src/modules/school_life/providers.dart';
+
+// AUTH MODULE
 part 'src/modules/auth/module.dart';
 part 'src/modules/auth/repository.dart';
 part 'src/modules/auth/providers.dart';
+
+// EMAILS MODULE
+part 'src/modules/emails/module.dart';
+part 'src/modules/emails/repository.dart';
+part 'src/modules/emails/providers.dart';

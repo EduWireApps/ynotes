@@ -23,4 +23,7 @@ class EcoleDirecteApi extends SchoolApi implements SchoolApiModules {
   @override
   late SchoolLifeModule schoolLifeModule =
       _SchoolLifeModule(this, isSupported: true, isAvailable: modulesAvailability.grades);
+
+  @override
+  late EmailsModule emailsModule = _EmailsModule(this, isSupported: true, isAvailable: modulesAvailability.emails);
 }

@@ -10,4 +10,6 @@ class _HiveTypeIds {
   static const int subject = 4;
   static const int subjectsFilter = 5;
   static const int ytcolor = 6;
+  static const int email = 7;
+  static const int recipient = 8;
 }
