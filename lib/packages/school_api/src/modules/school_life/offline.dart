@@ -3,22 +3,22 @@ part of school_api;
 class OfflineSchoolLife extends OfflineModel {
   OfflineSchoolLife() : super('schoolLife');
 
-  static const String ticketsKey = "tickets";
-  static const String sanctionsKey = "sanctions";
+  static const String _ticketsKey = "tickets";
+  static const String _sanctionsKey = "sanctions";
 
   Future<List<SchoolLifeTicket>> getTickets() async {
-    return (box?.get(ticketsKey) as List<dynamic>?)?.map<SchoolLifeTicket>((e) => e).toList() ?? [];
+    return (box?.get(_ticketsKey) as List<dynamic>?)?.map<SchoolLifeTicket>((e) => e).toList() ?? [];
   }
 
   Future<void> setTickets(List<SchoolLifeTicket> tickets) async {
-    await box?.put(ticketsKey, tickets);
+    await box?.put(_ticketsKey, tickets);
   }
 
   Future<List<SchoolLifeSanction>> getSanctions() async {
-    return (box?.get(sanctionsKey) as List<dynamic>?)?.map<SchoolLifeSanction>((e) => e).toList() ?? [];
+    return (box?.get(_sanctionsKey) as List<dynamic>?)?.map<SchoolLifeSanction>((e) => e).toList() ?? [];
   }
 
   Future<void> setSanctions(List<SchoolLifeSanction> sanctions) async {
-    await box?.put(sanctionsKey, sanctions);
+    await box?.put(_sanctionsKey, sanctions);
   }
 }

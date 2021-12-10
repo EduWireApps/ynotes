@@ -13,7 +13,7 @@ class Email {
   @HiveField(4)
   final DateTime date;
   @HiveField(5)
-  final String? content;
+  String? content;
   @HiveField(6)
   final List<dynamic> files;
 
