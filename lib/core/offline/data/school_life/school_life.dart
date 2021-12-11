@@ -12,7 +12,7 @@ class SchoolLifeOffline {
       return parent.offlineBox?.get("schoolLife")?.cast<SchoolLifeTicket>();
     } catch (e) {
       CustomLogger.log("SCHOOL LIFE", "An error occured while returning tickets");
-      CustomLogger.error(e, stackHint:"Njc=");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -25,7 +25,7 @@ class SchoolLifeOffline {
       await parent.offlineBox?.put("schoolLife", newData);
     } catch (e) {
       CustomLogger.log("SCHOOL LIFE", "An error occured while updating tickets");
-      CustomLogger.error(e, stackHint:"Njg=");
+      CustomLogger.error(e);
     }
   }
 }

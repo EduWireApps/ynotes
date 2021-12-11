@@ -13,7 +13,7 @@ class HomeworkOffline {
       return (parent.homeworkBox?.values.toList().cast<Homework>());
     } catch (e) {
       CustomLogger.log("HOMEWORK", "An error occured while returning homework");
-      CustomLogger.error(e, stackHint:"NTU=");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -25,7 +25,7 @@ class HomeworkOffline {
           .toList();
     } catch (e) {
       CustomLogger.log("HOMEWORK", "An error occured while returning homework");
-      CustomLogger.error(e, stackHint:"NTY=");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -71,7 +71,7 @@ class HomeworkOffline {
       await parent.homeworkBox?.addAll(newHomeworks);
     } catch (e) {
       CustomLogger.log("HOMEWORK", "An error occured while updating homework");
-      CustomLogger.error(e, stackHint:"NTc=");
+      CustomLogger.error(e);
     }
   }
 

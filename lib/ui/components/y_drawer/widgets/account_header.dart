@@ -23,22 +23,20 @@ class _AccountHeaderState extends State<AccountHeader> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${account?.name ?? ''} ${account?.surname ?? ''}",
-                      style: TextStyle(
-                          color: theme.colors.primary.foregroundColor, fontSize: 20, fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      "${account?.schoolName ?? ''} · ${account?.studentClass ?? ''}",
-                      style: TextStyle(
-                          color: theme.colors.primary.foregroundColor, fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${account?.name ?? ''} ${account?.surname ?? ''}",
+                    style: TextStyle(
+                        color: theme.colors.primary.foregroundColor, fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    "${account?.schoolName ?? ''} · ${account?.studentClass ?? ''}",
+                    style: TextStyle(
+                        color: theme.colors.primary.foregroundColor, fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
               Icon(Icons.chevron_right_rounded, size: YScale.s6, color: theme.colors.primary.foregroundColor)
             ],

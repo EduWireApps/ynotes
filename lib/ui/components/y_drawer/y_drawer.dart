@@ -36,13 +36,7 @@ class _YDrawerState extends State<YDrawer> {
     }
 
     final List<_SpecialRoute> specialRoutes = [
-      _SpecialRoute(
-          title: "Faire un retour",
-          icon: MdiIcons.forum,
-          onTap: () {
-            Scaffold.of(context).openEndDrawer();
-            BugReportUtils.report();
-          }),
+      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => BugReportUtils.report()),
       _SpecialRoute(title: "Paramètres", icon: Icons.settings, onTap: () => Navigator.pushNamed(context, "/settings")),
     ];
 

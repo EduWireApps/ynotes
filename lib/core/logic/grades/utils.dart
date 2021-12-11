@@ -19,11 +19,7 @@ class GradesUtils {
           averages.add(_average);
         }
       } catch (e) {
-<<<<<<< HEAD
         CustomLogger.log("ERREUR TEST", e);
-=======
-        CustomLogger.error(e, stackHint:"MjM=");
->>>>>>> 681e6160c7e6a0ea609199fa469f2dd6274e4be0
       }
     });
 

@@ -123,7 +123,7 @@ class LoginController extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MzI=");
+      CustomLogger.error(e);
     }
   }
 

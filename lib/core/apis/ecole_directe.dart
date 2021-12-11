@@ -210,7 +210,7 @@ class APIEcoleDirecte extends API {
             appSys.account = EcoleDirecteAccountConverter.account.convert(req);
           } catch (e) {
             CustomLogger.log("ED", "Impossible to get accounts " + e.toString());
-            CustomLogger.error(e, stackHint:"MA==");
+            CustomLogger.error(e);
           }
 
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
@@ -315,7 +315,7 @@ class APIEcoleDirecte extends API {
       CustomLogger.log("ED", "Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MQ==");
+      CustomLogger.error(e);
       return null;
     }
   }
