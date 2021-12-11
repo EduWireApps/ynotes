@@ -8,6 +8,12 @@
             "name": "Flutter",
             "request": "launch",
             "type": "dart",
+            "osx": {
+                "args": [
+                    "--flavor",
+                    "dev"
+                ]
+            },
             "windows": {
                 "args": [
                     "--flavor",
