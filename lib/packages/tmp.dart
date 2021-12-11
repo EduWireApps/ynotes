@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ynotes/packages/apis/ecole_directe/ecole_directe.dart';
+import 'package:ynotes/packages/school_api_models/school_api_models.dart';
 
 const String username = 'aaa';
 const String password = 'aaa';
@@ -37,11 +38,22 @@ Future<void> main() async {
   // print(api.gradesModule.calculateAverageFromPeriod(api.gradesModule.periods[0]));
   final res3 = await api.emailsModule.fetch(online: true);
   print("Error: ${res3.error}");
-  print(api.emailsModule.emailsReceived.length);
-  print(api.emailsModule.emailsReceived.first.subject);
-  print(api.emailsModule.emailsReceived.first.content);
-  final res4 = await api.emailsModule.read(api.emailsModule.emailsReceived.first);
-  print("Error: ${res4.error}");
-  print(api.emailsModule.emailsReceived.first.subject);
-  print(api.emailsModule.emailsReceived.first.content);
+  // print(api.emailsModule.emailsReceived.length);
+  // print(api.emailsModule.emailsReceived.first.subject);
+  // print(api.emailsModule.emailsReceived.first.content);
+  // final res4 = await api.emailsModule.read(api.emailsModule.emailsReceived.first);
+  // print("Error: ${res4.error}");
+  // print(api.emailsModule.emailsReceived.first.subject);
+  // print(api.emailsModule.emailsReceived.first.content);
+  // print(api.emailsModule.recipients.firstWhere((e) => e.lastName == "CUEILLE").fullName);
+  print(api.emailsModule.emailsSent.length);
+  final Email emailToSend = Email.toSend(
+      subject: "TEST 6",
+      content: "body test",
+      to: [api.emailsModule.recipients.firstWhere((e) => e.lastName == "CUEILLE")]);
+  final res5 = await api.emailsModule.send(emailToSend);
+  print("Error: ${res5.error}");
+  // print(res5.data);
+  print(api.emailsModule.emailsSent.length);
+  // print(api.emailsModule.emailsSent.last.subject);
 }

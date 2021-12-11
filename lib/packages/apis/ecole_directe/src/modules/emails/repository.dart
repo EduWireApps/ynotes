@@ -77,4 +77,41 @@ class _EmailsRepository extends Repository {
     final String decoded = utf8.decode(base64.decode((res.data!["data"]["content"] as String).replaceAll("\n", "")));
     return Response(data: decoded);
   }
+
+  Future<Response<void>> sendEmail(Email email) async {
+    final String content = base64Encode(utf8.encode(HtmlCharacterEntities.encode(email.content!,
+        characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
+    final Map<String, dynamic> body = {
+      "anneeMessages": "",
+      "message": {
+        "content": content,
+        "subject": email.subject,
+        "brouillon": false,
+        "files": [],
+        "groupesDestinataires": [
+          {
+            "destinataires": email.to
+                .map((e) => {
+                      "to_cc_cci": "to",
+                      "type": "P",
+                      "id": int.parse(e.id),
+                      "isSelected": true,
+                      "nom": e.lastName,
+                      "prenom": e.firstName,
+                      "fonction": {"id": 0, "libelle": ""},
+                      "classe": {"id": 0, "libelle": "", "code": ""},
+                      "classes": [],
+                      "responsable": {"id": 0, "typeResp": "", "versQui": "", "contacts": []}
+                    })
+                .toList(),
+          }
+        ],
+      }
+    };
+    final res = await emailsProvider.sendEmail(body);
+    if (res.error != null) {
+      return Response(error: res.error);
+    }
+    return const Response();
+  }
 }

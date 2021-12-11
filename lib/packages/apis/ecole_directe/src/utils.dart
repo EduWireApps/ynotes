@@ -1,6 +1,6 @@
 part of ecole_directe;
 
-String _encodeBody(Map<String, String>? body, [String? token]) {
+String _encodeBody(Map<String, dynamic>? body, [String? token]) {
   body ??= {};
   if (token != null) {
     body['token'] = token;
@@ -11,7 +11,7 @@ String _encodeBody(Map<String, String>? body, [String? token]) {
 String _decodeBody(http.Response res) => const Utf8Decoder().convert(res.bodyBytes);
 
 Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
-    {required String url, Map<String, String>? body, Map<String, String>? headers, bool auth = true}) async {
+    {required String url, Map<String, dynamic>? body, Map<String, String>? headers, bool auth = true}) async {
   if (auth && !api.authModule.authenticated) {
     return const Response(error: "Not authenticated");
   }

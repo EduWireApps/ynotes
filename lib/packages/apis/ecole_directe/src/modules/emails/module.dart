@@ -13,14 +13,14 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
       if (res.error != null) return res;
       final List<Email> _emailsReceived = res.data!["emailsReceived"];
       if (_emailsReceived.length > emailsReceived.length) {
-        final List<Email> newEmails = _emailsReceived.toSet().difference(emailsReceived.toSet()).toList();
+        final List<Email> newEmails = _emailsReceived.sublist(emailsReceived.length);
         // TODO: foreach: trigger notifications
         emailsReceived.addAll(newEmails);
         await offline.setEmailsReceived(emailsReceived);
       }
       final List<Email> _emailsSent = res.data!["emailsSent"];
       if (_emailsSent.length > emailsSent.length) {
-        final List<Email> newEmails = _emailsSent.toSet().difference(emailsSent.toSet()).toList();
+        final List<Email> newEmails = _emailsSent.sublist(emailsSent.length);
         emailsSent.addAll(newEmails);
         await offline.setEmailsSent(emailsSent);
       }
@@ -36,6 +36,7 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
       recipients = await offline.getRecipients();
     }
     final List<String> favoriteEmailsIds = await offline.getFavoriteEmailsIds();
+    favoriteEmails = [...emailsReceived, ...emailsSent].where((email) => favoriteEmailsIds.contains(email.id)).toList();
     fetching = false;
     notifyListeners();
     return const Response();
@@ -43,7 +44,12 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
 
   @override
   Future<Response<String>> send(Email email) async {
-    return const Response(error: "Not implemented");
+    final res = await repository.sendEmail(email);
+    if (res.error != null) {
+      return Response(error: res.error);
+    }
+    await fetch(online: true);
+    return const Response(data: "Email sent");
   }
   // https://api.ecoledirecte.com/v3/eleves/id/messages.awp?verbe=post
   // example body
@@ -134,6 +140,7 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
 
   @override
   Future<Response<void>> read(Email email) async {
+    if (email.content != null) return const Response();
     final bool received = emailsReceived.contains(email);
     final res = await repository.getEmailContent(email, received);
     if (res.error != null) return res;

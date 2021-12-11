@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
+import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/packages/school_api/school_api.dart';

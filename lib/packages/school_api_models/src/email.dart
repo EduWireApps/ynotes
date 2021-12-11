@@ -29,4 +29,13 @@ class Email {
     this.files = const [],
     required this.to,
   });
+
+  factory Email.toSend({required String subject, required String content, required List<Recipient> to}) => Email(
+      id: "",
+      read: false,
+      from: Recipient(id: "", firstName: "", lastName: "", civility: "", headTeacher: false, subjects: []),
+      subject: subject,
+      content: content,
+      date: DateTime.now(),
+      to: to);
 }
