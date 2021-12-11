@@ -33,7 +33,7 @@ Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
       }
       return Response(data: json);
     }
-    return const Response(error: "En error occured");
+    return Response(error: res.reasonPhrase ?? "Unknown error");
   });
 }
 

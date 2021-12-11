@@ -16,15 +16,15 @@ abstract class EmailsModule<R extends Repository> extends Module<R, OfflineEmail
 
   Future<void> addFavoriteEmail(Email email) async {
     favoriteEmails.add(email);
-    await offline.setFavoriteEmails(favoriteEmails);
+    await offline.setFavoriteEmailsIds(favoriteEmails.map((e) => e.id).toList());
   }
 
   Future<void> removeFavoriteEmail(Email email) async {
     favoriteEmails.remove(email);
-    await offline.setFavoriteEmails(favoriteEmails);
+    await offline.setFavoriteEmailsIds(favoriteEmails.map((e) => e.id).toList());
   }
 
-  Future<Response<String>> read(Email email);
+  Future<Response<void>> read(Email email);
 
   Future<Response<String>> send(Email email);
 

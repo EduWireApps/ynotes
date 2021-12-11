@@ -19,7 +19,14 @@ class _EmailsRepository extends Repository {
         .map<Email>((e) => Email(
             id: (e["id"] as int).toString(),
             read: e["read"],
-            sender: e["from"]["name"],
+            from: Recipient(
+                id: (e["from"]["id"] as int).toString(),
+                firstName: e["from"]["prenom"],
+                lastName: e["from"]["nom"],
+                civility: e["from"]["civilite"],
+                headTeacher: false,
+                subjects: []),
+            to: [],
             subject: e["subject"],
             date: DateTime.parse(e["date"])))
         .toList();
@@ -27,7 +34,22 @@ class _EmailsRepository extends Repository {
         .map<Email>((e) => Email(
             id: (e["id"] as int).toString(),
             read: e["read"],
-            sender: e["from"]["name"],
+            from: Recipient(
+                id: (e["from"]["id"] as int).toString(),
+                firstName: e["from"]["prenom"],
+                lastName: e["from"]["nom"],
+                civility: e["from"]["civilite"],
+                headTeacher: false,
+                subjects: []),
+            to: (e["to"] as List<dynamic>)
+                .map<Recipient>((e) => Recipient(
+                    id: (e["id"] as int).toString(),
+                    firstName: e["prenom"],
+                    lastName: e["nom"],
+                    civility: e["civilite"],
+                    headTeacher: false,
+                    subjects: []))
+                .toList(),
             subject: e["subject"],
             date: DateTime.parse(e["date"])))
         .toList();
@@ -45,5 +67,14 @@ class _EmailsRepository extends Repository {
       "emailsSent": emailsSent..sort((a, b) => a.date.compareTo(b.date)),
       "recipients": recipients..sort((a, b) => a.lastName.compareTo(b.lastName))
     });
+  }
+
+  Future<Response<String>> getEmailContent(Email email, bool received) async {
+    final res = await emailsProvider.getEmailContent(email.id, received);
+    if (res.error != null) {
+      return Response(error: res.error);
+    }
+    final String decoded = utf8.decode(base64.decode((res.data!["data"]["content"] as String).replaceAll("\n", "")));
+    return Response(data: decoded);
   }
 }

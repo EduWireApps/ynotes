@@ -349,24 +349,25 @@ class EmailAdapter extends TypeAdapter<Email> {
     return Email(
       id: fields[0] as String,
       read: fields[1] as bool,
-      sender: fields[2] as String,
+      from: fields[2] as Recipient,
       subject: fields[3] as String,
       date: fields[4] as DateTime,
       content: fields[5] as String?,
       files: (fields[6] as List).cast<dynamic>(),
+      to: (fields[7] as List).cast<Recipient>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Email obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.read)
       ..writeByte(2)
-      ..write(obj.sender)
+      ..write(obj.from)
       ..writeByte(3)
       ..write(obj.subject)
       ..writeByte(4)
@@ -374,7 +375,9 @@ class EmailAdapter extends TypeAdapter<Email> {
       ..writeByte(5)
       ..write(obj.content)
       ..writeByte(6)
-      ..write(obj.files);
+      ..write(obj.files)
+      ..writeByte(7)
+      ..write(obj.to);
   }
 
   @override

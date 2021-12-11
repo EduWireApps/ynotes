@@ -10,9 +10,7 @@ class _GradesModule extends GradesModule<_GradesRepository> {
     notifyListeners();
     if (online) {
       final res = await repository.get();
-      if (res.error != null) {
-        return Response(error: res.error);
-      }
+      if (res.error != null) return res;
       periods = res.data!["periods"];
       subjects = res.data!["subjects"];
       final List<Grade> _grades = res.data!["grades"];

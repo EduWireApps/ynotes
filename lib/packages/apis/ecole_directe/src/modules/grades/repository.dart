@@ -8,9 +8,7 @@ class _GradesRepository extends Repository {
 
   Future<Response<Map<String, dynamic>>> get() async {
     final res = await gradesProvider.get();
-    if (res.error != null) {
-      return Response(error: res.error);
-    }
+    if (res.error != null) return res;
     try {
       final List<Period> periods = res.data!["data"]["periodes"]
           .map<Period>((e) => Period(

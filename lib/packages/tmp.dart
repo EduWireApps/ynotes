@@ -23,22 +23,25 @@ Future<void> main() async {
   //   print("${s.reason} ${s.date}");
   // }
 
-  final res2 = await api.gradesModule.fetch(online: false);
+  // final res2 = await api.gradesModule.fetch(online: false);
   // print("Error: ${res2.error}");
   // for (var g in api.gradesModule.subjects
   //     .firstWhere((e) => e.id == "PHILO")
   //     .grades(api.gradesModule.grades, api.gradesModule.periods.firstWhere((e) => e.id == "A001"))) {
   //   print("${g.name} ${g.value}");
   // }
-  print(api.gradesModule.currentPeriod?.name);
+  // print(api.gradesModule.currentPeriod?.name);
   // print(api.gradesModule
   //     .calculateAverageFromGrades(api.gradesModule.currentPeriod?.grades(api.gradesModule.grades) ?? []));
   // print(api.gradesModule.calculateAverageFromGrades(api.gradesModule.periods[0].grades(api.gradesModule.grades)));
-  print(api.gradesModule.calculateAverageFromPeriod(api.gradesModule.periods[0]));
+  // print(api.gradesModule.calculateAverageFromPeriod(api.gradesModule.periods[0]));
   final res3 = await api.emailsModule.fetch(online: true);
   print("Error: ${res3.error}");
   print(api.emailsModule.emailsReceived.length);
-  print(api.emailsModule.emailsReceived.last.subject);
-  print(api.emailsModule.emailsSent.first.subject);
-  print(api.emailsModule.recipients.first.fullName);
+  print(api.emailsModule.emailsReceived.first.subject);
+  print(api.emailsModule.emailsReceived.first.content);
+  final res4 = await api.emailsModule.read(api.emailsModule.emailsReceived.first);
+  print("Error: ${res4.error}");
+  print(api.emailsModule.emailsReceived.first.subject);
+  print(api.emailsModule.emailsReceived.first.content);
 }

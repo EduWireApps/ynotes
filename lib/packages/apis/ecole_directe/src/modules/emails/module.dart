@@ -10,9 +10,7 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
     notifyListeners();
     if (online) {
       final res = await repository.get();
-      if (res.error != null) {
-        return Response(error: res.error);
-      }
+      if (res.error != null) return res;
       final List<Email> _emailsReceived = res.data!["emailsReceived"];
       if (_emailsReceived.length > emailsReceived.length) {
         final List<Email> newEmails = _emailsReceived.toSet().difference(emailsReceived.toSet()).toList();
@@ -37,7 +35,7 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
       emailsSent = await offline.getEmailsSent();
       recipients = await offline.getRecipients();
     }
-    favoriteEmails = await offline.getFavoriteEmails();
+    final List<String> favoriteEmailsIds = await offline.getFavoriteEmailsIds();
     fetching = false;
     notifyListeners();
     return const Response();
@@ -135,7 +133,20 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
     */
 
   @override
-  Future<Response<String>> read(Email email) async {
-    return const Response(error: "Not implemented");
+  Future<Response<void>> read(Email email) async {
+    final bool received = emailsReceived.contains(email);
+    final res = await repository.getEmailContent(email, received);
+    if (res.error != null) return res;
+    if (received) {
+      emailsReceived.firstWhere((e) => e.id == email.id).read = true;
+      emailsReceived.firstWhere((e) => e.id == email.id).content = res.data!;
+      offline.setEmailsReceived(emailsReceived);
+    } else {
+      emailsSent.firstWhere((e) => e.id == email.id).read = true;
+      emailsSent.firstWhere((e) => e.id == email.id).content = res.data!;
+      offline.setEmailsSent(emailsSent);
+    }
+    notifyListeners();
+    return const Response();
   }
 }

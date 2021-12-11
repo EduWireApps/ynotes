@@ -45,6 +45,8 @@ class Offline {
     Hive.registerAdapter(SubjectAdapter());
     Hive.registerAdapter(ColorAdapter());
     Hive.registerAdapter(YTColorAdapter());
+    Hive.registerAdapter(EmailAdapter());
+    Hive.registerAdapter(RecipientAdapter());
   }
 }
 

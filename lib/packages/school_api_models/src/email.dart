@@ -5,9 +5,9 @@ class Email {
   @HiveField(0)
   final String id;
   @HiveField(1)
-  final bool read;
+  bool read;
   @HiveField(2)
-  final String sender;
+  final Recipient from;
   @HiveField(3)
   final String subject;
   @HiveField(4)
@@ -16,14 +16,17 @@ class Email {
   String? content;
   @HiveField(6)
   final List<dynamic> files;
+  @HiveField(7)
+  final List<Recipient> to;
 
   Email({
     required this.id,
     required this.read,
-    required this.sender,
+    required this.from,
     required this.subject,
     required this.date,
     this.content,
     this.files = const [],
+    required this.to,
   });
 }

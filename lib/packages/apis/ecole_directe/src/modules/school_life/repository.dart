@@ -8,9 +8,7 @@ class _SchoolLifeRepository extends Repository {
 
   Future<Response<Map<String, dynamic>>> get() async {
     final res = await schoolLifeProvider.get();
-    if (res.error != null) {
-      return Response(error: res.error);
-    }
+    if (res.error != null) return res;
     try {
       final List<SchoolLifeTicket> tickets = res.data!["data"]["absencesRetards"]
           .map<SchoolLifeTicket>((e) => SchoolLifeTicket(

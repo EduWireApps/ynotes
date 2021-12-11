@@ -25,9 +25,7 @@ class _AuthRepository extends Repository {
       body[k] = encodeData(body[k]!);
     }
     final res = await authProvider.get(body);
-    if (res.error != null) {
-      return Response(error: res.error);
-    }
+    if (res.error != null) return res;
     try {
       _token = res.data!["token"];
       final Map<String, dynamic> account = res.data!["data"]["accounts"][0];

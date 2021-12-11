@@ -10,9 +10,7 @@ class _SchoolLifeModule extends SchoolLifeModule<_SchoolLifeRepository> {
     notifyListeners();
     if (online) {
       final res = await repository.get();
-      if (res.error != null) {
-        return Response(error: res.error);
-      }
+      if (res.error != null) return res;
       tickets = res.data!["tickets"];
       sanctions = res.data!["sanctions"];
       await offline.setTickets(tickets);

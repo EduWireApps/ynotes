@@ -24,12 +24,12 @@ class OfflineEmails extends OfflineModel {
     await box?.put(_emailsSentKey, emails);
   }
 
-  Future<List<Email>> getFavoriteEmails() async {
-    return (box?.get(_favoriteEmailsKey) as List<dynamic>?)?.map<Email>((e) => e).toList() ?? [];
+  Future<List<String>> getFavoriteEmailsIds() async {
+    return (box?.get(_favoriteEmailsKey) as List<dynamic>?)?.map<String>((e) => e).toList() ?? [];
   }
 
-  Future<void> setFavoriteEmails(List<Email> emails) async {
-    await box?.put(_favoriteEmailsKey, emails);
+  Future<void> setFavoriteEmailsIds(List<String> emailsIds) async {
+    await box?.put(_favoriteEmailsKey, emailsIds);
   }
 
   Future<List<Recipient>> getRecipients() async {
