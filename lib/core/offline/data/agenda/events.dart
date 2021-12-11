@@ -29,7 +29,7 @@ class AgendaEventsOffline {
       CustomLogger.log("EVENTS", "Update offline agenda events (id : $id)");
     } catch (e) {
       CustomLogger.log("EVENTS", "An error occured while updating offline agenda events");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mzg=");
     }
   }
 
@@ -42,7 +42,7 @@ class AgendaEventsOffline {
       }
     } catch (e) {
       CustomLogger.log("EVENTS", "An error occured while returning agenda events for week $week");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mzk=");
       return null;
     }
   }
@@ -66,7 +66,7 @@ class AgendaEventsOffline {
       await parent.agendaBox?.put("agendaEvents", timeTable);
     } catch (e) {
       CustomLogger.log("EVENTS", "An error occured while removing offline agenda events");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NDA=");
     }
   }
 }

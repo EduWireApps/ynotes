@@ -14,6 +14,7 @@ import 'package:ynotes/ui/screens/loading/loading.dart';
 import 'package:ynotes/ui/screens/login/routes.dart';
 import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
 import 'package:ynotes/ui/screens/polls/polls.dart';
+import 'package:ynotes/ui/screens/polls/routes.dart';
 import 'package:ynotes/ui/screens/school_life/routes.dart';
 import 'package:ynotes/ui/screens/settings/routes.dart';
 import 'package:ynotes/ui/screens/terms/terms.dart';
@@ -59,13 +60,14 @@ final List<CustomRoute> routes = [
       page: const DownloadsExplorer(),
       relatedApi: 0,
       tab: appTabs.files),
-  CustomRoute(
-      path: "/polls",
-      icon: MdiIcons.poll,
-      title: "Sondages",
-      page: const PollsPage(),
-      relatedApi: 1,
-      tab: appTabs.polls),
+  ...pollsRoutes
+  // CustomRoute(
+  //     path: "/polls",
+  //     icon: MdiIcons.poll,
+  //     title: "Sondages",
+  //     page: const PollsPage(),
+  //     relatedApi: 1,
+  //     tab: appTabs.polls),
 ];
 
 PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {

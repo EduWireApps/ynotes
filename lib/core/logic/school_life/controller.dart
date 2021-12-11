@@ -28,7 +28,7 @@ class SchoolLifeController extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       CustomLogger.log("SCHOOL LIFE", "An error occured while refreshing");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mjk=");
     }
     _loading = false;
     notifyListeners();

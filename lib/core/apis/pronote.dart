@@ -110,7 +110,7 @@ class APIPronote extends API {
       return listPeriods;
     } catch (e) {
       CustomLogger.log("PRONOTE", "Error while collecting offline periods.");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mg==");
     }
   }
 
@@ -134,7 +134,7 @@ class APIPronote extends API {
       }
     } catch (e) {
       CustomLogger.log("PRONOTE", "Error while getting periods.");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mw==");
     }
   }
 
@@ -209,7 +209,7 @@ class APIPronote extends API {
         final String err = e.toString();
         localClient.stepsLogger.add("❌ Pronote login failed : " + err);
         CustomLogger.log("PRONOTE", "Login failed.");
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"NA==");
         String error = "Une erreur a eu lieu. " + err;
         if (err.contains("invalid url")) {
           error = "L'URL entrée est invalide";

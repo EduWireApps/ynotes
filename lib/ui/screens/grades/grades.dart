@@ -374,7 +374,7 @@ class _GradesPageState extends State<GradesPage> with LayoutMixin {
                                       disciplinesList.periodName ==
                                       model.period);
                             } catch (e) {
-                              CustomLogger.error(e);
+                              CustomLogger.error(e, stackHint:"OTg=");
                             }
 
                             //If everything is ok, show stuff

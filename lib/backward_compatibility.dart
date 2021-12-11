@@ -23,11 +23,12 @@ Future<void> _extRemovalMigration() async {
 
         List<FileSystemEntity>? files = await oldDownloadsDirectory.list().toList();
 
-        if ((files ?? []).isNotEmpty) {
+        if ((files).isNotEmpty) {
           String path = (await FolderAppUtil.getDirectory(downloads: true)).path;
           Future.forEach(files, (FileSystemEntity element) async {
             String? fileName = await FileAppUtil.getFileNameWithExtension(element);
             var result = await Process.run('cp', ['-r', element.path, path + "/"]);
+            print("$fileName $result");
           });
         }
         await KVS.write(key: "migratedOldExtFiles0", value: "true");

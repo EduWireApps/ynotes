@@ -101,7 +101,7 @@ class BackgroundService {
       }
     } catch (e) {
       CustomLogger.log("BACKGROUND", "An error occured while readinf fetch status");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Njk=");
       return false;
     }
   }
@@ -172,7 +172,7 @@ class BackgroundService {
       }
     } catch (e) {
       CustomLogger.log("BACKGROUND", "An error occured while checking new offline mails");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NzA=");
       return null;
     }
   }
