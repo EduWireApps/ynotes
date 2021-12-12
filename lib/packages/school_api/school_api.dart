@@ -4,9 +4,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/utils/app_colors.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
