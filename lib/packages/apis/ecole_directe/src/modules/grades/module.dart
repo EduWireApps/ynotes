@@ -15,6 +15,7 @@ class _GradesModule extends GradesModule<_GradesRepository> {
       subjects = res.data!["subjects"];
       final List<Grade> _grades = res.data!["grades"];
       if (_grades.length > grades.length) {
+        // TODO: check if this really works
         final List<Grade> newGrades = _grades.toSet().difference(grades.toSet()).toList();
         // TODO: trigger notification
       }
