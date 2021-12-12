@@ -6,6 +6,9 @@ class _AuthRepository extends Repository {
 
   _AuthRepository(SchoolApi api) : super(api);
 
+  @override
+  Future<Response<Map<String, dynamic>>> get() async => const Response(error: "Not implemented");
+
   Future<Response<Map<String, dynamic>>> login(Map<String, String> body) async {
     String encodeData(String data) {
       final List<List<String>> chars = [

@@ -17,10 +17,4 @@ class _AuthModule extends AuthModule<_AuthRepository> {
     notifyListeners();
     return const Response();
   }
-
-  @override
-  Future<Response<void>> fetch({bool online = false}) async {
-    // TODO: implement fetch
-    return const Response(error: "Not implemented");
-  }
 }

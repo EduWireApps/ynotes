@@ -5,4 +5,6 @@ abstract class Repository {
   final SchoolApi api;
 
   Repository(this.api);
+
+  Future<Response<Map<String, dynamic>>> get();
 }
