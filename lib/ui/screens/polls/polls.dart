@@ -197,6 +197,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
                 textStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"), onTapUrl: (url) async {
               if (await canLaunch(url)) {
                 await launch(url);
+                return true;
               } else {
                 throw "Unable to launch url";
               }

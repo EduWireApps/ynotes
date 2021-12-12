@@ -1,12 +1,7 @@
-from os import replace
+import base64
 import os.path
 import re
-import base64
-
-
-
-
-
+from os import replace
 
 # README : The goal of this file is to get a list of every files containing a call to CustomLogger.
 # We are then able to get a full stacktrace (with file name and line) at each call of CustomLogger.error()
@@ -57,3 +52,4 @@ def writeInStackList(dic):
 stack_dic = metas()
 writeInStackList(stack_dic)
 stackListExists()
+

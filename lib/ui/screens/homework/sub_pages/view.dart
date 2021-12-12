@@ -12,13 +12,14 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/extensions.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/files_bottom_sheet.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
+
 import '../widgets/add_homework_dialog.dart';
 import '../widgets/homework_reader_options.dart';
 
@@ -381,41 +382,38 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 color: ThemeUtils.textColor(),
                 fontFamily: "Asap",
                 fontSize: (model.settings.user.homeworkPage.fontSize).toDouble(),
-                backgroundColor: Colors.transparent),
-            customStylesBuilder: (element) {
-              if (element.attributes['style'] != null && element.attributes['style']!.contains("background")) {
-                element.attributes['style'] = "";
-                if (ThemeUtils.isThemeDark) {
-                  return {'background': '#CF7545', 'color': 'white'};
-                } else {
-                  return {'background': '#F9DDA7', 'color': 'black'};
-                }
-              }
-              return null;
-            },
-            hyperlinkColor: Colors.blueAccent,
-            customWidgetBuilder: (element) {
-              if (element.attributes['class'] == 'math-tex') {
-                try {
-                  return TeXView(
-                    child: TeXViewDocument(element.text,
-                        style: TeXViewStyle.fromCSS(
-                            """background-color: #${(ThemeUtils.isThemeDark ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
-                  );
-                } catch (e) {
-                  return Container();
-                }
-              }
+                backgroundColor: Colors.transparent), customStylesBuilder: (element) {
+          if (element.attributes['style'] != null && element.attributes['style']!.contains("background")) {
+            element.attributes['style'] = "";
+            if (ThemeUtils.isThemeDark) {
+              return {'background': '#CF7545', 'color': 'white'};
+            } else {
+              return {'background': '#F9DDA7', 'color': 'black'};
+            }
+          }
+          return null;
+        }, customWidgetBuilder: (element) {
+          if (element.attributes['class'] == 'math-tex') {
+            try {
+              return TeXView(
+                child: TeXViewDocument(element.text,
+                    style: TeXViewStyle.fromCSS(
+                        """background-color: #${(ThemeUtils.isThemeDark ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
+              );
+            } catch (e) {
+              return Container();
+            }
+          }
 
-              return null;
-            },
-            onTapUrl: (url) async {
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
-                throw "Unable to launch url";
-              }
-            });
+          return null;
+        }, onTapUrl: (url) async {
+          if (await canLaunch(url)) {
+            await launch(url);
+            return true;
+          } else {
+            return false;
+          }
+        });
       }),
     );
   }
