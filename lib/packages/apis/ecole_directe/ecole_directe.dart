@@ -35,3 +35,8 @@ part 'src/modules/auth/providers.dart';
 part 'src/modules/emails/module.dart';
 part 'src/modules/emails/repository.dart';
 part 'src/modules/emails/provider.dart';
+
+// HOMEWORK MODULE
+part 'src/modules/homework/module.dart';
+part 'src/modules/homework/repository.dart';
+part 'src/modules/homework/provider.dart';

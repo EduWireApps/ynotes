@@ -21,20 +21,20 @@ abstract class EmailsModule<R extends Repository> extends Module<R, OfflineEmail
     if (online) {
       final res = await repository.get();
       if (res.error != null) return res;
-      final List<Email> _emailsReceived = res.data!["emailsReceived"];
+      final List<Email> _emailsReceived = res.data!["emailsReceived"] ?? [];
       if (_emailsReceived.length > emailsReceived.length) {
         final List<Email> newEmails = _emailsReceived.sublist(emailsReceived.length);
         // TODO: foreach: trigger notifications
         emailsReceived.addAll(newEmails);
         await offline.setEmailsReceived(emailsReceived);
       }
-      final List<Email> _emailsSent = res.data!["emailsSent"];
+      final List<Email> _emailsSent = res.data!["emailsSent"] ?? [];
       if (_emailsSent.length > emailsSent.length) {
         final List<Email> newEmails = _emailsSent.sublist(emailsSent.length);
         emailsSent.addAll(newEmails);
         await offline.setEmailsSent(emailsSent);
       }
-      final List<Recipient> _recipients = res.data!["recipients"];
+      final List<Recipient> _recipients = res.data!["recipients"] ?? [];
       if (_recipients.length > recipients.length) {
         final List<Recipient> newRecipients = _recipients.toSet().difference(recipients.toSet()).toList();
         recipients.addAll(newRecipients);
@@ -64,7 +64,7 @@ abstract class EmailsModule<R extends Repository> extends Module<R, OfflineEmail
 
   Future<Response<void>> read(Email email);
 
-  Future<Response<String>> send(Email email);
+  Future<Response<void>> send(Email email);
 
   @override
   Future<void> reset({bool offline = false}) async {

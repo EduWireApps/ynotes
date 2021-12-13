@@ -55,6 +55,4 @@ Future<void> main() async {
   // print(res5.data);
   // print(api.emailsModule.emailsSent.length);
   // print(api.emailsModule.emailsSent.last.subject);
-  await api.gradesModule.fetch(online: true);
-  print(api.gradesModule.grades);
 }

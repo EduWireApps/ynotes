@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.subjectsFilter)
-class SubjectsFilter extends HiveObject {
+class SubjectsFilter {
   @HiveField(0)
   final String name;
   @HiveField(1)

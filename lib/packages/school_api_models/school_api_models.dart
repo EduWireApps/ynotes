@@ -24,6 +24,7 @@ part 'src/period.dart';
 part 'src/subject.dart';
 part 'src/email.dart';
 part 'src/recipient.dart';
+part 'src/homework.dart';
 
 part 'src/internal/adapters.dart';
 part 'src/internal/hive.dart';

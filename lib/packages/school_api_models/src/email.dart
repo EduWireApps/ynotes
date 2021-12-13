@@ -14,6 +14,7 @@ class Email {
   final DateTime date;
   @HiveField(5)
   String? content;
+  // TODO: handle files
   @HiveField(6)
   final List<dynamic> files;
   @HiveField(7)

@@ -5,13 +5,13 @@ class _EmailsModule extends EmailsModule<_EmailsRepository> {
       : super(isSupported: isSupported, isAvailable: isAvailable, repository: _EmailsRepository(api), api: api);
 
   @override
-  Future<Response<String>> send(Email email) async {
+  Future<Response<void>> send(Email email) async {
     final res = await repository.sendEmail(email);
     if (res.error != null) {
       return Response(error: res.error);
     }
     await fetch(online: true);
-    return const Response(data: "Email sent");
+    return const Response();
   }
 
   @override

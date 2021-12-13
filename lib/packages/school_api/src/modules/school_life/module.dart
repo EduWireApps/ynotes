@@ -20,8 +20,8 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R, OfflineS
     if (online) {
       final res = await repository.get();
       if (res.error != null) return res;
-      tickets = res.data!["tickets"];
-      sanctions = res.data!["sanctions"];
+      tickets = res.data!["tickets"] ?? [];
+      sanctions = res.data!["sanctions"] ?? [];
       await offline.setTickets(tickets);
       await offline.setSanctions(sanctions);
     } else {

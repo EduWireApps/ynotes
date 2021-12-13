@@ -6,6 +6,7 @@ class _SchoolLifeRepository extends Repository {
 
   _SchoolLifeRepository(SchoolApi api) : super(api);
 
+  @override
   Future<Response<Map<String, dynamic>>> get() async {
     final res = await schoolLifeProvider.get();
     if (res.error != null) return res;

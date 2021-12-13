@@ -439,3 +439,64 @@ class RecipientAdapter extends TypeAdapter<Recipient> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class HomeworkAdapter extends TypeAdapter<Homework> {
+  @override
+  final int typeId = 9;
+
+  @override
+  Homework read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Homework(
+      id: fields[0] as String,
+      subjectId: fields[1] as String,
+      content: fields[2] as String?,
+      date: fields[3] as DateTime,
+      entryDate: fields[4] as DateTime,
+      done: fields[5] as bool,
+      due: fields[6] as bool,
+      assessment: fields[7] as bool,
+      pinned: fields[8] as bool,
+      files: (fields[9] as List).cast<dynamic>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Homework obj) {
+    writer
+      ..writeByte(10)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.subjectId)
+      ..writeByte(2)
+      ..write(obj.content)
+      ..writeByte(3)
+      ..write(obj.date)
+      ..writeByte(4)
+      ..write(obj.entryDate)
+      ..writeByte(5)
+      ..write(obj.done)
+      ..writeByte(6)
+      ..write(obj.due)
+      ..writeByte(7)
+      ..write(obj.assessment)
+      ..writeByte(8)
+      ..write(obj.pinned)
+      ..writeByte(9)
+      ..write(obj.files);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HomeworkAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

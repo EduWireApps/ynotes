@@ -27,9 +27,9 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     if (online) {
       final res = await repository.get();
       if (res.error != null) return res;
-      periods = res.data!["periods"];
-      subjects = res.data!["subjects"];
-      final List<Grade> _grades = res.data!["grades"];
+      periods = res.data!["periods"] ?? [];
+      subjects = res.data!["subjects"] ?? [];
+      final List<Grade> _grades = res.data!["grades"] ?? [];
       if (_grades.length > grades.length) {
         // TODO: check if this really works
         final List<Grade> newGrades = _grades.toSet().difference(grades.toSet()).toList();
