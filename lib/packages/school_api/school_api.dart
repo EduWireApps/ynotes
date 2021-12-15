@@ -1,10 +1,12 @@
 library school_api;
 
+import 'dart:async';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:http/http.dart' as http;
 import 'package:ynotes/core/utils/app_colors.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
@@ -45,3 +47,8 @@ part 'src/modules/emails/offline.dart';
 part 'src/modules/homework/module.dart';
 part 'src/modules/homework/offline.dart';
 part 'src/modules/homework/repository.dart';
+
+// DOCUMENTS MODULE
+part 'src/modules/documents/module.dart';
+part 'src/modules/documents/offline.dart';
+part 'src/modules/documents/repository.dart';

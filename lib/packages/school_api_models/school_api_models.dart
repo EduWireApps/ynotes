@@ -3,6 +3,7 @@ library models;
 // flutter packages pub run build_runner build --delete-conflicting-outputs
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
@@ -25,6 +26,7 @@ part 'src/subject.dart';
 part 'src/email.dart';
 part 'src/recipient.dart';
 part 'src/homework.dart';
+part 'src/document.dart';
 
 part 'src/internal/adapters.dart';
 part 'src/internal/hive.dart';

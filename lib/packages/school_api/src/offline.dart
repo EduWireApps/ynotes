@@ -48,11 +48,13 @@ class Offline {
     Hive.registerAdapter(EmailAdapter());
     Hive.registerAdapter(RecipientAdapter());
     Hive.registerAdapter(HomeworkAdapter());
+    Hive.registerAdapter(DocumentAdapter());
   }
 }
 
 abstract class OfflineModel {
   final String key;
+  @protected
   Box? box;
   OfflineModel(this.key);
 

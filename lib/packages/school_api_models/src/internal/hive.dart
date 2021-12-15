@@ -13,4 +13,5 @@ class _HiveTypeIds {
   static const int email = 7;
   static const int recipient = 8;
   static const int homework = 9;
+  static const int document = 10;
 }
