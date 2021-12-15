@@ -6,6 +6,7 @@ class _EmailsRepository extends Repository {
 
   _EmailsRepository(SchoolApi api) : super(api);
 
+  @override
   Future<Response<Map<String, dynamic>>> get() async {
     final res0 = await emailsProvider.getEmails();
     if (res0.error != null) {
@@ -87,8 +88,7 @@ class _EmailsRepository extends Repository {
   }
 
   Future<Response<void>> sendEmail(Email email) async {
-    final String content = base64Encode(utf8.encode(HtmlCharacterEntities.encode(email.content!,
-        characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
+    final String content = encodeContent(email.content!);
     final Map<String, dynamic> body = {
       "anneeMessages": "",
       "message": {

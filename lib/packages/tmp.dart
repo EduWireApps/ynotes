@@ -55,4 +55,16 @@ Future<void> main() async {
   // print(res5.data);
   // print(api.emailsModule.emailsSent.length);
   // print(api.emailsModule.emailsSent.last.subject);
+  // print(api.homeworkModule.homework.length);
+  // final res6 = await api.homeworkModule.fetch(online: true);
+  // print("Error: ${res6.error}");
+  // print(api.homeworkModule.homework.length);
+  for (var h in api.homeworkModule.homework) {
+    print("${h.subjectId} ${h.content}");
+  }
+  // final res7 = await api.homeworkModule.fetch(online: true, date: api.homeworkModule.homework.first.date);
+  // print("Error: ${res7.error}");
+  // for (var h in api.homeworkModule.homework) {
+  //   print("${h.subjectId} ${h.content}");
+  // }
 }

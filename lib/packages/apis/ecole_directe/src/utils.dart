@@ -50,3 +50,8 @@ List<X> getDifference<X>(List<X> x, List<X> y) {
   final List<X> l2 = lx > ly ? y : x;
   return l1.toSet().difference(l2.toSet()).toList();
 }
+
+String encodeContent(String str) => base64Encode(utf8.encode(HtmlCharacterEntities.encode(str,
+    characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
+
+String decodeContent(String str) => HtmlCharacterEntities.decode(utf8.decode(base64Decode(str)));

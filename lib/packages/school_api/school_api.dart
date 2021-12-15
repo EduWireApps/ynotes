@@ -44,3 +44,4 @@ part 'src/modules/emails/offline.dart';
 // HOMEWORK MODULE
 part 'src/modules/homework/module.dart';
 part 'src/modules/homework/offline.dart';
+part 'src/modules/homework/repository.dart';

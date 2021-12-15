@@ -29,6 +29,7 @@ class Grade {
   @HiveField(13)
   final String periodId;
   double get realValue => 20 * value / outOf;
+  // TODO: implement competences
 
   Grade(
       {required this.name,

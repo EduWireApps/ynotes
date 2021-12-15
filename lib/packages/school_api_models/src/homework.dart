@@ -8,7 +8,7 @@ class Homework {
   final String subjectId;
   Subject subject(List<Subject> subjects) => subjects.firstWhere((subject) => subject.id == subjectId);
   @HiveField(2)
-  final String? content;
+  String? content;
   @HiveField(3)
   final DateTime date;
   @HiveField(4)
