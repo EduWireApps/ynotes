@@ -353,7 +353,7 @@ class EmailAdapter extends TypeAdapter<Email> {
       subject: fields[3] as String,
       date: fields[4] as DateTime,
       content: fields[5] as String?,
-      files: (fields[6] as List).cast<dynamic>(),
+      documents: (fields[6] as List).cast<Document>(),
       to: (fields[7] as List).cast<Recipient>(),
     );
   }
@@ -375,7 +375,7 @@ class EmailAdapter extends TypeAdapter<Email> {
       ..writeByte(5)
       ..write(obj.content)
       ..writeByte(6)
-      ..write(obj.files)
+      ..write(obj.documents)
       ..writeByte(7)
       ..write(obj.to);
   }
@@ -460,7 +460,7 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       due: fields[6] as bool,
       assessment: fields[7] as bool,
       pinned: fields[8] as bool,
-      files: (fields[9] as List).cast<dynamic>(),
+      documents: (fields[9] as List).cast<Document>(),
     );
   }
 
@@ -487,7 +487,7 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       ..writeByte(8)
       ..write(obj.pinned)
       ..writeByte(9)
-      ..write(obj.files);
+      ..write(obj.documents);
   }
 
   @override

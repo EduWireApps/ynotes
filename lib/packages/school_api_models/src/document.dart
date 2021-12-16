@@ -8,8 +8,9 @@ class Document {
   final String name;
   @HiveField(2)
   final String type;
-  File get file => File(name);
-  String get content => file.readAsStringSync();
+  // TODO: this is temporary
+  Future<File> file() async => await FileAppUtil.getFilePath(name);
+  Future<String> content() async => (await file()).readAsStringSync();
   @HiveField(3)
   bool saved;
 

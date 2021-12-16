@@ -38,7 +38,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
     if (status == DocumentsModuleStatus.processing) {
       return const Response(error: "Already downloading");
     }
-    final res = await repository.download(document);
+    final res = repository.download(document);
     if (res.error != null) return res;
     status = DocumentsModuleStatus.processing;
     progress = 0.0;
@@ -52,7 +52,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
     dynamic error;
     void onData(List<int> bytes) {
       buffer.addAll(bytes);
-      progress = buffer.length / contentLength;
+      progress = (buffer.length / contentLength * 100).asFixed(2);
       notifyListeners();
     }
 
@@ -60,7 +60,9 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
       progress = 100;
       status = DocumentsModuleStatus.complete;
       notifyListeners();
-      await document.file.writeAsBytes(buffer);
+      await (await document.file()).writeAsBytes(buffer);
+      // TODO: update the document "saved" field
+      // TODO: change the download location
       Timer(const Duration(seconds: 3), () {
         if (status == DocumentsModuleStatus.complete) {
           status = DocumentsModuleStatus.idle;

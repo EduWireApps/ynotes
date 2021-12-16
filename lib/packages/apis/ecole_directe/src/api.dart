@@ -30,4 +30,8 @@ class EcoleDirecteApi extends SchoolApi implements SchoolApiModules {
   @override
   late HomeworkModule homeworkModule =
       _HomeworkModule(this, isSupported: true, isAvailable: modulesAvailability.homework);
+
+  @override
+  late DocumentsModule documentsModule =
+      _DocumentsModule(this, isSupported: true, isAvailable: modulesAvailability.documents);
 }

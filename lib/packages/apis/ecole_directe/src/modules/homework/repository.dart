@@ -12,7 +12,7 @@ class _HomeworkRepository extends HomeworkRepository {
     if (res.error != null) return res;
     try {
       final List<Homework> homework = [];
-      (res.data!["data"].cast<String, List<dynamic>>()).forEach((k, v) {
+      (res.data!["data"].cast<String, List<dynamic>>() as Map<String, List<dynamic>>).forEach((k, v) {
         homework.addAll(v
             .map<Homework>((e) => Homework(
                   id: (e["idDevoir"] as int).toString(),
@@ -48,7 +48,11 @@ class _HomeworkRepository extends HomeworkRepository {
               entryDate: DateTime.parse(e["aFaire"]["donneLe"]),
               done: e["aFaire"]["effectue"],
               due: e["aFaire"]["rendreEnLigne"],
-              assessment: e["interrogation"]))
+              assessment: e["interrogation"],
+              documents: (e["aFaire"]["documents"] as List<dynamic>)
+                  .map<Document>((e) =>
+                      Document(id: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false))
+                  .toList()))
           .toList();
       return Response(data: homework);
     } catch (e) {

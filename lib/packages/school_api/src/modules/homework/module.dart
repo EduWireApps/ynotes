@@ -50,11 +50,13 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
         if (res.error != null) return res;
         final List<Homework> _homework = res.data!;
         final List<String> ids = homework.map((h) => h.id).toList();
-        for (final h in _homework) {
-          if (ids.contains(h.id)) {
-            homework.firstWhere((e) => e.id == h.id).content = h.content;
+        for (final _h in _homework) {
+          if (ids.contains(_h.id)) {
+            Homework h = homework.firstWhere((e) => e.id == _h.id);
+            h.content = _h.content;
+            h.documents = _h.documents;
           } else {
-            homework.add(h);
+            homework.add(_h);
           }
         }
         await offline.setHomework(homework);

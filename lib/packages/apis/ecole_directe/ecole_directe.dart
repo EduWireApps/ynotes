@@ -41,3 +41,8 @@ part 'src/modules/emails/provider.dart';
 part 'src/modules/homework/module.dart';
 part 'src/modules/homework/repository.dart';
 part 'src/modules/homework/provider.dart';
+
+// DOCUMENTS MODULE
+part 'src/modules/documents/module.dart';
+part 'src/modules/documents/repository.dart';
+part 'src/modules/documents/provider.dart';

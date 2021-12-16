@@ -10,4 +10,6 @@ abstract class SchoolApiModules {
   late EmailsModule emailsModule;
 
   late HomeworkModule homeworkModule;
+
+  late DocumentsModule documentsModule;
 }

@@ -21,9 +21,8 @@ class Homework {
   final bool assessment;
   @HiveField(8)
   bool pinned;
-  // TODO: implement files
   @HiveField(9)
-  final List<dynamic> files;
+  List<Document> documents;
 
   Homework({
     required this.id,
@@ -35,6 +34,6 @@ class Homework {
     required this.due,
     required this.assessment,
     this.pinned = false,
-    this.files = const [],
+    this.documents = const [],
   });
 }
