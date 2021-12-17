@@ -14,7 +14,7 @@ import 'package:ynotes/packages/school_api_models/school_api_models.dart';
 /// - It has to be used only by the [Offline] class
 /// - [Offline] can be used as a static class
 class _OfflineStore {
-  /// Wether or not [Offline] has been initialized, to avoid multiple initializations.
+  ///  Has [Offline] been initialized, to avoid multiple initializations.
   bool initialized = false;
 
   /// The [Offline] encryption cipher, used by [Hive].
