@@ -3,6 +3,8 @@ part of models;
 /// The model for the app account. This account is not used
 /// to retrieve data, but if [accounts] is empty, a [SchoolAccount]
 /// will be generated from it instead.
+///
+/// Can't be stored in [Hive] storage for now.
 class AppAccount {
   /// The account's id. If not provided, defaults to [Uuid.v4]
   final String id;
