@@ -1,19 +1,16 @@
 library school_api;
 
 import 'dart:async';
-import 'dart:convert';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/core/utils/app_colors.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/packages/school_api_models/school_api_models.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes/packages/shared/shared.dart';
+import 'package:ynotes/packages/offline/offline.dart';
 
 // TODO: document all
 
@@ -25,7 +22,6 @@ part 'src/module.dart';
 part 'src/modules_availability.dart';
 part 'src/school_api_modules.dart';
 part 'src/school_api.dart';
-part 'src/offline.dart';
 
 // AUTH MODULE
 part 'src/modules/auth/module.dart';
