@@ -38,6 +38,9 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
     if (status == DocumentsModuleStatus.processing) {
       return const Response(error: "Already downloading");
     }
+    if (document.saved) {
+      return const Response(error: "Already downloaded");
+    }
     final res = repository.download(document);
     if (res.error != null) return res;
     status = DocumentsModuleStatus.processing;
@@ -61,6 +64,8 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
       status = DocumentsModuleStatus.complete;
       notifyListeners();
       await (await document.file()).writeAsBytes(buffer);
+      document.saved = true;
+      await document.save();
       // TODO: update the document "saved" field
       // TODO: change the download location
       Timer(const Duration(seconds: 3), () {
@@ -86,5 +91,9 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
       default:
         return const Response();
     }
+  }
+
+  Future<Response<void>> upload(Document document) async {
+    return const Response(error: "Not implemented");
   }
 }

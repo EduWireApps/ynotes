@@ -1,6 +1,6 @@
 part of school_api;
 
-abstract class EmailsModule<R extends Repository> extends Module<R, OfflineEmails> {
+abstract class EmailsModule<R extends EmailsRepository> extends Module<R, OfflineEmails> {
   EmailsModule({required bool isSupported, required bool isAvailable, required R repository, required SchoolApi api})
       : super(
             isSupported: isSupported,
@@ -62,9 +62,32 @@ abstract class EmailsModule<R extends Repository> extends Module<R, OfflineEmail
     await offline.setFavoriteEmailsIds(favoriteEmails.map((e) => e.id).toList());
   }
 
-  Future<Response<void>> read(Email email);
+  Future<Response<void>> read(Email email) async {
+    if (email.content != null) return const Response();
+    final bool received = emailsReceived.contains(email);
+    final res = await repository.getEmailContent(email, received);
+    if (res.error != null) return res;
+    if (received) {
+      emailsReceived.firstWhere((e) => e.id == email.id).read = true;
+      emailsReceived.firstWhere((e) => e.id == email.id).content = res.data!;
+      offline.setEmailsReceived(emailsReceived);
+    } else {
+      emailsSent.firstWhere((e) => e.id == email.id).read = true;
+      emailsSent.firstWhere((e) => e.id == email.id).content = res.data!;
+      offline.setEmailsSent(emailsSent);
+    }
+    notifyListeners();
+    return const Response();
+  }
 
-  Future<Response<void>> send(Email email);
+  Future<Response<void>> send(Email email) async {
+    final res = await repository.sendEmail(email);
+    if (res.error != null) {
+      return Response(error: res.error);
+    }
+    await fetch(online: true);
+    return const Response();
+  }
 
   @override
   Future<void> reset({bool offline = false}) async {

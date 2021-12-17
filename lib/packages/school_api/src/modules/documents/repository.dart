@@ -5,7 +5,7 @@ abstract class DocumentsRepository extends Repository {
 
   @override
   Future<Response<Map<String, dynamic>>> get() async {
-    return const Response(error: "Not implemented");
+    return const Response(error: "Unavailable");
   }
 
   Response<http.Request> download(Document document);

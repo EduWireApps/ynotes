@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.email)
-class Email {
+class Email extends HiveObject {
   @HiveField(0)
   final String id;
   @HiveField(1)

@@ -193,7 +193,11 @@ class FolderAppUtil {
         return await getApplicationDocumentsDirectory();
       } else if (Platform.isLinux || Platform.isWindows) {
         final Directory appDirectory = await getApplicationDocumentsDirectory();
-        return Directory("${appDirectory.path}/yNotesApp/files");
+        final Directory dir = Directory("${appDirectory.path}/yNotesApp/files/${downloads ? "downloads" : ""}");
+        if (!dir.existsSync()) {
+          await dir.create(recursive: true);
+        }
+        return dir;
       }
     }
     throw 'Unsupported on web';

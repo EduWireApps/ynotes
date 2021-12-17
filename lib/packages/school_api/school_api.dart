@@ -42,6 +42,7 @@ part 'src/modules/school_life/offline.dart';
 // EMAILS MODULE
 part 'src/modules/emails/module.dart';
 part 'src/modules/emails/offline.dart';
+part 'src/modules/emails/repository.dart';
 
 // HOMEWORK MODULE
 part 'src/modules/homework/module.dart';

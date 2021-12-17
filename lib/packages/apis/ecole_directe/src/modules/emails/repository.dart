@@ -1,6 +1,6 @@
 part of ecole_directe;
 
-class _EmailsRepository extends Repository {
+class _EmailsRepository extends EmailsRepository {
   @protected
   late final _EmailsProvider emailsProvider = _EmailsProvider(api);
 
@@ -74,6 +74,7 @@ class _EmailsRepository extends Repository {
     }
   }
 
+  @override
   Future<Response<String>> getEmailContent(Email email, bool received) async {
     final res = await emailsProvider.getEmailContent(email.id, received);
     if (res.error != null) {
@@ -87,6 +88,7 @@ class _EmailsRepository extends Repository {
     }
   }
 
+  @override
   Future<Response<void>> sendEmail(Email email) async {
     final String content = encodeContent(email.content!);
     final Map<String, dynamic> body = {

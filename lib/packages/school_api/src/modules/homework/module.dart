@@ -69,8 +69,6 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
     return const Response();
   }
 
-  Future<Response<void>> updateHomework(Homework homework);
-
   @override
   Future<void> reset({bool offline = false}) async {
     homework = [];
