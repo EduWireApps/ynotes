@@ -56,7 +56,7 @@ class Email {
     required this.to,
   });
 
-  /// When sending an [Email], some data are useless and so
+  /// When sending an [Email], some fields are useless and so
   /// this factory let's you create an [Email] with only the
   /// required data.
   factory Email.toSend(
