@@ -54,7 +54,7 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
           if (ids.contains(_h.id)) {
             Homework h = homework.firstWhere((e) => e.id == _h.id);
             h.content = _h.content;
-            h.documents = _h.documents;
+            h.documentsIds = _h.documentsIds;
           } else {
             homework.add(_h);
           }
@@ -67,6 +67,10 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
     fetching = false;
     notifyListeners();
     return const Response();
+  }
+
+  Future<Response<void>> updateHomework(List<Homework> h) async {
+    return const Response(error: "Not implemented");
   }
 
   @override

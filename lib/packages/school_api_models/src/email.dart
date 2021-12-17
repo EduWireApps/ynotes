@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.email)
-class Email extends HiveObject {
+class Email {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -15,7 +15,8 @@ class Email extends HiveObject {
   @HiveField(5)
   String? content;
   @HiveField(6)
-  final List<Document> documents;
+  final List<String> documentsIds;
+  List<Document> documents(List<Document> d) => d.where((document) => documentsIds.contains(document.id)).toList();
   @HiveField(7)
   final List<Recipient> to;
 
@@ -26,7 +27,7 @@ class Email extends HiveObject {
     required this.subject,
     required this.date,
     this.content,
-    this.documents = const [],
+    this.documentsIds = const [],
     required this.to,
   });
 
@@ -34,7 +35,7 @@ class Email extends HiveObject {
           {required String subject,
           required String content,
           required List<Recipient> to,
-          List<Document> documents = const []}) =>
+          List<String> documentsIds = const []}) =>
       Email(
         id: "",
         read: false,
@@ -43,6 +44,6 @@ class Email extends HiveObject {
         content: content,
         date: DateTime.now(),
         to: to,
-        documents: documents,
+        documentsIds: documentsIds,
       );
 }

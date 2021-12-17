@@ -1,7 +1,7 @@
 part of models;
 
 @HiveType(typeId: _HiveTypeIds.homework)
-class Homework extends HiveObject {
+class Homework {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -22,7 +22,8 @@ class Homework extends HiveObject {
   @HiveField(8)
   bool pinned;
   @HiveField(9)
-  List<Document> documents;
+  List<String> documentsIds;
+  List<Document> documents(List<Document> d) => d.where((document) => documentsIds.contains(document.id)).toList();
 
   Homework({
     required this.id,
@@ -34,6 +35,6 @@ class Homework extends HiveObject {
     required this.due,
     required this.assessment,
     this.pinned = false,
-    this.documents = const [],
+    this.documentsIds = const [],
   });
 }

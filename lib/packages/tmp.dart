@@ -59,8 +59,8 @@ Future<void> main() async {
   api.documentsModule.addListener(() {
     print("${api.documentsModule.progress}%");
   });
-  // final res6 = await api.homeworkModule.fetch(online: true);
-  // print("Error: ${res6.error}");
+  final res6 = await api.homeworkModule.fetch(online: true);
+  print("Error: ${res6.error}");
   // print(api.homeworkModule.homework.length);
   // for (var h in api.homeworkModule.homework) {
   //   if (h.documents.isNotEmpty) {
@@ -69,9 +69,12 @@ Future<void> main() async {
   //     print("");
   //   }
   // }
-  final h = api.homeworkModule.homework.where((e) => e.documents.isNotEmpty).toList();
-  final res8 = await api.documentsModule.download(h.last.documents.first);
+  final h = api.homeworkModule.homework.where((e) => e.documents(api.documentsModule.documents).isNotEmpty).toList();
+  final res8 = await api.documentsModule.download(h.first.documents(api.documentsModule.documents).first);
   print("Error: ${res8.error}");
+  // for (final d in api.documentsModule.documents) {
+  //   print("${d.name}, ${d.isInBox}");
+  // }
   // final res7 = await api.homeworkModule.fetch(online: true, date: api.homeworkModule.homework.first.date);
   // print("Error: ${res7.error}");
   // for (var h in api.homeworkModule.homework) {

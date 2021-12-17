@@ -53,9 +53,7 @@ class SchoolLifeSanctionAdapter extends TypeAdapter<SchoolLifeSanction> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SchoolLifeSanctionAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is SchoolLifeSanctionAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class SchoolLifeTicketAdapter extends TypeAdapter<SchoolLifeTicket> {
@@ -102,9 +100,7 @@ class SchoolLifeTicketAdapter extends TypeAdapter<SchoolLifeTicket> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SchoolLifeTicketAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is SchoolLifeTicketAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class GradeAdapter extends TypeAdapter<Grade> {
@@ -171,10 +167,7 @@ class GradeAdapter extends TypeAdapter<Grade> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is GradeAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is GradeAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class SubjectsFilterAdapter extends TypeAdapter<SubjectsFilter> {
@@ -218,9 +211,7 @@ class SubjectsFilterAdapter extends TypeAdapter<SubjectsFilter> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SubjectsFilterAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is SubjectsFilterAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class PeriodAdapter extends TypeAdapter<Period> {
@@ -275,10 +266,7 @@ class PeriodAdapter extends TypeAdapter<Period> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PeriodAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is PeriodAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class SubjectAdapter extends TypeAdapter<Subject> {
@@ -330,10 +318,7 @@ class SubjectAdapter extends TypeAdapter<Subject> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SubjectAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is SubjectAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class EmailAdapter extends TypeAdapter<Email> {
@@ -353,7 +338,7 @@ class EmailAdapter extends TypeAdapter<Email> {
       subject: fields[3] as String,
       date: fields[4] as DateTime,
       content: fields[5] as String?,
-      documents: (fields[6] as List).cast<Document>(),
+      documentsIds: (fields[6] as List).cast<String>(),
       to: (fields[7] as List).cast<Recipient>(),
     );
   }
@@ -385,10 +370,7 @@ class EmailAdapter extends TypeAdapter<Email> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is EmailAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is EmailAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class RecipientAdapter extends TypeAdapter<Recipient> {
@@ -434,10 +416,7 @@ class RecipientAdapter extends TypeAdapter<Recipient> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is RecipientAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is RecipientAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class HomeworkAdapter extends TypeAdapter<Homework> {
@@ -460,7 +439,7 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       due: fields[6] as bool,
       assessment: fields[7] as bool,
       pinned: fields[8] as bool,
-      documents: (fields[9] as List).cast<Document>(),
+      documentsIds: (fields[9] as List).cast<String>(),
     );
   }
 
@@ -487,7 +466,7 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       ..writeByte(8)
       ..write(obj.pinned)
       ..writeByte(9)
-      ..write(obj.documents);
+      ..write(obj.documentsIds);
   }
 
   @override
@@ -495,10 +474,7 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is HomeworkAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is HomeworkAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class DocumentAdapter extends TypeAdapter<Document> {
@@ -538,8 +514,5 @@ class DocumentAdapter extends TypeAdapter<Document> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DocumentAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is DocumentAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

@@ -28,17 +28,43 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
 
   double progress = 0.0;
   DocumentsModuleStatus status = DocumentsModuleStatus.idle;
+  List<Document> documents = [];
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    return const Response(error: "Not available");
+    documents = await offline.getDocuments();
+    notifyListeners();
+    return const Response();
   }
 
-  Future<Response<void>> download(Document document) async {
+  Future<Response<void>> addDocuments(List<Document> d) async {
+    documents.addAll(d);
+    documents = await offline.setDocuments(documents);
+    notifyListeners();
+    return const Response();
+  }
+
+  Future<Response<void>> removeDocuments(List<Document> d) async {
+    documents.removeWhere((Document document) => d.contains(document));
+    documents = await offline.setDocuments(documents);
+    notifyListeners();
+    return const Response();
+  }
+
+  Future<Response<void>> updateDocuments(List<Document> d) async {
+    for (final document in d) {
+      documents.removeWhere((e) => e.id == document.id);
+    }
+    await addDocuments(d);
+    notifyListeners();
+    return const Response();
+  }
+
+  Future<Response<void>> download(Document document, {bool force = false}) async {
     if (status == DocumentsModuleStatus.processing) {
       return const Response(error: "Already downloading");
     }
-    if (document.saved) {
+    if (!force && document.saved) {
       return const Response(error: "Already downloaded");
     }
     final res = repository.download(document);
@@ -65,9 +91,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
       notifyListeners();
       await (await document.file()).writeAsBytes(buffer);
       document.saved = true;
-      await document.save();
-      // TODO: update the document "saved" field
-      // TODO: change the download location
+      await updateDocuments([document]);
       Timer(const Duration(seconds: 3), () {
         if (status == DocumentsModuleStatus.complete) {
           status = DocumentsModuleStatus.idle;
@@ -95,5 +119,11 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
 
   Future<Response<void>> upload(Document document) async {
     return const Response(error: "Not implemented");
+  }
+
+  @override
+  Future<void> reset({bool offline = false}) async {
+    documents = [];
+    await super.reset(offline: offline);
   }
 }

@@ -38,22 +38,34 @@ class _HomeworkRepository extends HomeworkRepository {
     final res = await homeworkProvider.getDay(date);
     if (res.error != null) return Response(error: res.error);
     try {
+      final List<List<Document>> documents = [];
+      for (final h in (res.data!["data"]["matieres"] as List<dynamic>).where((e) => e["aFaire"] != null)) {
+        final List<Document> d = [];
+        for (final e in (h["aFaire"]["documents"] as List<dynamic>)) {
+          d.add(Document(id: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
+        }
+        documents.add(d);
+      }
+      await api.documentsModule.addDocuments(documents.expand<Document>((e) => e).toList());
       final List<Homework> homework = (res.data!["data"]["matieres"] as List<dynamic>)
           .where((e) => e["aFaire"] != null)
-          .map<Homework>((e) => Homework(
-              id: (e["id"] as int).toString(),
-              subjectId: e["codeMatiere"],
-              content: decodeContent(e["aFaire"]["contenu"]),
-              date: date,
-              entryDate: DateTime.parse(e["aFaire"]["donneLe"]),
-              done: e["aFaire"]["effectue"],
-              due: e["aFaire"]["rendreEnLigne"],
-              assessment: e["interrogation"],
-              documents: (e["aFaire"]["documents"] as List<dynamic>)
-                  .map<Document>((e) =>
-                      Document(id: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false))
-                  .toList()))
-          .toList();
+          .toList()
+          .asMap()
+          .entries
+          .map((entry) {
+        final int i = entry.key;
+        final dynamic e = entry.value;
+        return Homework(
+            id: (e["id"] as int).toString(),
+            subjectId: e["codeMatiere"],
+            content: decodeContent(e["aFaire"]["contenu"]),
+            date: date,
+            entryDate: DateTime.parse(e["aFaire"]["donneLe"]),
+            done: e["aFaire"]["effectue"],
+            due: e["aFaire"]["rendreEnLigne"],
+            assessment: e["interrogation"],
+            documentsIds: documents[i].map((e) => e.id).toList());
+      }).toList();
       return Response(data: homework);
     } catch (e) {
       return Response(error: "$e");
