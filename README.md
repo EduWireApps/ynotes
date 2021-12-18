@@ -61,12 +61,13 @@ Les fonctionnalités de yNotes s'étendent chaque jour pour vous permettre d'êt
 - **Devoirs**
   - Accès aux devoirs à faire
   - Accès aux devoirs à une date spécifique
-  - Affichage des pièces jointes liées (EcoleDirecte seulement)
+  - Affichage des pièces jointes liées
   - Epinglage de devoirs importants
 - **Emploi du temps**
   - Accès aux cours programmés
   - Ajout d'évènements personnalisables
   - Ajout de rappels et alarmes
+  - Affichage du prochain cours (affiche également la salle pour EcoleDirecte)
 - **Applications supplémentaires**
   - Cloud (EcoleDirecte)
   - Mails (EcoleDirecte) avec notifications
