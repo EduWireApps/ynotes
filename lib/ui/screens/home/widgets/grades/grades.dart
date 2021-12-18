@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/globals.dart';
@@ -30,27 +31,35 @@ class _GradesSectionState extends State<GradesSection> {
   }
 
   // We get all grades and sort them by entryDate
-  List<Grade> get grades =>
-      (getAllGrades(controller.disciplines(), overrideLimit: true, sortByWritingDate: false) ?? [])
-          .where((g) => (g.notSignificant ?? false) == false)
-          .toList()
-        ..sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
+  List<Grade> get grades => (getAllGrades(controller.disciplines(),
+              overrideLimit: true, sortByWritingDate: false) ??
+          [])
+      .where((g) => (g.notSignificant ?? false) == false)
+      .toList()
+    ..sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
 
   double calculateGlobalAverage(List<Grade> grades) {
     // Will keep the averages of the disciplines
     final List<double> avgs = [];
-    grades = grades.where((grade) => double.tryParse(grade.value!.replaceAll(",", ".")) != null).toList();
+    grades = grades
+        .where((grade) =>
+            double.tryParse(grade.value!.replaceAll(",", ".")) != null)
+        .toList();
     // We iterate through each discipline
     for (final discipline in controller.disciplines()!) {
       // We get the grades for the current discipline
-      final List<Grade> _grades =
-          grades.where((element) => element.disciplineCode == discipline.disciplineCode).toList();
+      final List<Grade> _grades = grades
+          .where(
+              (element) => element.disciplineCode == discipline.disciplineCode)
+          .toList();
       // We caculate the weighted average from the grades and it to the averages list
       if (_grades.isNotEmpty) {
         double n = 0.0;
         double d = 0.0;
         for (var g in _grades) {
-          n += (20 * double.parse(g.value!.replaceAll(",", ".")) / double.parse(g.scale!.replaceAll(",", "."))) *
+          n += (20 *
+                  double.parse(g.value!.replaceAll(",", ".")) /
+                  double.parse(g.scale!.replaceAll(",", "."))) *
               double.parse(g.weight!.replaceAll(",", "."));
           d += double.parse(g.weight!.replaceAll(",", "."));
         }
@@ -79,8 +88,10 @@ class _GradesSectionState extends State<GradesSection> {
         gradesByWeekMap[grade.entryDate!.weekyear] = [grade];
       }
     }
+
     // We turn the map into a list of lists
-    final List<List<Grade>> gradesByWeekList = gradesByWeekMap.entries.map((e) => e.value).toList();
+    final List<List<Grade>> gradesByWeekList =
+        gradesByWeekMap.entries.map((e) => e.value).toList();
     // We return the chart elements
     return gradesByWeekList.asMap().entries.map((entry) {
       final int i = entry.key;
@@ -109,33 +120,57 @@ class _GradesSectionState extends State<GradesSection> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                        padding: EdgeInsets.fromLTRB(YScale.s4, YScale.s4, YScale.s8, YScale.s4),
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text("Notes", style: theme.texts.title),
-                          YVerticalSpacer(YScale.s8),
-                          SizedBox(
-                            height: r<double>(def: YScale.s28, lg: YScale.s36, xl: YScale.s48),
-                            child: Row(mainAxisSize: MainAxisSize.max, children: [
-                              if (grades.isNotEmpty) Expanded(child: GradesChart(chartElements)),
-                              YHorizontalSpacer(r<double>(def: YScale.s6, lg: YScale.s12)),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(chartElements.last.value.toString(),
-                                      style: theme.texts.title.copyWith(
-                                          fontSize: r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4),
-                                          fontWeight: YFontWeight.extrabold)),
-                                  Text("Moyenne", style: theme.texts.body2),
-                                  YVerticalSpacer(YScale.s4),
-                                  _DiffText(calculateGlobalAverage(grades) -
-                                      calculateGlobalAverage(grades.sublist(0, grades.length - 1))),
-                                  Text("Dernière note", style: theme.texts.body2),
-                                ],
+                        padding: EdgeInsets.fromLTRB(
+                            YScale.s4, YScale.s4, YScale.s8, YScale.s4),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Notes", style: theme.texts.title),
+                              YVerticalSpacer(YScale.s8),
+                              SizedBox(
+                                height: r<double>(
+                                    def: YScale.s28,
+                                    lg: YScale.s36,
+                                    xl: YScale.s48),
+                                child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      if (grades.isNotEmpty)
+                                        Expanded(
+                                            child: GradesChart(chartElements)),
+                                      YHorizontalSpacer(r<double>(
+                                          def: YScale.s6, lg: YScale.s12)),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              chartElements.last.value
+                                                  .toString(),
+                                              style: theme.texts.title.copyWith(
+                                                  fontSize: r<double>(
+                                                      def: YFontSize.xl2,
+                                                      lg: YFontSize.xl3,
+                                                      xl: YFontSize.xl4),
+                                                  fontWeight:
+                                                      YFontWeight.extrabold)),
+                                          Text("Moyenne",
+                                              style: theme.texts.body2),
+                                          YVerticalSpacer(YScale.s4),
+                                          _DiffText(
+                                              calculateGlobalAverage(grades) -
+                                                  calculateGlobalAverage(
+                                                      grades.sublist(0,
+                                                          grades.length - 1))),
+                                          Text("Dernière note",
+                                              style: theme.texts.body2),
+                                        ],
+                                      )
+                                    ]),
                               )
-                            ]),
-                          )
-                        ])),
+                            ])),
                     Padding(
                         padding: YPadding.py(YScale.s4),
                         child: ScrollConfiguration(
@@ -146,10 +181,15 @@ class _GradesSectionState extends State<GradesSection> {
                             child: Row(
                               children: [
                                 YHorizontalSpacer(YScale.s4),
-                                ...(getAllGrades(controller.disciplines(), sortByWritingDate: true) ?? [])
+                                ...(getAllGrades(controller.disciplines(),
+                                            sortByWritingDate: true) ??
+                                        [])
                                     .toList()
                                     .map((grade) => Row(
-                                          children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
+                                          children: [
+                                            GradeContainer(grade),
+                                            YHorizontalSpacer(YScale.s4)
+                                          ],
                                         ))
                                     .toList()
                               ],
@@ -174,10 +214,13 @@ class _DiffText extends StatelessWidget {
 
   String get sign => value >= 0 ? "+" : "";
 
-  Color get color => value >= 0 ? theme.colors.success.backgroundColor : theme.colors.danger.backgroundColor;
+  Color get color => value >= 0
+      ? theme.colors.success.backgroundColor
+      : theme.colors.danger.backgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    return Text("$sign${value.toStringAsFixed(2)}", style: theme.texts.title.copyWith(color: color));
+    return Text("$sign${value.toStringAsFixed(2)}",
+        style: theme.texts.title.copyWith(color: color));
   }
 }

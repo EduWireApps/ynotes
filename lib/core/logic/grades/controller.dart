@@ -306,7 +306,7 @@ class GradesController extends ChangeNotifier {
         }
       }
       try {
-        double? _average = f.getAverage().isNaN ? f.average as double? : f.getAverage();
+        double? _average = f.getAverage().isNaN ? (f.average as double?) : f.getAverage();
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
