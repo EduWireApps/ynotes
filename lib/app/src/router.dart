@@ -1,23 +1,55 @@
-import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/app_config/models.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/ui/screens/agenda/agenda.dart';
-import 'package:ynotes/ui/screens/cloud/cloud.dart';
-import 'package:ynotes/ui/screens/downloads/downloads.dart';
-import 'package:ynotes/ui/screens/error/error.dart';
-import 'package:ynotes/ui/screens/grades/grades.dart';
-import 'package:ynotes/ui/screens/home/routes.dart';
-import 'package:ynotes/ui/screens/homework/homework.dart';
-import 'package:ynotes/ui/screens/intro/routes.dart';
-import 'package:ynotes/ui/screens/loading/loading.dart';
-import 'package:ynotes/ui/screens/login/routes.dart';
-import 'package:ynotes/ui/screens/mailbox/mailbox.dart';
-import 'package:ynotes/ui/screens/polls/polls.dart';
-import 'package:ynotes/ui/screens/polls/routes.dart';
-import 'package:ynotes/ui/screens/school_life/routes.dart';
-import 'package:ynotes/ui/screens/settings/routes.dart';
-import 'package:ynotes/ui/screens/terms/terms.dart';
+part of app;
+
+// TODO: document and clean up
+
+class AppRoute {
+  final String path;
+  final IconData? icon;
+  final String? title;
+  final bool show;
+  final Widget widget;
+  final RouteTransition transition;
+  final bool Function()? guard;
+  final String? fallbackPath;
+
+  const AppRoute(
+      {required this.path,
+      this.icon,
+      this.title,
+      this.show = true,
+      required this.widget,
+      this.transition = RouteTransition.fade,
+      this.guard,
+      this.fallbackPath});
+}
+
+enum RouteTransition { fade, slideLeft, slideRight, slideUp, slideDown }
+
+final List<AppRoute> appRoutes = [];
+
+class AppRouter {
+  const AppRouter._();
+
+  PageRouteBuilder _generateRoute(AppRoute route, RouteSettings settings) {
+    // TODO: handle guarded routes and transitions
+    return PageRouteBuilder(
+        settings: settings,
+        pageBuilder: (_, __, ___) => route.widget,
+        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c));
+  }
+
+  Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    for (final route in appRoutes) {
+      if (settings.name == route.path) {
+        CustomLogger.log("ROUTER", 'Going to "${settings.name}".');
+        return _generateRoute(route, settings);
+      }
+    }
+
+    CustomLogger.log("ROUTER", 'Route "${settings.name}" not found.');
+    return generateRoute(const ErrorPage(), settings);
+  }
+}
 
 class CustomRoute {
   final String path;

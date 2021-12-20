@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/extensions.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';

@@ -1,5 +1,4 @@
-import 'package:ynotes/core/logic/app_config/controller.dart';
-import 'package:ynotes/core/logic/models_exporter.dart';
+part of app;
 
 //Futures
 Future? disciplinesListFuture;

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 
 TValue? case2<TOptionType, TValue>(
   TOptionType selectedOption,

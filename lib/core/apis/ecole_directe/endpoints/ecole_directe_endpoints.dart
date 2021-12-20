@@ -1,6 +1,6 @@
 import 'package:ynotes/core/apis/ecole_directe/endpoints/ecole_directe_api_endpoints.dart';
 import 'package:ynotes/core/apis/ecole_directe/endpoints/ecole_directe_demo_endpoints.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 
 class EcoleDirecteEndpoints {
   final bool debug;

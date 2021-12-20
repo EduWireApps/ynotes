@@ -6,7 +6,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/extensions.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';

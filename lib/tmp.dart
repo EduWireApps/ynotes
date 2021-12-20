@@ -2,7 +2,7 @@
 // ignore_for_file: dead_code
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/packages/apis/ecole_directe/ecole_directe.dart';
+import 'package:ynotes/core_new/api.dart';
 
 const String username = 'aaa';
 const String password = 'aaa';

@@ -1,5 +1,5 @@
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/router.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/logic/app_config/models.dart';
 import 'package:ynotes/ui/screens/school_life/school_life.dart';
 

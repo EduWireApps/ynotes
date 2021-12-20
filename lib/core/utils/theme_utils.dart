@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 
 ThemeData darkTheme = ThemeData(
     backgroundColor: const Color(0xff313131),

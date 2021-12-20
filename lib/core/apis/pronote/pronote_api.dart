@@ -17,8 +17,7 @@ import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/tests.dart';
+import 'package:ynotes/app/app.dart';
 
 import '../utils.dart';
 
@@ -524,9 +523,7 @@ class PronoteClient {
           " Started login - yNotes version is : " +
           packageInfo.version +
           "+" +
-          packageInfo.buildNumber +
-          " T" +
-          Tests.testVersion);
+          packageInfo.buildNumber);
     }
     var attributesandfunctions = await communication!.initialise();
     stepsLogger.add("✅ Initialized");

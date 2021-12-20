@@ -10,7 +10,7 @@ import 'package:ynotes/core/apis/pronote/pronote_api.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/core/utils/ui.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 
 /// The status of the controller
 enum QrStatus { initial, loading, success, error }

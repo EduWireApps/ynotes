@@ -1,4 +1,4 @@
-import 'package:ynotes/router.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/settings/settings.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/donors.dart';

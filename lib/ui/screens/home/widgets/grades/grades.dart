@@ -4,7 +4,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/extensions.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_packages/components.dart';

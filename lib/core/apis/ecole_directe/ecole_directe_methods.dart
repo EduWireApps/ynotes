@@ -18,7 +18,7 @@ import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/useful_methods.dart';
 
 import '../ecole_directe.dart';

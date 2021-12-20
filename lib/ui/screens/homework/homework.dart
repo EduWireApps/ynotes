@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 

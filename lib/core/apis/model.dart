@@ -11,7 +11,7 @@ import 'package:ynotes/core/services/space/recurring_events.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 
 part 'model.g.dart';
 

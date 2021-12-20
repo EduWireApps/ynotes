@@ -5,7 +5,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/settings/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';

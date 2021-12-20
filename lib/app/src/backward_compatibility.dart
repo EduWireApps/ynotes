@@ -1,9 +1,4 @@
-import 'dart:io';
-
-import 'package:ext_storage/ext_storage.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+part of app;
 
 /// A function that migrates things from an implementation to another
 Future<void> backwardCompatibility() async {

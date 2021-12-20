@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/core/utils/ui.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';

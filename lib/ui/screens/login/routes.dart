@@ -1,4 +1,4 @@
-import 'package:ynotes/router.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/login.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/demos.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/ecoledirecte.dart';

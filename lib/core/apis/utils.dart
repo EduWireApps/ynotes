@@ -9,7 +9,7 @@ import 'package:ynotes/core/apis/pronote.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 
 //Return the good API (will be extended to Pronote)
 List<String> colorList = [

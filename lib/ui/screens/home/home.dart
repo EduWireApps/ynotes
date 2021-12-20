@@ -6,7 +6,7 @@ import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/school_life/controller.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/ui.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/NEW/navigation/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';

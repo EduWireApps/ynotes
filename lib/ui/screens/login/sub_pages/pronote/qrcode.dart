@@ -3,7 +3,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:ynotes/core/logic/pronote/login/qr_code/qr_login_controller.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';

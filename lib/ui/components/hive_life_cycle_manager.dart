@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 
 class HiveLifecycleManager extends StatefulWidget {
   final Widget child;

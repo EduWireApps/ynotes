@@ -7,7 +7,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/dialogs/authorizations_dialog.dart';
 import 'package:ynotes/ui/components/dialogs/color_picker.dart';
 import 'package:ynotes/ui/components/dialogs/update_note_dialog.dart';

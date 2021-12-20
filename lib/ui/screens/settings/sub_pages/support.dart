@@ -3,7 +3,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 

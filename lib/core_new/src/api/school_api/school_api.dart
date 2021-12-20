@@ -7,10 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/core/utils/app_colors.dart';
 import 'package:ynotes/extensions.dart';
-import 'package:ynotes/packages/school_api_models/school_api_models.dart';
+import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes_packages/theme.dart';
-import 'package:ynotes/packages/shared/shared.dart';
-import 'package:ynotes/packages/offline/offline.dart';
+import 'package:ynotes/packages/shared.dart';
+import 'package:ynotes/core_new/offline.dart';
 
 // TODO: document all
 
