@@ -23,10 +23,12 @@ class IntroConfigPage extends StatefulWidget {
 }
 
 class _IntroConfigPageState extends State<IntroConfigPage> {
-  Future<void> notificationSetting({required ApplicationSystem controller, required Function fn}) async {
+  Future<void> notificationSetting(
+      {required ApplicationSystem controller, required Function fn}) async {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       final notificationPermission = await Permission.notification.request();
-      final batteryPermission = await Permission.ignoreBatteryOptimizations.request();
+      final batteryPermission =
+          await Permission.ignoreBatteryOptimizations.request();
       UIUtils.setSystemUIOverlayStyle();
       if (notificationPermission.isGranted && batteryPermission.isGranted) {
         fn();
@@ -36,7 +38,8 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
             context,
             YInfoDialog(
                 title: "Oups !",
-                body: Text("Tu n'as pas accordé à yNotes toutes les permissions nécessaires.",
+                body: Text(
+                    "Tu n'as pas accordé à yNotes toutes les permissions nécessaires.",
                     style: theme.texts.body1)));
       }
     } else {
@@ -59,45 +62,64 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                           YSettingsSection(tiles: [
                             YSettingsTile.switchTile(
                               title: "Nouvel email",
-                              switchValue: controller.settings.user.global.notificationNewMail,
-                              onSwitchValueChanged: (bool value) async => await notificationSetting(
-                                  controller: controller,
-                                  fn: () => controller.settings.user.global.notificationNewMail = value),
+                              switchValue: controller
+                                  .settings.user.global.notificationNewMail,
+                              onSwitchValueChanged: (bool value) async =>
+                                  await notificationSetting(
+                                      controller: controller,
+                                      fn: () => controller.settings.user.global
+                                          .notificationNewMail = value),
                               disabledOnTap: () => YSnackbars.info(context,
                                   title: "Paramètre désactivé",
                                   message:
                                       "Tu as activé l'économiseur de batterie, qui désactive l'envoi de notifications."),
-                              enabled: !controller.settings.user.global.batterySaver,
+                              enabled:
+                                  !controller.settings.user.global.batterySaver,
                             ),
                             YSettingsTile.switchTile(
                               title: "Nouvelle note",
-                              switchValue: controller.settings.user.global.notificationNewGrade,
-                              onSwitchValueChanged: (bool value) async => await notificationSetting(
-                                  controller: controller,
-                                  fn: () => controller.settings.user.global.notificationNewGrade = value),
+                              switchValue: controller
+                                  .settings.user.global.notificationNewGrade,
+                              onSwitchValueChanged: (bool value) async =>
+                                  await notificationSetting(
+                                      controller: controller,
+                                      fn: () => controller.settings.user.global
+                                          .notificationNewGrade = value),
                               disabledOnTap: () => YSnackbars.info(context,
                                   title: "Paramètre désactivé",
                                   message:
                                       "Tu as activé l'économiseur de batterie, qui désactive l'envoi de notifications."),
-                              enabled: !controller.settings.user.global.batterySaver,
+                              enabled:
+                                  !controller.settings.user.global.batterySaver,
                             )
                           ]),
                         YSettingsSection(title: "Divers", tiles: [
-                          if (controller.account!.isParentMainAccount)
+                          if (controller.account?.isParentMainAccount ?? false)
                             YSettingsTile(
                                 title: "Compte",
-                                subtitle: (controller.currentSchoolAccount?.name) ?? "(non choisi)",
+                                subtitle:
+                                    (controller.currentSchoolAccount?.name) ??
+                                        "(non choisi)",
                                 onTap: () async {
-                                  if (controller.account != null && controller.account!.managableAccounts != null) {
-                                    final SchoolAccount? res = await YDialogs.getConfirmation<SchoolAccount>(
-                                        context,
-                                        YConfirmationDialog(
-                                            title: "Choisis un compte",
-                                            initialValue: controller.currentSchoolAccount,
-                                            options: controller.account!.managableAccounts!
-                                                .map((account) => YConfirmationDialogOption(
-                                                    value: account, label: account.name ?? "Sans nom"))
-                                                .toList()));
+                                  if (controller.account != null &&
+                                      controller.account!.managableAccounts !=
+                                          null) {
+                                    final SchoolAccount? res = await YDialogs
+                                        .getConfirmation<SchoolAccount>(
+                                            context,
+                                            YConfirmationDialog(
+                                                title: "Choisis un compte",
+                                                initialValue: controller
+                                                    .currentSchoolAccount,
+                                                options: controller
+                                                    .account!.managableAccounts!
+                                                    .map((account) =>
+                                                        YConfirmationDialogOption(
+                                                            value: account,
+                                                            label:
+                                                                account.name ??
+                                                                    "Sans nom"))
+                                                    .toList()));
                                     if (res != null) {
                                       controller.currentSchoolAccount = res;
                                       controller.saveSettings();
@@ -108,7 +130,8 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                             title: 'Mode nuit',
                             switchValue: theme.isDark,
                             onSwitchValueChanged: (bool value) async {
-                              controller.updateTheme(value ? "sombre" : "clair");
+                              controller
+                                  .updateTheme(value ? "sombre" : "clair");
                               appSys.saveSettings();
                             },
                           ),
@@ -116,7 +139,8 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                             title: "Spécialités",
                             subtitle:
                                 "Si tu es en classe de Première ou Terminale, sélectionner tes spécialités te permet d'avoir accès à des filtres supplémentaires",
-                            onTap: () => CustomDialogs.showSpecialtiesChoice(context),
+                            onTap: () =>
+                                CustomDialogs.showSpecialtiesChoice(context),
                           )
                         ])
                       ],
@@ -127,10 +151,13 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                       child: YButton(
                           onPressed: () async {
                             controller.loginController.login();
-                            controller.api!.getEvents(DateTime.now(), forceReload: false);
+                            controller.api!
+                                .getEvents(DateTime.now(), forceReload: false);
                             controller.gradesController.refresh(force: true);
                             controller.homeworkController.refresh(force: true);
-                            await KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
+                            await KVS.write(
+                                key: "agreedTermsAndConfiguredApp",
+                                value: "true");
                             Navigator.pushReplacementNamed(context, "/home");
                           },
                           text: "Allons-y !",

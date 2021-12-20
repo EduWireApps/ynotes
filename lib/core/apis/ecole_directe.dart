@@ -48,7 +48,8 @@ String? token;
 ///     E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
 ///      E.G : "PUSH" add a file to the path if it doesn't exist
 ///       E.G : "RM" remove a file to the path
-Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item) async {
+Future<List<CloudItem>?> getCloud(
+    String? args, String? action, CloudItem? item) async {
   if (action == "CD") {
     switch (args) {
       //Default repository. Every folder have to be followed by / => "/CLOUD/FOLDER/"
@@ -69,7 +70,8 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   late EcoleDirecteMethod methods;
-  APIEcoleDirecte(Offline offlineController) : super(offlineController, apiName: "EcoleDirecte") {
+  APIEcoleDirecte(Offline offlineController)
+      : super(offlineController, apiName: "EcoleDirecte") {
     methods = EcoleDirecteMethod(offlineController);
   }
 
@@ -80,7 +82,8 @@ class APIEcoleDirecte extends API {
 
 //Get connection message and store token
   @override
-  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
+  Future app(String appname,
+      {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
       case "mail":
         {
@@ -97,8 +100,8 @@ class APIEcoleDirecte extends API {
       case "mailRecipients":
         {
           CustomLogger.log("ED", "Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(
-              methods.recipients, RecipientsOffline(offlineController).getRecipients));
+          return (await EcoleDirecteMethod.fetchAnyData(methods.recipients,
+              RecipientsOffline(offlineController).getRecipients));
         }
     }
   }
@@ -108,7 +111,8 @@ class APIEcoleDirecte extends API {
     String? type = document.type;
     String? id = document.id;
     String data = 'data={"token": "$token"}';
-    var url = "https://api.ecoledirecte.com/v3/telechargement.awp?verbe=post&leTypeDeFichier=$type&fichierId=$id";
+    var url =
+        "https://api.ecoledirecte.com/v3/telechargement.awp?verbe=post&leTypeDeFichier=$type&fichierId=$id";
     await methods.refreshToken();
     //encode Map to JSON
     var body = data;
@@ -121,19 +125,25 @@ class APIEcoleDirecte extends API {
   @override
 //Getting grades
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(methods.grades, DisciplinesOffline(offlineController).getDisciplines,
+    return await EcoleDirecteMethod.fetchAnyData(
+        methods.grades, DisciplinesOffline(offlineController).getDisciplines,
         forceFetch: forceReload ?? false);
   }
 
   @override
-  Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(methods.homeworkFor, HomeworkOffline(offlineController).getHomeworkFor,
-        forceFetch: forceReload ?? false, offlineArguments: dateHomework, onlineArguments: dateHomework);
+  Future<List<Homework>> getHomeworkFor(DateTime? dateHomework,
+      {bool? forceReload}) async {
+    return await EcoleDirecteMethod.fetchAnyData(
+        methods.homeworkFor, HomeworkOffline(offlineController).getHomeworkFor,
+        forceFetch: forceReload ?? false,
+        offlineArguments: dateHomework,
+        onlineArguments: dateHomework);
   }
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Mail>>? getMails({bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(methods.mails, MailsOffline(offlineController).getAllMails,
+    return await EcoleDirecteMethod.fetchAnyData(
+        methods.mails, MailsOffline(offlineController).getAllMails,
         forceFetch: forceReload ?? false);
   }
 
@@ -146,10 +156,13 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload = false}) async {
+  Future<List<Lesson>?> getNextLessons(DateTime from,
+      {bool? forceReload = false}) async {
     List<Lesson>? lessons = await EcoleDirecteMethod.fetchAnyData(
         methods.lessons, LessonsOffline(offlineController).get,
-        forceFetch: forceReload ?? false, onlineArguments: from, offlineArguments: await getWeek(from));
+        forceFetch: forceReload ?? false,
+        onlineArguments: from,
+        offlineArguments: await getWeek(from));
 
     return (lessons ?? [])
         .where((lesson) =>
@@ -159,14 +172,17 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
-    return await EcoleDirecteMethod.fetchAnyData(methods.schoolLife, SchoolLifeOffline(offlineController).get,
+  Future<List<SchoolLifeTicket>> getSchoolLife(
+      {bool forceReload = false}) async {
+    return await EcoleDirecteMethod.fetchAnyData(
+        methods.schoolLife, SchoolLifeOffline(offlineController).get,
         forceFetch: forceReload);
   }
 
   @override
   Future<List> login(username, password, {Map? additionnalSettings}) async {
-    methods = EcoleDirecteMethod(offlineController, demo: additionnalSettings?["demo"]);
+    methods = EcoleDirecteMethod(offlineController,
+        demo: additionnalSettings?["demo"]);
 
     final prefs = await SharedPreferences.getInstance();
 
@@ -192,10 +208,13 @@ class APIEcoleDirecte extends API {
 
     var url = methods.endpoints.login;
     Map<String, String> headers = {"Content-type": "text/plain"};
-    String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
+    String data =
+        'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;
-    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+    var response = await http
+        .post(Uri.parse(url), headers: headers, body: body)
+        .catchError((e) {
       throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
 
@@ -209,12 +228,15 @@ class APIEcoleDirecte extends API {
           try {
             appSys.account = EcoleDirecteAccountConverter.account.convert(req);
           } catch (e) {
-            CustomLogger.log("ED", "Impossible to get accounts " + e.toString());
-            CustomLogger.error(e, stackHint:"MA==");
+            CustomLogger.log(
+                "ED", "Impossible to get accounts " + e.toString());
+            CustomLogger.error(e, stackHint: "MA==");
           }
 
-          if (appSys.account != null && appSys.account!.managableAccounts != null) {
-            await KVS.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
+          if (appSys.account != null &&
+              appSys.account!.managableAccounts != null) {
+            await KVS.write(
+                key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
           } else {
             return [0, "Impossible de collecter les comptes."];
@@ -223,7 +245,9 @@ class APIEcoleDirecte extends API {
           String userID = req['data']['accounts'][0]['id'].toString();
           String classe;
           try {
-            classe = req['data']['accounts'][0]['profile']["classe"]["libelle"] ?? "";
+            classe = req['data']['accounts'][0]['profile']["classe"]
+                    ["libelle"] ??
+                "";
           } catch (e) {
             classe = "";
           }
@@ -236,14 +260,19 @@ class APIEcoleDirecte extends API {
           //IMPORTANT ! store the user ID
           KVS.write(key: "userID", value: userID);
           KVS.write(key: "classe", value: classe);
-          KVS.write(key: "demo", value: additionnalSettings?["demo"].toString() ?? "");
+          KVS.write(
+              key: "demo",
+              value: additionnalSettings?["demo"].toString() ?? "");
+
           //random date
-          KVS.write(key: "startday", value: DateTime.parse("2020-02-02").toString());
+          KVS.write(
+              key: "startday", value: DateTime.parse("2020-02-02").toString());
 
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);
         } catch (e) {
-          CustomLogger.log("ED", "Error while getting user info " + e.toString());
+          CustomLogger.log(
+              "ED", "Error while getting user info " + e.toString());
         }
         loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
@@ -262,21 +291,24 @@ class APIEcoleDirecte extends API {
   }
 
   Future<List<Recipient>?> mailRecipients() async {
-    return (await EcoleDirecteMethod.fetchAnyData(
-        methods.recipients, RecipientsOffline(offlineController).getRecipients));
+    return (await EcoleDirecteMethod.fetchAnyData(methods.recipients,
+        RecipientsOffline(offlineController).getRecipients));
   }
 
   Future<String?> readMail(String mailId, bool read, bool received) async {
     await methods.testToken();
     String? id = appSys.currentSchoolAccount?.studentID;
     String settingMode = received ? "destinataire" : "expediteur";
-    var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
+    var url =
+        'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
 
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"token": "$token"}';
     //encode Map to JSON
     var body = data;
-    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+    var response = await http
+        .post(Uri.parse(url), headers: headers, body: body)
+        .catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
     CustomLogger.log("ED", "Starting the mail reading");
@@ -286,7 +318,8 @@ class APIEcoleDirecte extends API {
         if (req['code'] == 200) {
           String toDecode = req['data']['content'];
           toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
-          await MailsOffline(offlineController).updateMailContent(toDecode, mailId);
+          await MailsOffline(offlineController)
+              .updateMailContent(toDecode, mailId);
           return toDecode;
         }
         //Return an error
@@ -307,15 +340,17 @@ class APIEcoleDirecte extends API {
   Future<bool?> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<Grade> listOfflineGrades =
-          getAllGrades(await DisciplinesOffline(offlineController).getDisciplines(), overrideLimit: true)!;
+      List<Grade> listOfflineGrades = getAllGrades(
+          await DisciplinesOffline(offlineController).getDisciplines(),
+          overrideLimit: true)!;
       CustomLogger.log("ED", "Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
-      List<Grade> listOnlineGrades = getAllGrades(await methods.grades(), overrideLimit: true)!;
+      List<Grade> listOnlineGrades =
+          getAllGrades(await methods.grades(), overrideLimit: true)!;
       CustomLogger.log("ED", "Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MQ==");
+      CustomLogger.error(e, stackHint: "MQ==");
       return null;
     }
   }
@@ -327,14 +362,17 @@ class APIEcoleDirecte extends API {
         {
           //Ensure that token is refreshed
           await methods.testToken();
-          var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
+          var uri = Uri.parse(
+              'https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
           var request = http.MultipartRequest('POST', uri)
             ..headers["user-agent"] = "PostmanRuntime/7.25.0"
             ..headers["accept"] = "*/*"
-            ..fields['asap'] = '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
+            ..fields['asap'] =
+                '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
 
           var response = await request.send();
-          if (response.statusCode == 200) CustomLogger.log("ED", "File uploaded");
+          if (response.statusCode == 200)
+            CustomLogger.log("ED", "File uploaded");
           response.stream.transform(utf8.decoder).listen((value) {
             CustomLogger.log("ED", "File stream value: $value");
           });

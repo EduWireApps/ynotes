@@ -43,24 +43,24 @@ class EcoleDirecteDisciplineConverter {
               }
               //No one sub discipline
               if (rawData['codeSousMatiere'] == "") {
-                String? disciplineCode = rawData['codeMatiere'];
-                String? disciplineName = rawData['discipline'];
-                String? average = rawData['moyenne'];
-                String? classAverage = rawData['moyenneClasse'];
-                String? minClassAverage = rawData['moyenneMin'];
-                String? maxClassAverage = rawData['moyenneMax'];
-                String periodeName = periodeElement["periode"];
-                String? periodeId = periodeElement["idPeriode"];
-                String? generalAverage = periodeElement["ensembleMatieres"]["moyenneGenerale"];
-                String? classGeneralAverage = periodeElement["ensembleMatieres"]["moyenneClasse"];
-                String? maxClassGeneralAverage = periodeElement["ensembleMatieres"]["moyenneMax"];
-                String? minClassGeneralAverage = periodeElement["ensembleMatieres"]["moyenneMin"];
+                String? disciplineCode = rawData['codeMatiere']?.toString();
+                String? disciplineName = rawData['discipline']?.toString();
+                String? average = rawData['moyenne']?.toString();
+                String? classAverage = rawData['moyenneClasse'].toString();
+                String? minClassAverage = rawData['moyenneMin']?.toString();
+                String? maxClassAverage = rawData['moyenneMax']?.toString();
+                String periodeName = periodeElement["periode"].toString();
+                String? periodeId = periodeElement["idPeriode"]?.toString();
+                String? generalAverage = periodeElement["ensembleMatieres"]["moyenneGenerale"]?.toString();
+                String? classGeneralAverage = periodeElement["ensembleMatieres"]["moyenneClasse"]?.toString();
+                String? maxClassGeneralAverage = periodeElement["ensembleMatieres"]["moyenneMax"]?.toString();
+                String? minClassGeneralAverage = periodeElement["ensembleMatieres"]["moyenneMin"]?.toString();
                 Color color = Colors.blue;
                 bool showRank = settings["moyenneRang"] ?? false;
                 int? disciplineRank = showRank ? rawData["rang"] : null;
-                String? classNumber = periodeElement["ensembleMatieres"]["effectif"];
+                String? classNumber = periodeElement["ensembleMatieres"]["effectif"]?.toString();
                 String? generalRank =
-                    (settings["moyenneRang"] ?? false) ? periodeElement["ensembleMatieres"]["rang"] : null;
+                    (settings["moyenneRang"] ?? false) ? periodeElement["ensembleMatieres"]["rang"]?.toString() : null;
                 String weight = rawData["coef"].toString();
 
                 disciplinesList.add(Discipline(

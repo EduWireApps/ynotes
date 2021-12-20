@@ -55,7 +55,7 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
                     ),
                     YSettingsSections(sections: [
                       YSettingsSection(tiles: [
-                        if ((controller.account!.managableAccounts?.length ?? 0) > 1)
+                        if ((controller.account?.managableAccounts?.length ?? 0) > 1)
                           YSettingsTile(
                               title: "Changer de compte",
                               subtitle: "${appSys.account!.managableAccounts!.length} disponibles",
