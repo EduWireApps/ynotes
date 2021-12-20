@@ -45,7 +45,7 @@ This package contains all models needed for the `school_api`. It also contains a
 
 Status:
 
-- [ ] documentation (WIP)
+- [x] documentation (WIP)
 - [ ] features (WIP)
 
 ### `offline` (Done)
