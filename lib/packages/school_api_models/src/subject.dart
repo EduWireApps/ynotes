@@ -52,13 +52,13 @@ class Subject {
       required this.average});
 }
 
-/// The model for a custom [Grade].
+/// The model for a custom [Subject].
 ///
 /// It only requires required data and can be used to
-/// sort between [Grade]s and [CustomGrade]s:
+/// sort between [Subject]s and [CustomSubject]s:
 ///
 /// ```dart
-/// final bool custom = grade is CustomGrade;
+/// final bool custom = subject is CustomSubject;
 /// ```
 class CustomSubject extends Subject {
   CustomSubject(
