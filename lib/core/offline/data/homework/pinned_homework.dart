@@ -20,7 +20,7 @@ class PinnedHomeworkOffline {
       return parsedList;
     } catch (e) {
       CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
-      CustomLogger.error(e, stackHint:"NTg=");
+      CustomLogger.error(e, stackHint:"NTI=");
       return [];
     }
   }
@@ -34,7 +34,7 @@ class PinnedHomeworkOffline {
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
       CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
-      CustomLogger.error(e, stackHint:"NTk=");
+      CustomLogger.error(e, stackHint:"NTM=");
       return null;
     }
   }
@@ -45,7 +45,7 @@ class PinnedHomeworkOffline {
       await parent.pinnedHomeworkBox?.put(date, value);
     } catch (e) {
       CustomLogger.log("PINNED HOMEWORK", "An error occured during the setPinnedHomeworkDateProcess");
-      CustomLogger.error(e, stackHint:"NjA=");
+      CustomLogger.error(e, stackHint:"NTQ=");
     }
   }
 }

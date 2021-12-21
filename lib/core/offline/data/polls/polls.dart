@@ -12,7 +12,7 @@ class PollsOffline {
       return await parent.offlineBox?.get("polls")?.cast<PollInfo>();
     } catch (e) {
       CustomLogger.log("POLLS", "An error occured while returning polls");
-      CustomLogger.error(e, stackHint:"NjU=");
+      CustomLogger.error(e, stackHint:"NTk=");
       return null;
     }
   }
@@ -25,7 +25,7 @@ class PollsOffline {
       await parent.offlineBox?.put("polls", newData);
     } catch (e) {
       CustomLogger.log("POLLS", "An error occured while updating polls");
-      CustomLogger.error(e, stackHint:"NjY=");
+      CustomLogger.error(e, stackHint:"NjA=");
     }
   }
 }

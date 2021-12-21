@@ -149,7 +149,7 @@ class GradesStats {
               double.parse(_grade.weight!.replaceAll(',', '.'));
           counter += double.parse(_grade.weight!);
         } catch (e) {
-          CustomLogger.error(e, stackHint:"MzM=");
+          CustomLogger.error(e, stackHint:"Mjc=");
         }
       }
       average = average / counter;

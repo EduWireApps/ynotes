@@ -61,7 +61,7 @@ class BugReportUtils {
       //set api metadata
       Shake.setMetadata("schoolApi", appSys.api?.apiName ?? "{undefined}");
     } catch (e) {
-      CustomLogger.error(e, stackHint:"ODQ=");
+      CustomLogger.error(e, stackHint:"Nzg=");
     }
   }
 

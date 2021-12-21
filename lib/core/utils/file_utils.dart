@@ -72,7 +72,7 @@ class FileAppUtil {
           file = Directory(path).listSync();
         } catch (e) {
           CustomLogger.log("FILE UTILS", "An error occured while getting the file list");
-          CustomLogger.error(e, stackHint:"ODU=");
+          CustomLogger.error(e, stackHint:"Nzk=");
         }
         //use your folder name insted of resume.
         List<FileInfo> listFiles = [];
@@ -83,7 +83,7 @@ class FileAppUtil {
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
             CustomLogger.log("FILE UTILS", "An error occured while adding file to list");
-            CustomLogger.error(e, stackHint:"ODY=");
+            CustomLogger.error(e, stackHint:"ODA=");
           }
         });
 
@@ -106,7 +106,7 @@ class FileAppUtil {
         return null;
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint:"ODc=");
+      CustomLogger.error(e, stackHint:"ODE=");
     }
   }
 
@@ -129,7 +129,7 @@ class FileAppUtil {
       await OpenFile.open(path!);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while opening file");
-      CustomLogger.error(e, stackHint:"ODg=");
+      CustomLogger.error(e, stackHint:"ODI=");
     }
   }
 
@@ -150,7 +150,7 @@ class FileAppUtil {
       await file.writeAsString(data, mode: FileMode.write);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while writing $fileName²");
-      CustomLogger.error(e, stackHint:"ODk=");
+      CustomLogger.error(e, stackHint:"ODM=");
     }
   }
 }

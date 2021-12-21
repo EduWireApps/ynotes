@@ -23,7 +23,7 @@ class DoneHomeworkOffline {
       return parent.homeworkDoneBox!.keys.length;
     } catch (e) {
       CustomLogger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
-      CustomLogger.error(e, stackHint:"NTI=");
+      CustomLogger.error(e, stackHint:"NDY=");
       return 0;
     }
   }
@@ -41,7 +41,7 @@ class DoneHomeworkOffline {
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
       CustomLogger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
-      CustomLogger.error(e, stackHint:"NTM=");
+      CustomLogger.error(e, stackHint:"NDc=");
       return false;
     }
   }
@@ -52,7 +52,7 @@ class DoneHomeworkOffline {
       await parent.homeworkDoneBox!.put(id.toString(), state);
     } catch (e) {
       CustomLogger.log("DONE HOMEWORK", "An error occured during the setHomeworkDoneProcess");
-      CustomLogger.error(e, stackHint:"NTQ=");
+      CustomLogger.error(e, stackHint:"NDg=");
     }
   }
 }
