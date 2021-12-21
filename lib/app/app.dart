@@ -2,6 +2,7 @@ library app;
 
 import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
+import 'package:collection/collection.dart';
 import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

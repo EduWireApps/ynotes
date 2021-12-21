@@ -23,27 +23,62 @@ class AppRoute {
       this.fallbackPath});
 }
 
-enum RouteTransition { fade, slideLeft, slideRight, slideUp, slideDown }
-
-final List<AppRoute> appRoutes = [];
+enum RouteTransition { fade, slideHorizontal, slideVertical, scale }
 
 class AppRouter {
   const AppRouter._();
 
-  PageRouteBuilder _generateRoute(AppRoute route, RouteSettings settings) {
-    // TODO: handle guarded routes and transitions
+  static PageRouteBuilder _generateRoute(AppRoute route, RouteSettings settings) {
+    final bool validRoute = route.guard == null || route.guard!.call();
+    route = validRoute ? route : appRoutes.firstWhere((e) => e.path == route.fallbackPath);
+
+    Widget getTransition(
+        BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+      animation = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
+      switch (route.transition) {
+        case RouteTransition.slideHorizontal:
+          return Align(
+              alignment: Alignment.centerRight,
+              child: SizeTransition(
+                sizeFactor: animation,
+                child: child,
+                axis: Axis.horizontal,
+                axisAlignment: 0,
+              ));
+        case RouteTransition.slideVertical:
+          return Align(
+              alignment: Alignment.bottomCenter,
+              child: SizeTransition(
+                sizeFactor: animation,
+                child: child,
+                axisAlignment: 0,
+              ));
+        case RouteTransition.scale:
+          return ScaleTransition(alignment: Alignment.center, scale: animation, child: child);
+        case RouteTransition.fade:
+          return FadeTransition(opacity: animation, child: child);
+      }
+    }
+
     return PageRouteBuilder(
         settings: settings,
         pageBuilder: (_, __, ___) => route.widget,
-        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c));
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            getTransition(context, animation, secondaryAnimation, child));
   }
 
-  Route<dynamic> onGenerateRoute(RouteSettings settings) {
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     for (final route in appRoutes) {
       if (settings.name == route.path) {
         CustomLogger.log("ROUTER", 'Going to "${settings.name}".');
         return _generateRoute(route, settings);
       }
+    }
+
+    if (settings.name == "/") {
+      // Dirty fix for the root route.
+      CustomLogger.log("ROUTER", 'Redirect "/" to "/loading".');
+      return _generateRoute(appRoutes.firstWhere((e) => e.path == "/loading"), settings);
     }
 
     CustomLogger.log("ROUTER", 'Route "${settings.name}" not found.');
@@ -63,6 +98,21 @@ class CustomRoute {
   CustomRoute(
       {required this.path, this.icon, this.title, required this.page, this.relatedApi, this.show = true, this.tab});
 }
+
+// TODO: complete
+final List<AppRoute> appRoutes = [
+  const AppRoute(path: "/loading", widget: LoadingPage(), show: false),
+  const AppRoute(path: "/terms", widget: TermsPage(), show: false),
+  ...homeRoutesTMP,
+  AppRoute(
+      path: "/grades",
+      widget: const GradesPage(),
+      icon: MdiIcons.trophy,
+      title: "Notes",
+      transition: RouteTransition.scale,
+      fallbackPath: "/loading",
+      guard: () => false)
+];
 
 final List<CustomRoute> routes = [
   ...loginRoutes,

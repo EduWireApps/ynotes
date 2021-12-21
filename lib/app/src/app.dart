@@ -52,7 +52,8 @@ class _AppState extends State<App> {
                       navigatorKey: AppConfig.navigatorKey,
                       initialRoute: "/loading",
                       themeMode: ThemeMode.light,
-                      onGenerateRoute: onGenerateRoute,
+                      onGenerateRoute: AppRouter.onGenerateRoute,
+                      // onGenerateRoute: onGenerateRoute,
                     ));
                   }),
                 ));
