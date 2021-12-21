@@ -98,10 +98,13 @@ class Discipline {
     double counter = 0;
 
     for (var grade in gradesList!) {
-      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == periodName) {
+      if (!grade.notSignificant! &&
+          (!grade.letters! || grade.countAsZero!) &&
+          grade.periodName == periodName) {
         counter += double.parse(grade.weight!);
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
-        final double? value = double.tryParse(gradeStringValue.replaceAll(',', '.'));
+        final double? value =
+            double.tryParse(gradeStringValue.replaceAll(',', '.'));
         if (value != null) {
           average += value *
               20 /
@@ -175,30 +178,30 @@ class Grade {
 
   @HiveField(21)
   final bool optional;
-  Grade({
-    this.max,
-    this.min,
-    this.testName,
-    this.periodCode,
-    this.disciplineCode,
-    this.subdisciplineCode,
-    this.disciplineName,
-    this.letters,
-    this.value,
-    this.weight,
-    this.scale,
-    this.classAverage,
-    this.testType,
-    this.date,
-    this.entryDate,
-    this.notSignificant,
-    this.periodName,
-    this.simulated = false,
-    this.countAsZero = false,
-    this.optional = false
-  });
+  Grade(
+      {this.max,
+      this.min,
+      this.testName,
+      this.periodCode,
+      this.disciplineCode,
+      this.subdisciplineCode,
+      this.disciplineName,
+      this.letters,
+      this.value,
+      this.weight,
+      this.scale,
+      this.classAverage,
+      this.testType,
+      this.date,
+      this.entryDate,
+      this.notSignificant,
+      this.periodName,
+      this.simulated = false,
+      this.countAsZero = false,
+      this.optional = false});
 
-  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String? nomPeriode) {
+  factory Grade.fromEcoleDirecteJson(
+      Map<String, dynamic> json, String? nomPeriode) {
     return Grade(
       min: json["minClasse"]?.toString(),
       max: json["maxClasse"]?.toString(),
@@ -210,7 +213,7 @@ class Grade {
       disciplineName: json['libelleMatiere']?.toString(),
       letters: json['enLettre'],
       value: json['valeur']?.toString(),
-      weight: json['coef']?.toString(),
+      weight: (json['coef'] == 0) ? "1" : json['coef']?.toString(),
       scale: json['noteSur']?.toString(),
       classAverage: json['moyenneClasse']?.toString(),
       testType: json['typeDevoir']?.toString(),
