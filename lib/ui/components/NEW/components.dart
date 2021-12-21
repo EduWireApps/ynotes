@@ -1,0 +1,31 @@
+library components;
+
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/logic/shared/login_controller.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
+import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/app/app.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
+import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// BUTTONS
+part 'src/buttons/buttons.dart';
+part 'src/buttons/legal_link_button.dart';
+
+// DIALOGS
+part 'src/dialogs/about_dialog.dart';
+part 'src/dialogs/dialogs.dart';
+part 'src/dialogs/legal_links_dialog.dart';
+part 'src/dialogs/report_loader_dialog.dart';
+
+// NAVIGATION
+part 'src/navigation/app.dart';
+part 'src/navigation/connection_status.dart';
+part 'src/navigation/drawer.dart';

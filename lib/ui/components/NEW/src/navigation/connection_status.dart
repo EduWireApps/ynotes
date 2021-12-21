@@ -1,20 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:ynotes/core/logic/shared/login_controller.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
-import 'package:ynotes/app/app.dart';
-import 'package:ynotes_packages/components.dart';
-import 'package:ynotes_packages/theme.dart';
-import 'package:ynotes_packages/utilities.dart';
+part of components;
 
-class ZConnectionStatus extends StatefulWidget {
+class _ConnectionStatus extends StatefulWidget {
   final Widget child;
-  const ZConnectionStatus({Key? key, required this.child}) : super(key: key);
+  const _ConnectionStatus({Key? key, required this.child}) : super(key: key);
 
   @override
-  _ZConnectionStatusState createState() => _ZConnectionStatusState();
+  __ConnectionStatusState createState() => __ConnectionStatusState();
 }
 
-class _ZConnectionStatusState extends State<ZConnectionStatus> with TickerProviderStateMixin {
+class __ConnectionStatusState extends State<_ConnectionStatus> with TickerProviderStateMixin {
   late final Animation<double> _animation;
   late final AnimationController _controller;
   final Duration _duration = const Duration(milliseconds: 600);

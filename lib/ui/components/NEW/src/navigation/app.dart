@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:ynotes/ui/components/NEW/navigation/connection_status.dart';
-import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
-import 'package:ynotes_packages/components.dart';
-import 'package:ynotes_packages/theme.dart';
+part of components;
 
 class ZApp extends StatelessWidget {
   final YPage page;
@@ -17,17 +13,12 @@ class ZApp extends StatelessWidget {
       color: theme.colors.backgroundColor,
       child: Row(
         children: [
-          if (_showDrawer)
-            SizedBox(
-              height: 100.vh,
-              width: 310,
-              child: const YDrawer(),
-            ),
+          if (_showDrawer) SizedBox(height: 100.vh, width: 310, child: const _Drawer()),
           Expanded(
-            child: ZConnectionStatus(
+            child: _ConnectionStatus(
               child: YPage(
                 key: page.key,
-                drawer: const YDrawer(),
+                drawer: const _Drawer(),
                 appBar: Builder(builder: (context) {
                   if (_showDrawer && Scaffold.of(context).isDrawerOpen) {
                     Future.delayed(const Duration(seconds: 0), () {

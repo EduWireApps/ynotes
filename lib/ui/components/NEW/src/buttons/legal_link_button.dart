@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
-import 'package:ynotes_packages/components.dart';
-import 'package:ynotes_packages/theme.dart';
+part of components;
 
 /// A button that opens a dialog containing the legal links
-class LegalLinksButton extends StatelessWidget {
-  const LegalLinksButton({Key? key}) : super(key: key);
+class _LegalLinksButton extends StatelessWidget {
+  const _LegalLinksButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

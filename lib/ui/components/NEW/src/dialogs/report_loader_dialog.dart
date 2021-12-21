@@ -1,17 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:ynotes_packages/components.dart';
-import 'package:ynotes_packages/theme.dart';
-import 'package:ynotes_packages/utilities.dart';
+part of components;
 
-class ReportLoaderDialog<T> extends StatefulWidget {
+class _ReportLoaderDialog<T> extends StatefulWidget {
   final Future<T> future;
-  const ReportLoaderDialog({Key? key, required this.future}) : super(key: key);
+  const _ReportLoaderDialog({Key? key, required this.future}) : super(key: key);
 
   @override
-  State<ReportLoaderDialog<T>> createState() => _ReportLoaderDialogState<T>();
+  State<_ReportLoaderDialog<T>> createState() => __ReportLoaderDialogState<T>();
 }
 
-class _ReportLoaderDialogState<T> extends State<ReportLoaderDialog<T>> {
+class __ReportLoaderDialogState<T> extends State<_ReportLoaderDialog<T>> {
   @override
   void initState() {
     super.initState();

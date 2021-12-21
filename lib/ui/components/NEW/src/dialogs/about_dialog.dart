@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:ynotes_packages/components.dart';
-import 'package:ynotes_packages/theme.dart';
+part of components;
 
 /// A dialog that handles legal stuff
-class AboutDialog extends StatelessWidget {
-  const AboutDialog({Key? key}) : super(key: key);
+class _AboutDialog extends StatelessWidget {
+  const _AboutDialog({Key? key}) : super(key: key);
 
   /// A dialog that handles legal stuff
   @override

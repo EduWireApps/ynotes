@@ -1,12 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes_packages/components.dart';
-import 'package:ynotes_packages/theme.dart';
+part of components;
 
 /// A dialog containing legal links.
-class LegalLinksDialog extends StatelessWidget {
+class _LegalLinksDialog extends StatelessWidget {
   /// A dialog containing legal links.
-  const LegalLinksDialog({Key? key}) : super(key: key);
+  const _LegalLinksDialog({Key? key}) : super(key: key);
 
   static const List<_LegalLink> _legalLinks = [
     _LegalLink(

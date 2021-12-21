@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:ynotes/ui/components/NEW/buttons/legal_link_button.dart';
+part of components;
 
 /// A class that stores shared buttons accross the app
 class AppButtons {
@@ -7,5 +6,5 @@ class AppButtons {
   const AppButtons._();
 
   /// A button that opens a dialog containing the legal links
-  static const Widget legalLinks = LegalLinksButton();
+  static const Widget legalLinks = _LegalLinksButton();
 }

@@ -51,7 +51,7 @@ class _AuthRepository extends Repository {
                 lastName: appAccount.lastName,
                 className: account["profile"]["classe"]["libelle"],
                 id: account["id"].toString(),
-                profilePicture: account["profile"]["photo"])
+                profilePicture: "https:" + account["profile"]["photo"])
             : accounts[0]
       };
       return Response(data: map);

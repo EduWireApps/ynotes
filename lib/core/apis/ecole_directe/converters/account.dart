@@ -126,12 +126,14 @@ class EcoleDirecteAccountConverter {
     String? studentClass = utf8convert(mapGet(schoolAccountsData, ["profile", "classe", "libelle"]));
     String? studentID = mapGet(schoolAccountsData, ["id"]).toString();
     List<appTabs> tabs = availableTabs(mapGet(schoolAccountsData, ["modules"]));
+    String? profilePicture = utf8convert(mapGet(schoolAccountsData, ["profile", "photo"]));
     return SchoolAccount(
         name: name,
         surname: surname,
         studentClass: studentClass,
         studentID: studentID,
         availableTabs: tabs,
-        schoolName: schoolName);
+        schoolName: schoolName,
+        profilePicture: profilePicture);
   }
 }

@@ -8,7 +8,7 @@ import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
+import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
