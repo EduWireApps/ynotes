@@ -98,26 +98,22 @@ class _RoutesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<AppRoute> validRoutes = appRoutes.where((route) => route.show && (route.guard?.call() ?? true)).toList();
     return ListView.builder(
-        itemCount: appRoutes.length,
+        itemCount: validRoutes.length,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, i) {
-          final AppRoute route = appRoutes[i];
-          final bool valid = route.show && (appRoutes[i].guard?.call() ?? true);
+          final AppRoute route = validRoutes[i];
           final bool current = ModalRoute.of(context)!.settings.name == route.path;
-          if (valid) {
-            return Material(
-                color: theme.colors.backgroundColor,
-                child: ListTile(
-                  leading: Icon(route.icon, color: theme.colors.foregroundLightColor),
-                  title: Text(route.title!, style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
-                  tileColor: current ? theme.colors.backgroundLightColor.withOpacity(.5) : null,
-                  onTap: () => Navigator.pushNamed(context, route.path),
-                ));
-          } else {
-            return Container();
-          }
+          return Material(
+              color: theme.colors.backgroundColor,
+              child: ListTile(
+                leading: Icon(route.icon, color: theme.colors.foregroundLightColor),
+                title: Text(route.title!, style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
+                tileColor: current ? theme.colors.backgroundLightColor.withOpacity(.5) : null,
+                onTap: () => current ? null : Navigator.pushNamed(context, route.path),
+              ));
         });
   }
 }
