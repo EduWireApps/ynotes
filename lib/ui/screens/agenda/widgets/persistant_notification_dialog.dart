@@ -195,7 +195,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
   getAuth() async {
     await OptimizeBattery.isIgnoringBatteryOptimizations().then((onValue) {
       setState(() {
-        if (onValue!) {
+        if (onValue) {
           setState(() {
             perm = "";
           });

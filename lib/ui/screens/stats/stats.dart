@@ -1,9 +1,9 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:simple_animations/simple_animations.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
+
 import 'widgets/leading_icon.dart';
 
 class StatsPage extends StatefulWidget {
@@ -52,85 +52,74 @@ class _StatsPageState extends State<StatsPage> with LayoutMixin {
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(11)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(11),
-                child: PlasmaRenderer(
-                  particles: 5,
-                  color: const Color(0x8a2513ef),
-                  size: 1.67,
-                  speed: 10,
-                  offset: 0.00,
-                  blendMode: BlendMode.screen,
-                  child: SizedBox(
-                    width: screenSize.size.width / 5 * 4.8,
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Statistiques globales",
-                          style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 18),
-                        ),
-                        Divider(
-                          color: ThemeUtils.textColor(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("45650",
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 29)),
-                            SizedBox(
-                              width: screenSize.size.width / 5 * 0.05,
-                            ),
-                            Tooltip(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
-                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
-                              message: "Votre score global calculé à partir d'une formule secrète",
-                              child: const Icon(
-                                MdiIcons.information,
-                                color: Colors.white,
-                              ),
-                            )
-                          ],
-                        ),
-                        Wrap(
-                          direction: Axis.horizontal,
-                          alignment: WrapAlignment.center,
-                          runSpacing: screenSize.size.height / 10 * 0.1,
-                          spacing: screenSize.size.width / 5 * 0.2,
-                          children: const [
-                            LeadingAndSubtitle(
-                              leading: Text(
-                                "14.5",
-                                style: TextStyle(
-                                    fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
-                              ),
+                child: SizedBox(
+                  width: screenSize.size.width / 5 * 4.8,
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Statistiques globales",
+                        style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 18),
+                      ),
+                      Divider(
+                        color: ThemeUtils.textColor(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("45650",
+                              style: TextStyle(
+                                  fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.w600, fontSize: 29)),
+                          SizedBox(
+                            width: screenSize.size.width / 5 * 0.05,
+                          ),
+                          Tooltip(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
+                            margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
+                            message: "Votre score global calculé à partir d'une formule secrète",
+                            child: const Icon(
+                              MdiIcons.information,
                               color: Colors.white,
-                              subtitle: "de moyenne générale",
                             ),
-                            LeadingAndSubtitle(
-                              leading: Text(
-                                "14",
-                                style: TextStyle(
-                                    fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
-                              ),
-                              color: Colors.white,
-                              subtitle: "devoirs effectués",
+                          )
+                        ],
+                      ),
+                      Wrap(
+                        direction: Axis.horizontal,
+                        alignment: WrapAlignment.center,
+                        runSpacing: screenSize.size.height / 10 * 0.1,
+                        spacing: screenSize.size.width / 5 * 0.2,
+                        children: const [
+                          LeadingAndSubtitle(
+                            leading: Text(
+                              "14.5",
+                              style: TextStyle(
+                                  fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
                             ),
-                            LeadingAndSubtitle(
-                              leading: Text(
-                                "14.5",
-                                style: TextStyle(
-                                    fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
-                              ),
-                              color: Colors.white,
-                              subtitle: "de moyenne générale",
+                            color: Colors.white,
+                            subtitle: "de moyenne générale",
+                          ),
+                          LeadingAndSubtitle(
+                            leading: Text(
+                              "14",
+                              style: TextStyle(
+                                  fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
                             ),
-                          ],
-                        )
-                      ],
-                    ),
+                            color: Colors.white,
+                            subtitle: "devoirs effectués",
+                          ),
+                          LeadingAndSubtitle(
+                            leading: Text(
+                              "14.5",
+                              style: TextStyle(
+                                  fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
+                            ),
+                            color: Colors.white,
+                            subtitle: "de moyenne générale",
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),

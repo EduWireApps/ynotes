@@ -23,7 +23,7 @@ Future<void> _extRemovalMigration() async {
 
         List<FileSystemEntity>? files = await oldDownloadsDirectory.list().toList();
 
-        if ((files ?? []).isNotEmpty) {
+        if ((files).isNotEmpty) {
           String path = (await FolderAppUtil.getDirectory(downloads: true)).path;
           Future.forEach(files, (FileSystemEntity element) async {
             String? fileName = await FileAppUtil.getFileNameWithExtension(element);
