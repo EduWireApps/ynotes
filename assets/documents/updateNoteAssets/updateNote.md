@@ -4,6 +4,11 @@ _On voulait faire un tour de magie. Mais vous n'avez pas trop apprécié._
 - Correction du bug de disparition des notes:
     - Les utilisateurs EcoleDirecte devraient à nouveau être en mesure de voir leurs notes
     - Notez que les coefficients "0" ont été remplacés par des coefficients 1
+- Correctif temporaire pour les notifications de nouvelles notes
+    - Nous avons fait quelques modifications qui devraient améliorer les notifications de nouvelles notes
+      - Sur Android : n'hésitez pas à utiliser l'outil "Réparer" si vous ne voyez toujours pas ces notifications
+      - Sur iOS : rien de nouveau, les notifications s'afficheront si vous utilisez régulièrement l'application
+    - La dernière note devrait bien s'afficher
 - Diverses corrections d'affichage pour l'écran d'accueil
 # 0.14.5
 
