@@ -45,7 +45,7 @@ class AppNotification {
         });
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
-        CustomLogger.error(e, stackHint:"ODA=");
+        CustomLogger.error(e, stackHint: "ODA=");
       }
     }
     var date = DateTime.now();
@@ -61,7 +61,7 @@ class AppNotification {
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
       CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
-      CustomLogger.error(e, stackHint:"ODE=");
+      CustomLogger.error(e, stackHint: "ODE=");
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("offlineData");
@@ -74,7 +74,7 @@ class AppNotification {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured collecting online lessons");
-        CustomLogger.error(e, stackHint:"ODI=");
+        CustomLogger.error(e, stackHint: "ODI=");
 
         Box _offlineBox = await Hive.openBox("offlineData");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -180,7 +180,7 @@ class AppNotification {
           await getRelatedAction(receivedNotification, context, navigatorCallback);
         });
       } catch (e) {
-        CustomLogger.error(e, stackHint:"ODM=");
+        CustomLogger.error(e, stackHint: "ODM=");
       }
     }
   }
@@ -233,7 +233,7 @@ class AppNotification {
       }
     } catch (e) {
       CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling agenda reminders");
-      CustomLogger.error(e, stackHint:"ODQ=");
+      CustomLogger.error(e, stackHint: "ODQ=");
     }
   }
 
@@ -309,7 +309,7 @@ class AppNotification {
         });
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
-        CustomLogger.error(e, stackHint:"ODU=");
+        CustomLogger.error(e, stackHint: "ODU=");
       }
     }
     var date = DateTime.now();
@@ -326,7 +326,7 @@ class AppNotification {
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
       CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
-      CustomLogger.error(e, stackHint:"ODY=");
+      CustomLogger.error(e, stackHint: "ODY=");
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("agenda");
@@ -339,7 +339,7 @@ class AppNotification {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while collecting online lessons");
-        CustomLogger.error(e, stackHint:"ODc=");
+        CustomLogger.error(e, stackHint: "ODc=");
 
         Box _offlineBox = await Hive.openBox("offlineData2");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -370,7 +370,7 @@ class AppNotification {
             }
           } catch (e) {
             CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling lesson notification");
-            CustomLogger.error(e, stackHint:"ODg=");
+            CustomLogger.error(e, stackHint: "ODg=");
           }
         }
       });
@@ -380,7 +380,7 @@ class AppNotification {
             allowWhileIdle: true, rescheduleOnReboot: true)) CustomLogger.log("NOTIFICATIONS", "Scheduled last lesson");
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling last lesson");
-        CustomLogger.error(e, stackHint:"ODk=");
+        CustomLogger.error(e, stackHint: "ODk=");
       }
     }
   }
@@ -461,6 +461,8 @@ class AppNotification {
           title: "Nouvelle note",
           body: "<b>" +
               (grade.disciplineName ?? "(non défini)") +
+              "</b><b><br>" +
+              (grade.testName ?? "(pas de nom)") +
               "</b><br>" +
               "Note:" +
               (grade.value ?? "N/A") +
@@ -473,6 +475,38 @@ class AppNotification {
               (grade.scale ?? "N/A"),
           showWhen: false),
     );
+  }
+
+  static Future<void> showNewLessonCancellationNotification(Lesson? lesson) async {
+    int id = 444;
+
+    await AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'canceled',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelName: 'Cours annulé',
+          importance: NotificationImportance.High,
+          channelDescription: "Notification d'annulation de cours",
+          defaultColor: theme.colors.primary.backgroundColor,
+          ledColor: Colors.red,
+          onlyAlertOnce: true)
+    ]);
+
+    try {
+      await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+        id: id,
+        notificationLayout: NotificationLayout.Default,
+        channelKey: 'canceled',
+        title: 'Annulation de cours',
+        body:
+            'Le cours de ${lesson!.discipline} de ${lesson.start!.hour}h${lesson.start!.minute} à ${lesson.end!.hour}h${lesson.end!.minute} a été annulé !',
+        locked: false,
+      ));
+    } catch (e) {
+      CustomLogger.log("NOTIFICATIONS", "An error occurred while setting ongoin notification");
+      CustomLogger.error(e, stackHint: "OTI=");
+    }
   }
 
   static showNewMailNotification(Mail mail, String content) async {
@@ -542,7 +576,7 @@ class AppNotification {
           sentence = "Votre cours a été annulé.";
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint:"OTA=");
+        CustomLogger.error(e, stackHint: "OTA=");
       }
       try {
         CustomLogger.log(
@@ -566,40 +600,8 @@ class AppNotification {
         );
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while setting ongoing notification");
-        CustomLogger.error(e, stackHint:"OTE=");
+        CustomLogger.error(e, stackHint: "OTE=");
       }
-    }
-  }
-
-  static Future<void> showNewLessonCancellationNotification(Lesson? lesson) async {
-    int id = 444;
-
-    await AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-          channelKey: 'canceled',
-          defaultPrivacy: NotificationPrivacy.Public,
-          channelName: 'Cours annulé',
-          importance: NotificationImportance.High,
-          channelDescription: "Notification d'annulation de cours",
-          defaultColor: theme.colors.primary.backgroundColor,
-          ledColor: Colors.red,
-          onlyAlertOnce: true)
-    ]);
-
-    try {
-      await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-        id: id,
-        notificationLayout: NotificationLayout.Default,
-        channelKey: 'canceled',
-        title: 'Annulation de cours',
-        body:
-            'Le cours de ${lesson!.discipline} de ${lesson.start!.hour}h${lesson.start!.minute} à ${lesson.end!.hour}h${lesson.end!.minute} a été annulé !',
-        locked: false,
-      ));
-    } catch (e) {
-      CustomLogger.log("NOTIFICATIONS", "An error occurred while setting ongoin notification");
-      CustomLogger.error(e, stackHint:"OTI=");
     }
   }
 }

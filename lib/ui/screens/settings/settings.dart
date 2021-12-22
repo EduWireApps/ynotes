@@ -85,6 +85,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: "Show logs",
                           subtitle: "Print secure logger categories",
                           onTap: () => Navigator.pushNamed(context, "/settings/logs")),
+                      YSettingsTile(
+                          title: "Reset grades count",
+                          onTap: () {
+                            appSys.settings.system.lastGradeCount = 1;
+                            appSys.saveSettings();
+                          }),
                       YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, "")),
                       YSettingsTile(
                           title: "Trigger notification",

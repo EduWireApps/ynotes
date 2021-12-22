@@ -306,12 +306,12 @@ class GradesController extends ChangeNotifier {
         }
       }
       try {
-        double? _average = f.getAverage().isNaN ? (f.average as double?) : f.getAverage();
+        double? _average = f.getAverage().isNaN ? (double.tryParse(f.average ?? "")) : f.getAverage();
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint:"Mzg=");
+        CustomLogger.error(e, stackHint: "Mzg=");
       }
     }
 
