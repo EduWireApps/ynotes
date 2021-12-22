@@ -87,8 +87,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 child: Icon(MdiIcons.eyePlus, color: ThemeUtils.textColor())),
           ),
         ],
-        brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
-        backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).primaryColor,
       ),
       body: widget.homework.isEmpty
           ? buildNoHomework()
