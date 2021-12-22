@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 
 part 'models.g.dart';
 
@@ -13,7 +13,7 @@ class Classeur {
 }
 
 @HiveType(typeId: 11)
-class Mail extends HiveObject{
+class Mail extends HiveObject {
   //E.G: "69627"
   @HiveField(0)
   String? id;

@@ -1,5 +1,5 @@
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/offline/data/homework/doneHomework.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/offline/data/homework/done_homework.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkUtils {

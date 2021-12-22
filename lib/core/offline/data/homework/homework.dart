@@ -1,6 +1,7 @@
 import 'package:calendar_time/calendar_time.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class HomeworkOffline {
   late Offline parent;
@@ -11,7 +12,8 @@ class HomeworkOffline {
     try {
       return (parent.homeworkBox?.values.toList().cast<Homework>());
     } catch (e) {
-      print("Error while returning homework " + e.toString());
+      CustomLogger.log("HOMEWORK", "An error occured while returning homework");
+      CustomLogger.error(e, stackHint:"NjY=");
       return null;
     }
   }
@@ -22,7 +24,8 @@ class HomeworkOffline {
           ?.where((element) => (CalendarTime(element.date).isSameDayAs(date)))
           .toList();
     } catch (e) {
-      print("Error while returning homework " + e.toString());
+      CustomLogger.log("HOMEWORK", "An error occured while returning homework");
+      CustomLogger.error(e, stackHint:"Njc=");
       return null;
     }
   }
@@ -30,7 +33,7 @@ class HomeworkOffline {
   ///Update existing appSys.offline.homework.get() with passed data
   ///if `add` boolean is set to true passed data is combined with old data
   updateHomework(List<Homework> newHomeworks) async {
-    print("Update offline homwork");
+    CustomLogger.log("HOMEWORK", "Update offline homework");
     try {
       List<Homework>? oldHW = [];
       if (parent.homeworkBox?.values != null) {
@@ -63,11 +66,12 @@ class HomeworkOffline {
       if (old != null) {
         newHomeworks
             .removeWhere((newHomework) => old.any((oldPieceOfHomework) => oldPieceOfHomework.id == newHomework.id));
-        print(newHomeworks.length);
+        CustomLogger.log("HOMEWORK", "New homework length: ${newHomeworks.length}");
       }
       await parent.homeworkBox?.addAll(newHomeworks);
     } catch (e) {
-      print("Error while updating homework " + e.toString());
+      CustomLogger.log("HOMEWORK", "An error occured while updating homework");
+      CustomLogger.error(e, stackHint:"Njg=");
     }
   }
 

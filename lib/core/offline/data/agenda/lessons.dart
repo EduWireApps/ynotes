@@ -1,6 +1,7 @@
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 class LessonsOffline {
@@ -13,7 +14,8 @@ class LessonsOffline {
     try {
       return parent.agendaBox?.get("lessons")?[week]?.cast<Lesson>();
     } catch (e) {
-      print("Error while returning lessons " + e.toString());
+      CustomLogger.log("LESSONS", "An error occurred while returning lessons");
+      CustomLogger.error(e, stackHint:"Njk=");
       return null;
     }
   }
@@ -22,14 +24,15 @@ class LessonsOffline {
   ///shorten fetching delays, it should ALWAYS be from a same starting point
   updateLessons(List<Lesson> newData, int week) async {
     try {
-      print("Update offline lessons (week : $week, length : ${newData.length})");
-      Map<dynamic, dynamic> timeTable = Map();
+      CustomLogger.log("LESSONS", "Update offline lessons (week : $week, length : ${newData.length})");
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("lessons");
       if (offline != null) {
         timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("lessons"));
       }
       int todayWeek = await getWeek(DateTime.now());
-      bool lighteningOverride = appSys.settings?["user"]["agendaPage"]["lighteningOverride"] ?? false;
+      bool lighteningOverride = appSys.settings.user.agendaPage.lighteningOverride;
+
       //Remove old lessons in order to lighten the db
       //Can be overriden in settings
       if (!lighteningOverride) {
@@ -43,7 +46,8 @@ class LessonsOffline {
 
       return true;
     } catch (e) {
-      print("Error while updating offline lessons " + e.toString());
+      CustomLogger.log("LESSONS", "An error occurred while updating offline lessons");
+      CustomLogger.error(e, stackHint:"NzA=");
     }
   }
 }

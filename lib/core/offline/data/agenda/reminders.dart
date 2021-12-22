@@ -1,5 +1,9 @@
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class RemindersOffline {
   late Offline parent;
@@ -14,7 +18,8 @@ class RemindersOffline {
           .toList()
           ?.cast<AgendaReminder>();
     } catch (e) {
-      print("Error while returning agenda reminders " + e.toString());
+      CustomLogger.log("REMINDERS", "An error occured while returning agenda reminders");
+      CustomLogger.error(e, stackHint:"NzQ=");
       return null;
     }
   }
@@ -32,7 +37,8 @@ class RemindersOffline {
       }
       await parent.agendaBox?.put("reminders", offline);
     } catch (e) {
-      print("Error while removing reminder " + e.toString());
+      CustomLogger.log("REMINDERS", "An error occured while removing reminders");
+      CustomLogger.error(e, stackHint:"NzU=");
     }
   }
 
@@ -49,7 +55,8 @@ class RemindersOffline {
       }
       await parent.agendaBox?.put("reminders", offline);
     } catch (e) {
-      print("Error while removing reminder " + e.toString());
+      CustomLogger.log("REMINDERS", "An error occured while removing reminders");
+      CustomLogger.error(e, stackHint:"NzY=");
     }
   }
 
@@ -61,13 +68,26 @@ class RemindersOffline {
       if (old != null) {
         offline.addAll(old.cast<AgendaReminder>());
       }
+      Offline _offline = Offline();
+      API api = apiManager(_offline);
+      final lessons = await api.getNextLessons(DateTime.now());
+      if (lessons != null) {
+        for (var reminder in offline) {
+          var lesson = lessons.firstWhere((element) => element.id == reminder.id);
+          var newLesson = lessons.firstWhere((element) => element.id == reminder.id);
+          if (newLesson.canceled != lesson.canceled && newLesson.canceled == true) {
+            AppNotification.showNewLessonCancellationNotification(newLesson);
+          }
+        }
+      }
       offline.removeWhere((a) => a.id == newData.id);
       offline.add(newData);
       await parent.agendaBox?.put("reminders", offline);
 
-      print("Updated reminders");
+      CustomLogger.log("REMINDERS", "Updated reminders");
     } catch (e) {
-      print("Error while updating reminder " + e.toString());
+      CustomLogger.log("REMINDERS", "An error occured while updating reminders");
+      CustomLogger.error(e, stackHint:"Nzc=");
     }
   }
 }

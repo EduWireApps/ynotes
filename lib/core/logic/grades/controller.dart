@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/consts/disciplinesFilter.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/data/disciplines_filter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 ///To use to collect grades in a view
@@ -20,8 +21,8 @@ class GradesController extends ChangeNotifier {
   List<String?>? specialties;
   String _sorter = "all";
 
-  List<Grade> _addedGrades = [];
-  List<Grade?> _removedGrades = [];
+  final List<Grade> _addedGrades = [];
+  final List<Grade?> _removedGrades = [];
 
   GradesController(API? api) {
     _api = api;
@@ -69,8 +70,8 @@ class GradesController extends ChangeNotifier {
   }
 
   //Get school periods;
-  Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
+  Future<void> refresh({bool force = false, bool refreshFromOffline = false}) async {
+    CustomLogger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
     if (isSimulating && force) {
       isSimulating = false;
     }
@@ -147,8 +148,8 @@ class GradesController extends ChangeNotifier {
             classNumber: e.classNumber,
             generalRank: e.generalRank))
         .toList());
-    print("Merging ...");
-    _simulatedDisciplines.forEach((discipline) {
+    CustomLogger.log("GRADES", "Merging");
+    for (var discipline in _simulatedDisciplines) {
       discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
           element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
       if (_addedGrades.any((_grade) =>
@@ -156,7 +157,7 @@ class GradesController extends ChangeNotifier {
         discipline.gradesList!.addAll(_addedGrades.where((_grade) =>
             _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode));
       }
-    });
+    }
 
     return _simulatedDisciplines;
   }
@@ -192,7 +193,7 @@ class GradesController extends ChangeNotifier {
       return li;
     }
     List<Discipline> toReturn = [];
-    (li ?? []).forEach((f) {
+    for (var f in (li ?? [])) {
       switch (_sorter) {
         case "all":
           if (f.periodName == _period) {
@@ -200,7 +201,7 @@ class GradesController extends ChangeNotifier {
           }
           break;
         case "littérature":
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["literary"]["ED"];
 
             if (f.periodName == _period &&
@@ -230,7 +231,7 @@ class GradesController extends ChangeNotifier {
 
           break;
         case "sciences":
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["sciences"]["ED"];
 
             if (f.periodName == _period &&
@@ -259,7 +260,7 @@ class GradesController extends ChangeNotifier {
             }
           }
           break;
-        case "spécialités":
+        case "specialties":
           if (specialties != null) {
             if (f.periodName == _period &&
                 specialties!.any((test) {
@@ -272,16 +273,16 @@ class GradesController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            debugPrint("Specialties list is null");
+            CustomLogger.log("GRADES", "Specialties list is null");
           }
           break;
       }
-    });
+    }
     return toReturn;
   }
 
   _refreshPeriods() async {
-    List<Period> temp = this.disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
+    List<Period> temp = disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
     final ids = temp.map((e) => e.name).toSet();
     temp.retainWhere((x) => ids.remove(x.name));
     List<Period> unicalPeriods = temp.toSet().toList();
@@ -294,7 +295,7 @@ class GradesController extends ChangeNotifier {
     double? temp;
     List<double> averages = [];
     for (Discipline f in disciplines()!.where((i) => i.periodName == _period)) {
-      if (appSys.settings!["system"]["chosenParser"] == 1) {
+      if (appSys.settings.system.chosenParser == 1) {
         if (f.generalAverage != null) {
           double? _temp = double.tryParse(f.generalAverage!.replaceAll(",", "."));
           if (temp != null && !temp.isNaN) {
@@ -305,17 +306,19 @@ class GradesController extends ChangeNotifier {
         }
       }
       try {
-        double? _average = f.getAverage().isNaN ? f.average as double? : f.getAverage();
+        double? _average = f.getAverage().isNaN ? (double.tryParse(f.average ?? "")) : f.getAverage();
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
-      } catch (e) {}
+      } catch (e) {
+        CustomLogger.error(e, stackHint: "Mzg=");
+      }
     }
 
     double sum = 0.0;
-    averages.forEach((element) {
+    for (var element in averages) {
       sum += element;
-    });
+    }
     _average = temp ?? (sum / averages.length);
     notifyListeners();
   }
@@ -339,8 +342,8 @@ class GradesController extends ChangeNotifier {
   }
 
   void _setDefaultPeriod() {
-    if (_disciplines != null && _disciplines!.length != 0 && _period == "") {
-      _period = (_disciplines ?? []).lastWhere((list) => list.gradesList!.length > 0).gradesList!.last.periodName;
+    if (_disciplines != null && _disciplines!.isNotEmpty && _period == "") {
+      _period = (_disciplines ?? []).lastWhere((list) => list.gradesList!.isNotEmpty).gradesList!.last.periodName;
     }
   }
 

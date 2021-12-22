@@ -1,28 +1,33 @@
 # yNotes
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Vidéo de promotion pour la version 0.9.1](https://img.youtube.com/vi/BHQ5uG2zTS4/0.jpg)](https://www.youtube.com/watch?v=BHQ5uG2zTS4)
 
 # Introduction
- **yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes vos informations scolaires dans une interface moderne et intuitive**. 
 
-*L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote***. 
+**yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes vos informations scolaires dans une interface moderne et intuitive**.
 
+\*L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote\***.
 
-- ### Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) 
+- ### Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) ou l'[App Store](https://apps.apple.com/fr/app/ynotes/id1563624059)
 - ### Rejoignez le [serveur Discord officiel](https://discord.gg/uNy7F3hwuA) pour contacter l'équipe et être au courant de chaque nouveauté
 
 ```diff
-- yNotes n'est pas un client officiel et utilise directement les APIs d'applications scolaires. 
+- yNotes n'est pas un client officiel et utilise directement les APIs d'applications scolaires.
 - Vos identifiants sont chiffrés et stockés sur votre appareil et nous n'y avons strictement pas accès
-- Nous ne nous portons pas responsables en cas de sanction de l'application scolaire. 
+- Nous ne nous portons pas responsables en cas de sanction de l'application scolaire.
 ```
-# Plan de ce README
+
+# Sommaire
+
 - [yNotes](#ynotes)
 - [Introduction](#introduction)
-- [Plan de ce README](#plan-de-ce-readme)
+- [Sommaire](#sommaire)
 - [Fonctionnalités](#fonctionnalités)
     - [Fonctionnalités mises en place](#fonctionnalités-mises-en-place)
     - [Fonctionnalités à venir](#fonctionnalités-à-venir)
@@ -35,16 +40,19 @@
 - [A propos des APIs officielles](#a-propos-des-apis-officielles)
 - [Documentation](#documentation)
     - [Architecture](#architecture)
+    - [Précisions](#précisions)
+    - [Déboguer une application déjà installée](#déboguer-une-application-déjà-installée)
 - [Contributeurs](#contributeurs)
     - [Mentions spéciales](#mentions-spéciales)
 
+# Fonctionnalités
 
-# Fonctionnalités 
 Les fonctionnalités de yNotes s'étendent chaque jour pour vous permettre d'être le plus efficace dans votre travail, et l'interface est régulièrement revue pour être la plus intuitive possible.
+
 ### Fonctionnalités mises en place
 
-
 - **Notes**
+
   - Affichage des notes et des données liées
   - Notification de nouvelles notes
   - Partage des notes
@@ -65,25 +73,33 @@ Les fonctionnalités de yNotes s'étendent chaque jour pour vous permettre d'êt
   - Sondages (Pronote)
 - **Mode nuit**
 - **Application hors ligne**
+
 ### Fonctionnalités à venir
 
 - Fonctionnalités supplémentaires dans l'affichage des devoirs, partage et recherche rapide par mot-clé (partenariat avec applications scolaires ?)
 - Tickets de vie scolaire
 - Actualités et informations
+
 # Installation
+
 L'application est développée avec le framework Flutter, et donc développée en Dart.
 
 ### Depuis les releases officielles
+
 Si vous êtes utilisateur et souhaitez télécharger l'application sur votre smartphone, vous pouvez :
+
 ### Android
+
 - [Installer l'application depuis le Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes)
 - [Télécharger la dernière release (.apk)](https://github.com/ModernChocolate/ynotes/releases)
 - [Compiler vous même votre application](#compilation)
+
 ### iOS
-- Étant donné que les frais d'inscriptions obligatoires pour devenir Apple Developer sont hors budgets, vous ne pourrez pas trouver l'application sur l'App Store. Vous pouvez donc compiler l'application à l'étape suivante si vous possédez un Mac.
 
+- [Installer l'application depuis l'App Store](https://apps.apple.com/fr/app/ynotes/id1563624059)
+- [Compiler vous même votre application](#compilation)
 
-# Compilation 
+# Compilation
 
 La compilation permet de créer une application interprétable par un appareil donné, dans notre cas votre smartphone à partir du code source.
 
@@ -91,38 +107,45 @@ Il est conseillé de procéder à l'installation guidée indiquée par [la docum
 
 Notez que pour compiler l'application pour iOS, il vous faut absolument un ordinateur Mac.
 
-Téléchargez une version officielle du code source de l'application depuis cette page, si vous êtes utilisateur, préférez la branche stable, sinon vous pouvez essayer de compiler une version bêta de yNotes. 
+Téléchargez une version officielle du code source de l'application depuis cette page, si vous êtes utilisateur, préférez la branche stable, sinon vous pouvez essayer de compiler une version bêta de yNotes.
 
-Ouvrez le dossier du code source dans votre éditeur favori (VSCode, Android Studio, XCode). 
+Ouvrez le dossier du code source dans votre éditeur favori (VSCode, Android Studio, XCode).
 
 Assurez vous que votre téléphone est connecté à votre ordinateur si vous souhaitez directement compiler l'application sur ce dernier et vérifiez les conditions suivantes.
 
 Suivez les étapes de compilation de la documentation officielle :
-* [Compiler pour Android](https://flutter.dev/docs/deployment/android)
-* [Compiler pour iOS](https://flutter.dev/docs/deployment/ios)
-*Vous devez disposer d'un compte Apple Developer gratuit (ou payant) pour installer l'application sur un appareil iOS*
+
+- [Compiler pour Android](https://flutter.dev/docs/deployment/android)
+- [Compiler pour iOS](https://flutter.dev/docs/deployment/ios)
+  _Vous devez disposer d'un compte Apple Developer gratuit (ou payant) pour installer l'application sur un appareil iOS_
 
 # Compatibilité
+
 yNotes est disponible pour les utilisateurs suivants :
+
 - Utilisateurs d'EcoleDirecte (comptes élèves)
 - Utilisateurs Pronote (comptes élèves)
+
   - Par connexion directe (munissez vous d'une [adresse Pronote valide](https://support.ynotes.fr/compte/se-connecter-avec-son-compte-pronote)) ou géolocalisation
     - Support HTTPS et HTTP
     - Support de tous les ENT/CAS
-  
-  Nous ajoutons actuellement une fonction qui permettra de se connecter à partir de __n'importe quel ENT__.
+
+  Nous ajoutons actuellement une fonction qui permettra de se connecter à partir de **n'importe quel ENT**.
 
 # A propos des APIs officielles
+
 En réalité, Pronote et EcoleDirecte ne proposent pas vraiment "d'APIs" publiques et faciles d'accès. Je vous invite à regarder le dossier apis (`lib/core/apis`) puis consulter leurs dossiers respectifs pour comprendre comment yNotes accède aux données.
 
 - Pour EcoleDirecte, j'ai intégralement réalisé l'API de l'application. Les requêtes ne sont pas très complexes et vous pouvez facilement obtenir les données après avoir récupéré un `token` qui est valide environ `15 minutes` dans la requête de connexion.
-- Pour Pronote, j'ai quasiment recopié l'[API en python](https://github.com/bain3/pronotepy) réalisée par [bain](https://github.com/bain3). Si vous comptez vous lancer dans la réalisation de votre propre API - ce que je vous déconseille - jetez un coup d'oeil à [cette discussion](https://github.com/LelouBil/PronoteLib/blob/master/Protocol.md). Mais Pronote utilisant tellement de méthodes complexes qui vous compliqueront la tache je vous conseille plutôt de vous baser sur [l'API de Bain](https://github.com/bain3/pronotepy) citée précédemment, sur [l'API très complète de Litarvan](https://github.com/Litarvan/pronote-api) ou la [bibliothèque de Leloubil](https://github.com/LelouBil/PronoteLib). 
-<br>*Je suis bien moins compétant qu'eux sur le sujet, alors n'hésitez pas à aller consulter leur travail voire leur demander directement !*
-# Documentation 
+- Pour Pronote, j'ai quasiment recopié l'[API en python](https://github.com/bain3/pronotepy) réalisée par [bain](https://github.com/bain3). Si vous comptez vous lancer dans la réalisation de votre propre API - ce que je vous déconseille - jetez un coup d'oeil à [cette discussion](https://github.com/LelouBil/PronoteLib/blob/master/Protocol.md). Mais Pronote utilisant tellement de méthodes complexes qui vous compliqueront la tache je vous conseille plutôt de vous baser sur [l'API de Bain](https://github.com/bain3/pronotepy) citée précédemment, sur [l'API très complète de Litarvan](https://github.com/Litarvan/pronote-api) ou la [bibliothèque de Leloubil](https://github.com/LelouBil/PronoteLib).
+  <br>_Je suis bien moins compétant qu'eux sur le sujet, alors n'hésitez pas à aller consulter leur travail voire leur demander directement !_
+
+# Documentation
 
 Le fichier principal (exécuté en premier) est `/lib/main.dart`
 
-### Architecture 
+### Architecture
+
 yNotes a été codée suivant une architecture MVC.
 La partie business `/lib/core` inclut les controlleurs (dans `/logic`) ainsi qu'un dossier `/apis` qui contient tout ce qui est nécessaire pour collecter les données provenant d'EcoleDirecte ou Pronote.
 
@@ -131,13 +154,27 @@ Le dossier `/offline` contient tout ce qui est nécessaire à la mise en cache/h
 Les vues sont dans `/lib/ui`
 L'organisation des fichiers est néanmoins succeptible de changer.
 
+### Précisions
+
+N'utilisez pas de `print(text);` mais plutôt:
+
+- `CustomLogger.log(object, text);`
+- `CustomLogger.logWrapped(object, description, text);`
+- `CustomLogger.error(e);`
+
+### Déboguer une application déjà installée
+
+Exécutez `flutter logs`.
 
 # Contributeurs
+
 ### Mentions spéciales
-* Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués
-* L'API Pronote est un portage de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
+
+- Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués
+- L'API Pronote est un portage de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
 
 Je tiens à remercier chaque autre personne ne figurant pas dans cette section pour avoir testé yNotes, collaboré d'une manière ou d'une autre pour la création de l'application et m'avoir donné des idées pour l'améliorer.
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
