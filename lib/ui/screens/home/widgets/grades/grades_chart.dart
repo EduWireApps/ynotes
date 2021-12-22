@@ -25,7 +25,6 @@ class GradesChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CustomLogger.log("MEGATEST", elements);
     return LineChart(LineChartData(
       minY: (els.map((e) => e.value).reduce(min) - .5).round().toDouble(),
       maxY: (els.map((e) => e.value).reduce(max) + .5).round().toDouble(),

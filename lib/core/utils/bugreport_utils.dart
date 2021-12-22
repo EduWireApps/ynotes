@@ -36,7 +36,8 @@ class BugReportUtils {
     if (!AppConfig.shake.isSupported) {
       return;
     }
-    Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
+    Shake.setInvokeShakeOnShakeDeviceEvent(
+        appSys.settings.user.global.shakeToReport);
   }
 
   /// Saves and anonymizes the bug data to send it to the report platform
@@ -45,7 +46,7 @@ class BugReportUtils {
       return;
     }
     try {
-      final String json = jsonEncode(await LogsManager.getLogs());
+      final String json = generateCleanJson(await LogsManager.getLogs());
       // create a temp file containing logs as json
       final directory = await FolderAppUtil.getDirectory();
       final File file = File('${directory.path}/logs/temp.json');
@@ -61,15 +62,29 @@ class BugReportUtils {
       //set api metadata
       Shake.setMetadata("schoolApi", appSys.api?.apiName ?? "{undefined}");
     } catch (e) {
-      CustomLogger.error(e, stackHint:"Nzg=");
+      CustomLogger.error(e, stackHint: "Nzg=");
     }
+  }
+
+  static String generateCleanJson(List<YLog> logs) {
+    Map finalMap = {};
+    for (YLog element in logs) {
+      if (finalMap.containsKey(element.category)) {
+        finalMap[element.category].add(element);
+      } else {
+        finalMap[element.category] = [element];
+      }
+    }
+    return jsonEncode(finalMap);
   }
 
   /// Opens the report widget
   static Future<void> report() async {
     if (AppConfig.shake.isSupported) {
       final Future<void> future = prepareReportData();
-      AppDialogs.showReportLoaderDialog<void>(AppConfig.navigatorKey.currentContext!, future: future);
+      AppDialogs.showReportLoaderDialog<void>(
+          AppConfig.navigatorKey.currentContext!,
+          future: future);
       await future;
       Shake.show();
     } else {
@@ -90,7 +105,8 @@ class BugReportUtils {
 
   /// Retrieves the user id
   static Future<String> userId() async {
-    if (await KVS.containsKey(key: "shakeUserID") && await KVS.read(key: "shakeUserID") != null) {
+    if (await KVS.containsKey(key: "shakeUserID") &&
+        await KVS.read(key: "shakeUserID") != null) {
       return (await KVS.read(key: "shakeUserID"))!;
     } else {
       String id = const Uuid().v4();

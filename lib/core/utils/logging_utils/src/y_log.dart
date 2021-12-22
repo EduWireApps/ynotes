@@ -39,7 +39,7 @@ class YLog {
     return {
       'category': category,
       'comment': comment.toString(),
-      'stacktrace': stacktrace,
+      'stacktrace': stacktrace.toString(),
       'date': date.toString(),
     };
   }
