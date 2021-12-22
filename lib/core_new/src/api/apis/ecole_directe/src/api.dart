@@ -7,12 +7,13 @@ class EcoleDirecteApi extends SchoolApi implements SchoolApiModules {
   EcoleDirecteApi()
       : super(
             metadata: Metadata(
-                name: "EcoleDirecte",
-                imagePath: "",
-                color: YTColor(
-                    backgroundColor: Colors.blue[600]!,
-                    foregroundColor: Colors.white,
-                    lightColor: Colors.blue[600]!.withOpacity(.5))));
+                name: "Ecole Directe",
+                imagePath: "assets/images/icons/ecoledirecte/EcoleDirecteIcon.png",
+                color: AppColors.blue,
+                beta: true,
+                api: Apis.ecoleDirecte,
+                coloredLogo: true,
+                loginRoute: "/login/ecoledirecte"));
 
   @override
   late AuthModule authModule = _AuthModule(this);

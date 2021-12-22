@@ -786,13 +786,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  logger:
-    dependency: "direct main"
-    description:
-      name: logger
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   logging:
     dependency: transitive
     description:
@@ -1521,7 +1514,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "8ae00998eb21e39a3b330d058dcd4a73afff67da"
+      resolved-ref: "633d5e988900b90b26dda7226b611ed2ffdf4ef5"
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
     version: "0.5.5"

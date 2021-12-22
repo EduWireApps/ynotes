@@ -82,6 +82,12 @@ class Offline {
     store.initialized = true;
   }
 
+  /// Close offline boxes.
+  static Future<void> close() async {
+    await Hive.close();
+    store.initialized = false;
+  }
+
   /// Private method called during [init] to register custom adapters.
   static void _registerAdapters() {
     Hive.registerAdapter(SchoolLifeTicketAdapter());

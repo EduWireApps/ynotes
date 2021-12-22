@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -8,61 +9,54 @@ import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class SchoolServiceBox extends StatefulWidget {
-  final AssetImage? image;
-  final Color? imageColor;
-  final String name;
-  final String route;
-  final bool beta;
-  final int? parser;
+  final Metadata metadata;
 
-  const SchoolServiceBox(
-      {Key? key, this.image, this.imageColor, required this.name, required this.route, this.beta = false, this.parser})
-      : super(key: key);
+  const SchoolServiceBox(this.metadata, {Key? key}) : super(key: key);
 
   @override
   _SchoolServiceBoxState createState() => _SchoolServiceBoxState();
 }
 
 class _SchoolServiceBoxState extends State<SchoolServiceBox> {
+  AssetImage get image => AssetImage(widget.metadata.imagePath);
+
   @override
   Widget build(BuildContext context) {
     return LoginElementBox(
+      backgroundColor: widget.metadata.color.backgroundColor,
       children: [
-        if (widget.image == null) YVerticalSpacer(YScale.s12),
-        if (widget.image != null)
-          Image(
-            image: widget.image!,
-            height: YScale.s12,
-            width: YScale.s12,
-            color: widget.imageColor,
-          ),
-        if (widget.image != null) YHorizontalSpacer(YScale.s6),
+        Image(
+          image: image,
+          height: YScale.s12,
+          width: YScale.s12,
+          color: widget.metadata.coloredLogo ? widget.metadata.color.foregroundColor : null,
+        ),
+        YHorizontalSpacer(YScale.s6),
         Flexible(
           child: Text(
-            widget.name,
+            widget.metadata.name,
             style: TextStyle(
               fontSize: YFontSize.xl,
-              color: theme.colors.foregroundColor,
+              color: widget.metadata.color.foregroundColor,
               fontWeight: YFontWeight.medium,
             ),
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        if (widget.beta)
+        if (widget.metadata.beta)
           Padding(
             padding: YPadding.pl(YScale.s4),
-            child: YBadge(text: LoginContent.widgets.schoolService.beta),
+            child: YBadge(
+              text: LoginContent.widgets.schoolService.beta,
+              color: YColor.danger,
+            ),
           )
       ],
-      onTap: () async {
-        if (widget.parser != null) {
-          await setChosenParser(widget.parser!);
-        }
-        await appSys.initOffline();
+      onTap: () {
         setState(() {
-          appSys.api = apiManager(appSys.offline);
+          schoolApi = schoolApiManager(widget.metadata.api);
         });
-        Navigator.pushNamed(context, widget.route);
+        Navigator.pushNamed(context, widget.metadata.loginRoute);
       },
     );
   }

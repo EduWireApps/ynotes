@@ -67,12 +67,12 @@ class LoginPageStructure extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(LoginContent.widgets.structure.logIn,
-                                    style: TextStyle(
+                                    style: theme.texts.title.copyWith(
                                         fontSize: YFontSize.xl6,
                                         fontWeight: YFontWeight.bold,
                                         color: theme.colors.foregroundColor)),
                                 Text(subtitle,
-                                    style: TextStyle(
+                                    style: theme.texts.title.copyWith(
                                         fontSize: YFontSize.xl,
                                         fontWeight: YFontWeight.semibold,
                                         color: theme.colors.foregroundLightColor))

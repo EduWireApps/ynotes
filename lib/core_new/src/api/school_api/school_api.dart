@@ -1,11 +1,14 @@
 library school_api;
 
 import 'dart:async';
+import 'dart:convert';
 import 'package:collection/collection.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/core/utils/app_colors.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -13,8 +16,10 @@ import 'package:ynotes/packages/shared.dart';
 import 'package:ynotes/core_new/offline.dart';
 
 // TODO: document all
+// TODO: use getters and private attributes
 
 // COMMON
+part 'src/apis.dart';
 part 'src/provider.dart';
 part 'src/repository.dart';
 part 'src/metadata.dart';

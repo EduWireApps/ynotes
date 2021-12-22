@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -10,21 +11,21 @@ class LoginPage extends StatelessWidget {
 
   // This is the list of the available school services
   // This is only temporary and should be stored in the [API] class
-  static final List<SchoolServiceBox> _services = [
-    SchoolServiceBox(
-        image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
-        imageColor: theme.colors.foregroundColor,
-        name: 'Ecole Directe',
-        route: '/login/ecoledirecte',
-        parser: 0),
-    const SchoolServiceBox(
-        image: AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
-        name: 'Pronote',
-        route: '/login/pronote',
-        parser: 1),
-    // LA VIE SCOLAIRE, beta = true
-    const SchoolServiceBox(name: "Démonstrations", route: "/login/demos")
-  ];
+  // static final List<SchoolServiceBox> _services = [
+  //   SchoolServiceBox(
+  //       image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
+  //       imageColor: theme.colors.foregroundColor,
+  //       name: 'Ecole Directe',
+  //       route: '/login/ecoledirecte',
+  //       parser: 0),
+  //   const SchoolServiceBox(
+  //       image: AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
+  //       name: 'Pronote',
+  //       route: '/login/pronote',
+  //       parser: 1),
+  //   // LA VIE SCOLAIRE, beta = true
+  //   const SchoolServiceBox(name: "Démonstrations", route: "/login/demos")
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,8 @@ class LoginPage extends StatelessWidget {
       backButton: false,
       subtitle: LoginContent.login.subtitle,
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ...spacedChildren(_services),
+        // ...spacedChildren(_services),
+        ...spacedChildren(schoolApis.map((e) => SchoolServiceBox(e.metadata)).toList()),
         Padding(
           padding: YPadding.pt(YScale.s1),
           child: YButton(

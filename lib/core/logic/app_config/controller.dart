@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -45,9 +44,6 @@ class ApplicationSystem extends ChangeNotifier {
 
   late Offline offline;
   late HiveBoxProvider hiveBoxProvider;
-
-  ///App logger
-  late Logger logger;
 
   late LoginController loginController;
   late GradesController gradesController;
@@ -111,7 +107,6 @@ class ApplicationSystem extends ChangeNotifier {
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
-    logger = Logger();
     //set settings
     await _initSettings();
     //Set theme to default

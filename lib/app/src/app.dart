@@ -24,12 +24,11 @@ class _AppState extends State<App> {
       },
       child: Responsive(builder: (context) {
         return YApp(
-            initialTheme: appSys.themeName == "clair" ? 1 : 2,
+            initialTheme: SettingsService.settings.global.themeId,
             themes: themes,
-            builder: (context) => ChangeNotifierProvider<ApplicationSystem>.value(
-                  value: appSys,
-                  child: Consumer<ApplicationSystem>(builder: (context, model, child) {
-                    return HiveLifecycleManager(
+            builder: (context) => ControllerConsumer<Settings>(
+                controller: SettingsService.settings,
+                builder: (context, _, __) => HiveLifecycleManager(
                         child: MaterialApp(
                       localizationsDelegates: const [
                         // ... app-specific localization delegate[s] here
@@ -41,22 +40,14 @@ class _AppState extends State<App> {
                         Locale('fr'), //French
                       ],
                       debugShowCheckedModeBanner: false,
-                      theme: model.themeData?.copyWith(
-                          colorScheme: theme.themeData.colorScheme,
-                          splashColor: theme.themeData.splashColor,
-                          highlightColor: theme.themeData.highlightColor,
-                          splashFactory: theme.themeData.splashFactory,
-                          textSelectionTheme: theme.themeData.textSelectionTheme,
-                          textTheme: temporaryTextTheme),
+                      theme: theme.themeData.copyWith(textTheme: temporaryTextTheme),
                       title: kDebugMode ? "yNotes DEV" : "yNotes",
                       navigatorKey: AppConfig.navigatorKey,
                       initialRoute: "/loading",
                       themeMode: ThemeMode.light,
                       onGenerateRoute: AppRouter.onGenerateRoute,
                       // onGenerateRoute: onGenerateRoute,
-                    ));
-                  }),
-                ));
+                    ))));
       }),
     );
   }

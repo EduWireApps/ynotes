@@ -10,8 +10,13 @@ class _AuthModule extends AuthModule<_AuthRepository> {
       "identifiant": username,
       "motdepasse": password,
     });
-    if (res.error != null) return res;
-    authenticated = true;
+    if (res.error != null) {
+      status = AuthStatus.error;
+      notifyListeners();
+      return res;
+    }
+    status = AuthStatus.authenticated;
+    notifyListeners();
     account = res.data!["appAccount"];
     schoolAccount = res.data!["schoolAccount"];
     notifyListeners();

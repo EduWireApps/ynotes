@@ -103,6 +103,9 @@ class CustomRoute {
 final List<AppRoute> appRoutes = [
   const AppRoute(path: "/loading", widget: LoadingPage(), show: false),
   const AppRoute(path: "/terms", widget: TermsPage(), show: false),
+  ...loginRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
+  ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
+  ...settingsRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
   ...homeRoutesTMP,
   AppRoute(
       path: "/grades",

@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
-
-testIfExistingAccount() async {
-  var u = await KVS.read(key: "username");
-  var p = await KVS.read(key: "password");
-  if (u != null && p != null) {
-    return true;
-  } else {
-    return false;
-  }
-}
+import 'package:ynotes_packages/utilities.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
@@ -39,7 +31,7 @@ class _LoadingPageState extends State<LoadingPage> {
               width: 100,
               color: theme.colors.primary.backgroundColor,
             ),
-            const YVerticalSpacer(50),
+            YVerticalSpacer(YScale.s12),
             const SizedBox(width: 200, child: YLinearProgressBar())
           ],
         )),
@@ -52,18 +44,18 @@ class _LoadingPageState extends State<LoadingPage> {
     super.initState();
     // We set the system ui
     UIUtils.setSystemUIOverlayStyle();
-    tryToConnect();
+    redirect();
   }
 
-  tryToConnect() async {
-    await Future.delayed(const Duration(milliseconds: 500), () => "1");
-    String? u = await KVS.read(key: "username");
-    String? p = await KVS.read(key: "password");
-    String? z = await KVS.read(key: "agreedTermsAndConfiguredApp");
+  Future<void> redirect() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final credentials = await schoolApi.authModule.getCredentials();
+    final bool hasCredentials = credentials.error == null;
+    final String? completedLogin = await KVS.read(key: "agreedTermsAndConfiguredApp");
     // The user is authenticated
-    if (u != null && p != null) {
+    if (hasCredentials) {
       // The user has agreed to the terms and the app is configured
-      if (z != null) {
+      if (completedLogin != null) {
         Navigator.pushReplacementNamed(context, "/home");
       } else {
         Navigator.pushReplacementNamed(context, "/terms");

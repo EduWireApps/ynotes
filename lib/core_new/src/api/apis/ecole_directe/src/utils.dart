@@ -12,7 +12,7 @@ String _decodeBody(http.Response res) => const Utf8Decoder().convert(res.bodyByt
 
 Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
     {required String url, Map<String, dynamic>? body, Map<String, String>? headers, bool auth = true}) async {
-  if (auth && !api.authModule.authenticated) {
+  if (auth && api.authModule.status == AuthStatus.unauthenticated) {
     return const Response(error: "Not authenticated");
   }
   return await handleNetworkError(() async {
@@ -25,8 +25,7 @@ Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
       final Map<String, dynamic> json = jsonDecode(resBody);
       if (json["code"] != 200) {
         if (json["message"] == "Token invalide !") {
-          // TODO: load credentials
-          await api.authModule.login(username: "", password: "");
+          await api.authModule.loginFromOffline();
           return await _request(api, url: url, body: body, headers: headers, auth: false);
         }
         return Response(error: json["message"]);

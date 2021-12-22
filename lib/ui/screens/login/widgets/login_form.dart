@@ -35,23 +35,21 @@ class _LoginFormState extends State<LoginForm> {
     });
     if (b) {
       _formKey.currentState!.save();
-      final List<dynamic>? data =
-          await appSys.api!.login(_credentials.username.trim(), _credentials.password.trim(), additionnalSettings: {
-        "url": _credentials.url.trim(),
-        "demo": false,
-        "mobileCasLogin": false,
-      });
-      if (data != null && data[0] == 1) {
-        setState(() {
-          _canNavigate = false;
-        });
-        YSnackbars.success(context, title: LoginContent.widgets.form.connected, message: data[1]);
-        await Future.delayed(const Duration(seconds: 3));
-        Navigator.pushReplacementNamed(context, "/terms");
-        // success
-      } else {
-        YSnackbars.error(context, title: LoginContent.widgets.form.error, message: data![1]);
+      final res = await schoolApi.authModule.login(
+          username: _credentials.username.trim(),
+          password: _credentials.password.trim(),
+          parameters: {"url": _credentials.url.trim(), "mobileCasLogin": false});
+      if (res.error != null) {
+        YSnackbars.error(context, title: LoginContent.widgets.form.error, message: res.error!);
+        return;
       }
+      setState(() {
+        _canNavigate = false;
+      });
+      YSnackbars.success(context,
+          title: LoginContent.widgets.form.connected, message: "Bienvenue ${schoolApi.authModule.account!.fullName}");
+      await Future.delayed(const Duration(seconds: 3));
+      Navigator.pushReplacementNamed(context, "/terms");
     }
     setState(() {
       _loading = false;
