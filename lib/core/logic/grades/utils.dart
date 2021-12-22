@@ -19,7 +19,7 @@ class GradesUtils {
           averages.add(_average);
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint:"MTg=");
+        CustomLogger.error(e, stackHint:"Mzk=");
       }
     });
 

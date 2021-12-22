@@ -1,7 +1,7 @@
 import 'package:ynotes/core/apis/ecole_directe/endpoints/ecole_directe_endpoints.dart';
 
 class EcoleDirecteDemoEndpoints {
-  static const _rootUrl = "https://still-earth-97911.herokuapp.com/ecoledirecte/";
+  static const _rootUrl = "http:192.168.1.51:3500/ecoledirecte/";
   static final Endpoint workspaces = Endpoint(_rootUrl + "workspaces");
   static final Endpoint login = Endpoint(_rootUrl + "login");
   static final Endpoint grades = Endpoint(_rootUrl + "grades");

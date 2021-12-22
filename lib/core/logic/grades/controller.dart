@@ -311,7 +311,7 @@ class GradesController extends ChangeNotifier {
           averages.add(_average);
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint:"MTc=");
+        CustomLogger.error(e, stackHint:"Mzg=");
       }
     }
 

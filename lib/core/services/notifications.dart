@@ -45,7 +45,7 @@ class AppNotification {
         });
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
-        CustomLogger.error(e, stackHint:"NjU=");
+        CustomLogger.error(e, stackHint:"ODA=");
       }
     }
     var date = DateTime.now();
@@ -61,7 +61,7 @@ class AppNotification {
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
       CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
-      CustomLogger.error(e, stackHint:"NjY=");
+      CustomLogger.error(e, stackHint:"ODE=");
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("offlineData");
@@ -74,7 +74,7 @@ class AppNotification {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured collecting online lessons");
-        CustomLogger.error(e, stackHint:"Njc=");
+        CustomLogger.error(e, stackHint:"ODI=");
 
         Box _offlineBox = await Hive.openBox("offlineData");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -180,7 +180,7 @@ class AppNotification {
           await getRelatedAction(receivedNotification, context, navigatorCallback);
         });
       } catch (e) {
-        CustomLogger.error(e, stackHint:"Njg=");
+        CustomLogger.error(e, stackHint:"ODM=");
       }
     }
   }
@@ -233,7 +233,7 @@ class AppNotification {
       }
     } catch (e) {
       CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling agenda reminders");
-      CustomLogger.error(e, stackHint:"Njk=");
+      CustomLogger.error(e, stackHint:"ODQ=");
     }
   }
 
@@ -309,7 +309,7 @@ class AppNotification {
         });
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
-        CustomLogger.error(e, stackHint:"NzA=");
+        CustomLogger.error(e, stackHint:"ODU=");
       }
     }
     var date = DateTime.now();
@@ -326,7 +326,7 @@ class AppNotification {
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
       CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
-      CustomLogger.error(e, stackHint:"NzE=");
+      CustomLogger.error(e, stackHint:"ODY=");
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("agenda");
@@ -339,7 +339,7 @@ class AppNotification {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while collecting online lessons");
-        CustomLogger.error(e, stackHint:"NzI=");
+        CustomLogger.error(e, stackHint:"ODc=");
 
         Box _offlineBox = await Hive.openBox("offlineData2");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -370,7 +370,7 @@ class AppNotification {
             }
           } catch (e) {
             CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling lesson notification");
-            CustomLogger.error(e, stackHint:"NzM=");
+            CustomLogger.error(e, stackHint:"ODg=");
           }
         }
       });
@@ -380,7 +380,7 @@ class AppNotification {
             allowWhileIdle: true, rescheduleOnReboot: true)) CustomLogger.log("NOTIFICATIONS", "Scheduled last lesson");
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling last lesson");
-        CustomLogger.error(e, stackHint:"NzQ=");
+        CustomLogger.error(e, stackHint:"ODk=");
       }
     }
   }
@@ -542,7 +542,7 @@ class AppNotification {
           sentence = "Votre cours a été annulé.";
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint:"NzU=");
+        CustomLogger.error(e, stackHint:"OTA=");
       }
       try {
         CustomLogger.log(
@@ -566,7 +566,7 @@ class AppNotification {
         );
       } catch (e) {
         CustomLogger.log("NOTIFICATIONS", "An error occured while setting ongoing notification");
-        CustomLogger.error(e, stackHint:"NzY=");
+        CustomLogger.error(e, stackHint:"OTE=");
       }
     }
   }
@@ -599,7 +599,7 @@ class AppNotification {
       ));
     } catch (e) {
       CustomLogger.log("NOTIFICATIONS", "An error occurred while setting ongoin notification");
-      CustomLogger.error(e, stackHint:"Nzc=");
+      CustomLogger.error(e, stackHint:"OTI=");
     }
   }
 }

@@ -3,7 +3,7 @@
 _On voulait faire un tour de magie. Mais vous n'avez pas trop apprécié._
 - Correction du bug de disparition des notes:
     - Les utilisateurs EcoleDirecte devraient à nouveau être en mesure de voir leurs notes
-    - Notez que Les coefficients "0" ont été remplacés par des coefficients 1
+    - Notez que les coefficients "0" ont été remplacés par des coefficients 1
 - Diverses corrections d'affichage pour l'écran d'accueil
 # 0.14.5
 

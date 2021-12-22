@@ -34,7 +34,7 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting current lesson");
         CustomLogger.log("AGENDA", "Lessons: $lessons");
-        CustomLogger.error(e, stackHint:"ODc=");
+        CustomLogger.error(e, stackHint:"Ng==");
       }
 
       return lesson;
@@ -62,7 +62,7 @@ getNextLesson(List<Lesson>? lessons) {
         lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting the current lesson");
-        CustomLogger.error(e, stackHint:"ODg=");
+        CustomLogger.error(e, stackHint:"Nw==");
       }
 
       return lesson;

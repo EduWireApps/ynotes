@@ -54,7 +54,7 @@ Future<bool> checkPronoteURL(String url) async {
       return false;
     }
   } catch (e) {
-    CustomLogger.error(e, stackHint:"Mw==");
+    CustomLogger.error(e, stackHint:"MTE=");
     return false;
   }
 }

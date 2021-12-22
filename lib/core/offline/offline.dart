@@ -35,7 +35,7 @@ class HiveBoxProvider {
         }
       } catch (e) {
         CustomLogger.log("OFFLINE", "An error occured while initiating Hive");
-        CustomLogger.error(e, stackHint:"Mjg=");
+        CustomLogger.error(e, stackHint:"NDM=");
       }
       registerAdapters();
     }
@@ -106,7 +106,7 @@ class Offline {
       await init();
     } catch (e) {
       CustomLogger.log("OFFLINE", "Failed to clear all db");
-      CustomLogger.error(e, stackHint:"Mjk=");
+      CustomLogger.error(e, stackHint:"NDQ=");
     }
   }
 
@@ -138,7 +138,7 @@ class Offline {
       CustomLogger.log("OFFLINE", "All boxes opened");
     } catch (e) {
       CustomLogger.log("OFFLINE", "An error occured while opening boxes");
-      CustomLogger.error(e, stackHint:"MzA=");
+      CustomLogger.error(e, stackHint:"NDU=");
     }
   }
 
@@ -154,7 +154,7 @@ class Offline {
       return box;
     } catch (e) {
       CustomLogger.log("OFFLINE", "An error occurend while opening $boxName");
-      CustomLogger.error(e, stackHint:"MzE=");
+      CustomLogger.error(e, stackHint:"NDY=");
       if (boxName.contains("offlineData")) {
         await appSys.hiveBoxProvider.deleteBox(boxName);
       }
