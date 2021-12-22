@@ -82,11 +82,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   if (!kReleaseMode)
                     YSettingsSection(title: "[DEV ONLY]", tiles: [
                       YSettingsTile(
-                          title: "Secure Logger",
+                          title: "Show logs",
                           subtitle: "Print secure logger categories",
-                          onTap: () async {
-                            CustomLogger.log("Test", "test");
-                            CustomLogger.log("SECURE LOGGER", "Categories: ${await LogsManager.getCategories()}");
+                          onTap: () => Navigator.pushNamed(context, "/settings/logs")),
+                      YSettingsTile(
+                          title: "Reset grades count",
+                          onTap: () {
+                            appSys.settings.system.lastGradeCount = 1;
+                            appSys.saveSettings();
                           }),
                       YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, "")),
                       YSettingsTile(
@@ -102,6 +105,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                 end: end,
                                 discipline: 'Physique',
                                 teachers: ['M. José']));
+                          }),
+                      YSettingsTile(
+                          title: "Secure Logger",
+                          subtitle: "Print secure logger categories",
+                          onTap: () async {
+                            CustomLogger.log("Test", "test");
+                            CustomLogger.log("SECURE LOGGER", "Categories: ${await LogsManager.getCategories()}");
                           }),
                     ])
                 ])));

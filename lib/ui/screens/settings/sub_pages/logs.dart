@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -16,23 +17,14 @@ class SettingsLogsPage extends StatefulWidget {
 }
 
 class _SettingsLogsPageState extends State<SettingsLogsPage> {
+  late Future<List<YLog>> logsFuture;
+
   int? _categoryId;
-
-  _onSearchChanged(String value) {
-    setState(() {
-      _categoryId = value.isEmpty ? null : int.parse(value[0]);
-    });
-  }
-
-  String _generateTitle(YLog log) {
-    String parsedDate = DateFormat('dd/MM/yyyy HH:mm:ss').format(log.date);
-    return "${log.category} - $parsedDate";
-  }
-
   @override
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Logs"),
+        onRefresh: refreshLogs,
         body: FutureBuilder(
           future: LogsManager.getCategories(),
           builder: (_, AsyncSnapshot<List<String>> snapshot) {
@@ -65,7 +57,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                 Padding(
                   padding: YPadding.py(YScale.s4),
                   child: FutureBuilder(
-                      future: LogsManager.getLogs(),
+                      future: logsFuture,
                       builder: (_, AsyncSnapshot<List<YLog>> snapshot) {
                         if (snapshot.hasData) {
                           final List<YLog> logs = snapshot.data!;
@@ -108,6 +100,15 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                                                 context: context,
                                                 child: Column(
                                                   children: [
+                                                    if (kDebugMode)
+                                                      ListTile(
+                                                        title: Text("Print le JSON", style: theme.texts.body1),
+                                                        leading: Icon(Icons.code_rounded,
+                                                            color: theme.colors.foregroundLightColor),
+                                                        onTap: () {
+                                                          CustomLogger.logWrapped("JSON", "", jsonEncode(log));
+                                                        },
+                                                      ),
                                                     ListTile(
                                                       title: Text("Copier en tant que JSON", style: theme.texts.body1),
                                                       leading: Icon(Icons.code_rounded,
@@ -200,5 +201,28 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
             );
           },
         ));
+  }
+
+  initState() {
+    super.initState();
+    refreshLogs();
+  }
+
+  Future<void> refreshLogs() async {
+    setState(() {
+      logsFuture = LogsManager.getLogs();
+    });
+    await logsFuture;
+  }
+
+  String _generateTitle(YLog log) {
+    String parsedDate = DateFormat('dd/MM/yyyy HH:mm:ss').format(log.date);
+    return "${log.category} - $parsedDate";
+  }
+
+  _onSearchChanged(String value) {
+    setState(() {
+      _categoryId = value.isEmpty ? null : int.parse(value[0]);
+    });
   }
 }
