@@ -39,7 +39,8 @@ class _AuthRepository extends Repository {
                   lastName: e["nom"],
                   className: e["classe"]["libelle"],
                   id: e["id"].toString(),
-                  profilePicture: e["photo"]))
+                  profilePicture: e["photo"],
+                  school: e["nomEtablissement"]))
               .toList();
       final AppAccount appAccount =
           AppAccount(id: account["uid"], firstName: account["prenom"], lastName: account["nom"], accounts: accounts);
@@ -51,9 +52,28 @@ class _AuthRepository extends Repository {
                 lastName: appAccount.lastName,
                 className: account["profile"]["classe"]["libelle"],
                 id: account["id"].toString(),
-                profilePicture: "https:" + account["profile"]["photo"])
+                profilePicture: "https:" + account["profile"]["photo"],
+                school: account["nomEtablissement"])
             : accounts[0]
       };
+      for (final module in (account["modules"] as List<dynamic>).map<Map<String, dynamic>>((e) => e).toList()) {
+        final String name = module["code"];
+        final bool enabled = module["enable"];
+        if (enabled) {
+          if (name == "VIE_SCOLAIRE") {
+            api.modulesAvailability.schoolLife = true;
+          } else if (name == "NOTES") {
+            api.modulesAvailability.grades = true;
+          } else if (name == "MESSAGERIE") {
+            api.modulesAvailability.emails = true;
+            api.modulesAvailability.documents = true;
+          } else if (name == "CAHIER_DE_TEXTES") {
+            api.modulesAvailability.homework = true;
+            api.modulesAvailability.documents = true;
+          }
+        }
+      }
+      api.refreshModules();
       return Response(data: map);
     } catch (e) {
       return Response(error: "$e");

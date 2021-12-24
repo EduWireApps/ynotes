@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -21,9 +22,9 @@ class UIUtils {
   /// Show a dialog containing the patch notes.
   static Future<void> showPatchNotes(BuildContext context) async {
     const String version = "0.14.5";
-    if ((appSys.settings.system.lastReadUpdateNote != version)) {
-      appSys.settings.system.lastReadUpdateNote = version;
-      await appSys.saveSettings();
+    if ((SettingsService.settings.global.lastReadPatchNotes != version)) {
+      SettingsService.settings.global.lastReadPatchNotes = version;
+      await SettingsService.update();
       await CustomDialogs.showUpdateNoteDialog(context);
     }
   }

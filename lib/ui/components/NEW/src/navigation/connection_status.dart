@@ -13,7 +13,7 @@ class __ConnectionStatusState extends State<_ConnectionStatus> with TickerProvid
   late final AnimationController _controller;
   final Duration _duration = const Duration(milliseconds: 600);
 
-  loginStatus get _state => appSys.loginController.actualState;
+  AuthStatus get _status => schoolApi.authModule.status;
 
   @override
   void initState() {
@@ -21,7 +21,7 @@ class __ConnectionStatusState extends State<_ConnectionStatus> with TickerProvid
     _controller = AnimationController(
       duration: _duration,
       vsync: this,
-      value: _state == loginStatus.loggedIn ? 1 : null,
+      value: _status == AuthStatus.authenticated ? 1 : null,
     );
     _animation = Tween<double>(begin: 1, end: 0).animate(
       CurvedAnimation(parent: _controller, curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn)),
@@ -34,10 +34,10 @@ class __ConnectionStatusState extends State<_ConnectionStatus> with TickerProvid
   Widget build(BuildContext context) {
     final double paddingTop = MediaQuery.of(context).padding.top;
     final double height = YScale.s8;
-    return ControllerConsumer<LoginController>(
-        controller: appSys.loginController,
-        builder: (context, controller, _) {
-          if (_state == loginStatus.loggedIn) {
+    return ControllerConsumer<AuthModule>(
+        controller: schoolApi.authModule,
+        builder: (context, module, _) {
+          if (_status == AuthStatus.authenticated) {
             _controller.forward();
           } else {
             _controller.reverse();
@@ -63,7 +63,7 @@ class __ConnectionStatusState extends State<_ConnectionStatus> with TickerProvid
                         child: Ink(
                             child: AnimatedContainer(
                                 duration: _duration,
-                                color: controller.color.backgroundColor,
+                                color: module.color.backgroundColor,
                                 height: (height + paddingTop) * _animation.value,
                                 child: Padding(
                                   padding: YPadding.pt(paddingTop),
@@ -74,15 +74,14 @@ class __ConnectionStatusState extends State<_ConnectionStatus> with TickerProvid
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        SizedBox(width: YScale.s5, child: FittedBox(child: controller.icon)),
+                                        SizedBox(width: YScale.s5, child: FittedBox(child: module.icon)),
                                         YHorizontalSpacer(YScale.s2),
                                         RichText(
                                             text: TextSpan(
-                                                text: "${controller.details} ",
-                                                style:
-                                                    theme.texts.body1.copyWith(color: controller.color.foregroundColor),
+                                                text: "${module.details} ",
+                                                style: theme.texts.body1.copyWith(color: module.color.foregroundColor),
                                                 children: [
-                                              if (_state != loginStatus.loggedIn)
+                                              if (_status != AuthStatus.authenticated)
                                                 const TextSpan(
                                                     text: "Voir", style: TextStyle(fontWeight: YFontWeight.semibold))
                                             ])),

@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/mails/controller.dart';
-import 'package:ynotes/core/logic/school_life/controller.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -22,13 +21,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<void> onRefresh() async {
-    await Future.wait([
-      appSys.api!.getEvents(DateTime.now(), forceReload: false),
-      appSys.gradesController.refresh(force: true),
-      appSys.homeworkController.refresh(force: true),
-      if (appSys.settings.system.chosenParser == 0) appSys.mailsController.refresh(force: true),
-      if (appSys.settings.system.chosenParser == 0) appSys.schoolLifeController.refresh(force: true),
-    ]);
+    print("before fetch");
+    await Future.wait(schoolApi.modules.map((module) => module.fetch(online: true)));
+    print("after fetch");
+    print(schoolApi.gradesModule.isEnabled);
+    print(schoolApi.modulesAvailability.grades);
+    // await Future.wait([
+    //   appSys.api!.getEvents(DateTime.now(), forceReload: false),
+    //   appSys.gradesController.refresh(force: true),
+    //   appSys.homeworkController.refresh(force: true),
+    //   if (appSys.settings.system.chosenParser == 0) appSys.mailsController.refresh(force: true),
+    //   if (appSys.settings.system.chosenParser == 0) appSys.schoolLifeController.refresh(force: true),
+    // ]);
   }
 
   @override
@@ -46,14 +50,15 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   YIconButton(icon: Icons.refresh_rounded, onPressed: onRefresh),
-                if (appSys.settings.system.chosenParser == 0)
-                  ControllerConsumer<MailsController>(
-                      controller: appSys.mailsController,
-                      builder: (context, controller, _) {
+                if (schoolApi.emailsModule.isEnabled)
+                  ControllerConsumer<EmailsModule>(
+                      controller: schoolApi.emailsModule,
+                      builder: (context, module, _) {
+                        final List<Email> emailsUnread = module.emailsReceived.where((email) => !email.read).toList();
                         return Stack(alignment: Alignment.center, children: [
                           YIconButton(
                               icon: Icons.mail_rounded, onPressed: () => Navigator.pushNamed(context, "/mailbox")),
-                          if ((controller.mails ?? []).where((mail) => !mail.read!).isNotEmpty)
+                          if (emailsUnread.isNotEmpty)
                             Positioned(
                                 child: Container(
                                     alignment: Alignment.center,
@@ -61,20 +66,22 @@ class _HomePageState extends State<HomePage> {
                                     height: YScale.s4,
                                     decoration: BoxDecoration(
                                         color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.full),
-                                    child: Text((controller.mails ?? []).where((mail) => !mail.read!).length.toString(),
+                                    child: Text(emailsUnread.length.toString(),
                                         style: theme.texts.body2.copyWith(color: theme.colors.danger.foregroundColor))),
                                 top: YScale.s3,
                                 right: YScale.s1)
                         ]);
                       }),
-                if (appSys.settings.system.chosenParser == 0)
-                  ControllerConsumer<SchoolLifeController>(
-                      controller: appSys.schoolLifeController,
-                      builder: (context, controller, _) {
+                if (schoolApi.schoolLifeModule.isEnabled)
+                  ControllerConsumer<SchoolLifeModule>(
+                      controller: schoolApi.schoolLifeModule,
+                      builder: (context, module, _) {
+                        final List<SchoolLifeTicket> unjustifiedTickets =
+                            module.tickets.where((ticket) => !ticket.isJustified).toList();
                         return Stack(alignment: Alignment.center, children: [
                           YIconButton(
                               icon: MdiIcons.stamper, onPressed: () => Navigator.pushNamed(context, "/school_life")),
-                          if ((controller.tickets ?? []).where((ticket) => !ticket.isJustified!).isNotEmpty)
+                          if (unjustifiedTickets.isNotEmpty)
                             Positioned(
                                 child: Container(
                                     alignment: Alignment.center,
@@ -82,11 +89,7 @@ class _HomePageState extends State<HomePage> {
                                     height: YScale.s4,
                                     decoration: BoxDecoration(
                                         color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.full),
-                                    child: Text(
-                                        (controller.tickets ?? [])
-                                            .where((ticket) => !ticket.isJustified!)
-                                            .length
-                                            .toString(),
+                                    child: Text(unjustifiedTickets.length.toString(),
                                         style: theme.texts.body2.copyWith(color: theme.colors.danger.foregroundColor))),
                                 top: YScale.s3,
                                 right: YScale.s1)
@@ -96,7 +99,10 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             onRefresh: onRefresh,
-            body: Column(
-                mainAxisSize: MainAxisSize.max, children: const [CountDown(), GradesSection(), HomeworkSection()])));
+            body: Column(mainAxisSize: MainAxisSize.max, children: [
+              /*CountDown(),*/
+              if (schoolApi.gradesModule.isEnabled) const GradesSection(),
+              if (schoolApi.homeworkModule.isEnabled) const HomeworkSection()
+            ])));
   }
 }

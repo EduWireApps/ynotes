@@ -12,10 +12,15 @@ class _AuthModule extends AuthModule<_AuthRepository> {
     });
     if (res.error != null) {
       status = AuthStatus.error;
+      details = "Erreur de connexion";
+      logs = res.error;
       notifyListeners();
       return res;
     }
+    await setCredentials({"username": username, "password": password, "parameters": parameters});
     status = AuthStatus.authenticated;
+    details = "Connecté";
+    logs = null;
     notifyListeners();
     account = res.data!["appAccount"];
     schoolAccount = res.data!["schoolAccount"];

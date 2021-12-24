@@ -51,6 +51,7 @@ class _LoadingPageState extends State<LoadingPage> {
     await Future.delayed(const Duration(milliseconds: 500));
     final credentials = await schoolApi.authModule.getCredentials();
     final bool hasCredentials = credentials.error == null;
+    print(hasCredentials);
     final String? completedLogin = await KVS.read(key: "agreedTermsAndConfiguredApp");
     // The user is authenticated
     if (hasCredentials) {

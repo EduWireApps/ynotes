@@ -17,6 +17,10 @@ abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
 
   final Connectivity _connectivity = Connectivity();
 
+  String details = "Déconnecté";
+
+  String? logs;
+
   Future<Response<Map<String, dynamic>>> getCredentials() async {
     final String? data = await KVS.read(key: _credentialsKey);
     if (data == null) {
@@ -33,11 +37,15 @@ abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
     switch (result) {
       case ConnectivityResult.none:
         status = AuthStatus.offline;
+        details = "Hors ligne";
+        logs = null;
         notifyListeners();
         break;
       default:
         // Reconnecté
         status = AuthStatus.unauthenticated;
+        details = "Reconnecté";
+        logs = null;
         notifyListeners();
         await loginFromOffline();
         break;
@@ -49,6 +57,8 @@ abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
     if (credentials.error != null) {
       // Erreur de connexion
       status = AuthStatus.error;
+      details = "Erreur de connexion";
+      logs = credentials.error;
       notifyListeners();
       return;
     }
@@ -82,5 +92,31 @@ abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
     account = null;
     schoolAccount = null;
     await super.reset(offline: offline);
+  }
+
+  YTColor get color {
+    switch (status) {
+      case AuthStatus.authenticated:
+        return theme.colors.success;
+      case AuthStatus.unauthenticated:
+        return theme.colors.secondary;
+      case AuthStatus.error:
+        return theme.colors.danger;
+      case AuthStatus.offline:
+        return theme.colors.warning;
+    }
+  }
+
+  Widget get icon {
+    switch (status) {
+      case AuthStatus.authenticated:
+        return Icon(Icons.check_rounded, color: color.foregroundColor);
+      case AuthStatus.unauthenticated:
+        return SpinKitThreeBounce(color: color.foregroundColor);
+      case AuthStatus.error:
+        return Icon(Icons.new_releases_rounded, color: color.foregroundColor);
+      case AuthStatus.offline:
+        return Icon(MdiIcons.networkStrengthOff, color: color.foregroundColor);
+    }
   }
 }

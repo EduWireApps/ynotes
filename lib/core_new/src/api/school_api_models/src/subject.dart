@@ -41,6 +41,10 @@ class Subject {
   @HiveField(7)
   final double average;
 
+  /// The color of the subject.
+  @HiveField(8)
+  YTColor color;
+
   Subject(
       {required this.id,
       required this.name,
@@ -49,7 +53,8 @@ class Subject {
       required this.minAverage,
       required this.coefficient,
       required this.teachers,
-      required this.average});
+      required this.average,
+      required this.color});
 }
 
 /// The model for a custom [Subject].
@@ -65,7 +70,8 @@ class CustomSubject extends Subject {
       {required String name,
       required double coefficient,
       String teachers = "Pas de professeurs",
-      required SchoolApi api})
+      required SchoolApi api,
+      required YTColor color})
       : super(
             id: md5.convert(utf8.encode(name)).toString(),
             name: name,
@@ -74,5 +80,6 @@ class CustomSubject extends Subject {
             minAverage: double.nan,
             coefficient: coefficient,
             teachers: teachers,
-            average: double.nan);
+            average: double.nan,
+            color: color);
 }

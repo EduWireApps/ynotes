@@ -35,17 +35,22 @@ class _GradesRepository extends Repository {
           }
         }
       }
-      final List<Subject> subjects = disciplines
-          .map<Subject>((e) => Subject(
-              id: e["codeMatiere"],
-              name: e["discipline"],
-              classAverage: (e["moyenneClasse"] as String).toDouble() ?? double.nan,
-              maxAverage: (e["moyenneMax"] as String).toDouble() ?? double.nan,
-              minAverage: (e["moyenneMin"] as String).toDouble() ?? double.nan,
-              coefficient: (e["coef"] as int).toDouble(),
-              teachers: (e["professeurs"] as List<dynamic>).map<String>((e) => e["nom"]).toList().join(", "),
-              average: (e["moyenne"] as String).toDouble() ?? double.nan))
-          .toList();
+      final colors = AppColors.colors;
+      final Random random = Random();
+      final List<Subject> subjects = disciplines.map<Subject>((e) {
+        final color = colors[random.nextInt(colors.length)];
+        colors.remove(color);
+        return Subject(
+            id: e["codeMatiere"],
+            name: e["discipline"],
+            classAverage: (e["moyenneClasse"] as String).toDouble() ?? double.nan,
+            maxAverage: (e["moyenneMax"] as String).toDouble() ?? double.nan,
+            minAverage: (e["moyenneMin"] as String).toDouble() ?? double.nan,
+            coefficient: (e["coef"] as int).toDouble(),
+            teachers: (e["professeurs"] as List<dynamic>).map<String>((e) => e["nom"]).toList().join(", "),
+            average: (e["moyenne"] as String).toDouble() ?? double.nan,
+            color: color);
+      }).toList();
       final List<Grade> grades = res.data!["data"]["notes"]
           .map<Grade>((e) => Grade(
               name: e["devoir"],

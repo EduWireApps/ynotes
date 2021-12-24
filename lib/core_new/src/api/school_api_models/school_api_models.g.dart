@@ -65,13 +65,14 @@ class SchoolAccountAdapter extends TypeAdapter<SchoolAccount> {
       className: fields[3] as String,
       id: fields[0] as String,
       profilePicture: fields[4] as String,
+      school: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, SchoolAccount obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -81,7 +82,9 @@ class SchoolAccountAdapter extends TypeAdapter<SchoolAccount> {
       ..writeByte(3)
       ..write(obj.className)
       ..writeByte(4)
-      ..write(obj.profilePicture);
+      ..write(obj.profilePicture)
+      ..writeByte(5)
+      ..write(obj.school);
   }
 
   @override
@@ -389,13 +392,14 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       coefficient: fields[5] as double,
       teachers: fields[6] as String,
       average: fields[7] as double,
+      color: fields[8] as YTColor,
     );
   }
 
   @override
   void write(BinaryWriter writer, Subject obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -411,7 +415,9 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       ..writeByte(6)
       ..write(obj.teachers)
       ..writeByte(7)
-      ..write(obj.average);
+      ..write(obj.average)
+      ..writeByte(8)
+      ..write(obj.color);
   }
 
   @override

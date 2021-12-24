@@ -13,7 +13,7 @@ class _Drawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final account = appSys.currentSchoolAccount;
+    final SchoolAccount? account = schoolApi.authModule.schoolAccount;
 
     final List<_SpecialRoute> specialRoutes = [
       _SpecialRoute(
@@ -50,8 +50,8 @@ class _Drawer extends StatelessWidget {
           child: SingleChildScrollView(
         child: Column(
           children: [
-            _AccountHeader(account: account),
-            YVerticalSpacer(YScale.s6),
+            if (account != null) _AccountHeader(account: account),
+            if (account != null) YVerticalSpacer(YScale.s6),
             const _RoutesList(),
             YVerticalSpacer(YScale.s6),
             _SpecialRoutesList(specialRoutes: specialRoutes),
@@ -124,7 +124,7 @@ class _AccountHeader extends StatelessWidget {
     required this.account,
   }) : super(key: key);
 
-  final SchoolAccount? account;
+  final SchoolAccount account;
 
   @override
   Widget build(BuildContext context) {
@@ -139,16 +139,16 @@ class _AccountHeader extends StatelessWidget {
               children: [
                 CircleAvatar(
                     backgroundColor: theme.colors.backgroundColor,
-                    child: Text("${account?.name?[0] ?? ''}${account?.surname?[0] ?? ''}", style: theme.texts.title)),
+                    child: Text("${account.firstName[0]}${account.lastName[0]}", style: theme.texts.title)),
                 YHorizontalSpacer(YScale.s4),
                 Flexible(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("${account?.name ?? ''} ${account?.surname ?? ''}",
+                    Text("${account.firstName} ${account.lastName}",
                         style: theme.texts.body1
                             .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.medium)),
-                    Text(account?.schoolName ?? '', style: theme.texts.body2)
+                    Text(account.school, style: theme.texts.body2)
                   ],
                 ))
               ],

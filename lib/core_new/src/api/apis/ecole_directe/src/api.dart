@@ -16,14 +16,20 @@ class EcoleDirecteApi extends SchoolApi implements SchoolApiModules {
                 loginRoute: "/login/ecoledirecte"));
 
   @override
+  void refreshModules() {
+    gradesModule = _GradesModule(this, isSupported: true, isAvailable: modulesAvailability.grades);
+    // TODO: complete
+  }
+
+  @override
   late AuthModule authModule = _AuthModule(this);
 
   @override
-  late GradesModule gradesModule = _GradesModule(this, isSupported: true, isAvailable: modulesAvailability.schoolLife);
+  late GradesModule gradesModule = _GradesModule(this, isSupported: true, isAvailable: modulesAvailability.grades);
 
   @override
   late SchoolLifeModule schoolLifeModule =
-      _SchoolLifeModule(this, isSupported: true, isAvailable: modulesAvailability.grades);
+      _SchoolLifeModule(this, isSupported: true, isAvailable: modulesAvailability.schoolLife);
 
   @override
   late EmailsModule emailsModule = _EmailsModule(this, isSupported: true, isAvailable: modulesAvailability.emails);

@@ -20,7 +20,6 @@ class SystemService {
   const SystemService._();
 
   static Future<void> init() async {
-    WidgetsFlutterBinding.ensureInitialized();
     await backwardCompatibility();
     BugReportUtils.init();
     await SettingsService.init();

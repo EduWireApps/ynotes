@@ -63,4 +63,24 @@ class AppColors {
       backgroundColor: Colors.brown[600]!,
       foregroundColor: Colors.white,
       lightColor: Colors.brown[300]!.withOpacity(.5));
+
+  static final List<YTColor> colors = [
+    red,
+    pink,
+    purple,
+    deepPurple,
+    indigo,
+    blue,
+    lightBlue,
+    cyan,
+    teal,
+    green,
+    lightGreen,
+    lime,
+    yellow,
+    amber,
+    orange,
+    deepOrange,
+    brown,
+  ];
 }

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/logic/grades/controller.dart';
-import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
-import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -19,23 +17,19 @@ class GradesSection extends StatefulWidget {
 }
 
 class _GradesSectionState extends State<GradesSection> {
-  final GradesController controller = appSys.gradesController;
+  final GradesModule module = schoolApi.gradesModule;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      controller.refresh();
+      module.fetch();
     });
   }
 
   // We get all grades and sort them by entryDate
-  List<Grade> get grades =>
-      (getAllGrades(controller.disciplines(), overrideLimit: true, sortByWritingDate: false) ?? [])
-          .where((g) => (g.notSignificant ?? false) == false)
-          .toList()
-        ..sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
-
+  List<Grade> get grades => module.grades.where((grade) => grade.significant).toList();
+/*
   double calculateGlobalAverage(List<Grade> grades) {
     // Will keep the averages of the disciplines
     final List<double> avgs = [];
@@ -65,7 +59,7 @@ class _GradesSectionState extends State<GradesSection> {
       sum += element;
     }
     return double.parse((sum / avgs.length).toStringAsFixed(2));
-  }
+  }*/
 
   List<ChartElement> get chartElements {
     final List<Grade> fetchedGrades = grades;
@@ -73,10 +67,10 @@ class _GradesSectionState extends State<GradesSection> {
     final Map<int, List<Grade>> gradesByWeekMap = {};
     // We put all grades in the map
     for (final grade in fetchedGrades) {
-      if (gradesByWeekMap.containsKey(grade.entryDate!.weekyear)) {
-        gradesByWeekMap[grade.entryDate!.weekyear]!.add(grade);
+      if (gradesByWeekMap.containsKey(grade.entryDate.weekyear)) {
+        gradesByWeekMap[grade.entryDate.weekyear]!.add(grade);
       } else {
-        gradesByWeekMap[grade.entryDate!.weekyear] = [grade];
+        gradesByWeekMap[grade.entryDate.weekyear] = [grade];
       }
     }
     // We turn the map into a list of lists
@@ -91,19 +85,20 @@ class _GradesSectionState extends State<GradesSection> {
         grades = [...grades, ...gradesByWeekList[index]];
         index -= 1;
       }
-      final double avg = calculateGlobalAverage(grades);
+      // final double avg = module.calculateAverageFromGrades(grades);
+      final double avg = module.calculateAverageFromGrades(grades, bySubject: true);
       return ChartElement(
           value: avg,
           text:
-              "${gradesByWeekList[i].last.date!.day.toString().padLeft(2, '0')}/${gradesByWeekList[i].last.date!.month.toString().padLeft(2, '0')}");
+              "${gradesByWeekList[i].last.date.day.toString().padLeft(2, '0')}/${gradesByWeekList[i].last.date.month.toString().padLeft(2, '0')}");
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<GradesController>(
-        controller: controller,
-        builder: (context, controller, _) {
+    return ControllerConsumer<GradesModule>(
+        controller: module,
+        builder: (context, module, _) {
           return chartElements.isNotEmpty
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,42 +123,45 @@ class _GradesSectionState extends State<GradesSection> {
                                           fontWeight: YFontWeight.extrabold)),
                                   Text("Moyenne", style: theme.texts.body2),
                                   YVerticalSpacer(YScale.s4),
-                                  _DiffText(calculateGlobalAverage(grades) -
-                                      calculateGlobalAverage(grades.sublist(0, grades.length - 1))),
+                                  if (module.currentPeriod != null)
+                                    _DiffText(module.calculateAverageFromPeriod(module.currentPeriod!) -
+                                        module.calculateAverageFromGrades(grades.sublist(0, grades.length - 1),
+                                            bySubject: true)),
                                   Text("Dernière note", style: theme.texts.body2),
                                 ],
                               )
                             ]),
                           )
                         ])),
-                    Padding(
-                        padding: YPadding.py(YScale.s4),
-                        child: ScrollConfiguration(
-                          behavior: DragScrollBehavior(),
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                YHorizontalSpacer(YScale.s4),
-                                ...(getAllGrades(controller.disciplines(), sortByWritingDate: true) ?? [])
-                                    .toList()
-                                    .map((grade) => Row(
-                                          children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
-                                        ))
-                                    .toList()
-                              ],
+                    if (module.currentPeriod != null)
+                      Padding(
+                          padding: YPadding.py(YScale.s4),
+                          child: ScrollConfiguration(
+                            behavior: DragScrollBehavior(),
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  YHorizontalSpacer(YScale.s4),
+                                  ...module.currentPeriod!
+                                      .grades(module.grades)
+                                      .map((grade) => Row(
+                                            children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
+                                          ))
+                                      .toList()
+                                ],
+                              ),
                             ),
-                          ),
-                        )),
+                          )),
                     const YDivider(),
                   ],
                 )
               : EmptyState(
                   iconRoutePath: "/grades",
-                  onPressed: () async => await controller.refresh(force: true),
+                  onPressed: () async => await module.fetch(online: true),
                   text: "Pas de notes... Et bah alors ça bosse pas ? ;)",
-                  loading: controller.isFetching);
+                  loading: module.isFetching);
         });
   }
 }

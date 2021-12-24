@@ -1,11 +1,11 @@
 part of school_api;
 
 class ModulesAvailability {
-  final bool grades;
-  final bool schoolLife;
-  final bool emails;
-  final bool homework;
-  final bool documents;
+  bool grades;
+  bool schoolLife;
+  bool emails;
+  bool homework;
+  bool documents;
 
   ModulesAvailability(
       {this.grades = false,

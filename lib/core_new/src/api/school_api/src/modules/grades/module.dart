@@ -35,7 +35,6 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
       final res = await repository.get();
       if (res.error != null) return res;
       _periods = res.data!["periods"] ?? [];
-      _subjects = res.data!["subjects"] ?? [];
       final List<Grade> __grades = res.data!["grades"] ?? [];
       if (__grades.length > _grades.length) {
         // TODO: check if this really works
@@ -43,6 +42,14 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
         // TODO: trigger notification
       }
       _grades = __grades;
+      final List<Subject> __subjects = res.data!["subjects"] ?? [];
+      for (final __subject in __subjects) {
+        final Subject? _subject = _subjects.firstWhereOrNull((subject) => subject.id == __subject.id);
+        if (_subject != null) {
+          __subject.color = _subject.color;
+        }
+      }
+      _subjects = __subjects;
       await offline.setPeriods(_periods);
       await offline.setSubjects(_subjects);
       await offline.setGrades(_grades);
@@ -111,24 +118,39 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     return (n / d).asFixed(2);
   }
 
-  double calculateAverageFromGrades(List<Grade> grades) {
-    List<double> values = [];
-    List<double> coefficients = [];
-    for (Grade grade in grades) {
-      values.add(grade.realValue);
-      coefficients.add(grade.coefficient);
+  double calculateAverageFromGrades(List<Grade> grades, {bool bySubject = false}) {
+    if (bySubject) {
+      final List<double> avgs = [];
+      for (final subject in subjects) {
+        final List<Grade> __grades = subject.grades(grades);
+        if (__grades.isNotEmpty) {
+          avgs.add(calculateAverageFromGrades(__grades));
+        }
+      }
+      double sum = 0.0;
+      for (final avg in avgs) {
+        sum += avg;
+      }
+      return sum / avgs.length;
+    } else {
+      List<double> values = [];
+      List<double> coefficients = [];
+      for (Grade grade in grades) {
+        values.add(grade.realValue);
+        coefficients.add(grade.coefficient);
+      }
+      return calculateAverage(values, coefficients);
     }
-    return calculateAverage(values, coefficients);
   }
 
-  double calculateAverageFromSubjects(List<Subject> subjects, [Period? period]) {
+  double calculateAverageFromSubjects(List<Subject> subjects, {Period? period}) {
     final List<List<Grade>> _grades = subjects.map((e) => e.grades(grades, period)).toList();
     final List<double> values = _grades.map((e) => calculateAverageFromGrades(e)).toList();
     final List<double> coefficients = subjects.map((e) => e.coefficient).toList();
     return calculateAverage(values, coefficients);
   }
 
-  double calculateAverageFromPeriod(Period period) => calculateAverageFromSubjects(subjects, period);
+  double calculateAverageFromPeriod(Period period) => calculateAverageFromSubjects(subjects, period: period);
 
   @override
   Future<void> reset({bool offline = false}) async {

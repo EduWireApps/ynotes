@@ -21,7 +21,7 @@ class EmptyState extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(routes.firstWhere((element) => element.path == iconRoutePath).icon,
+            Icon(appRoutes.firstWhere((element) => element.path == iconRoutePath).icon,
                 color: theme.colors.backgroundLightColor,
                 size: r<double>(def: YScale.s16, sm: YScale.s24, md: YScale.s32)),
             YHorizontalSpacer(YScale.s6),

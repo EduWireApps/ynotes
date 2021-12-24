@@ -1,6 +1,7 @@
 library ecole_directe;
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';

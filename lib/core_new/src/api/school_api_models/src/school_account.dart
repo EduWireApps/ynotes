@@ -29,10 +29,15 @@ class SchoolAccount {
   @HiveField(4)
   final String profilePicture;
 
+  /// The user's school.
+  @HiveField(5)
+  final String school;
+
   const SchoolAccount(
       {required this.firstName,
       required this.lastName,
       required this.className,
       required this.id,
-      required this.profilePicture});
+      required this.profilePicture,
+      required this.school});
 }

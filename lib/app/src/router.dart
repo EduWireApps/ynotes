@@ -106,7 +106,7 @@ final List<AppRoute> appRoutes = [
   ...loginRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
   ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
   ...settingsRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
-  ...homeRoutesTMP,
+  ...homeRoutes,
   AppRoute(
       path: "/grades",
       widget: const GradesPage(),
@@ -123,7 +123,7 @@ final List<CustomRoute> routes = [
   ...settingsRoutes,
   CustomRoute(path: "/loading", page: const LoadingPage(), relatedApi: -1, show: false),
   CustomRoute(path: "/terms", page: const TermsPage(), relatedApi: -1, show: false),
-  ...homeRoutes,
+  ...homeRoutesTMP,
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
       path: "/homework", icon: Icons.class__rounded, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
