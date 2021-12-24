@@ -102,6 +102,8 @@ class Offline {
     Hive.registerAdapter(RecipientAdapter());
     Hive.registerAdapter(HomeworkAdapter());
     Hive.registerAdapter(DocumentAdapter());
+    Hive.registerAdapter(AppAccountAdapter());
+    Hive.registerAdapter(SchoolAccountAdapter());
   }
 }
 

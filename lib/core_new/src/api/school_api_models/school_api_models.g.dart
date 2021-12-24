@@ -6,6 +6,95 @@ part of models;
 // TypeAdapterGenerator
 // **************************************************************************
 
+class AppAccountAdapter extends TypeAdapter<AppAccount> {
+  @override
+  final int typeId = 11;
+
+  @override
+  AppAccount read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AppAccount(
+      firstName: fields[1] as String,
+      lastName: fields[2] as String,
+      id: fields[0] as String?,
+      accounts: (fields[3] as List).cast<SchoolAccount>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, AppAccount obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.firstName)
+      ..writeByte(2)
+      ..write(obj.lastName)
+      ..writeByte(3)
+      ..write(obj.accounts);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppAccountAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SchoolAccountAdapter extends TypeAdapter<SchoolAccount> {
+  @override
+  final int typeId = 12;
+
+  @override
+  SchoolAccount read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SchoolAccount(
+      firstName: fields[1] as String,
+      lastName: fields[2] as String,
+      className: fields[3] as String,
+      id: fields[0] as String,
+      profilePicture: fields[4] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SchoolAccount obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.firstName)
+      ..writeByte(2)
+      ..write(obj.lastName)
+      ..writeByte(3)
+      ..write(obj.className)
+      ..writeByte(4)
+      ..write(obj.profilePicture);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SchoolAccountAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 class SchoolLifeSanctionAdapter extends TypeAdapter<SchoolLifeSanction> {
   @override
   final int typeId = 1;
