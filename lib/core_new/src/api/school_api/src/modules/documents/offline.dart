@@ -9,8 +9,7 @@ class OfflineDocuments extends OfflineModel {
     return (box?.get(_documentsKey) as List<dynamic>?)?.map<Document>((e) => e).toList() ?? [];
   }
 
-  Future<List<Document>> setDocuments(List<Document> documents) async {
+  Future<void> setDocuments(List<Document> documents) async {
     await box?.put(_documentsKey, documents);
-    return await getDocuments();
   }
 }

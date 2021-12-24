@@ -65,9 +65,22 @@ abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    // TODO: implement fetch
-    return const Response(error: "Not implemented");
+    account = await offline.getAccount();
+    schoolAccount = await offline.getSchoolAccount();
+    return const Response();
+  }
+
+  Future<void> save() async {
+    await offline.setAccount(account);
+    await offline.setSchoolAccount(schoolAccount);
   }
 
   Future<Response<void>> login({required String username, required String password, Map<String, dynamic>? parameters});
+
+  @override
+  Future<void> reset({bool offline = false}) async {
+    account = null;
+    schoolAccount = null;
+    await super.reset(offline: offline);
+  }
 }

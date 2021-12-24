@@ -40,14 +40,14 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
 
   Future<Response<void>> addDocuments(List<Document> d) async {
     _documents.addAll(d);
-    _documents = await offline.setDocuments(_documents);
+    await offline.setDocuments(_documents);
     notifyListeners();
     return const Response();
   }
 
   Future<Response<void>> removeDocuments(List<Document> d) async {
     _documents.removeWhere((Document document) => d.contains(document));
-    _documents = await offline.setDocuments(_documents);
+    await offline.setDocuments(_documents);
     notifyListeners();
     return const Response();
   }
