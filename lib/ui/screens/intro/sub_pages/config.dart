@@ -7,6 +7,7 @@ import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/core_new/services.dart';
+import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -22,7 +23,7 @@ class IntroConfigPage extends StatefulWidget {
 class _IntroConfigPageState extends State<IntroConfigPage> {
   Future<void> notificationSetting(BuildContext context, Function fn) async {
     final res =
-        await PermissionHandlerService.handle(context, permission: Permission.notification, name: "Notifications");
+        await SystemService.handlePermission(context, permission: Permission.notification, name: "Notifications");
     if (res) {
       fn();
       await SettingsService.update();
@@ -90,16 +91,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                                 }
                               });
                         }),
-                  // TODO: replace this with a proper theme switcher tile
-                  // ControllerConsumer on theme
-                  YSettingsTile.switchTile(
-                    title: 'Mode nuit',
-                    switchValue: theme.isDark,
-                    onSwitchValueChanged: (bool value) async {
-                      controller.updateTheme(value ? "sombre" : "clair");
-                      appSys.saveSettings();
-                    },
-                  ),
+                  const ThemeSwitcherTile()
                 ])
               ],
             ),

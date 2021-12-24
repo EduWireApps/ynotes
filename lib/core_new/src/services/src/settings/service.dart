@@ -30,6 +30,7 @@ class SettingsService {
   static Future<void> updateTheme(int id) async {
     settings.global.themeId = id;
     theme.updateCurrentTheme(settings.global.themeId);
+    UIUtils.setSystemUIOverlayStyle();
     await update();
   }
 }
