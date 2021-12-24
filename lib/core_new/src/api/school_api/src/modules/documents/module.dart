@@ -28,32 +28,33 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
 
   double progress = 0.0;
   DocumentsModuleStatus status = DocumentsModuleStatus.idle;
-  List<Document> documents = [];
+  List<Document> get documents => _documents;
+  List<Document> _documents = [];
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    documents = await offline.getDocuments();
+    _documents = await offline.getDocuments();
     notifyListeners();
     return const Response();
   }
 
   Future<Response<void>> addDocuments(List<Document> d) async {
-    documents.addAll(d);
-    documents = await offline.setDocuments(documents);
+    _documents.addAll(d);
+    _documents = await offline.setDocuments(_documents);
     notifyListeners();
     return const Response();
   }
 
   Future<Response<void>> removeDocuments(List<Document> d) async {
-    documents.removeWhere((Document document) => d.contains(document));
-    documents = await offline.setDocuments(documents);
+    _documents.removeWhere((Document document) => d.contains(document));
+    _documents = await offline.setDocuments(_documents);
     notifyListeners();
     return const Response();
   }
 
   Future<Response<void>> updateDocuments(List<Document> d) async {
     for (final document in d) {
-      documents.removeWhere((e) => e.id == document.id);
+      _documents.removeWhere((e) => e.id == document.id);
     }
     await addDocuments(d);
     notifyListeners();
@@ -123,7 +124,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
 
   @override
   Future<void> reset({bool offline = false}) async {
-    documents = [];
+    _documents = [];
     await super.reset(offline: offline);
   }
 }

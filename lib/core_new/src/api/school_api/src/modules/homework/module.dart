@@ -9,7 +9,8 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
             api: api,
             offline: OfflineHomework());
 
-  List<Homework> homework = [];
+  List<Homework> get homework => _homework;
+  List<Homework> _homework = [];
   List<Homework> get pinnedHomework => homework.where((h) => h.pinned).toList();
   Map<DateTime, List<Homework>> get homeworkByDate {
     final Map<DateTime, List<Homework>> map = {};
@@ -31,16 +32,16 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
       if (date == null) {
         final res = await repository.get();
         if (res.error != null) return res;
-        final List<Homework> _homework = res.data!["homework"] ?? [];
-        final List<String> ids = homework.map((h) => h.id).toList();
+        final List<Homework> __homework = res.data!["homework"] ?? [];
+        final List<String> ids = _homework.map((h) => h.id).toList();
         // TODO: check if homework added or removed
-        for (final h in _homework) {
+        for (final h in __homework) {
           // TODO: check if homework property has changed, except id, content and pinned
           if (!ids.contains(h.id)) {
-            homework.add(h);
+            _homework.add(h);
           }
         }
-        await offline.setHomework(homework);
+        await offline.setHomework(_homework);
         for (final d in homeworkByDate.keys) {
           final res0 = await fetch(online: true, date: d);
           if (res0.error != null) return res0;
@@ -48,21 +49,21 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
       } else {
         final res = await repository.getDay(date);
         if (res.error != null) return res;
-        final List<Homework> _homework = res.data!;
-        final List<String> ids = homework.map((h) => h.id).toList();
-        for (final _h in _homework) {
+        final List<Homework> __homework = res.data!;
+        final List<String> ids = _homework.map((h) => h.id).toList();
+        for (final _h in __homework) {
           if (ids.contains(_h.id)) {
-            Homework h = homework.firstWhere((e) => e.id == _h.id);
+            Homework h = _homework.firstWhere((e) => e.id == _h.id);
             h.content = _h.content;
             h.documentsIds = _h.documentsIds;
           } else {
-            homework.add(_h);
+            _homework.add(_h);
           }
         }
-        await offline.setHomework(homework);
+        await offline.setHomework(_homework);
       }
     } else {
-      homework = await offline.getHomework();
+      _homework = await offline.getHomework();
     }
     fetching = false;
     notifyListeners();
@@ -75,7 +76,7 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, Of
 
   @override
   Future<void> reset({bool offline = false}) async {
-    homework = [];
+    _homework = [];
     await super.reset(offline: offline);
   }
 }

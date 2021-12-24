@@ -10,8 +10,10 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R, OfflineS
             api: api,
             offline: OfflineSchoolLife());
 
-  List<SchoolLifeTicket> tickets = [];
-  List<SchoolLifeSanction> sanctions = [];
+  List<SchoolLifeTicket> get tickets => _tickets;
+  List<SchoolLifeSanction> get sanctions => _sanctions;
+  List<SchoolLifeTicket> _tickets = [];
+  List<SchoolLifeSanction> _sanctions = [];
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
@@ -20,13 +22,13 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R, OfflineS
     if (online) {
       final res = await repository.get();
       if (res.error != null) return res;
-      tickets = res.data!["tickets"] ?? [];
-      sanctions = res.data!["sanctions"] ?? [];
-      await offline.setTickets(tickets);
-      await offline.setSanctions(sanctions);
+      _tickets = res.data!["tickets"] ?? [];
+      _sanctions = res.data!["sanctions"] ?? [];
+      await offline.setTickets(_tickets);
+      await offline.setSanctions(_sanctions);
     } else {
-      tickets = await offline.getTickets();
-      sanctions = await offline.getSanctions();
+      _tickets = await offline.getTickets();
+      _sanctions = await offline.getSanctions();
     }
     fetching = false;
     notifyListeners();
@@ -35,8 +37,8 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R, OfflineS
 
   @override
   Future<void> reset({bool offline = false}) async {
-    tickets = [];
-    sanctions = [];
+    _tickets = [];
+    _sanctions = [];
     await super.reset(offline: offline);
   }
 }

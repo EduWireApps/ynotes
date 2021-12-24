@@ -9,12 +9,19 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
             api: api,
             offline: OfflineGrades());
 
-  List<Grade> grades = [];
-  List<Period> periods = [];
-  List<Subject> subjects = [];
-  Period? currentPeriod;
-  SubjectsFilter? currentFilter;
-  List<SubjectsFilter> customFilters = [];
+  List<Grade> get grades => _grades;
+  List<Period> get periods => _periods;
+  List<Subject> get subjects => _subjects;
+  Period? get currentPeriod => _currentPeriod;
+  SubjectsFilter? get currentFilter => _currentFilter;
+  List<SubjectsFilter> get customFilters => _customFilters;
+  List<Grade> _grades = [];
+  List<Period> _periods = [];
+  List<Subject> _subjects = [];
+  Period? _currentPeriod;
+  SubjectsFilter? _currentFilter;
+  List<SubjectsFilter> _customFilters = [];
+
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
   late final List<SubjectsFilter> _defaultFilters = [
     SubjectsFilter(name: "Toutes matières", color: AppColors.blue, subjectsIds: null, custom: false, id: "all")
@@ -27,22 +34,22 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     if (online) {
       final res = await repository.get();
       if (res.error != null) return res;
-      periods = res.data!["periods"] ?? [];
-      subjects = res.data!["subjects"] ?? [];
-      final List<Grade> _grades = res.data!["grades"] ?? [];
-      if (_grades.length > grades.length) {
+      _periods = res.data!["periods"] ?? [];
+      _subjects = res.data!["subjects"] ?? [];
+      final List<Grade> __grades = res.data!["grades"] ?? [];
+      if (__grades.length > _grades.length) {
         // TODO: check if this really works
-        final List<Grade> newGrades = _grades.toSet().difference(grades.toSet()).toList();
+        final List<Grade> newGrades = __grades.toSet().difference(_grades.toSet()).toList();
         // TODO: trigger notification
       }
-      grades = _grades;
-      await offline.setPeriods(periods);
-      await offline.setSubjects(subjects);
-      await offline.setGrades(grades);
+      _grades = __grades;
+      await offline.setPeriods(_periods);
+      await offline.setSubjects(_subjects);
+      await offline.setGrades(_grades);
     } else {
-      periods = await offline.getPeriods();
-      subjects = await offline.getSubjects();
-      grades = await offline.getGrades();
+      _periods = await offline.getPeriods();
+      _subjects = await offline.getSubjects();
+      _grades = await offline.getGrades();
     }
     await setCurrentPeriod();
     await offline.setCustomFilters(filters);
@@ -55,13 +62,13 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
   Future<void> setCurrentPeriod({Period? period}) async {
     if (period == null) {
       final String? periodId = await offline.getCurrentPeriodId();
-      final Period? offlinePeriod = periodId == null ? null : periods.firstWhereOrNull((e) => e.id == periodId);
+      final Period? offlinePeriod = periodId == null ? null : _periods.firstWhereOrNull((e) => e.id == periodId);
       if (offlinePeriod != null) {
-        currentPeriod = offlinePeriod;
+        _currentPeriod = offlinePeriod;
         notifyListeners();
       } else {
         final DateTime now = DateTime.now();
-        currentPeriod = periods.firstWhereOrNull((period) =>
+        _currentPeriod = _periods.firstWhereOrNull((period) =>
             now.isAfter(period.startDate) &&
             (now.isBefore(period.endDate) ||
                 (now.year == period.endDate.year &&
@@ -69,9 +76,9 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
                     now.day == period.endDate.day)));
       }
     } else {
-      currentPeriod = period;
+      _currentPeriod = period;
     }
-    await offline.setCurrentPeriodId(currentPeriod?.id);
+    await offline.setCurrentPeriodId(_currentPeriod?.id);
     notifyListeners();
   }
 
@@ -80,15 +87,15 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
       final String? filterId = await offline.getCurrentFilterId();
       final SubjectsFilter? offlineFilter = filterId == null ? null : filters.firstWhereOrNull((e) => e.id == filterId);
       if (offlineFilter != null) {
-        currentFilter = offlineFilter;
+        _currentFilter = offlineFilter;
         notifyListeners();
       } else {
-        currentFilter = filters[0];
+        _currentFilter = filters[0];
       }
     } else {
-      currentFilter = filter;
+      _currentFilter = filter;
     }
-    await offline.setCurrentFilterId(currentFilter?.id);
+    await offline.setCurrentFilterId(_currentFilter?.id);
     notifyListeners();
   }
 
@@ -125,11 +132,11 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
 
   @override
   Future<void> reset({bool offline = false}) async {
-    grades = [];
-    periods = [];
-    subjects = [];
-    customFilters = [];
-    currentPeriod = null;
+    _grades = [];
+    _periods = [];
+    _subjects = [];
+    _customFilters = [];
+    _currentPeriod = null;
     await super.reset(offline: offline);
   }
 }

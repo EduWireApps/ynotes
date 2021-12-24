@@ -9,10 +9,14 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R, Offlin
             api: api,
             offline: OfflineEmails());
 
-  List<Email> emailsSent = [];
-  List<Email> emailsReceived = [];
-  List<Email> favoriteEmails = [];
-  List<Recipient> recipients = [];
+  List<Email> get emailsSent => _emailsSent;
+  List<Email> get emailsReceived => _emailsReceived;
+  List<Email> get favoriteEmails => _favoriteEmails;
+  List<Recipient> get recipients => _recipients;
+  List<Email> _emailsSent = [];
+  List<Email> _emailsReceived = [];
+  List<Email> _favoriteEmails = [];
+  List<Recipient> _recipients = [];
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
@@ -21,60 +25,61 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R, Offlin
     if (online) {
       final res = await repository.get();
       if (res.error != null) return res;
-      final List<Email> _emailsReceived = res.data!["emailsReceived"] ?? [];
-      if (_emailsReceived.length > emailsReceived.length) {
-        final List<Email> newEmails = _emailsReceived.sublist(emailsReceived.length);
+      final List<Email> __emailsReceived = res.data!["emailsReceived"] ?? [];
+      if (__emailsReceived.length > _emailsReceived.length) {
+        final List<Email> newEmails = __emailsReceived.sublist(_emailsReceived.length);
         // TODO: foreach: trigger notifications
-        emailsReceived.addAll(newEmails);
-        await offline.setEmailsReceived(emailsReceived);
+        _emailsReceived.addAll(newEmails);
+        await offline.setEmailsReceived(_emailsReceived);
       }
-      final List<Email> _emailsSent = res.data!["emailsSent"] ?? [];
-      if (_emailsSent.length > emailsSent.length) {
-        final List<Email> newEmails = _emailsSent.sublist(emailsSent.length);
-        emailsSent.addAll(newEmails);
-        await offline.setEmailsSent(emailsSent);
+      final List<Email> __emailsSent = res.data!["emailsSent"] ?? [];
+      if (__emailsSent.length > _emailsSent.length) {
+        final List<Email> newEmails = __emailsSent.sublist(_emailsSent.length);
+        _emailsSent.addAll(newEmails);
+        await offline.setEmailsSent(_emailsSent);
       }
-      final List<Recipient> _recipients = res.data!["recipients"] ?? [];
-      if (_recipients.length > recipients.length) {
-        final List<Recipient> newRecipients = _recipients.toSet().difference(recipients.toSet()).toList();
-        recipients.addAll(newRecipients);
-        await offline.setRecipients(recipients);
+      final List<Recipient> __recipients = res.data!["recipients"] ?? [];
+      if (__recipients.length > _recipients.length) {
+        final List<Recipient> newRecipients = __recipients.toSet().difference(_recipients.toSet()).toList();
+        _recipients.addAll(newRecipients);
+        await offline.setRecipients(_recipients);
       }
     } else {
-      emailsReceived = await offline.getEmailsReceived();
-      emailsSent = await offline.getEmailsSent();
-      recipients = await offline.getRecipients();
+      _emailsReceived = await offline.getEmailsReceived();
+      _emailsSent = await offline.getEmailsSent();
+      _recipients = await offline.getRecipients();
     }
     final List<String> favoriteEmailsIds = await offline.getFavoriteEmailsIds();
-    favoriteEmails = [...emailsReceived, ...emailsSent].where((email) => favoriteEmailsIds.contains(email.id)).toList();
+    _favoriteEmails =
+        [..._emailsReceived, ..._emailsSent].where((email) => favoriteEmailsIds.contains(email.id)).toList();
     fetching = false;
     notifyListeners();
     return const Response();
   }
 
   Future<void> addFavoriteEmail(Email email) async {
-    favoriteEmails.add(email);
-    await offline.setFavoriteEmailsIds(favoriteEmails.map((e) => e.id).toList());
+    _favoriteEmails.add(email);
+    await offline.setFavoriteEmailsIds(_favoriteEmails.map((e) => e.id).toList());
   }
 
   Future<void> removeFavoriteEmail(Email email) async {
-    favoriteEmails.remove(email);
-    await offline.setFavoriteEmailsIds(favoriteEmails.map((e) => e.id).toList());
+    _favoriteEmails.remove(email);
+    await offline.setFavoriteEmailsIds(_favoriteEmails.map((e) => e.id).toList());
   }
 
   Future<Response<void>> read(Email email) async {
     if (email.content != null) return const Response();
-    final bool received = emailsReceived.contains(email);
+    final bool received = _emailsReceived.contains(email);
     final res = await repository.getEmailContent(email, received);
     if (res.error != null) return res;
     if (received) {
-      emailsReceived.firstWhere((e) => e.id == email.id).read = true;
-      emailsReceived.firstWhere((e) => e.id == email.id).content = res.data!;
-      offline.setEmailsReceived(emailsReceived);
+      _emailsReceived.firstWhere((e) => e.id == email.id).read = true;
+      _emailsReceived.firstWhere((e) => e.id == email.id).content = res.data!;
+      offline.setEmailsReceived(_emailsReceived);
     } else {
-      emailsSent.firstWhere((e) => e.id == email.id).read = true;
-      emailsSent.firstWhere((e) => e.id == email.id).content = res.data!;
-      offline.setEmailsSent(emailsSent);
+      _emailsSent.firstWhere((e) => e.id == email.id).read = true;
+      _emailsSent.firstWhere((e) => e.id == email.id).content = res.data!;
+      offline.setEmailsSent(_emailsSent);
     }
     notifyListeners();
     return const Response();
@@ -91,10 +96,10 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R, Offlin
 
   @override
   Future<void> reset({bool offline = false}) async {
-    emailsSent = [];
-    recipients = [];
-    emailsReceived = [];
-    favoriteEmails = [];
+    _emailsSent = [];
+    _recipients = [];
+    _emailsReceived = [];
+    _favoriteEmails = [];
     await super.reset(offline: offline);
   }
 }
