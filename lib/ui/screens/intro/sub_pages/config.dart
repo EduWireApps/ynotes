@@ -10,7 +10,6 @@ import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
-import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class IntroConfigPage extends StatefulWidget {
@@ -87,7 +86,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                                             .toList()));
                                 if (res != null) {
                                   module.schoolAccount = res;
-                                  // TODO: find a way to save the account, for example a `save` method
+                                  await module.save();
                                 }
                               });
                         }),
@@ -111,7 +110,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                     await KVS.write(key: "agreedTermsAndConfiguredApp", value: "true");
                     Navigator.pushReplacementNamed(context, "/home");
                   },
-                  text: "Allons-y !",
+                  text: "C'EST PARTI !",
                   block: true),
             ),
           ],
