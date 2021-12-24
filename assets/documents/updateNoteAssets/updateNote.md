@@ -1,4 +1,6 @@
+# 0.14.7
 
+Toute l'équipe vous souhaite de très joyeuses fêtes !
 # 0.14.6
 _On voulait faire un tour de magie. Mais vous n'avez pas trop apprécié._
 - Correction du bug de disparition des notes:
@@ -54,7 +56,7 @@ Enfin une nouvelle mise à jour avec plein de nouveautés !
 - Le **résumé**, renommé en **accueil**, fait peau neuve ! Tu peux enfin voir d'un coup d'oeil dans **quelle salle** tu as cours et dans **combien de temps**. Les statistiques ont été revues afin de les rendre **plus pertinentes**. Tu peux toujours voir quelles sont les dernières notes et nous avons remis les devoirs, pour la semaine en cours cette fois-ci
 - La **vie scolaire** (Ecole Directe uniquement), sans ajout particulier
 - Tous les **paramètres** on été refaits afin de mieux s'y retrouver
-- La vilaine méchante page d'**erreur**. On espère que tu ne la croisera jamais (brrr) mais si ça devait malheureusement arriver (horreur !) envoie nous un petit message pour nous dire que ça ne va pas du tout (on comprendra).
+- La vilaine méchante page d'**erreur**. On espère que tu ne la croiseras jamais (brrr) mais si ça devait malheureusement arriver (horreur !) envoie nous un petit message pour nous dire que ça ne va pas du tout (on comprendra).
 
 ## Divers
 
