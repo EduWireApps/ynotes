@@ -17,7 +17,7 @@ class GradesChart extends StatelessWidget {
   const GradesChart(this.elements, {Key? key}) : super(key: key);
 
   List<ChartElement> get els =>
-      elements.reversed.toList().sublist(0, min(elements.length - 1, r<int>(def: 4, sm: 6, lg: 8))).reversed.toList();
+      elements.reversed.toList().sublist(0, min(elements.length, r<int>(def: 4, sm: 6, lg: 8))).reversed.toList();
 
   @override
   Widget build(BuildContext context) {

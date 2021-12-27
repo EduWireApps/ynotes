@@ -22,14 +22,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<void> onRefresh() async {
     await schoolApi.fetch(online: true);
-    print(schoolApi.gradesModule.currentPeriod?.name);
-    // await Future.wait([
-    //   appSys.api!.getEvents(DateTime.now(), forceReload: false),
-    //   appSys.gradesController.refresh(force: true),
-    //   appSys.homeworkController.refresh(force: true),
-    //   if (appSys.settings.system.chosenParser == 0) appSys.mailsController.refresh(force: true),
-    //   if (appSys.settings.system.chosenParser == 0) appSys.schoolLifeController.refresh(force: true),
-    // ]);
   }
 
   @override

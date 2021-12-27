@@ -61,3 +61,7 @@ extension StringToDouble on String {
 extension DoubleToFixed on double {
   double asFixed(int length) => double.parse(toStringAsFixed(length));
 }
+
+extension DoubleDisplay on double {
+  String display() => toString().replaceAll(".0", "").replaceAll(".", ",");
+}

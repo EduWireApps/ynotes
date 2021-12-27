@@ -131,7 +131,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
       for (final avg in avgs) {
         sum += avg;
       }
-      return sum / avgs.length;
+      return (sum / avgs.length).asFixed(2);
     } else {
       List<double> values = [];
       List<double> coefficients = [];
@@ -145,8 +145,19 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
 
   double calculateAverageFromSubjects(List<Subject> subjects, {Period? period}) {
     final List<List<Grade>> _grades = subjects.map((e) => e.grades(grades, period)).toList();
-    final List<double> values = _grades.map((e) => calculateAverageFromGrades(e)).toList();
-    final List<double> coefficients = subjects.map((e) => e.coefficient).toList();
+    final List<double> allValues = _grades.map((e) => calculateAverageFromGrades(e)).toList();
+    final List<double> allCoefficients = subjects.map((e) => e.coefficient).toList();
+
+    final List<double> values = [];
+    final List<double> coefficients = [];
+    for (int i = 0; i < allValues.length; i++) {
+      final double value = allValues[i];
+      final double coefficient = allCoefficients[i];
+      if (!value.isNaN) {
+        values.add(value);
+        coefficients.add(coefficient);
+      }
+    }
     return calculateAverage(values, coefficients);
   }
 
