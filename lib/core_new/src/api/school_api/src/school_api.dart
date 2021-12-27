@@ -3,9 +3,11 @@ part of school_api;
 abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
   final Metadata metadata;
 
+  final ModulesSupport modulesSupport;
+
   final ModulesAvailability modulesAvailability = ModulesAvailability();
 
-  SchoolApi({required this.metadata});
+  SchoolApi({required this.metadata, required this.modulesSupport});
 
   late final List<Module> modules = [
     authModule,
@@ -16,8 +18,22 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
     documentsModule
   ];
 
+  /// Should only be called after [modulesAvailability] update ([modulesAvailability.save]).
+  void refreshModules() {
+    for (Module module in modules) {
+      module = module;
+    }
+  }
+
+  Future<void> fetch({bool online = false}) async {
+    for (final module in modules) {
+      await module.fetch(online: online);
+    }
+  }
+
   Future<void> init() async {
     await Offline.init();
+    await modulesAvailability.load();
     for (final module in modules) {
       await module._init();
     }

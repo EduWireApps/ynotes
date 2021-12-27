@@ -1,10 +1,10 @@
 part of school_api;
 
 abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrades> {
-  GradesModule({required bool isSupported, required bool isAvailable, required R repository, required SchoolApi api})
+  GradesModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: isSupported,
-            isAvailable: isAvailable,
+            isSupported: api.modulesSupport.grades,
+            isAvailable: api.modulesAvailability.grades,
             repository: repository,
             api: api,
             offline: OfflineGrades());
@@ -38,7 +38,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
       final List<Grade> __grades = res.data!["grades"] ?? [];
       if (__grades.length > _grades.length) {
         // TODO: check if this really works
-        final List<Grade> newGrades = __grades.toSet().difference(_grades.toSet()).toList();
+        final List<Grade> newGrades = __grades.sublist(_grades.length);
         // TODO: trigger notification
       }
       _grades = __grades;

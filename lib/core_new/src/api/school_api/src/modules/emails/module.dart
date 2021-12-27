@@ -1,10 +1,10 @@
 part of school_api;
 
 abstract class EmailsModule<R extends EmailsRepository> extends Module<R, OfflineEmails> {
-  EmailsModule({required bool isSupported, required bool isAvailable, required R repository, required SchoolApi api})
+  EmailsModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: isSupported,
-            isAvailable: isAvailable,
+            isSupported: api.modulesSupport.emails,
+            isAvailable: api.modulesAvailability.emails,
             repository: repository,
             api: api,
             offline: OfflineEmails());

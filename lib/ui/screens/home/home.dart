@@ -21,11 +21,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<void> onRefresh() async {
-    print("before fetch");
-    await Future.wait(schoolApi.modules.map((module) => module.fetch(online: true)));
-    print("after fetch");
-    print(schoolApi.gradesModule.isEnabled);
-    print(schoolApi.modulesAvailability.grades);
+    await schoolApi.fetch(online: true);
+    print(schoolApi.gradesModule.currentPeriod?.name);
     // await Future.wait([
     //   appSys.api!.getEvents(DateTime.now(), forceReload: false),
     //   appSys.gradesController.refresh(force: true),
@@ -102,7 +99,7 @@ class _HomePageState extends State<HomePage> {
             body: Column(mainAxisSize: MainAxisSize.max, children: [
               /*CountDown(),*/
               if (schoolApi.gradesModule.isEnabled) const GradesSection(),
-              if (schoolApi.homeworkModule.isEnabled) const HomeworkSection()
+              // if (schoolApi.homeworkModule.isEnabled) const HomeworkSection()
             ])));
   }
 }

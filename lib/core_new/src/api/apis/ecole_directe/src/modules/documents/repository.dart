@@ -9,7 +9,8 @@ class _DocumentsRepository extends DocumentsRepository {
     final String id = document.id;
     final String url = "${_baseUrl}telechargement.awp?verbe=post&leTypeDeFichier=$type&fichierId=$id";
     http.Request request = http.Request("POST", Uri.parse(url));
-    request.body = _encodeBody(null, _token!);
+    request.body = _encodeBody(null);
+    request.headers["X-Token"] = _token!;
     return Response(data: request);
   }
 

@@ -27,12 +27,14 @@ part 'src/repository.dart';
 part 'src/metadata.dart';
 part 'src/module.dart';
 part 'src/modules_availability.dart';
+part 'src/modules_support.dart';
 part 'src/school_api_modules.dart';
 part 'src/school_api.dart';
 
 // AUTH MODULE
 part 'src/modules/auth/module.dart';
 part 'src/modules/auth/offline.dart';
+part 'src/modules/auth/repository.dart';
 
 // GRADES MODULE
 part 'src/modules/grades/module.dart';

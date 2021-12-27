@@ -1,11 +1,10 @@
 part of school_api;
 
 abstract class SchoolLifeModule<R extends Repository> extends Module<R, OfflineSchoolLife> {
-  SchoolLifeModule(
-      {required bool isSupported, required bool isAvailable, required R repository, required SchoolApi api})
+  SchoolLifeModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: isSupported,
-            isAvailable: isAvailable,
+            isSupported: api.modulesSupport.schoolLife,
+            isAvailable: api.modulesAvailability.schoolLife,
             repository: repository,
             api: api,
             offline: OfflineSchoolLife());

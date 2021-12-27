@@ -1,10 +1,7 @@
 part of ecole_directe;
 
-String _encodeBody(Map<String, dynamic>? body, [String? token]) {
+String _encodeBody(Map<String, dynamic>? body) {
   body ??= {};
-  if (token != null) {
-    body['token'] = token;
-  }
   return "data=${jsonEncode(body)}";
 }
 
@@ -16,9 +13,12 @@ Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
     return const Response(error: "Not authenticated");
   }
   return await handleNetworkError(() async {
-    final String _body = _encodeBody(body, auth ? _token! : null);
+    final String _body = _encodeBody(body);
     headers ??= {};
     headers!["Content-type"] = "text/plain";
+    if (auth) {
+      headers!["X-Token"] = _token!;
+    }
     final res = await http.post(Uri.parse("$_baseUrl$url"), headers: headers, body: _body);
     if (res.statusCode == 200) {
       final String resBody = _decodeBody(res);

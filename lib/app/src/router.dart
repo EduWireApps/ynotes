@@ -114,7 +114,7 @@ final List<AppRoute> appRoutes = [
       title: "Notes",
       transition: RouteTransition.scale,
       fallbackPath: "/loading",
-      guard: () => false)
+      guard: () => schoolApi.gradesModule.isEnabled),
 ];
 
 final List<CustomRoute> routes = [

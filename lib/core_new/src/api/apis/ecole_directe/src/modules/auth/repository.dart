@@ -1,6 +1,6 @@
 part of ecole_directe;
 
-class _AuthRepository extends Repository {
+class _AuthRepository extends AuthRepository {
   @protected
   late final _AuthProvider authProvider = _AuthProvider(api);
 
@@ -9,7 +9,14 @@ class _AuthRepository extends Repository {
   @override
   Future<Response<Map<String, dynamic>>> get() async => const Response(error: "Not implemented");
 
-  Future<Response<Map<String, dynamic>>> login(Map<String, String> body) async {
+  @override
+  Future<Response<Map<String, dynamic>>> login(
+      {required String username, required String password, Map<String, dynamic>? parameters}) async {
+    final Map<String, String> body = {
+      "identifiant": username,
+      "motdepasse": password,
+    };
+
     String encodeData(String data) {
       final List<List<String>> chars = [
         ["%", "%25"],
@@ -59,20 +66,17 @@ class _AuthRepository extends Repository {
       for (final module in (account["modules"] as List<dynamic>).map<Map<String, dynamic>>((e) => e).toList()) {
         final String name = module["code"];
         final bool enabled = module["enable"];
-        if (enabled) {
-          if (name == "VIE_SCOLAIRE") {
-            api.modulesAvailability.schoolLife = true;
-          } else if (name == "NOTES") {
-            api.modulesAvailability.grades = true;
-          } else if (name == "MESSAGERIE") {
-            api.modulesAvailability.emails = true;
-            api.modulesAvailability.documents = true;
-          } else if (name == "CAHIER_DE_TEXTES") {
-            api.modulesAvailability.homework = true;
-            api.modulesAvailability.documents = true;
-          }
+        if (name == "VIE_SCOLAIRE") {
+          api.modulesAvailability.schoolLife = enabled;
+        } else if (name == "NOTES") {
+          api.modulesAvailability.grades = enabled;
+        } else if (name == "MESSAGERIE") {
+          api.modulesAvailability.emails = enabled;
+        } else if (name == "CAHIER_DE_TEXTES") {
+          api.modulesAvailability.homework = enabled;
         }
       }
+      await api.modulesAvailability.save();
       api.refreshModules();
       return Response(data: map);
     } catch (e) {

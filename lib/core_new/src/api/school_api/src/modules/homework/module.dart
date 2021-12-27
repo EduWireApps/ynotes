@@ -1,10 +1,10 @@
 part of school_api;
 
 abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R, OfflineHomework> {
-  HomeworkModule({required bool isSupported, required bool isAvailable, required R repository, required SchoolApi api})
+  HomeworkModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: isSupported,
-            isAvailable: isAvailable,
+            isSupported: api.modulesSupport.homework,
+            isAvailable: api.modulesAvailability.homework,
             repository: repository,
             api: api,
             offline: OfflineHomework());

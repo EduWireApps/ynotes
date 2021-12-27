@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class UpdateNoteDialog extends StatefulWidget {
   const UpdateNoteDialog({Key? key}) : super(key: key);
@@ -48,14 +49,14 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
                     selectable: true,
                     data: markdown ?? "",
                     styleSheet: MarkdownStyleSheet(
-                      p: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      listBullet: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      h1: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      h2: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      h3: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      h4: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      h5: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      h6: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      p: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
+                      listBullet: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
+                      h1: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
+                      h2: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
+                      h3: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
+                      h4: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
+                      h5: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
+                      h6: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
                     )),
               ),
             ],

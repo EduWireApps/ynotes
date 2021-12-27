@@ -12,6 +12,4 @@ abstract class SchoolApiModules {
   late HomeworkModule homeworkModule;
 
   late DocumentsModule documentsModule;
-
-  void refreshModules();
 }

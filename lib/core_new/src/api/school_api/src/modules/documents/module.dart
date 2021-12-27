@@ -18,10 +18,10 @@ enum DocumentsModuleStatus {
 }
 
 abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, OfflineDocuments> {
-  DocumentsModule({required bool isSupported, required bool isAvailable, required R repository, required SchoolApi api})
+  DocumentsModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: isSupported,
-            isAvailable: isAvailable,
+            isSupported: api.modulesSupport.documents,
+            isAvailable: api.modulesAvailability.documents,
             repository: repository,
             api: api,
             offline: OfflineDocuments());

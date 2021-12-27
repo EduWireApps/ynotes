@@ -2,7 +2,7 @@ part of school_api;
 
 enum AuthStatus { authenticated, unauthenticated, offline, error }
 
-abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
+abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAuth> {
   AuthModule({required R repository, required SchoolApi api})
       : super(isSupported: true, isAvailable: true, repository: repository, api: api, offline: OfflineAuth()) {
     _connectivity.onConnectivityChanged.listen(_checkConnectivity);
@@ -85,7 +85,27 @@ abstract class AuthModule<R extends Repository> extends Module<R, OfflineAuth> {
     await offline.setSchoolAccount(schoolAccount);
   }
 
-  Future<Response<void>> login({required String username, required String password, Map<String, dynamic>? parameters});
+  Future<Response<void>> login(
+      {required String username, required String password, Map<String, dynamic>? parameters}) async {
+    final res = await repository.login(username: username, password: password, parameters: parameters);
+    if (res.error != null) {
+      status = AuthStatus.error;
+      details = "Erreur de connexion";
+      logs = res.error;
+      notifyListeners();
+      return res;
+    }
+    await setCredentials({"username": username, "password": password, "parameters": parameters});
+    await save();
+    status = AuthStatus.authenticated;
+    details = "Connecté";
+    logs = null;
+    notifyListeners();
+    account = res.data!["appAccount"];
+    schoolAccount = res.data!["schoolAccount"];
+    notifyListeners();
+    return const Response();
+  }
 
   @override
   Future<void> reset({bool offline = false}) async {
