@@ -51,11 +51,14 @@ class _GradesRepository extends Repository {
             average: (e["moyenne"] as String).toDouble() ?? double.nan,
             color: color);
       }).toList();
+      // When this setting is set to [false], all grades' coefficient are set to 0. To counter this,
+      // we set the coefficient to 1 for all grades.
+      final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
       final List<Grade> grades = res.data!["data"]["notes"]
           .map<Grade>((e) => Grade(
               name: e["devoir"],
               type: e["typeDevoir"],
-              coefficient: (e["coef"] as String).toDouble() ?? double.nan,
+              coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
               outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
               value: (e["valeur"] as String).toDouble() ?? double.nan,
               significant: !(e["nonSignificatif"] as bool),
