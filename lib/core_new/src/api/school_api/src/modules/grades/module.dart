@@ -24,7 +24,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
 
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
   late final List<SubjectsFilter> _defaultFilters = [
-    SubjectsFilter(name: "Toutes matières", color: AppColors.blue, subjectsIds: null, custom: false, id: "all")
+    SubjectsFilter(name: "Toutes matières", subjectsIds: null, id: "all")
   ];
 
   @override
@@ -66,7 +66,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     return const Response();
   }
 
-  Future<void> setCurrentPeriod({Period? period}) async {
+  Future<void> setCurrentPeriod([Period? period]) async {
     if (period == null) {
       final String? periodId = await offline.getCurrentPeriodId();
       final Period? offlinePeriod = periodId == null ? null : _periods.firstWhereOrNull((e) => e.id == periodId);
@@ -89,7 +89,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     notifyListeners();
   }
 
-  Future<void> setCurrentFilter({SubjectsFilter? filter}) async {
+  Future<void> setCurrentFilter([SubjectsFilter? filter]) async {
     if (filter == null) {
       final String? filterId = await offline.getCurrentFilterId();
       final SubjectsFilter? offlineFilter = filterId == null ? null : filters.firstWhereOrNull((e) => e.id == filterId);

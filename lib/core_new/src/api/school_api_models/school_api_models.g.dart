@@ -281,25 +281,19 @@ class SubjectsFilterAdapter extends TypeAdapter<SubjectsFilter> {
     };
     return SubjectsFilter(
       name: fields[0] as String,
-      color: fields[1] as YTColor,
       subjectsIds: (fields[2] as List?)?.cast<String>(),
-      custom: fields[3] as bool,
-      id: fields[4] as String,
+      id: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SubjectsFilter obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.color)
       ..writeByte(2)
       ..write(obj.subjectsIds)
-      ..writeByte(3)
-      ..write(obj.custom)
       ..writeByte(4)
       ..write(obj.id);
   }

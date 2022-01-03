@@ -29,7 +29,10 @@ class _GradesSectionState extends State<GradesSection> {
 
   // We get all grades and sort them by entryDate
   List<Grade> get grades =>
-      module.currentPeriod?.grades(module.grades.where((grade) => grade.significant).toList()).toList() ?? [];
+      module.currentPeriod
+          ?.grades(module.grades.where((grade) => grade.significant && grade is! CustomGrade).toList())
+          .toList() ??
+      [];
 
   List<ChartElement> get chartElements {
     final List<Grade> fetchedGrades = grades;
@@ -88,9 +91,9 @@ class _GradesSectionState extends State<GradesSection> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(chartElements.last.value.display(),
-                                      style: theme.texts.title.copyWith(
-                                          fontSize: r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4),
-                                          fontWeight: YFontWeight.extrabold)),
+                                      style: theme.texts.data1.copyWith(
+                                          fontSize:
+                                              r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4))),
                                   Text("Moyenne", style: theme.texts.body2),
                                   YVerticalSpacer(YScale.s4),
                                   if (module.currentPeriod != null)
@@ -148,6 +151,6 @@ class _DiffText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("$sign${value.toStringAsFixed(2)}", style: theme.texts.title.copyWith(color: color));
+    return Text("$sign${value.asFixed(2).display()}", style: theme.texts.title.copyWith(color: color));
   }
 }

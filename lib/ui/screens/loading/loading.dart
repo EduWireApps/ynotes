@@ -56,7 +56,9 @@ class _LoadingPageState extends State<LoadingPage> {
     if (hasCredentials) {
       // The user has agreed to the terms and the app is configured
       if (completedLogin != null) {
-        Navigator.pushReplacementNamed(context, "/home");
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, "/home");
+        }
       } else {
         Navigator.pushReplacementNamed(context, "/terms");
       }

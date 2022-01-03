@@ -23,6 +23,7 @@ import 'package:ynotes/ui/screens/cloud/cloud.dart';
 import 'package:ynotes/ui/screens/downloads/downloads.dart';
 import 'package:ynotes/ui/screens/error/error.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
+import 'package:ynotes/ui/screens/grades_new/routes.dart';
 import 'package:ynotes/ui/screens/home/routes.dart';
 import 'package:ynotes/ui/screens/homework/homework.dart';
 import 'package:ynotes/ui/screens/intro/routes.dart';

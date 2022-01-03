@@ -107,14 +107,7 @@ final List<AppRoute> appRoutes = [
   ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
   ...settingsRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
   ...homeRoutes,
-  AppRoute(
-      path: "/grades",
-      widget: const GradesPage(),
-      icon: MdiIcons.trophy,
-      title: "Notes",
-      transition: RouteTransition.scale,
-      fallbackPath: "/loading",
-      guard: () => schoolApi.gradesModule.isEnabled),
+  ...gradesRoutes
 ];
 
 final List<CustomRoute> routes = [

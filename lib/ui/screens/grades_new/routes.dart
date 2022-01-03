@@ -1,0 +1,16 @@
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/app/app.dart';
+import 'package:ynotes/ui/screens/grades_new/grades.dart';
+
+bool _guard() => schoolApi.gradesModule.isEnabled;
+const String _basePath = "/grades";
+
+const List<AppRoute> gradesRoutes = [
+  AppRoute(
+      path: _basePath,
+      widget: GradesPage(),
+      icon: MdiIcons.trophy,
+      title: "Notes",
+      guard: _guard,
+      fallbackPath: "/loading")
+];
