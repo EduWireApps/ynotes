@@ -3,7 +3,6 @@ library components;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/app/app.dart';
@@ -33,3 +32,4 @@ part 'src/navigation/drawer.dart';
 
 // MISC
 part 'src/misc/theme_switcher_tile.dart';
+part 'src/misc/subjects_filter_manager.dart';

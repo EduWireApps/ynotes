@@ -163,6 +163,26 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
 
   double calculateAverageFromPeriod(Period period) => calculateAverageFromSubjects(subjects, period: period);
 
+  Future<Response<void>> addFilter(SubjectsFilter filter) async {
+    _customFilters.add(filter);
+    await offline.setCustomFilters(_customFilters);
+    notifyListeners();
+    return const Response();
+  }
+
+  Future<Response<void>> removeFilter(SubjectsFilter filter) async {
+    _customFilters.removeWhere((f) => f.id == filter.id);
+    await offline.setCustomFilters(_customFilters);
+    notifyListeners();
+    return const Response();
+  }
+
+  Future<Response<void>> updateFilter(SubjectsFilter filter) async {
+    await removeFilter(filter);
+    await addFilter(filter);
+    return const Response();
+  }
+
   @override
   Future<void> reset({bool offline = false}) async {
     _grades = [];
