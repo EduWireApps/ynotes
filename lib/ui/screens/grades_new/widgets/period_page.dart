@@ -9,8 +9,9 @@ import 'package:ynotes_packages/utilities.dart';
 class PeriodPage extends StatelessWidget {
   final GradesModule module;
   final Period period;
+  final bool simulate;
 
-  const PeriodPage(this.module, this.period, {Key? key}) : super(key: key);
+  const PeriodPage(this.module, this.period, this.simulate, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +21,67 @@ class PeriodPage extends StatelessWidget {
             style: theme.texts.body1,
           )
         : Column(
-            children: [_Stats(module, period), YVerticalSpacer(YScale.s8), SubjectsList(module, period)],
+            children: [
+              _Stats(module, period, simulate),
+              YVerticalSpacer(YScale.s8),
+              SubjectsList(module, period),
+              const _Footer()
+            ],
           );
+  }
+}
+
+class _Footer extends StatelessWidget {
+  const _Footer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        YVerticalSpacer(YScale.s4),
+        const YDivider(),
+        SizedBox(
+            height: YScale.s20,
+            child: Padding(
+              padding: YPadding.px(YScale.s4),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text("Essaie donc le simulateur !", style: theme.texts.body1),
+              ),
+            )),
+      ],
+    );
   }
 }
 
 class _Stats extends StatelessWidget {
   final GradesModule module;
   final Period period;
+  final bool simulate;
 
-  const _Stats(this.module, this.period, {Key? key}) : super(key: key);
+  const _Stats(this.module, this.period, this.simulate, {Key? key}) : super(key: key);
 
   Future<void> _open() async {
     // TODO: open stats page
   }
 
-  List<Grade> get grades =>
-      period.grades(module.grades.where((grade) => grade.significant && grade is! CustomGrade).toList()).toList();
+  List<Grade> get grades => period
+      .grades([
+        ...module.grades,
+        CustomGrade(coefficient: 3, outOf: 20, value: 20, subjectId: "PHILO", periodId: "A002")
+      ].where((grade) {
+        final bool s = grade.significant;
+        if (simulate) {
+          return s;
+        } else {
+          return s && grade is! CustomGrade;
+        }
+      }).toList())
+      .toList();
+
+  double get average => module.calculateAverageFromGrades(grades, bySubject: true);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +99,7 @@ class _Stats extends StatelessWidget {
                 children: [
                   Text("Moyenne", style: theme.texts.body2),
                   Text(
-                    module.calculateAverageFromGrades(grades, bySubject: true).display(),
+                    average.display(),
                     style: theme.texts.data1
                         .copyWith(fontSize: r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4)),
                   ),
@@ -84,6 +129,22 @@ class _Stats extends StatelessWidget {
               ),
               YHorizontalSpacer(YScale.s4),
               Expanded(child: Container()),
+              // if (average != period.overallAverage)
+              YIconButton(
+                icon: Icons.info_rounded,
+                onPressed: () async {
+                  await YDialogs.showInfo(
+                      context,
+                      YInfoDialog(
+                          title: "Données obsolètes",
+                          confirmLabel: "OK",
+                          body: Text(
+                              "Seule la moyenne générale est calculée en temps réel. Actuellement, les autres données (moyenne de classe, maximum et minimum) sont obsolètes, elles seront mises à jour dès que l'information sera disponible.",
+                              style: theme.texts.body1)));
+                },
+                foregroundColor: theme.colors.warning.backgroundColor,
+              ),
+              YHorizontalSpacer(YScale.s1),
               YButton(
                 onPressed: _open,
                 text: "Stats",

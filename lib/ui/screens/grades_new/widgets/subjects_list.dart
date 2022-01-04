@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core_new/api.dart';
@@ -35,8 +36,15 @@ class _SubjectContainer extends StatelessWidget {
   final Subject subject;
   const _SubjectContainer(this.subject, {Key? key}) : super(key: key);
 
+  List<Grade> get grades => subject.grades(schoolApi.gradesModule.currentPeriod!.grades(schoolApi.gradesModule.grades));
+
+  double get _average => schoolApi.gradesModule.calculateAverageFromGrades(grades, bySubject: true);
+
   @override
   Widget build(BuildContext context) {
+    final BorderRadius _borderRadius = BorderRadius.vertical(
+        top: Radius.circular(YScale.s2),
+        bottom: grades.isEmpty ? Radius.circular(YScale.s2) : const Radius.circular(0));
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(color: theme.colors.backgroundLightColor, borderRadius: YBorderRadius.lg),
@@ -45,33 +53,127 @@ class _SubjectContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Material(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(YScale.s2)),
+            borderRadius: _borderRadius,
             child: InkWell(
               onTap: () {},
-              borderRadius: BorderRadius.vertical(top: Radius.circular(YScale.s2)),
+              borderRadius: _borderRadius,
+              hoverColor: subject.color.lightColor,
+              highlightColor: subject.color.lightColor,
               child: Ink(
-                padding: YPadding.p(YScale.s2),
+                padding: EdgeInsets.symmetric(vertical: YScale.s2, horizontal: YScale.s3),
                 decoration: BoxDecoration(
                   color: subject.color.backgroundColor,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(YScale.s2)),
+                  borderRadius: _borderRadius,
                 ),
                 width: double.infinity,
-                child: Text(
-                    schoolApi.gradesModule
-                            .calculateAverageFromGrades(
-                                subject.grades(
-                                    schoolApi.gradesModule.currentPeriod!.grades(schoolApi.gradesModule.grades)),
-                                bySubject: true)
-                            .display() +
-                        " " +
+                child: Row(
+                  children: [
+                    Text(_average.isNaN ? "-" : _average.display(),
+                        style: theme.texts.body1.copyWith(
+                            color: subject.color.foregroundColor,
+                            fontWeight: YFontWeight.bold,
+                            fontSize: YFontSize.xl)),
+                    YHorizontalSpacer(YScale.s4),
+                    Expanded(
+                      child: Text(
                         subject.name,
-                    style: theme.texts.body1
-                        .copyWith(color: subject.color.foregroundColor, fontWeight: YFontWeight.medium)),
+                        style: theme.texts.body1
+                            .copyWith(color: subject.color.foregroundColor, fontWeight: YFontWeight.medium),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    YHorizontalSpacer(YScale.s2),
+                    Icon(Icons.info_rounded, color: subject.color.foregroundColor),
+                  ],
+                ),
               ),
             ),
           ),
-          YVerticalSpacer(YScale.s24),
+          if (grades.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: YScale.s3, vertical: YScale.s4),
+              child: Wrap(
+                spacing: YScale.s4,
+                runSpacing: YScale.s4,
+                children: grades.map((grade) => _GradeContainer(grade, subject)).toList(),
+              ),
+            )
         ],
+      ),
+    );
+  }
+}
+
+class _GradeContainer extends StatelessWidget {
+  final Grade grade;
+  final Subject subject;
+  const _GradeContainer(
+    this.grade,
+    this.subject, {
+    Key? key,
+  }) : super(key: key);
+
+  YTColor get color => subject.color;
+
+  Widget bubble(String text, [bool danger = false]) {
+    final Color backgroundColor = danger ? theme.colors.danger.backgroundColor : theme.colors.foregroundColor;
+    final Color foregroundColor = danger ? theme.colors.danger.foregroundColor : theme.colors.backgroundColor;
+    return Container(
+      height: YScale.s4,
+      padding: YPadding.px(YScale.s1),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: YBorderRadius.full,
+      ),
+      child: AutoSizeText(
+        text,
+        style: theme.texts.body2.copyWith(fontWeight: YFontWeight.bold, color: foregroundColor),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: theme.colors.backgroundLightColor,
+      borderRadius: YBorderRadius.lg,
+      child: InkWell(
+        onTap: () {
+          YModalBottomSheets.show(
+              context: context, child: Text("grade bottom sheet: <${grade.name}>", style: theme.texts.body1));
+        },
+        borderRadius: YBorderRadius.md,
+        highlightColor: color.backgroundColor,
+        hoverColor: color.lightColor,
+        child: Ink(
+            padding: YPadding.p(YScale.s1),
+            decoration:
+                BoxDecoration(color: theme.colors.backgroundColor.withOpacity(.25), borderRadius: YBorderRadius.lg),
+            child: SizedBox(
+              width: YScale.s8,
+              height: YScale.s8,
+              child: Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  AutoSizeText(
+                    grade.value.display(),
+                    style: TextStyle(
+                      fontWeight: YFontWeight.semibold,
+                      color: theme.colors.foregroundColor,
+                      fontSize: YFontSize.base,
+                    ),
+                    softWrap: false,
+                  ),
+                  if (grade.coefficient != 1)
+                    Positioned(
+                        top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.coefficient.display(), true)),
+                  if (grade.outOf != 20)
+                    Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.outOf.display()}"))
+                ],
+              ),
+            )),
       ),
     );
   }

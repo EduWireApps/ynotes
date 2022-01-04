@@ -63,5 +63,11 @@ extension DoubleToFixed on double {
 }
 
 extension DoubleDisplay on double {
-  String display() => toString().replaceAll(".0", "").replaceAll(".", ",");
+  String display() {
+    String str = toString().replaceAll(".", ",");
+    if (str.endsWith(",0")) {
+      str = str.substring(0, str.length - 2);
+    }
+    return str;
+  }
 }
