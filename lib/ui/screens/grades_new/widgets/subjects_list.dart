@@ -95,7 +95,7 @@ class _SubjectContainer extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: YScale.s3, vertical: YScale.s4),
               child: Wrap(
                 spacing: YScale.s2,
-                runSpacing: YScale.s3,
+                runSpacing: YScale.s2,
                 children: [
                   ...grades,
                   // CustomGrade(coefficient: 1.5, outOf: 20, value: 14, subjectId: "", periodId: "periodId")
@@ -141,28 +141,29 @@ class _GradeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BorderRadius _borderRadius = YBorderRadius.xl;
     return DottedBorder(
       color: simulate ? color.backgroundColor : Colors.transparent,
-      radius: Radius.circular(YScale.s3),
+      radius: Radius.circular(YScale.s4),
       padding: YPadding.p(YScale.s1),
       strokeWidth: YScale.s0p5,
       borderType: BorderType.RRect,
       dashPattern: [YScale.s1, YScale.s0p5],
       child: Material(
         color: simulate ? color.backgroundColor : theme.colors.backgroundLightColor,
-        borderRadius: YBorderRadius.lg,
+        borderRadius: _borderRadius,
         child: InkWell(
           onTap: () {
             YModalBottomSheets.show(
                 context: context, child: Text("grade bottom sheet: <${grade.name}>", style: theme.texts.body1));
           },
-          borderRadius: YBorderRadius.md,
+          borderRadius: _borderRadius,
           highlightColor: simulate ? color.lightColor.withOpacity(.5) : color.backgroundColor,
           hoverColor: color.lightColor,
           child: Ink(
               padding: YPadding.p(YScale.s1),
               decoration:
-                  BoxDecoration(color: theme.colors.backgroundColor.withOpacity(.25), borderRadius: YBorderRadius.lg),
+                  BoxDecoration(color: theme.colors.backgroundColor.withOpacity(.25), borderRadius: _borderRadius),
               child: SizedBox(
                 width: YScale.s8,
                 height: YScale.s8,

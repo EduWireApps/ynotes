@@ -41,7 +41,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
         final List<Grade> newGrades = __grades.sublist(_grades.length);
         // TODO: trigger notification
       }
-      _grades = __grades;
+      _grades = [...__grades, ...grades.whereType<CustomGrade>()];
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
       for (final __subject in __subjects) {
         final Subject? _subject = _subjects.firstWhereOrNull((subject) => subject.id == __subject.id);

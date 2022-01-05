@@ -30,7 +30,7 @@ class SubjectsFiltersManager extends StatelessWidget {
                   },
                   text: module.currentFilter!.name,
                   color: YColor.secondary),
-              YHorizontalSpacer(YScale.s2),
+              Expanded(child: YHorizontalSpacer(YScale.s2)),
               YIconButton(
                   icon: Icons.add_rounded,
                   onPressed: () async {

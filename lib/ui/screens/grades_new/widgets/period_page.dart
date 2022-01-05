@@ -68,10 +68,7 @@ class _Stats extends StatelessWidget {
   }
 
   List<Grade> get grades => period
-      .grades([
-        ...module.grades,
-        CustomGrade(coefficient: 3, outOf: 20, value: 20, subjectId: "PHILO", periodId: "A002")
-      ].where((grade) {
+      .grades(module.grades.where((grade) {
         final bool s = grade.significant;
         if (simulate) {
           return s;
@@ -94,16 +91,21 @@ class _Stats extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Moyenne", style: theme.texts.body2),
-                  Text(
-                    average.display(),
-                    style: theme.texts.data1
-                        .copyWith(fontSize: r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4)),
-                  ),
-                ],
+              Container(
+                decoration: BoxDecoration(color: theme.colors.backgroundLightColor, borderRadius: YBorderRadius.lg),
+                padding: EdgeInsets.symmetric(horizontal: YScale.s3, vertical: YScale.s1),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Moyenne", style: theme.texts.body2),
+                    Text(
+                      average.display(),
+                      style: theme.texts.data1.copyWith(
+                          fontSize: r<double>(def: YFontSize.xl2, lg: YFontSize.xl3, xl: YFontSize.xl4),
+                          color: simulate ? theme.colors.primary.backgroundColor : null),
+                    ),
+                  ],
+                ),
               ),
               YHorizontalSpacer(YScale.s4),
               Column(
@@ -127,8 +129,7 @@ class _Stats extends StatelessWidget {
                   ),
                 ],
               ),
-              YHorizontalSpacer(YScale.s4),
-              Expanded(child: Container()),
+              Expanded(child: YHorizontalSpacer(YScale.s2)),
               if (average != period.overallAverage)
                 YIconButton(
                   icon: Icons.info_rounded,
@@ -144,12 +145,11 @@ class _Stats extends StatelessWidget {
                   },
                   foregroundColor: theme.colors.warning.backgroundColor,
                 ),
-              YHorizontalSpacer(YScale.s1),
-              YButton(
+              YIconButton(
+                icon: Icons.bar_chart_rounded,
                 onPressed: _open,
-                text: "Stats",
-                color: YColor.secondary,
-              )
+                backgroundColor: theme.colors.backgroundLightColor,
+              ),
             ],
           ),
         ),
