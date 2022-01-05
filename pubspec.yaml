@@ -97,6 +97,7 @@ dependencies:
     git:
       ref: main
       url: "https://github.com/EduWireApps/ynotes-packages"
+  dotted_border: ^2.0.0+2
 
 dependency_overrides: 
   args: ^2.1.1

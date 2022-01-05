@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core_new/api.dart';
@@ -83,7 +84,7 @@ class _SubjectContainer extends StatelessWidget {
                       ),
                     ),
                     YHorizontalSpacer(YScale.s2),
-                    Icon(Icons.info_rounded, color: subject.color.foregroundColor),
+                    Icon(Icons.info_rounded, color: subject.color.foregroundColor, size: YFontSize.lg),
                   ],
                 ),
               ),
@@ -93,9 +94,12 @@ class _SubjectContainer extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: YScale.s3, vertical: YScale.s4),
               child: Wrap(
-                spacing: YScale.s4,
-                runSpacing: YScale.s4,
-                children: grades.map((grade) => _GradeContainer(grade, subject)).toList(),
+                spacing: YScale.s2,
+                runSpacing: YScale.s3,
+                children: [
+                  ...grades,
+                  // CustomGrade(coefficient: 1.5, outOf: 20, value: 14, subjectId: "", periodId: "periodId")
+                ].map((grade) => _GradeContainer(grade, subject)).toList(),
               ),
             )
         ],
@@ -133,47 +137,57 @@ class _GradeContainer extends StatelessWidget {
     );
   }
 
+  bool get simulate => grade is CustomGrade;
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: theme.colors.backgroundLightColor,
-      borderRadius: YBorderRadius.lg,
-      child: InkWell(
-        onTap: () {
-          YModalBottomSheets.show(
-              context: context, child: Text("grade bottom sheet: <${grade.name}>", style: theme.texts.body1));
-        },
-        borderRadius: YBorderRadius.md,
-        highlightColor: color.backgroundColor,
-        hoverColor: color.lightColor,
-        child: Ink(
-            padding: YPadding.p(YScale.s1),
-            decoration:
-                BoxDecoration(color: theme.colors.backgroundColor.withOpacity(.25), borderRadius: YBorderRadius.lg),
-            child: SizedBox(
-              width: YScale.s8,
-              height: YScale.s8,
-              child: Stack(
-                alignment: Alignment.center,
-                clipBehavior: Clip.none,
-                children: [
-                  AutoSizeText(
-                    grade.value.display(),
-                    style: TextStyle(
-                      fontWeight: YFontWeight.semibold,
-                      color: theme.colors.foregroundColor,
-                      fontSize: YFontSize.base,
+    return DottedBorder(
+      color: simulate ? color.backgroundColor : Colors.transparent,
+      radius: Radius.circular(YScale.s3),
+      padding: YPadding.p(YScale.s1),
+      strokeWidth: YScale.s0p5,
+      borderType: BorderType.RRect,
+      dashPattern: [YScale.s1, YScale.s0p5],
+      child: Material(
+        color: simulate ? color.backgroundColor : theme.colors.backgroundLightColor,
+        borderRadius: YBorderRadius.lg,
+        child: InkWell(
+          onTap: () {
+            YModalBottomSheets.show(
+                context: context, child: Text("grade bottom sheet: <${grade.name}>", style: theme.texts.body1));
+          },
+          borderRadius: YBorderRadius.md,
+          highlightColor: simulate ? color.lightColor.withOpacity(.5) : color.backgroundColor,
+          hoverColor: color.lightColor,
+          child: Ink(
+              padding: YPadding.p(YScale.s1),
+              decoration:
+                  BoxDecoration(color: theme.colors.backgroundColor.withOpacity(.25), borderRadius: YBorderRadius.lg),
+              child: SizedBox(
+                width: YScale.s8,
+                height: YScale.s8,
+                child: Stack(
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.none,
+                  children: [
+                    AutoSizeText(
+                      grade.value.display(),
+                      style: TextStyle(
+                        fontWeight: YFontWeight.semibold,
+                        color: theme.colors.foregroundColor,
+                        fontSize: YFontSize.base,
+                      ),
+                      softWrap: false,
                     ),
-                    softWrap: false,
-                  ),
-                  if (grade.coefficient != 1)
-                    Positioned(
-                        top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.coefficient.display(), true)),
-                  if (grade.outOf != 20)
-                    Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.outOf.display()}"))
-                ],
-              ),
-            )),
+                    if (grade.coefficient != 1)
+                      Positioned(
+                          top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.coefficient.display(), true)),
+                    if (grade.outOf != 20)
+                      Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.outOf.display()}"))
+                  ],
+                ),
+              )),
+        ),
       ),
     );
   }

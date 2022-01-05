@@ -37,23 +37,21 @@ class AppColors {
       lightColor: Colors.green[300]!.withOpacity(.5));
   static final lightGreen = YTColor(
       backgroundColor: Colors.lightGreen[600]!,
-      foregroundColor: Colors.lightGreen[100]!,
+      foregroundColor: Colors.white,
       lightColor: Colors.lightGreen[300]!.withOpacity(.5));
   static final lime = YTColor(
-      backgroundColor: Colors.lime[600]!,
-      foregroundColor: Colors.lime[100]!,
-      lightColor: Colors.lime[300]!.withOpacity(.5));
+      backgroundColor: Colors.lime[600]!, foregroundColor: Colors.white, lightColor: Colors.lime[300]!.withOpacity(.5));
   static final yellow = YTColor(
       backgroundColor: Colors.yellow[600]!,
-      foregroundColor: Colors.yellow[100]!,
+      foregroundColor: Colors.white,
       lightColor: Colors.yellow[300]!.withOpacity(.5));
   static final amber = YTColor(
       backgroundColor: Colors.amber[600]!,
-      foregroundColor: Colors.amber[100]!,
+      foregroundColor: Colors.white,
       lightColor: Colors.amber[300]!.withOpacity(.5));
   static final orange = YTColor(
       backgroundColor: Colors.orange[600]!,
-      foregroundColor: Colors.orange[100]!,
+      foregroundColor: Colors.white,
       lightColor: Colors.orange[300]!.withOpacity(.5));
   static final deepOrange = YTColor(
       backgroundColor: Colors.deepOrange[600]!,
