@@ -138,7 +138,9 @@ class _SheetState extends State<_Sheet> {
           YButton(
             onPressed: () {
               final bool valid = _formKey.currentState!.validate();
-              submit(valid);
+              if (valid) {
+                submit(valid);
+              }
             },
             text: "AJOUTER",
             block: true,

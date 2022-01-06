@@ -223,13 +223,14 @@ class GradeAdapter extends TypeAdapter<Grade> {
       classMin: fields[11] as double,
       subjectId: fields[12] as String,
       periodId: fields[13] as String,
+      custom: fields[14] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Grade obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(2)
@@ -255,7 +256,9 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(12)
       ..write(obj.subjectId)
       ..writeByte(13)
-      ..write(obj.periodId);
+      ..write(obj.periodId)
+      ..writeByte(14)
+      ..write(obj.custom);
   }
 
   @override

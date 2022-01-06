@@ -30,7 +30,7 @@ class _GradesSectionState extends State<GradesSection> {
   // We get all grades and sort them by entryDate
   List<Grade> get grades =>
       module.currentPeriod
-          ?.grades(module.grades.where((grade) => grade.significant && grade is! CustomGrade).toList())
+          ?.grades(module.grades.where((grade) => grade.significant && !grade.custom).toList())
           .toList() ??
       [];
 
@@ -119,6 +119,7 @@ class _GradesSectionState extends State<GradesSection> {
                                   YHorizontalSpacer(YScale.s4),
                                   ...module.currentPeriod!
                                       .grades(module.grades)
+                                      .where((grade) => !grade.custom)
                                       .map((grade) => Row(
                                             children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
                                           ))

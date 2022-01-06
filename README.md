@@ -44,6 +44,7 @@
     - [Déboguer une application déjà installée](#déboguer-une-application-déjà-installée)
 - [Contributeurs](#contributeurs)
     - [Mentions spéciales](#mentions-spéciales)
+- [Remerciements](#remerciements)
 
 # Fonctionnalités
 
@@ -188,6 +189,12 @@ Je tiens à remercier chaque autre personne ne figurant pas dans cette section p
     <td align="center"><a href="https://github.com/GENERATION2GEEK"><img src="https://avatars3.githubusercontent.com/u/33123296?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vincent Moucadeau</b></sub></a><br /><a href="https://github.com/ModernChocolate/ynotes/commits?author=GENERATION2GEEK" title="Code">💻</a> <a href="#userTesting-GENERATION2GEEK" title="User Testing">📓</a></td>
   </tr>
 </table>
+
+# Remerciements
+
+Nous pouvons développer yNotes pour iOS et macOS facilement grâce à [MacStadium](https://www.macstadium.com/).
+
+![MacStadium logo](https://uploads-ssl.webflow.com/5ac3c046c82724970fc60918/5c019d917bba312af7553b49_MacStadium-developerlogo.png)
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->

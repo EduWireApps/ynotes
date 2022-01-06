@@ -24,7 +24,7 @@ class PeriodPage extends StatelessWidget {
             children: [
               _Stats(module, period, simulate),
               YVerticalSpacer(YScale.s8),
-              SubjectsList(module, period),
+              SubjectsList(module, period, simulate),
               const _Footer()
             ],
           );
@@ -73,7 +73,7 @@ class _Stats extends StatelessWidget {
         if (simulate) {
           return s;
         } else {
-          return s && grade is! CustomGrade;
+          return s && !grade.custom;
         }
       }).toList())
       .toList();

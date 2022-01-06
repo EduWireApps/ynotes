@@ -41,7 +41,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
         final List<Grade> newGrades = __grades.sublist(_grades.length);
         // TODO: trigger notification
       }
-      _grades = [...__grades, ...grades.whereType<CustomGrade>()];
+      _grades = [...__grades, ...grades.where((grade) => grade.custom)];
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
       for (final __subject in __subjects) {
         final Subject? _subject = _subjects.firstWhereOrNull((subject) => subject.id == __subject.id);
@@ -59,7 +59,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
       _grades = await offline.getGrades();
     }
     await setCurrentPeriod();
-    await offline.setCustomFilters(filters);
+    _customFilters = await offline.getCustomFilters();
     await setCurrentFilter();
     fetching = false;
     notifyListeners();
@@ -180,6 +180,22 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
   Future<Response<void>> updateFilter(SubjectsFilter filter) async {
     await removeFilter(filter);
     await addFilter(filter);
+    return const Response();
+  }
+
+  Future<Response<void>> addCustomGrade(Grade grade) async {
+    if (!grade.custom) return const Response(error: "Grade is not custom");
+    _grades.add(grade);
+    await offline.setGrades(_grades);
+    notifyListeners();
+    return const Response();
+  }
+
+  Future<Response<void>> removeCustomGrade(Grade grade) async {
+    if (!grade.custom) return const Response(error: "Grade is not custom");
+    _grades.removeWhere((g) => g == grade);
+    await offline.setGrades(_grades);
+    notifyListeners();
     return const Response();
   }
 

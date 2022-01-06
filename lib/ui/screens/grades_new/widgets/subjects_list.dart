@@ -12,7 +12,8 @@ import 'package:ynotes_packages/utilities.dart';
 class SubjectsList extends StatelessWidget {
   final GradesModule module;
   final Period period;
-  const SubjectsList(this.module, this.period, {Key? key}) : super(key: key);
+  final bool simulate;
+  const SubjectsList(this.module, this.period, this.simulate, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class SubjectsList extends StatelessWidget {
         YVerticalSpacer(YScale.s2),
         ...module.subjects
             .where((e) => module.currentFilter!.subjectsIds?.contains(e.id) ?? true)
-            .map((subject) => _SubjectContainer(subject))
+            .map((subject) => _SubjectContainer(subject, simulate))
             .toList()
       ],
     );
@@ -35,9 +36,13 @@ class SubjectsList extends StatelessWidget {
 
 class _SubjectContainer extends StatelessWidget {
   final Subject subject;
-  const _SubjectContainer(this.subject, {Key? key}) : super(key: key);
+  final bool simulate;
+  const _SubjectContainer(this.subject, this.simulate, {Key? key}) : super(key: key);
 
-  List<Grade> get grades => subject.grades(schoolApi.gradesModule.currentPeriod!.grades(schoolApi.gradesModule.grades));
+  List<Grade> get grades => subject
+      .grades(schoolApi.gradesModule.currentPeriod!.grades(schoolApi.gradesModule.grades))
+      .where((grade) => simulate ? true : !grade.custom)
+      .toList();
 
   double get _average => schoolApi.gradesModule.calculateAverageFromGrades(grades, bySubject: true);
 
@@ -137,7 +142,7 @@ class _GradeContainer extends StatelessWidget {
     );
   }
 
-  bool get simulate => grade is CustomGrade;
+  bool get simulate => grade.custom;
 
   @override
   Widget build(BuildContext context) {

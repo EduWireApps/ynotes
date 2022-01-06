@@ -64,6 +64,10 @@ class Grade {
         (subject) => subject.id == subjectId,
       );
 
+  /// If the grade is custom.
+  @HiveField(14)
+  final bool custom;
+
   // TODO: implement competences
 
   Grade(
@@ -79,31 +83,25 @@ class Grade {
       required this.classMax,
       required this.classMin,
       required this.subjectId,
-      required this.periodId});
-}
+      required this.periodId,
+      this.custom = false});
 
-/// A grade that can be added by the user.
-/// Some fields are useless so this class let's you create a [Grade]
-/// with only required data.
-class CustomGrade extends Grade {
-  CustomGrade({
-    required double coefficient,
-    required double outOf,
-    required double value,
-    required String subjectId,
-    required String periodId,
-  }) : super(
-            name: "Simulée",
-            type: "Simulation",
-            coefficient: coefficient,
-            outOf: outOf,
-            value: value,
-            significant: true,
-            date: DateTime.now(),
-            entryDate: DateTime.now(),
-            classAverage: double.nan,
-            classMax: double.nan,
-            classMin: double.nan,
-            subjectId: subjectId,
-            periodId: periodId);
+  /// A grade that can be added by the user.
+  /// Some fields are useless so this class let's you create a [Grade]
+  /// with only required data.
+  Grade.custom({
+    required this.coefficient,
+    required this.outOf,
+    required this.value,
+    required this.subjectId,
+    required this.periodId,
+  })  : name = "Simulée",
+        type = "Simulation",
+        significant = true,
+        date = DateTime.now(),
+        entryDate = DateTime.now(),
+        classAverage = double.nan,
+        classMax = double.nan,
+        classMin = double.nan,
+        custom = true;
 }
