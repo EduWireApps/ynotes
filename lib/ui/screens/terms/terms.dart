@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes_packages/components.dart';
@@ -18,7 +16,7 @@ class TermsPage extends StatelessWidget {
     return YPage(
       appBar: const YAppBar(title: "Termes et conditions", removeLeading: true),
       body: Padding(
-          padding: EdgeInsets.fromLTRB(YScale.s2, YScale.s2, Platform.isWindows ? YScale.s4 : YScale.s2, YScale.s2),
+          padding: YPadding.p(YScale.s2),
           child: Column(
             children: [
               FutureBuilder<String>(

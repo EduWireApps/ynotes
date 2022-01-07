@@ -22,7 +22,6 @@ class _SettingsLicensesPageState extends State<SettingsLicensesPage> {
         .then((_LicenseData licenseData) => licenseData..sortPackages());
     return YPage(
         appBar: const YAppBar(title: "Licenses"),
-        showScrollbar: true,
         body: FutureBuilder(
             future: licenses,
             builder: (_, AsyncSnapshot<_LicenseData> snapshot) {

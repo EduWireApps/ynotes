@@ -2,9 +2,9 @@ part of app;
 
 /// A function that migrates things from an implementation to another
 Future<void> backwardCompatibility() async {
-  await _fromV12ToV13();
-  await _fromV13ToV14();
-  await _extRemovalMigration();
+  // await _fromV12ToV13();
+  // await _fromV13ToV14();
+  // await _extRemovalMigration();
 }
 
 Future<void> _extRemovalMigration() async {

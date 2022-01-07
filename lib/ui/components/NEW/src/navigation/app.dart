@@ -43,7 +43,6 @@ class ZApp extends StatelessWidget {
                 navigationElements: page.navigationElements,
                 navigationInitialIndex: page.navigationInitialIndex,
                 scrollable: page.scrollable,
-                showScrollbar: page.showScrollbar,
                 onRefresh: page.onRefresh,
                 useBottomNavigation: page.useBottomNavigation,
                 onPageChanged: page.onPageChanged,

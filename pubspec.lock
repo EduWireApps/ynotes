@@ -524,13 +524,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.0"
-  flutter_sticky_header:
-    dependency: transitive
-    description:
-      name: flutter_sticky_header
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.0"
   flutter_switch:
     dependency: transitive
     description:
@@ -1460,13 +1453,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.4"
-  value_layout_builder:
-    dependency: transitive
-    description:
-      name: value_layout_builder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.1"
   vector_math:
     dependency: transitive
     description:
@@ -1549,10 +1535,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: ddfd443d3c2f77d0e59d4f46b367b7d5766cf00f
+      resolved-ref: "0c5bf08b972dc2f08bdf55a131fb84ab35962668"
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
-    version: "0.6.2"
+    version: "0.6.4"
 sdks:
   dart: ">=2.14.0 <3.0.0"
   flutter: ">=2.5.0"

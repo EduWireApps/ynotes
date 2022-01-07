@@ -21,8 +21,8 @@ class SystemService {
 
   static Future<void> init() async {
     await backwardCompatibility();
-    BugReportUtils.init();
     await SettingsService.init();
+    BugReportUtils.init();
     schoolApi = schoolApiManager(SettingsService.settings.global.api);
     await schoolApi.init();
     await BackgroundService.init();

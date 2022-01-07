@@ -10,6 +10,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes_packages/components.dart';
@@ -35,7 +36,8 @@ class BugReportUtils {
     if (!AppConfig.shake.isSupported) {
       return;
     }
-    Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
+    // Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
+    Shake.setInvokeShakeOnShakeDeviceEvent(SettingsService.settings.global.shakeToReport);
   }
 
   /// Saves and anonymizes the bug data to send it to the report platform

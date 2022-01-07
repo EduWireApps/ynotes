@@ -130,7 +130,7 @@ class _Stats extends StatelessWidget {
                 ],
               ),
               Expanded(child: YHorizontalSpacer(YScale.s2)),
-              if (average != period.overallAverage)
+              if (!simulate && average != period.overallAverage)
                 YIconButton(
                   icon: Icons.info_rounded,
                   onPressed: () async {

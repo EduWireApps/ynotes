@@ -27,7 +27,7 @@ class SubjectsList extends StatelessWidget {
         YVerticalSpacer(YScale.s2),
         ...module.subjects
             .where((e) => module.currentFilter!.subjectsIds?.contains(e.id) ?? true)
-            .map((subject) => _SubjectContainer(subject, simulate))
+            .map((subject) => _SubjectContainer(subject, period, simulate))
             .toList()
       ],
     );
@@ -36,11 +36,12 @@ class SubjectsList extends StatelessWidget {
 
 class _SubjectContainer extends StatelessWidget {
   final Subject subject;
+  final Period period;
   final bool simulate;
-  const _SubjectContainer(this.subject, this.simulate, {Key? key}) : super(key: key);
+  const _SubjectContainer(this.subject, this.period, this.simulate, {Key? key}) : super(key: key);
 
   List<Grade> get grades => subject
-      .grades(schoolApi.gradesModule.currentPeriod!.grades(schoolApi.gradesModule.grades))
+      .grades(period.grades(schoolApi.gradesModule.grades))
       .where((grade) => simulate ? true : !grade.custom)
       .toList();
 
