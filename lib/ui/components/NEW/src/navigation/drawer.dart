@@ -100,7 +100,8 @@ class _RoutesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<AppRoute> validRoutes = appRoutes.where((route) => route.show && (route.guard?.call() ?? true)).toList();
+    final List<AppRoute> validRoutes =
+        AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList();
     return ListView.builder(
         itemCount: validRoutes.length,
         physics: const NeverScrollableScrollPhysics(),

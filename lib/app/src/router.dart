@@ -1,16 +1,35 @@
 part of app;
 
-// TODO: document and clean up
-
+/// The class that represents a route.
 class AppRoute {
+  /// The path of the route. By convention, starts with a slash.
   final String path;
+
+  /// The icon associated with the route. It is only showed in the app
+  /// drawer if [show] is true.
   final IconData? icon;
+
+  /// The title associated with the route. It is only showed in the app
+  /// drawer if [show] is true.
   final String? title;
+
+  /// Is the route shown in the app drawer.
   final bool show;
+
+  /// The widget associated with the route. Usually a widget named like
+  /// `<Path>Page`.
   final Widget widget;
+
+  /// The transition associated with the route.
   final RouteTransition transition;
+
+  /// The guard associated with the route. If not null, the function is
+  /// ran before rendering the route. If results is false, the router will
+  /// redirect to [fallbackPath];
   final bool Function()? guard;
-  final String? fallbackPath;
+
+  /// The path to redirect to if [guard] returns false. Defaults to `/loading`.
+  final String fallbackPath;
 
   const AppRoute(
       {required this.path,
@@ -20,17 +39,33 @@ class AppRoute {
       required this.widget,
       this.transition = RouteTransition.fade,
       this.guard,
-      this.fallbackPath});
+      this.fallbackPath = "/loading"});
 }
 
-enum RouteTransition { fade, slideHorizontal, slideVertical, scale }
+/// The transitions for the [AppRoute].
+enum RouteTransition {
+  /// A classic fade transition.
+  fade,
 
+  /// A transition that slides from the right.
+  slideHorizontal,
+
+  /// A transition that slides from the bottom.
+  slideVertical,
+
+  /// A classic scale transition.
+  scale
+}
+
+/// The class that manages routes.
 class AppRouter {
   const AppRouter._();
 
+  /// The function used to generate the route in [onGenerateRoute]. Takes care of
+  /// guards and transitions.
   static PageRouteBuilder _generateRoute(AppRoute route, RouteSettings settings) {
     final bool validRoute = route.guard == null || route.guard!.call();
-    route = validRoute ? route : appRoutes.firstWhere((e) => e.path == route.fallbackPath);
+    route = validRoute ? route : routes.firstWhere((e) => e.path == route.fallbackPath);
 
     Widget getTransition(
         BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
@@ -67,8 +102,9 @@ class AppRouter {
             getTransition(context, animation, secondaryAnimation, child));
   }
 
+  /// The function used to generate routes for [MaterialApp.onGenerateRoute].
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    for (final route in appRoutes) {
+    for (final route in routes) {
       if (settings.name == route.path) {
         CustomLogger.log("ROUTER", 'Going to "${settings.name}".');
         return _generateRoute(route, settings);
@@ -76,10 +112,25 @@ class AppRouter {
     }
 
     CustomLogger.log("ROUTER", 'Route "${settings.name}" not found.');
-    return generateRoute(const ErrorPage(), settings);
+    return _generateRoute(const AppRoute(path: "", widget: ErrorPage()), settings);
   }
+
+  /// The routes for the whole application.
+  static final List<AppRoute> routes = [
+    // IMPORTANT: routes are duplicated because of [initialRoute].
+    // When starting with a `/`, it creates 2 routes: `/` and `/loading`, leading to errors
+    const AppRoute(path: "loading", widget: LoadingPage(), show: false),
+    const AppRoute(path: "/loading", widget: LoadingPage(), show: false),
+    const AppRoute(path: "/terms", widget: TermsPage(), show: false),
+    ...loginRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
+    ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
+    ...settingsRoutes,
+    ...homeRoutes,
+    ...gradesRoutes
+  ];
 }
 
+@Deprecated("Use [AppRoute] instead.")
 class CustomRoute {
   final String path;
   final IconData? icon;
@@ -93,20 +144,7 @@ class CustomRoute {
       {required this.path, this.icon, this.title, required this.page, this.relatedApi, this.show = true, this.tab});
 }
 
-// TODO: complete
-final List<AppRoute> appRoutes = [
-  // IMPORTANT: routes are duplicated because of [initialRoute].
-  // When starting with a `/`, it creates 2 routes: `/` and `/loading`, leading to errors
-  const AppRoute(path: "loading", widget: LoadingPage(), show: false),
-  const AppRoute(path: "/loading", widget: LoadingPage(), show: false),
-  const AppRoute(path: "/terms", widget: TermsPage(), show: false),
-  ...loginRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
-  ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
-  ...settingsRoutes,
-  ...homeRoutes,
-  ...gradesRoutes
-];
-
+@Deprecated("Use [AppRouter.routes] instead.")
 final List<CustomRoute> routes = [
   ...loginRoutes,
   ...introRoutes,
@@ -136,30 +174,4 @@ final List<CustomRoute> routes = [
       relatedApi: 0,
       tab: appTabs.files),
   ...pollsRoutes
-  // CustomRoute(
-  //     path: "/polls",
-  //     icon: MdiIcons.poll,
-  //     title: "Sondages",
-  //     page: const PollsPage(),
-  //     relatedApi: 1,
-  //     tab: appTabs.polls),
 ];
-
-PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {
-  return PageRouteBuilder(
-      settings: settings,
-      pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c));
-}
-
-Route<dynamic>? onGenerateRoute(RouteSettings settings) {
-  for (final route in routes) {
-    if (settings.name == route.path) {
-      CustomLogger.log("ROUTER", 'Going to "${settings.name}".');
-      return generateRoute(route.page, settings);
-    }
-  }
-
-  CustomLogger.log("ROUTER", 'Route "${settings.name}" not found.');
-  return generateRoute(const ErrorPage(), settings);
-}

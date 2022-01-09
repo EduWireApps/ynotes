@@ -57,7 +57,7 @@ class _GradesPageState extends State<GradesPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(appRoutes.where((element) => element.path == "/grades").first.icon,
+                          Icon(AppRouter.routes.where((element) => element.path == "/grades").first.icon,
                               color: theme.colors.foregroundColor, size: YScale.s32),
                           YVerticalSpacer(YScale.s4),
                           Text(
