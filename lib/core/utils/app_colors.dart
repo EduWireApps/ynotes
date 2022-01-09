@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes_packages/theme.dart';
 
-// TODO: move to ThemeUtils when it's clean
+/// A class that contains default colors, ensuring great contrasts.
 class AppColors {
   const AppColors._();
 

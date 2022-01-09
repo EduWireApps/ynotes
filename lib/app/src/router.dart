@@ -122,8 +122,8 @@ class AppRouter {
     const AppRoute(path: "loading", widget: LoadingPage(), show: false),
     const AppRoute(path: "/loading", widget: LoadingPage(), show: false),
     const AppRoute(path: "/terms", widget: TermsPage(), show: false),
-    ...loginRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
-    ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
+    ...loginRoutes,
+    ...introRoutes,
     ...settingsRoutes,
     ...homeRoutes,
     ...gradesRoutes
@@ -146,12 +146,8 @@ class CustomRoute {
 
 @Deprecated("Use [AppRouter.routes] instead.")
 final List<CustomRoute> routes = [
-  ...loginRoutes,
-  ...introRoutes,
-  // ...settingsRoutes,
   CustomRoute(path: "/loading", page: const LoadingPage(), relatedApi: -1, show: false),
   CustomRoute(path: "/terms", page: const TermsPage(), relatedApi: -1, show: false),
-  ...homeRoutesTMP,
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
       path: "/homework", icon: Icons.class__rounded, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),

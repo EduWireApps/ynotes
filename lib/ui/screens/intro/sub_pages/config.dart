@@ -5,7 +5,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes_packages/components.dart';

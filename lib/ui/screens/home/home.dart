@@ -1,16 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
-import 'package:ynotes_packages/theme.dart';
-import 'package:ynotes_packages/utilities.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

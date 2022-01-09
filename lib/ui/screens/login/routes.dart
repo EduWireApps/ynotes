@@ -10,26 +10,18 @@ import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/form.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/url.dart';
 import 'package:ynotes/ui/screens/login/sub_pages/pronote/url/webview.dart';
 
+const String _basePath = '/login';
+
 /// Contains all routes concerning user authentification (`/login/...`)
-final List<CustomRoute> loginRoutes = [
-  CustomRoute(path: "/login", page: const LoginPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/login/ecoledirecte", page: const LoginEcoleDirectePage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/login/pronote", page: const LoginPronotePage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/login/pronote/url", page: const LoginPronoteUrlPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/login/pronote/url/form", page: const LoginPronoteUrlFormPage(), relatedApi: -1, show: false),
-  CustomRoute(
-      path: "/login/pronote/url/webview", page: const LoginPronoteUrlWebviewPage(), relatedApi: -1, show: false),
-  CustomRoute(
-      path: "/login/pronote/geolocation", page: const LoginPronoteGeolocationPage(), relatedApi: -1, show: false),
-  CustomRoute(
-      path: "/login/pronote/geolocation/results",
-      page: const LoginPronoteGeolocationResultsPage(),
-      relatedApi: -1,
-      show: false),
-  CustomRoute(
-      path: "/login/pronote/geolocation/search",
-      page: const LoginPronoteGeolocationSearchPage(),
-      relatedApi: -1,
-      show: false),
-  CustomRoute(path: "/login/pronote/qrcode", page: const LoginPronoteQrcodePage(), relatedApi: -1, show: false),
+const List<AppRoute> loginRoutes = [
+  AppRoute(path: _basePath, widget: LoginPage(), show: false),
+  AppRoute(path: "$_basePath/ecoledirecte", widget: LoginEcoleDirectePage(), show: false),
+  AppRoute(path: "$_basePath/pronote", widget: LoginPronotePage(), show: false),
+  AppRoute(path: "$_basePath/pronote/url", widget: LoginPronoteUrlPage(), show: false),
+  AppRoute(path: "$_basePath/pronote/url/form", widget: LoginPronoteUrlFormPage(), show: false),
+  AppRoute(path: "$_basePath/pronote/url/webview", widget: LoginPronoteUrlWebviewPage(), show: false),
+  AppRoute(path: "$_basePath/pronote/geolocation", widget: LoginPronoteGeolocationPage(), show: false),
+  AppRoute(path: "$_basePath/pronote/geolocation/results", widget: LoginPronoteGeolocationResultsPage(), show: false),
+  AppRoute(path: "$_basePath/pronote/geolocation/search", widget: LoginPronoteGeolocationSearchPage(), show: false),
+  AppRoute(path: "$_basePath/pronote/qrcode", widget: LoginPronoteQrcodePage(), show: false),
 ];

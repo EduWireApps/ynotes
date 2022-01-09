@@ -5,7 +5,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';

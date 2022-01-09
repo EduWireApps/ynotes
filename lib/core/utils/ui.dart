@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/theme.dart';

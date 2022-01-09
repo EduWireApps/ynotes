@@ -10,8 +10,7 @@ class SchoolLifeSanction {
   final String type;
 
   /// The registration date of the sanction.
-  /// TODO: check if could be renamed to date and
-  /// [date] to entryDate. Not sure.
+  /// TODO: check if could be renamed to date and [date] to entryDate. Not sure.
   @HiveField(1)
   final String registrationDate;
 
