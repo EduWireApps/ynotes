@@ -25,50 +25,89 @@ class _GradesPageState extends State<GradesPage> {
     return ControllerConsumer<GradesModule>(
         controller: module,
         builder: (context, module, _) {
+          final bool empty = module.grades.isEmpty && module.currentPeriod == null;
+          Future<void> refresh() async => await module.fetch(online: true);
           return ZApp(
               page: YPage(
-            onRefresh: () => module.fetch(online: true),
-            appBar: YAppBar(title: "Notes", actions: [
-              if (simulate) const YBadge(text: "SIMULATEUR"),
-              YHorizontalSpacer(YScale.s2),
-              const YBadge(text: "BETA", color: YColor.danger)
-            ]),
+            onRefresh: refresh,
+            appBar: YAppBar(
+              title: "Notes",
+              actions: [
+                if (simulate) const YBadge(text: "SIMULATEUR"),
+                YHorizontalSpacer(YScale.s2),
+                const YBadge(text: "BETA", color: YColor.danger)
+              ],
+              bottom: empty && module.isFetching ? const YLinearProgressBar() : null,
+            ),
             useBottomNavigation: false,
+            scrollable: !empty,
             navigationInitialIndex: module.periods.indexOf(module.currentPeriod!),
-            navigationElements: module.periods
-                .map((period) => YNavigationElement(label: period.name, widget: PeriodPage(module, period, simulate)))
-                .toList(),
+            navigationElements: empty
+                ? null
+                : module.periods
+                    .map((period) =>
+                        YNavigationElement(label: period.name, widget: PeriodPage(module, period, simulate)))
+                    .toList(),
+            body: !empty
+                ? null
+                : Padding(
+                    padding: YPadding.p(YScale.s4),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(appRoutes.where((element) => element.path == "/grades").first.icon,
+                              color: theme.colors.foregroundColor, size: YScale.s32),
+                          YVerticalSpacer(YScale.s4),
+                          Text(
+                            "Aucun ticket, rien à déclarer !",
+                            style: theme.texts.body1,
+                            textAlign: TextAlign.center,
+                          ),
+                          YVerticalSpacer(YScale.s6),
+                          YButton(
+                              onPressed: refresh,
+                              text: "Rafraîchir".toUpperCase(),
+                              color: YColor.secondary,
+                              isDisabled: module.isFetching)
+                        ],
+                      ),
+                    ),
+                  ),
             onPageChanged: (int value) {
               module.setCurrentPeriod(module.periods[value]);
             },
-            floatingButtons: simulate
-                ? [
-                    YFloatingButton(
-                        icon: Icons.add_rounded,
-                        onPressed: () async {
-                          final Grade? grade =
-                              await YModalBottomSheets.show(context: context, child: _AddCustomGradeSheet(module));
-                          if (grade != null) {
-                            await module.addCustomGrade(grade);
-                          }
-                        }),
-                    YFloatingButton(
-                        icon: Icons.close_rounded,
-                        onPressed: () {
-                          setState(() {
-                            simulate = false;
-                          });
-                        })
-                  ]
-                : [
-                    YFloatingButton(
-                        icon: MdiIcons.flask,
-                        onPressed: () {
-                          setState(() {
-                            simulate = true;
-                          });
-                        })
-                  ],
+            floatingButtons: empty
+                ? null
+                : simulate
+                    ? [
+                        YFloatingButton(
+                            icon: Icons.add_rounded,
+                            onPressed: () async {
+                              final Grade? grade =
+                                  await YModalBottomSheets.show(context: context, child: _AddCustomGradeSheet(module));
+                              if (grade != null) {
+                                await module.addCustomGrade(grade);
+                              }
+                            }),
+                        YFloatingButton(
+                            icon: Icons.close_rounded,
+                            onPressed: () {
+                              setState(() {
+                                simulate = false;
+                              });
+                            })
+                      ]
+                    : [
+                        YFloatingButton(
+                            icon: MdiIcons.flask,
+                            onPressed: () {
+                              setState(() {
+                                simulate = true;
+                              });
+                            })
+                      ],
           ));
         });
   }
