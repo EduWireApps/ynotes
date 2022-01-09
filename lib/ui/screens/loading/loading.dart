@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/components.dart';
@@ -15,7 +17,6 @@ class LoadingPage extends StatefulWidget {
 }
 
 class _LoadingPageState extends State<LoadingPage> {
-  Future<String>? connectionData;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +33,16 @@ class _LoadingPageState extends State<LoadingPage> {
               color: theme.colors.primary.backgroundColor,
             ),
             YVerticalSpacer(YScale.s12),
-            const SizedBox(width: 200, child: YLinearProgressBar())
+            const SizedBox(width: 200, child: YLinearProgressBar()),
+            YVerticalSpacer(YScale.s8),
+            ControllerConsumer<SystemServiceStore>(
+                controller: SystemService.store,
+                builder: (context, store, _) {
+                  return Text(
+                    "${store.text} ${store.current}/${store.total}",
+                    style: theme.texts.body1,
+                  );
+                }),
           ],
         )),
       ),
@@ -44,10 +54,11 @@ class _LoadingPageState extends State<LoadingPage> {
     super.initState();
     // We set the system ui
     UIUtils.setSystemUIOverlayStyle();
-    redirect();
+    WidgetsBinding.instance?.addPostFrameCallback((_) => redirect());
   }
 
   Future<void> redirect() async {
+    await SystemService.init(all: false, loading: true);
     await Future.delayed(const Duration(milliseconds: 500));
     final credentials = await schoolApi.authModule.getCredentials();
     final bool hasCredentials = credentials.error == null;

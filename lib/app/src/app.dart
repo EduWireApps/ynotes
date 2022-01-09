@@ -43,7 +43,7 @@ class _AppState extends State<App> {
                       theme: theme.themeData.copyWith(textTheme: temporaryTextTheme),
                       title: kDebugMode ? "yNotes DEV" : "yNotes",
                       navigatorKey: AppConfig.navigatorKey,
-                      initialRoute: "/loading",
+                      initialRoute: "loading",
                       themeMode: ThemeMode.light,
                       onGenerateRoute: AppRouter.onGenerateRoute,
                       // onGenerateRoute: onGenerateRoute,

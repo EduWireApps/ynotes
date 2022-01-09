@@ -16,16 +16,60 @@ import 'package:ynotes/packages/shared.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 
+class SystemServiceStore extends ChangeNotifier {
+  SystemServiceStore();
+
+  final int total = 4;
+  int current = 0;
+  String text = "";
+  bool initialized = false;
+
+  void _notify() {
+    notifyListeners();
+  }
+}
+
 class SystemService {
   const SystemService._();
 
-  static Future<void> init() async {
-    await backwardCompatibility();
-    await SettingsService.init();
-    BugReportUtils.init();
-    schoolApi = schoolApiManager(SettingsService.settings.global.api);
-    await schoolApi.init();
-    await BackgroundService.init();
+  static final SystemServiceStore store = SystemServiceStore();
+
+  static Future<void> init({bool all = true, bool essential = false, bool loading = false}) async {
+    if (all) {
+      await backwardCompatibility();
+      await SettingsService.init();
+      BugReportUtils.init();
+      schoolApi = schoolApiManager(SettingsService.settings.global.api);
+      await schoolApi.init();
+      await BackgroundService.init();
+    } else {
+      if (essential) {
+        await backwardCompatibility();
+        await SettingsService.init();
+      }
+      if (loading) {
+        store.current = 1;
+        store.text = "Intitialisation de l'outil de report de bug...";
+        store._notify();
+        BugReportUtils.init();
+        await Future.delayed(const Duration(milliseconds: 500));
+        store.current = 2;
+        store.text = "Choix du service scolaire...";
+        store._notify();
+        schoolApi = schoolApiManager(SettingsService.settings.global.api);
+        await Future.delayed(const Duration(milliseconds: 500));
+        store.current = 3;
+        store.text = "Initialisation du service scolaire...";
+        store._notify();
+        await schoolApi.init();
+        store.current = 4;
+        store.text = "Initialisation du service d'arrière-plan...";
+        store._notify();
+        await BackgroundService.init();
+        store.text = "Chargement terminé !";
+        store._notify();
+      }
+    }
   }
 
   static Future<void> exit(BuildContext context) async {

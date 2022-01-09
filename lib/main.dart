@@ -7,7 +7,7 @@ import 'package:ynotes/core_new/services.dart';
 /// The entry point of the application.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemService.init();
+  await SystemService.init(all: false, essential: true);
   runZoned<Future<void>>(() async {
     runApp(Phoenix(child: const App()));
   });

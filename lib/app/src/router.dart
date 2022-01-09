@@ -75,12 +75,6 @@ class AppRouter {
       }
     }
 
-    if (settings.name == "/") {
-      // Dirty fix for the root route.
-      CustomLogger.log("ROUTER", 'Redirect "/" to "/loading".');
-      return _generateRoute(appRoutes.firstWhere((e) => e.path == "/loading"), settings);
-    }
-
     CustomLogger.log("ROUTER", 'Route "${settings.name}" not found.');
     return generateRoute(const ErrorPage(), settings);
   }
@@ -101,7 +95,8 @@ class CustomRoute {
 
 // TODO: complete
 final List<AppRoute> appRoutes = [
-  const AppRoute(path: "/loading", widget: LoadingPage(), show: false),
+  // IMPORTANT: it mustn't start with a `/` because it would create 2 routes: `/` and `/loading`, leading to errors
+  const AppRoute(path: "loading", widget: LoadingPage(), show: false),
   const AppRoute(path: "/terms", widget: TermsPage(), show: false),
   ...loginRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
   ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
