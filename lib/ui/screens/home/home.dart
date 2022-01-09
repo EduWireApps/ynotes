@@ -39,52 +39,51 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   YIconButton(icon: Icons.refresh_rounded, onPressed: onRefresh),
-                if (schoolApi.emailsModule.isEnabled)
-                  ControllerConsumer<EmailsModule>(
-                      controller: schoolApi.emailsModule,
-                      builder: (context, module, _) {
-                        final List<Email> emailsUnread = module.emailsReceived.where((email) => !email.read).toList();
-                        return Stack(alignment: Alignment.center, children: [
-                          YIconButton(
-                              icon: Icons.mail_rounded, onPressed: () => Navigator.pushNamed(context, "/mailbox")),
-                          if (emailsUnread.isNotEmpty)
-                            Positioned(
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    width: YScale.s4,
-                                    height: YScale.s4,
-                                    decoration: BoxDecoration(
-                                        color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.full),
-                                    child: Text(emailsUnread.length.toString(),
-                                        style: theme.texts.body2.copyWith(color: theme.colors.danger.foregroundColor))),
-                                top: YScale.s3,
-                                right: YScale.s1)
-                        ]);
-                      }),
-                if (schoolApi.schoolLifeModule.isEnabled)
-                  ControllerConsumer<SchoolLifeModule>(
-                      controller: schoolApi.schoolLifeModule,
-                      builder: (context, module, _) {
-                        final List<SchoolLifeTicket> unjustifiedTickets =
-                            module.tickets.where((ticket) => !ticket.isJustified).toList();
-                        return Stack(alignment: Alignment.center, children: [
-                          YIconButton(
-                              icon: MdiIcons.stamper, onPressed: () => Navigator.pushNamed(context, "/school_life")),
-                          if (unjustifiedTickets.isNotEmpty)
-                            Positioned(
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    width: YScale.s4,
-                                    height: YScale.s4,
-                                    decoration: BoxDecoration(
-                                        color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.full),
-                                    child: Text(unjustifiedTickets.length.toString(),
-                                        style: theme.texts.body2.copyWith(color: theme.colors.danger.foregroundColor))),
-                                top: YScale.s3,
-                                right: YScale.s1)
-                        ]);
-                      }),
-                YHorizontalSpacer(YScale.s2)
+                // if (schoolApi.emailsModule.isEnabled)
+                //   ControllerConsumer<EmailsModule>(
+                //       controller: schoolApi.emailsModule,
+                //       builder: (context, module, _) {
+                //         final List<Email> emailsUnread = module.emailsReceived.where((email) => !email.read).toList();
+                //         return Stack(alignment: Alignment.center, children: [
+                //           YIconButton(
+                //               icon: Icons.mail_rounded, onPressed: () => Navigator.pushNamed(context, "/mailbox")),
+                //           if (emailsUnread.isNotEmpty)
+                //             Positioned(
+                //                 child: Container(
+                //                     alignment: Alignment.center,
+                //                     width: YScale.s4,
+                //                     height: YScale.s4,
+                //                     decoration: BoxDecoration(
+                //                         color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.full),
+                //                     child: Text(emailsUnread.length.toString(),
+                //                         style: theme.texts.body2.copyWith(color: theme.colors.danger.foregroundColor))),
+                //                 top: YScale.s3,
+                //                 right: YScale.s1)
+                //         ]);
+                //       }),
+                // if (schoolApi.schoolLifeModule.isEnabled)
+                //   ControllerConsumer<SchoolLifeModule>(
+                //       controller: schoolApi.schoolLifeModule,
+                //       builder: (context, module, _) {
+                //         final List<SchoolLifeTicket> unjustifiedTickets =
+                //             module.tickets.where((ticket) => !ticket.isJustified).toList();
+                //         return Stack(alignment: Alignment.center, children: [
+                //           YIconButton(
+                //               icon: MdiIcons.stamper, onPressed: () => Navigator.pushNamed(context, "/school_life")),
+                //           if (unjustifiedTickets.isNotEmpty)
+                //             Positioned(
+                //                 child: Container(
+                //                     alignment: Alignment.center,
+                //                     width: YScale.s4,
+                //                     height: YScale.s4,
+                //                     decoration: BoxDecoration(
+                //                         color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.full),
+                //                     child: Text(unjustifiedTickets.length.toString(),
+                //                         style: theme.texts.body2.copyWith(color: theme.colors.danger.foregroundColor))),
+                //                 top: YScale.s3,
+                //                 right: YScale.s1)
+                //         ]);
+                //       }),
               ],
             ),
             onRefresh: onRefresh,

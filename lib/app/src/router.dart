@@ -95,12 +95,14 @@ class CustomRoute {
 
 // TODO: complete
 final List<AppRoute> appRoutes = [
-  // IMPORTANT: it mustn't start with a `/` because it would create 2 routes: `/` and `/loading`, leading to errors
+  // IMPORTANT: routes are duplicated because of [initialRoute].
+  // When starting with a `/`, it creates 2 routes: `/` and `/loading`, leading to errors
   const AppRoute(path: "loading", widget: LoadingPage(), show: false),
+  const AppRoute(path: "/loading", widget: LoadingPage(), show: false),
   const AppRoute(path: "/terms", widget: TermsPage(), show: false),
   ...loginRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
   ...introRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
-  ...settingsRoutes.map((e) => AppRoute(path: e.path, widget: e.page, show: false)).toList(),
+  ...settingsRoutes,
   ...homeRoutes,
   ...gradesRoutes
 ];
@@ -108,7 +110,7 @@ final List<AppRoute> appRoutes = [
 final List<CustomRoute> routes = [
   ...loginRoutes,
   ...introRoutes,
-  ...settingsRoutes,
+  // ...settingsRoutes,
   CustomRoute(path: "/loading", page: const LoadingPage(), relatedApi: -1, show: false),
   CustomRoute(path: "/terms", page: const TermsPage(), relatedApi: -1, show: false),
   ...homeRoutesTMP,

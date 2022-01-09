@@ -7,13 +7,23 @@ import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/notifications.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/support.dart';
 
+const String _basePath = "/settings";
+
 /// Contains all routes concerning global settings.
-final List<CustomRoute> settingsRoutes = [
-  CustomRoute(path: "/settings", page: const SettingsPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/settings/account", page: const SettingsAccountPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/settings/notifications", page: const SettingsNotificationsPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/settings/support", page: const SettingsSupportPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/settings/licenses", page: const SettingsLicensesPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/settings/logs", page: const SettingsLogsPage(), relatedApi: -1, show: false),
-  CustomRoute(path: "/settings/donors", page: const SettingsDonorsPage(), relatedApi: -1, show: false),
+final List<AppRoute> settingsRoutes = [
+  const AppRoute(path: _basePath, widget: SettingsPage(), show: false, transition: RouteTransition.slideHorizontal),
+  const AppRoute(
+      path: "$_basePath/account", widget: SettingsAccountPage(), show: false, transition: RouteTransition.scale),
+  const AppRoute(
+      path: "$_basePath/notifications",
+      widget: SettingsNotificationsPage(),
+      show: false,
+      transition: RouteTransition.scale),
+  const AppRoute(
+      path: "$_basePath/support", widget: SettingsSupportPage(), show: false, transition: RouteTransition.scale),
+  const AppRoute(
+      path: "$_basePath/licenses", widget: SettingsLicensesPage(), show: false, transition: RouteTransition.scale),
+  const AppRoute(path: "$_basePath/logs", widget: SettingsLogsPage(), show: false, transition: RouteTransition.scale),
+  const AppRoute(
+      path: "$_basePath/donors", widget: SettingsDonorsPage(), show: false, transition: RouteTransition.scale),
 ];

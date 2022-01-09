@@ -17,6 +17,7 @@ class SettingsService {
     CustomLogger.log("SETTINGS SERVICE", "reset");
     settings = Settings.fromJson(_defaultSettings);
     await update();
+    await updateTheme(settings.global.themeId);
   }
 
   static Future<void> init() async {

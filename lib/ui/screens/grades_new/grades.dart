@@ -35,13 +35,13 @@ class _GradesPageState extends State<GradesPage> {
               actions: [
                 if (simulate) const YBadge(text: "SIMULATEUR"),
                 YHorizontalSpacer(YScale.s2),
-                const YBadge(text: "BETA", color: YColor.danger)
+                const YBadge(text: "ALPHA", color: YColor.danger)
               ],
               bottom: empty && module.isFetching ? const YLinearProgressBar() : null,
             ),
             useBottomNavigation: false,
             scrollable: !empty,
-            navigationInitialIndex: module.periods.indexOf(module.currentPeriod!),
+            navigationInitialIndex: module.currentPeriod == null ? 0 : module.periods.indexOf(module.currentPeriod!),
             navigationElements: empty
                 ? null
                 : module.periods

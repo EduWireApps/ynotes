@@ -6,6 +6,9 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core_new/api.dart';
+import 'package:ynotes/core_new/services.dart';
+import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/settings/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -25,13 +28,11 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Compte"),
-        body: ControllerConsumer<ApplicationSystem>(
-            controller: appSys,
-            builder: (context, controller, _) => Column(
+        body: ControllerConsumer<AuthModule>(
+            controller: schoolApi.authModule,
+            builder: (context, module, _) => Column(
                   children: [
-                    ControllerConsumer<LoginController>(
-                        controller: controller.loginController,
-                        builder: (context, controller, _) => AccountLoginStatus(controller: controller)),
+                    AccountLoginStatus(module),
                     YVerticalSpacer(YScale.s4),
                     Container(
                       color: theme.colors.backgroundLightColor,
@@ -41,13 +42,13 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${controller.currentSchoolAccount?.name ?? ''} ${controller.currentSchoolAccount?.surname ?? ''}",
+                            module.schoolAccount?.fullName ?? "Aucun nom",
                             style: theme.texts.body1
                                 .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold),
                           ),
                           YVerticalSpacer(YScale.s1),
                           Text(
-                            "${controller.currentSchoolAccount?.schoolName ?? ''} · ${controller.currentSchoolAccount?.studentClass ?? ''}",
+                            "${module.schoolAccount?.school ?? ''} · ${module.schoolAccount?.className ?? ''}",
                             style: theme.texts.body1.copyWith(color: theme.colors.foregroundLightColor),
                           ),
                         ],
@@ -55,32 +56,7 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
                     ),
                     YSettingsSections(sections: [
                       YSettingsSection(tiles: [
-                        if ((controller.account!.managableAccounts?.length ?? 0) > 1)
-                          YSettingsTile(
-                              title: "Changer de compte",
-                              subtitle: "${appSys.account!.managableAccounts!.length} disponibles",
-                              onTap: () async {
-                                final SchoolAccount? res = await YDialogs.getConfirmation<SchoolAccount>(
-                                    context,
-                                    YConfirmationDialog(
-                                        title: "Choisis un compte",
-                                        initialValue: controller.currentSchoolAccount,
-                                        options: controller.account!.managableAccounts!
-                                            .map((account) => YConfirmationDialogOption(
-                                                value: account, label: account.name ?? "Sans nom"))
-                                            .toList()));
-                                if (res != null) {
-                                  controller.currentSchoolAccount = res;
-                                  controller.saveSettings();
-                                  Phoenix.rebirth(context);
-                                }
-                              }),
-                        YSettingsTile(
-                          title: "Spécialités",
-                          subtitle:
-                              "Si tu es en classe de Première ou Terminale, sélectionner tes spécialités te permet d'avoir accès à des filtres supplémentaires",
-                          onTap: () => CustomDialogs.showSpecialtiesChoice(context),
-                        ),
+                        if (schoolApi.authModule.account?.isParent ?? false) const AccountSwitcherTile(),
                         YSettingsTile(
                             title: "Se déconnecter",
                             color: YColor.danger,
@@ -94,10 +70,7 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
                                           "Voulez-vous vraiment vous déconnecter ? Vos données hors lignes ainsi que vos paramètres seront supprimés. Cette action est irréversible.",
                                           style: theme.texts.body1)));
                               if (res) {
-                                await appSys.exitApp();
-                                appSys.api = null;
-                                appSys.buildControllers();
-                                Phoenix.rebirth(context);
+                                await SystemService.exit(context);
                               }
                             }),
                         YSettingsTile(
@@ -113,8 +86,7 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
                                           "Êtes-vous sûr de vouloir supprimer les données hors ligne ? Cette action est irréversible.",
                                           style: theme.texts.body1)));
                               if (res) {
-                                await controller.offline.clearAll();
-                                controller.api = apiManager(controller.offline);
+                                await schoolApi.reset();
                               }
                             })
                       ]),

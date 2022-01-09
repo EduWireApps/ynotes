@@ -67,29 +67,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                         ]);
                       }),
                 YSettingsSection(title: "Divers", tiles: [
-                  if (schoolApi.authModule.account!.isParent)
-                    ControllerConsumer<AuthModule>(
-                        controller: schoolApi.authModule,
-                        builder: (context, module, _) {
-                          return YSettingsTile(
-                              title: "Compte",
-                              subtitle: module.schoolAccount!.fullName,
-                              onTap: () async {
-                                final SchoolAccount? res = await YDialogs.getConfirmation<SchoolAccount>(
-                                    context,
-                                    YConfirmationDialog(
-                                        title: "Choisis un compte",
-                                        initialValue: module.schoolAccount!,
-                                        options: module.account!.accounts
-                                            .map((account) =>
-                                                YConfirmationDialogOption(value: account, label: account.fullName))
-                                            .toList()));
-                                if (res != null) {
-                                  module.schoolAccount = res;
-                                  await module.save();
-                                }
-                              });
-                        }),
+                  if (schoolApi.authModule.account!.isParent) const AccountSwitcherTile(),
                   const ThemeSwitcherTile()
                 ])
               ],

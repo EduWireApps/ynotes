@@ -13,8 +13,6 @@ class _Drawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SchoolAccount? account = schoolApi.authModule.schoolAccount;
-
     final List<_SpecialRoute> specialRoutes = [
       _SpecialRoute(
           title: "Faire un retour",
@@ -50,8 +48,12 @@ class _Drawer extends StatelessWidget {
           child: SingleChildScrollView(
         child: Column(
           children: [
-            if (account != null) _AccountHeader(account: account),
-            if (account != null) YVerticalSpacer(YScale.s6),
+            ControllerConsumer<AuthModule>(
+                controller: schoolApi.authModule,
+                builder: (context, module, _) {
+                  final SchoolAccount? account = schoolApi.authModule.schoolAccount;
+                  return account != null ? _AccountHeader(account: account) : Container();
+                }),
             const _RoutesList(),
             YVerticalSpacer(YScale.s6),
             _SpecialRoutesList(specialRoutes: specialRoutes),
@@ -128,31 +130,34 @@ class _AccountHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: InkWell(
-        onTap: () => Navigator.pushNamed(context, "/settings/account"),
-        child: Ink(
-            color: theme.colors.backgroundLightColor,
-            width: double.infinity,
-            padding: YPadding.p(YScale.s4),
-            child: Row(
-              children: [
-                CircleAvatar(
-                    backgroundColor: theme.colors.backgroundColor,
-                    child: Text("${account.firstName[0]}${account.lastName[0]}", style: theme.texts.title)),
-                YHorizontalSpacer(YScale.s4),
-                Flexible(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("${account.firstName} ${account.lastName}",
-                        style: theme.texts.body1
-                            .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.medium)),
-                    Text(account.school, style: theme.texts.body2)
-                  ],
-                ))
-              ],
-            )),
+    return Padding(
+      padding: YPadding.pb(YScale.s6),
+      child: Material(
+        child: InkWell(
+          onTap: () => Navigator.pushNamed(context, "/settings/account"),
+          child: Ink(
+              color: theme.colors.backgroundLightColor,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: YScale.s4, vertical: YScale.s6),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                      backgroundColor: theme.colors.backgroundColor,
+                      child: Text("${account.firstName[0]}${account.lastName[0]}", style: theme.texts.title)),
+                  YHorizontalSpacer(YScale.s4),
+                  Flexible(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("${account.firstName} ${account.lastName}",
+                          style: theme.texts.body1
+                              .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.medium)),
+                      Text(account.school, style: theme.texts.body2)
+                    ],
+                  ))
+                ],
+              )),
+        ),
       ),
     );
   }

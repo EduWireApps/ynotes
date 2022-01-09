@@ -4,6 +4,7 @@ import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 
@@ -19,18 +20,18 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Assistance"),
-        body: ControllerConsumer<ApplicationSystem>(
-            controller: appSys,
-            builder: (context, controller, _) => Column(
+        body: ControllerConsumer<Settings>(
+            controller: SettingsService.settings,
+            builder: (context, settings, _) => Column(
                   children: [
                     YSettingsSections(sections: [
                       YSettingsSection(tiles: [
                         YSettingsTile.switchTile(
                             title: "Secouer pour signaler",
-                            switchValue: controller.settings.user.global.shakeToReport,
+                            switchValue: settings.global.shakeToReport,
                             onSwitchValueChanged: (bool value) async {
-                              controller.settings.user.global.shakeToReport = value;
-                              await appSys.saveSettings();
+                              settings.global.shakeToReport = value;
+                              await SettingsService.update();
                               BugReportUtils.updateShakeFeatureStatus();
                             }),
                         YSettingsTile(

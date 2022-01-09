@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
+import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class AccountLoginStatus extends StatefulWidget {
-  final LoginController controller;
+  final AuthModule module;
 
-  const AccountLoginStatus({Key? key, required this.controller}) : super(key: key);
+  const AccountLoginStatus(this.module, {Key? key}) : super(key: key);
 
   @override
   _AccountLoginStatusState createState() => _AccountLoginStatusState();
 }
 
 class _AccountLoginStatusState extends State<AccountLoginStatus> {
-  loginStatus get state => widget.controller.actualState;
+  AuthStatus get status => widget.module.status;
 
   final String loggedTitle = "Tout va bien vous êtes connecté !";
   final String loggedLabel = "Les petits oiseaux chantent et le ciel est bleu.";
@@ -31,27 +32,27 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
       "Consultez tout d'abord l'erreur ci-dessous. Reconnectez-vous maintenant ou dans quelques minutes. Si le problème persiste, contactez le support.";
 
   String get title {
-    switch (state) {
-      case loginStatus.loggedIn:
+    switch (status) {
+      case AuthStatus.authenticated:
         return loggedTitle;
-      case loginStatus.loggedOff:
+      case AuthStatus.unauthenticated:
         return loggedOffTitle;
-      case loginStatus.error:
+      case AuthStatus.error:
         return errorTitle;
-      case loginStatus.offline:
+      case AuthStatus.offline:
         return offlineTitle;
     }
   }
 
   String get label {
-    switch (state) {
-      case loginStatus.loggedIn:
+    switch (status) {
+      case AuthStatus.authenticated:
         return loggedLabel;
-      case loginStatus.loggedOff:
+      case AuthStatus.unauthenticated:
         return loggedOffLabel;
-      case loginStatus.error:
+      case AuthStatus.error:
         return errorLabel;
-      case loginStatus.offline:
+      case AuthStatus.offline:
         return offlineLabel;
     }
   }
@@ -59,7 +60,7 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: widget.controller.color.backgroundColor,
+      tileColor: widget.module.color.backgroundColor,
       minVerticalPadding: YScale.s2,
       leading: Container(
         height: YScale.s12,
@@ -67,15 +68,15 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
         padding: YPadding.p(YScale.s2),
         decoration: BoxDecoration(
           borderRadius: YBorderRadius.full,
-          color: widget.controller.color.lightColor,
+          color: widget.module.color.lightColor,
         ),
-        child: FittedBox(child: widget.controller.icon),
+        child: FittedBox(child: widget.module.icon),
       ),
       title: Text(
         title,
         textAlign: TextAlign.start,
         style: theme.texts.body1.copyWith(
-          color: widget.controller.color.foregroundColor,
+          color: widget.module.color.foregroundColor,
           fontWeight: YFontWeight.semibold,
         ),
       ),
@@ -87,10 +88,10 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
             label,
             textAlign: TextAlign.start,
             style: theme.texts.body1.copyWith(
-              color: widget.controller.color.foregroundColor,
+              color: widget.module.color.foregroundColor,
             ),
           ),
-          if ([loginStatus.error, loginStatus.loggedOff].contains(state)) errorDetails(context)
+          if ([AuthStatus.error, AuthStatus.unauthenticated].contains(status)) errorDetails(context)
         ],
       ),
     );
@@ -99,7 +100,7 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
   Widget errorDetails(BuildContext context) {
     return Column(
       children: [
-        if (widget.controller.logs.isNotEmpty)
+        if (widget.module.logs != null)
           Column(
             children: [
               YVerticalSpacer(YScale.s2),
@@ -110,18 +111,21 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
                     color: theme.colors.backgroundColor,
                     borderRadius: YBorderRadius.lg,
                   ),
-                  child: Text(widget.controller.logs, style: theme.texts.body1)),
+                  child: Text(widget.module.logs!, style: theme.texts.body1)),
             ],
           ),
         YVerticalSpacer(YScale.s4),
         Row(
           children: [
-            YButton(onPressed: () => widget.controller.login(), text: "Reconnexion", color: YColor.success),
+            YButton(
+                onPressed: () async => await widget.module.loginFromOffline(),
+                text: "Reconnexion",
+                color: YColor.success),
             YHorizontalSpacer(YScale.s2),
             YButton(
               onPressed: () => BugReportUtils.report(),
               text: "Support",
-              color: state == loginStatus.error ? YColor.danger : YColor.secondary,
+              color: status == AuthStatus.error ? YColor.danger : YColor.secondary,
               invertColors: true,
             ),
           ],

@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/ui.dart';
-import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -23,14 +22,14 @@ class SettingsNotificationsPage extends StatefulWidget {
 }
 
 class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
-  Future<void> notificationSetting({required ApplicationSystem controller, required Function fn}) async {
+  Future<void> notificationSetting(Function fn) async {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       final notificationPermission = await Permission.notification.request();
       final batteryPermission = await Permission.ignoreBatteryOptimizations.request();
       UIUtils.setSystemUIOverlayStyle();
       if (notificationPermission.isGranted && batteryPermission.isGranted) {
         fn();
-        appSys.saveSettings();
+        await SettingsService.update();
       } else {
         YDialogs.showInfo(
             context,
@@ -41,7 +40,7 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
       }
     } else {
       fn();
-      appSys.saveSettings();
+      await SettingsService.update();
     }
   }
 
@@ -49,35 +48,33 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Notifications"),
-        body: ControllerConsumer<ApplicationSystem>(
-            controller: appSys,
-            builder: (context, controller, _) => Column(
+        body: ControllerConsumer<Settings>(
+            controller: SettingsService.settings,
+            builder: (context, settings, _) => Column(
                   children: [
                     YSettingsSections(sections: [
                       YSettingsSection(tiles: [
                         YSettingsTile.switchTile(
                           title: "Nouvel email",
-                          switchValue: controller.settings.user.global.notificationNewMail,
-                          onSwitchValueChanged: (bool value) async => await notificationSetting(
-                              controller: controller,
-                              fn: () => controller.settings.user.global.notificationNewMail = value),
+                          switchValue: settings.notifications.newEmail,
+                          onSwitchValueChanged: (bool value) async =>
+                              await notificationSetting(() => settings.notifications.newEmail = value),
                           disabledOnTap: () => YSnackbars.info(context,
                               title: "Paramètre désactivé",
                               message:
                                   "Tu as activé l'économiseur de batterie, qui désactive l'envoi de notifications."),
-                          enabled: !controller.settings.user.global.batterySaver,
+                          enabled: !settings.global.batterySaver,
                         ),
                         YSettingsTile.switchTile(
                           title: "Nouvelle note",
-                          switchValue: controller.settings.user.global.notificationNewGrade,
-                          onSwitchValueChanged: (bool value) async => await notificationSetting(
-                              controller: controller,
-                              fn: () => controller.settings.user.global.notificationNewGrade = value),
+                          switchValue: settings.notifications.newGrade,
+                          onSwitchValueChanged: (bool value) async =>
+                              await notificationSetting(() => settings.notifications.newGrade = value),
                           disabledOnTap: () => YSnackbars.info(context,
                               title: "Paramètre désactivé",
                               message:
                                   "Tu as activé l'économiseur de batterie, qui désactive l'envoi de notifications."),
-                          enabled: !controller.settings.user.global.batterySaver,
+                          enabled: !settings.global.batterySaver,
                         )
                       ]),
                       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))

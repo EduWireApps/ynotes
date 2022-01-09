@@ -33,3 +33,4 @@ part 'src/navigation/drawer.dart';
 // MISC
 part 'src/misc/theme_switcher_tile.dart';
 part 'src/misc/subjects_filter_manager.dart';
+part 'src/misc/account_switcher_tile.dart';

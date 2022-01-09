@@ -2,17 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
-import 'package:ynotes_packages/theme.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -26,9 +24,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Paramètres"),
-        body: ControllerConsumer<ApplicationSystem>(
-            controller: appSys,
-            builder: (context, controller, _) => YSettingsSections(sections: [
+        body: ControllerConsumer<Settings>(
+            controller: SettingsService.settings,
+            builder: (context, settings, _) => YSettingsSections(sections: [
                   YSettingsSection(tiles: [
                     YSettingsTile(
                         title: "Compte",
@@ -44,21 +42,14 @@ class _SettingsPageState extends State<SettingsPage> {
                         onTap: () => Navigator.pushNamed(context, "/settings/support")),
                   ]),
                   YSettingsSection(title: "Divers", tiles: [
-                    YSettingsTile.switchTile(
-                      title: 'Mode nuit',
-                      switchValue: theme.isDark,
-                      onSwitchValueChanged: (bool value) async {
-                        controller.updateTheme(value ? "sombre" : "clair");
-                        appSys.saveSettings();
-                      },
-                    ),
+                    const ThemeSwitcherTile(),
                     YSettingsTile.switchTile(
                       title: "Economiseur de batterie",
                       subtitle: "Réduit les interactions réseaux, désactive les notifications.",
-                      switchValue: controller.settings.user.global.batterySaver,
+                      switchValue: settings.global.batterySaver,
                       onSwitchValueChanged: (bool value) async {
-                        controller.settings.user.global.batterySaver = value;
-                        appSys.saveSettings();
+                        settings.global.batterySaver = value;
+                        await SettingsService.update();
                       },
                     ),
                   ]),

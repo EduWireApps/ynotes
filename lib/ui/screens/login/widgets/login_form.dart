@@ -41,6 +41,9 @@ class _LoginFormState extends State<LoginForm> {
           parameters: {"url": _credentials.url.trim(), "mobileCasLogin": false});
       if (res.error != null) {
         YSnackbars.error(context, title: LoginContent.widgets.form.error, message: res.error!);
+        setState(() {
+          _loading = false;
+        });
         return;
       }
       setState(() {
@@ -53,6 +56,7 @@ class _LoginFormState extends State<LoginForm> {
     }
     setState(() {
       _loading = false;
+      _canNavigate = true;
     });
   }
 
