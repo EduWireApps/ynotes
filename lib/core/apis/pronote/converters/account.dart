@@ -1,6 +1,6 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/app_config/models.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,40 +13,40 @@ class PronoteAccountConverter {
       String? name = mapGet(data, ["L"]);
       bool isParentMainAccount = true;
       List<SchoolAccount> accounts = schoolAccounts(mapGet(data, ["listeRessources"]));
-      (accounts).forEach((element) {
+      for (var element in (accounts)) {
         element.availableTabs = tabs;
-      });
+      }
       //we generate a random UUID
-      String id = Uuid().v1();
+      String id = const Uuid().v1();
       return AppAccount(
           name: name,
           managableAccounts: accounts,
           id: id,
           isParentMainAccount: isParentMainAccount,
-          apiType: API_TYPE.Pronote);
+          apiType: API_TYPE.pronote);
     }
     //If this is a single account
     else {
       String? name = mapGet(data, ["L"]);
       bool isParentMainAccount = false;
       List<SchoolAccount> accounts = [singleSchoolAccount((data ?? {}))];
-      String id = Uuid().v1();
-      (accounts).forEach((element) {
+      String id = const Uuid().v1();
+      for (var element in (accounts)) {
         element.availableTabs = tabs;
-      });
+      }
       return AppAccount(
           name: name,
           managableAccounts: accounts,
           id: id,
           isParentMainAccount: isParentMainAccount,
-          apiType: API_TYPE.Pronote);
+          apiType: API_TYPE.pronote);
     }
   }
 
   static List<appTabs> availableTabs(List? alltabs, List? hiddenTabs) {
     List<int> tabsNumbers = [];
     List<appTabs> tabs = [];
-    (alltabs ?? []).forEach((tab) {
+    for (var tab in (alltabs ?? [])) {
       tabsNumbers.add(tab["G"]);
 
       (tab["Onglet"] ?? []).forEach((subtab) {
@@ -56,37 +56,39 @@ class PronoteAccountConverter {
           tabsNumbers += tabsNumbers + subsubtab.values.where((b) => b is int).toList().cast<int>();
         });
       });
-    });
+    }
+    tabsNumbers = tabsNumbers.toSet().toList();
+    tabsNumbers.sort();
     CustomLogger.log("ACCOUNT", "Tabs numbers: $tabsNumbers");
-    (hiddenTabs ?? []).forEach((element) {
+    for (var element in (hiddenTabs ?? [])) {
       tabsNumbers.remove(element);
-    });
-    tabsNumbers.forEach((tabNumber) {
+    }
+    for (var tabNumber in tabsNumbers) {
       switch (tabNumber) {
         case 16:
-          tabs.add(appTabs.AGENDA);
+          tabs.add(appTabs.agenda);
           break;
         case 8:
-          tabs.add(appTabs.POLLS);
+          tabs.add(appTabs.polls);
           break;
         case 198:
-          tabs.add(appTabs.GRADES);
+          tabs.add(appTabs.grades);
 
           break;
         case 88:
-          tabs.add(appTabs.HOMEWORK);
+          tabs.add(appTabs.homework);
           break;
         default:
       }
-    });
-    tabs.add(appTabs.SUMMARY);
-    tabs.add(appTabs.FILES);
-    return tabs;
+    }
+    tabs.add(appTabs.summary);
+    tabs.add(appTabs.files);
+    return tabs.toSet().toList();
   }
 
   static List<SchoolAccount> schoolAccounts(List? schoolAccountsData) {
     List<SchoolAccount> accounts = [];
-    (schoolAccountsData ?? []).forEach((studentData) {
+    for (var studentData in (schoolAccountsData ?? [])) {
       String? name = mapGet(studentData, ["L"]);
       String? studentClass = mapGet(studentData, ["classeDEleve", "L"]);
       String? schoolName = mapGet(studentData, ["Etablissement", "V", "L"]);
@@ -94,7 +96,7 @@ class PronoteAccountConverter {
 
       accounts.add(SchoolAccount(
           name: name, studentClass: studentClass, studentID: studentID, availableTabs: [], schoolName: schoolName));
-    });
+    }
     return accounts;
   }
 

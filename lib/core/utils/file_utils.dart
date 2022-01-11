@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
@@ -10,8 +9,8 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-
-import 'logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/utils/ui.dart';
 
 ///Every action related to files
 class FileAppUtil {
@@ -41,8 +40,8 @@ class FileAppUtil {
 //store file in documents folder
 
     String dir = (await getExternalStorageDirectory())!.absolute.path + "/";
-    var file = "$dir";
-    File f = new File(file + "filename.csv");
+    var file = dir;
+    File f = File(file + "filename.csv");
 
 // convert rows to String and write as csv file
 
@@ -60,31 +59,31 @@ class FileAppUtil {
 
   ///Get new file path
   static Future<File> getFilePath(String? filename) async {
-    final dir = await FolderAppUtil.getDirectory(download: true);
-    return File("$dir/yNotesDownloads/$filename");
+    final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+    return File("${dir.path}/$filename");
   }
 
   static Future<List<FileInfo>> getFilesList(String path) async {
     try {
       List file = [];
 
-      if (!kIsWeb && (Platform.isLinux || await Permission.storage.request().isGranted)) {
+      if (!kIsWeb && (Platform.isLinux || Platform.isWindows || await Permission.storage.request().isGranted)) {
         try {
           file = Directory(path).listSync();
         } catch (e) {
           CustomLogger.log("FILE UTILS", "An error occured while getting the file list");
-          CustomLogger.error(e);
+          CustomLogger.error(e, stackHint:"MjU=");
         }
         //use your folder name insted of resume.
         List<FileInfo> listFiles = [];
 
         await Future.forEach(file, (dynamic element) async {
           try {
-            listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
+            listFiles.add(FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
             CustomLogger.log("FILE UTILS", "An error occured while adding file to list");
-            CustomLogger.error(e);
+            CustomLogger.error(e, stackHint:"MjY=");
           }
         });
 
@@ -95,6 +94,7 @@ class FileAppUtil {
       List<FileInfo> listFiles = [];
       return listFiles;
     }
+    UIUtils.setSystemUIOverlayStyle();
     return [];
   }
 
@@ -105,7 +105,9 @@ class FileAppUtil {
       } else {
         return null;
       }
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e, stackHint:"Mjc=");
+    }
   }
 
   static Future<String> loadAsset(path) async {
@@ -118,8 +120,8 @@ class FileAppUtil {
 
       //Get root dir path
       if (usingFileName) {
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        path = '$dir/yNotesDownloads/$filePath';
+        final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+        path = '${dir.path}/$filePath';
       } else {
         path = filePath;
       }
@@ -127,7 +129,7 @@ class FileAppUtil {
       await OpenFile.open(path!);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while opening file");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mjg=");
     }
   }
 
@@ -148,13 +150,13 @@ class FileAppUtil {
       await file.writeAsString(data, mode: FileMode.write);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while writing $fileName²");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Mjk=");
     }
   }
 }
 
 class FileInfo {
-  final element;
+  final dynamic element;
   final DateTime? lastModifiedDate;
   final String? fileName;
   bool selected;
@@ -162,39 +164,40 @@ class FileInfo {
 }
 
 class FolderAppUtil {
-  static createDirectory(String path) async {
-    final Directory _appDocDirFolder = Directory(path);
-
-    if (!await _appDocDirFolder.exists()) {
-      await _appDocDirFolder.create(recursive: true);
+  static Future<Directory> createDirectory(String path) async {
+    final Directory dir = Directory(path);
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
       CustomLogger.log("FILE UTILS", "Created $path folder");
     }
-  }
-
-  static getDirectory({bool download = false}) async {
-    if (download && !kIsWeb && Platform.isAndroid) {
-      final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
-
-      return dir;
-    }
-    if (!kIsWeb && Platform.isAndroid) {
-      var dir = await getExternalStorageDirectory();
-
-      return download ? dir!.path : dir;
-    }
-    if (!kIsWeb && Platform.isIOS) {
-      var dir = await getApplicationDocumentsDirectory();
-      return download ? dir.path : dir;
-    }
-    if (!kIsWeb && Platform.isLinux) {
-      var dir = await getApplicationDocumentsDirectory();
-      Directory realDir = Directory(dir.path + "/" + "yNotesApp" + "/" + "files");
-      return download ? realDir.path : realDir;
-    }
-  }
-
-  static getTempDirectory() async {
-    final dir = await getTemporaryDirectory();
     return dir;
   }
+
+  /// Returns the directory of the app
+  ///
+  /// On Android, if [downloads] is set to `true`, it will return the downloads directory
+  static Future<Directory> getDirectory({bool downloads = false}) async {
+    if (!kIsWeb) {
+      if (Platform.isAndroid) {
+        if (downloads) {
+          if ((await (Directory(((await getExternalStorageDirectory())?.path ?? "") + "/downloads")).exists()) ==
+              false) {
+            await Directory(((await getExternalStorageDirectory())?.path ?? "") + "/downloads").create(recursive: true);
+          }
+        }
+
+        return downloads
+            ? Directory(((await getExternalStorageDirectory())?.path ?? "") + "/downloads")
+            : (await getExternalStorageDirectory())!;
+      } else if (Platform.isIOS) {
+        return await getApplicationDocumentsDirectory();
+      } else if (Platform.isLinux || Platform.isWindows) {
+        final Directory appDirectory = await getApplicationDocumentsDirectory();
+        return Directory("${appDirectory.path}/yNotesApp/files");
+      }
+    }
+    throw 'Unsupported on web';
+  }
+
+  static Future<Directory> getTempDirectory() async => await getTemporaryDirectory();
 }

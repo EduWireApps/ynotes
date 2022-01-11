@@ -5,13 +5,14 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 Future<Homework?> showAddHomeworkBottomSheet(context, {Homework? hw}) {
   return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Colors.transparent,
@@ -53,17 +54,17 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
 
     return Wrap(alignment: WrapAlignment.center, children: [
       ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 500),
+        constraints: const BoxConstraints(maxWidth: 500),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
               color: Theme.of(context).primaryColor),
           padding: EdgeInsets.symmetric(
               vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.2),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DragHandle(),
+              const DragHandle(),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
@@ -102,16 +103,13 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
               SizedBox(
                 height: screenSize.size.height / 10 * 0.2,
               ),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5,
-                  () async {
-                process(context);
-              },
-                  label: "J'ai fini",
-                  backgroundColor: (disciplineNameTextController.text != "" && contentTextController.text != "")
-                      ? Colors.green
-                      : Theme.of(context).primaryColorDark,
-                  padding: EdgeInsets.all(5),
-                  borderRadius: BorderRadius.circular(8))
+              YButton(
+                onPressed: () => process(context),
+                text: "Ajouter",
+                color: (disciplineNameTextController.text != "" && contentTextController.text != "")
+                    ? YColor.success
+                    : YColor.secondary,
+              ),
             ],
           ),
         ),
@@ -132,7 +130,7 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
           helperStyle: TextStyle(color: ThemeUtils.textColor()),
           prefixStyle: TextStyle(color: ThemeUtils.textColor()),
           suffixStyle: TextStyle(color: ThemeUtils.textColor()),
-          errorStyle: TextStyle(color: Colors.redAccent),
+          errorStyle: const TextStyle(color: Colors.redAccent),
           border: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.textColor())),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: ThemeUtils.textColor().withOpacity(0.5)),
@@ -254,6 +252,7 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
         contentTextController.text.hashCode.toString();
   }
 
+  @override
   initState() {
     super.initState();
     processExistingHW();
@@ -261,9 +260,7 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
 
   process(BuildContext context) {
     if (disciplineNameTextController.text != "" && contentTextController.text != "") {
-      if (widget.defaultHW == null) {
-        widget.defaultHW = Homework();
-      }
+      widget.defaultHW ??= Homework();
       widget.defaultHW!
         ..date = date
         ..discipline = disciplineNameTextController.text

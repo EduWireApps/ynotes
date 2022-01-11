@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
@@ -14,7 +13,7 @@ import 'agenda_event_edit_bottom_sheet.dart';
 
 Future<void> lessonDetails(context, AgendaEvent event) async {
   return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Colors.transparent,
@@ -28,7 +27,7 @@ Future<void> lessonDetails(context, AgendaEvent event) async {
 // ignore: must_be_immutable
 class LessonDetailsDialog extends StatefulWidget {
   AgendaEvent event;
-  LessonDetailsDialog(this.event);
+  LessonDetailsDialog(this.event, {Key? key}) : super(key: key);
 
   @override
   _LessonDetailsDialogState createState() => _LessonDetailsDialogState();
@@ -43,18 +42,18 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
       alignment: WrapAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
                   color: Theme.of(context).primaryColor),
               padding: EdgeInsets.symmetric(
                   vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.2),
-              child: new Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  DragHandle(),
+                  const DragHandle(),
                   SizedBox(
                     height: screenSize.size.height / 10 * 0.1,
                   ),
@@ -67,14 +66,15 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                           Container(
                             margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.05),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(25)), color: widget.event.realColor),
-                            padding: EdgeInsets.all(5),
+                                borderRadius: const BorderRadius.all(Radius.circular(25)),
+                                color: widget.event.realColor),
+                            padding: const EdgeInsets.all(5),
                             child: FittedBox(
                               child: Text(
                                 widget.event.name != "" && widget.event.name != null
                                     ? widget.event.name!
                                     : "(sans nom)",
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
+                                style: const TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -89,75 +89,73 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                     margin: EdgeInsets.zero,
                     color: Theme.of(context).primaryColorDark,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                    child: Container(
-                      child: Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                  child: Text("Infos de l'évènement",
-                                      style: TextStyle(
-                                          fontFamily: "Asap",
-                                          fontWeight: FontWeight.bold,
-                                          color: ThemeUtils.textColor()))),
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 0.2)),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    buildKeyValuesInfo(context, "Horaires", [
-                                      "${DateFormat.Hm().format(widget.event.start!)} - ${DateFormat.Hm().format(widget.event.end!)}"
-                                    ]),
-                                    if (widget.event.location != null)
-                                      SizedBox(
-                                        height: (screenSize.size.height / 3) / 25,
-                                      ),
-                                    if (widget.event.location != null)
-                                      buildKeyValuesInfo(context, widget.event.lesson != null ? "Salle" : "Emplacement",
-                                          [widget.event.location]),
-                                    if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
-                                      SizedBox(
-                                        height: (screenSize.size.height / 3) / 25,
-                                      ),
-                                    if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
-                                      buildKeyValuesInfo(
-                                          context,
-                                          "Professeur${widget.event.lesson!.teachers!.length > 1 ? "s" : ""}",
-                                          widget.event.lesson!.teachers),
-                                    if (widget.event.lesson != null && widget.event.lesson!.groups != null)
-                                      SizedBox(
-                                        height: (screenSize.size.height / 3) / 25,
-                                      ),
-                                    if (widget.event.lesson != null && widget.event.lesson!.groups != null)
-                                      buildKeyValuesInfo(context, "Groupes", widget.event.lesson!.groups),
+                    child: Stack(
+                      children: [
+                        Column(
+                          children: [
+                            Container(
+                                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                child: Text("Infos de l'évènement",
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        fontWeight: FontWeight.bold,
+                                        color: ThemeUtils.textColor()))),
+                            Container(
+                              padding: const EdgeInsets.all(5),
+                              margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 0.2)),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  buildKeyValuesInfo(context, "Horaires", [
+                                    "${DateFormat.Hm().format(widget.event.start!)} - ${DateFormat.Hm().format(widget.event.end!)}"
+                                  ]),
+                                  if (widget.event.location != null)
                                     SizedBox(
                                       height: (screenSize.size.height / 3) / 25,
                                     ),
-                                    if (widget.event.canceled! ||
-                                        (widget.event.lesson != null && widget.event.lesson!.status != null))
-                                      buildKeyValuesInfo(context, "Statut",
-                                          [widget.event.canceled! ? "Annulé" : widget.event.lesson!.status]),
-                                    if (widget.event.description != null && widget.event.description != "")
-                                      buildKeyValuesInfo(context, "Description", [widget.event.description]),
-                                  ],
-                                ),
+                                  if (widget.event.location != null)
+                                    buildKeyValuesInfo(context, widget.event.lesson != null ? "Salle" : "Emplacement",
+                                        [widget.event.location]),
+                                  if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
+                                    SizedBox(
+                                      height: (screenSize.size.height / 3) / 25,
+                                    ),
+                                  if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
+                                    buildKeyValuesInfo(
+                                        context,
+                                        "Professeur${widget.event.lesson!.teachers!.length > 1 ? "s" : ""}",
+                                        widget.event.lesson!.teachers),
+                                  if (widget.event.lesson != null && widget.event.lesson!.groups != null)
+                                    SizedBox(
+                                      height: (screenSize.size.height / 3) / 25,
+                                    ),
+                                  if (widget.event.lesson != null && widget.event.lesson!.groups != null)
+                                    buildKeyValuesInfo(context, "Groupes", widget.event.lesson!.groups),
+                                  SizedBox(
+                                    height: (screenSize.size.height / 3) / 25,
+                                  ),
+                                  if (widget.event.canceled! ||
+                                      (widget.event.lesson != null && widget.event.lesson!.status != null))
+                                    buildKeyValuesInfo(context, "Statut",
+                                        [widget.event.canceled! ? "Annulé" : widget.event.lesson!.status]),
+                                  if (widget.event.description != null && widget.event.description != "")
+                                    buildKeyValuesInfo(context, "Description", [widget.event.description]),
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
                     height: screenSize.size.height / 10 * 0.1,
                   ),
-                  Container(
+                  SizedBox(
                     height: screenSize.size.height / 10 * 0.7,
                     child: ListView.builder(
-                        padding: EdgeInsets.only(left: 0),
+                        padding: const EdgeInsets.only(left: 0),
                         scrollDirection: Axis.horizontal,
                         itemCount: reminders.length + 1,
                         itemBuilder: (BuildContext context, index) {
@@ -192,7 +190,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                         children: [
                                           //Plus button
 
-                                          Container(
+                                          SizedBox(
                                             width: 50,
                                             height: 50,
                                             child: RawMaterialButton(
@@ -216,11 +214,11 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                     Container(
                                                       width: 25,
                                                       height: 25,
-                                                      padding: EdgeInsets.all(
+                                                      padding: const EdgeInsets.all(
                                                         5,
                                                       ),
                                                       child: FittedBox(
-                                                        child: new Icon(
+                                                        child: Icon(
                                                           Icons.add,
                                                           color: ThemeUtils.textColor(),
                                                         ),
@@ -229,7 +227,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                   ],
                                                 ),
                                               ),
-                                              shape: new CircleBorder(),
+                                              shape: const CircleBorder(),
                                               elevation: 1.0,
                                               fillColor: Theme.of(context).primaryColor,
                                             ),
@@ -289,7 +287,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                       children: [
                                         //Plus button
                                         if (reminders[index].alarm != AlarmType.none)
-                                          Container(
+                                          SizedBox(
                                             width: screenSize.size.width / 5 * 0.4,
                                             height: screenSize.size.width / 5 * 0.4,
                                             child: RawMaterialButton(
@@ -327,7 +325,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                         screenSize.size.width / 5 * 0.05,
                                                       ),
                                                       child: FittedBox(
-                                                        child: new Icon(
+                                                        child: Icon(
                                                           MdiIcons.bellRing,
                                                           color: ThemeUtils.textColor(),
                                                         ),
@@ -336,15 +334,15 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                   ],
                                                 ),
                                               ),
-                                              shape: new CircleBorder(),
+                                              shape: const CircleBorder(),
                                               elevation: 1.0,
                                               fillColor: Theme.of(context).primaryColor,
                                             ),
                                           ),
                                         if (reminders[index].alarm != AlarmType.none)
                                           SizedBox(width: screenSize.size.width / 5 * 0.1),
-                                        if (reminders[index].name != null && reminders[index].name!.length > 0)
-                                          Container(
+                                        if (reminders[index].name != null && reminders[index].name!.isNotEmpty)
+                                          SizedBox(
                                             height: screenSize.size.height / 10 * 0.4,
                                             child: FittedBox(
                                               child: Column(

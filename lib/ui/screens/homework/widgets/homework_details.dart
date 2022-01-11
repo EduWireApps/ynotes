@@ -10,7 +10,8 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 class DialogHomework extends StatefulWidget {
   final Homework? hw;
 
-  const DialogHomework(this.hw);
+  const DialogHomework(this.hw, {Key? key}) : super(key: key);
+  @override
   State<StatefulWidget> createState() {
     return _DialogHomeworkState();
   }
@@ -19,6 +20,7 @@ class DialogHomework extends StatefulWidget {
 class _DialogHomeworkState extends State<DialogHomework> {
   int segmentedControlIndex = 0;
 
+  @override
   Widget build(BuildContext context) {
     var document = parse(segmentedControlIndex == 0
         ? (widget.hw!.rawContent) ?? "Non chargé"
@@ -27,7 +29,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
     String parsedHtml = parse(document.body!.text).documentElement!.text;
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
-    return Container(
+    return SizedBox(
       height: screenSize.size.height / 10 * 6,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -38,7 +40,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                 ),
                 onPressed: () {
                   Share.share(parsedHtml);
@@ -66,7 +68,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       });
                     },
                     groupValue: segmentedControlIndex,
-                    children: <int, Widget>{
+                    children: const <int, Widget>{
                       0: Text(
                         'A faire',
                         style: TextStyle(fontFamily: "Asap"),
@@ -101,7 +103,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
             ),
           ),
           FutureBuilder<int>(
-              future: getColor(this.widget.hw!.disciplineCode),
+              future: getColor(widget.hw!.disciplineCode),
               initialData: 0,
               builder: (context, snapshot) {
                 return Material(
@@ -116,7 +118,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       child: Column(
                         children: [
                           Text(
-                            this.widget.hw!.discipline ?? "",
+                            widget.hw!.discipline ?? "",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",
@@ -132,6 +134,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
     );
   }
 
+  @override
   initState() {
     super.initState();
   }

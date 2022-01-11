@@ -12,13 +12,13 @@ import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
 class PronoteMethod {
-  Map locks = Map();
+  Map locks = {};
   PronoteClient? client;
   final Offline _offlineController;
 
@@ -44,7 +44,7 @@ class PronoteMethod {
       }
     } else {
       //Offline data;
-      var data;
+      dynamic data;
       if (!isOfflineLocked) {
         data = await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
@@ -58,7 +58,7 @@ class PronoteMethod {
   }
 
   Future<List<Discipline>> grades() async {
-    List<PronotePeriod>? periods = this.client?.periods();
+    List<PronotePeriod>? periods = client?.periods();
     List<Discipline> listDisciplines = [];
     if (periods != null) {
       await Future.forEach(periods, (PronotePeriod period) async {
@@ -115,9 +115,7 @@ class PronoteMethod {
       }
     };
     var firstWeek = await getWeek(dateFrom);
-    if (dateTo == null) {
-      dateTo = dateFrom;
-    }
+    dateTo ??= dateFrom;
     var lastWeek = await getWeek(dateTo);
     for (int week = firstWeek; week < (lastWeek + 1); week++) {
       jsonData["donnees"]["NumeroSemaine"] = week;
@@ -134,8 +132,8 @@ class PronoteMethod {
   nextHomework() async {
     DateTime now = DateTime.now();
     List<Homework> listHW = [];
-    final f = new DateFormat('dd/MM/yyyy');
-    var dateTo = f.parse(this.client?.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
+    final f = DateFormat('dd/MM/yyyy');
+    var dateTo = f.parse(client?.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
     var jsonData = {
       'donnees': {
         'domaine': {'_T': 8, 'V': "[${await getWeek(now)}..${await getWeek(dateTo)}]"}
@@ -169,7 +167,7 @@ class PronoteMethod {
         return toReturn;
       } catch (e) {
         CustomLogger.log("PRONOTE", "Error while fetching for " + (lockName ?? ""));
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"MTI=");
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           CustomLogger.log("PRONOTE", "Refreshing client");
@@ -193,17 +191,18 @@ class PronoteMethod {
       //reset all recursives
       if (appSys.loginController.actualState == loginStatus.loggedIn) {
         //reset every locks
-        locks.keys.forEach((element) {
+        for (var element in locks.keys) {
           locks[element] = false;
-        });
+        }
       }
     }
   }
 
   Future<dynamic> request(String functionName, Function? converter, {var data, var customURL, int? onglet}) async {
     data = Map.from(data);
-    if (onglet != null && appSys.currentSchoolAccount != null && !appSys.account!.isParentMainAccount)
+    if (onglet != null && appSys.currentSchoolAccount != null && !appSys.account!.isParentMainAccount) {
       data['_Signature_'] = {'onglet': onglet};
+    }
     //If it is a parent account
     if (onglet != null && appSys.currentSchoolAccount != null && appSys.account!.isParentMainAccount) {
       data['_Signature_'] = {
@@ -212,9 +211,9 @@ class PronoteMethod {
       };
     }
     if (converter != null) {
-      return await converter(this.client, await this.client?.communication!.post(functionName, data: data));
+      return await converter(client, await client?.communication!.post(functionName, data: data));
     } else {
-      return await this.client?.communication!.post(functionName, data: data);
+      return await client?.communication!.post(functionName, data: data);
     }
   }
 

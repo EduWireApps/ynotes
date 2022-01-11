@@ -1,6 +1,6 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class SchoolLifeOffline {
   late Offline parent;
@@ -12,7 +12,7 @@ class SchoolLifeOffline {
       return parent.offlineBox?.get("schoolLife")?.cast<SchoolLifeTicket>();
     } catch (e) {
       CustomLogger.log("SCHOOL LIFE", "An error occured while returning tickets");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTU=");
       return null;
     }
   }
@@ -25,7 +25,7 @@ class SchoolLifeOffline {
       await parent.offlineBox?.put("schoolLife", newData);
     } catch (e) {
       CustomLogger.log("SCHOOL LIFE", "An error occured while updating tickets");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTY=");
     }
   }
 }

@@ -4,18 +4,10 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/globals.dart';
 
-//Parsers list
-///Color theme switcher, actually 0 for darkmode and 1 for lightmode
-int colorTheme = 0;
-
-List parsers = ["EcoleDirecte", "Pronote"];
-
-List<Discipline> specialities = [];
 TValue? case2<TOptionType, TValue>(
   TOptionType selectedOption,
   Map<TOptionType, TValue> branches, [
@@ -28,21 +20,19 @@ TValue? case2<TOptionType, TValue>(
   return branches[selectedOption];
 }
 
-//Connectivity  classs
-
 List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (appSys.api != null) {
     List<Grade> listToReturn = [];
     if (list != null) {
-      list.forEach((element) {
+      for (var element in list) {
         element.gradesList?.forEach((grade) {
           if (!listToReturn.contains(grade)) {
             listToReturn.add(grade);
           }
         });
-      });
+      }
       if (appSys.api!.gradesList != null &&
-          (appSys.api!.gradesList ?? []).length > 0 &&
+          (appSys.api!.gradesList ?? []).isNotEmpty &&
           listToReturn == appSys.api!.gradesList) {
         return appSys.api!.gradesList;
       }
@@ -85,16 +75,9 @@ launchURL(url) async {
   }
 }
 
-//Redefine the switch statement
-Future<String?> readStorage(_key) async {
-  String? u = await storage.read(key: _key);
-
-  return u;
-}
-
 Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
   List<Discipline> newList = [];
-  list.forEach((f) async {
+  Future.forEach(list, (Discipline f) async {
     f.color = await getColor(f.disciplineCode);
     newList.add(f);
   });
@@ -106,7 +89,7 @@ Route router(Widget widget) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => widget,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 0.0);
+      var begin = const Offset(1.0, 0.0);
       var end = Offset.zero;
       var curve = Curves.ease;
 
@@ -122,11 +105,11 @@ Route router(Widget widget) {
 
 class ConnectionStatusSingleton {
   //This creates the single instance by calling the `_internal` constructor specified below
-  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
+  static final ConnectionStatusSingleton _singleton = ConnectionStatusSingleton._internal();
   bool hasConnection = false;
 
   //This is what's used to retrieve the instance through the app
-  StreamController connectionChangeController = new StreamController.broadcast();
+  StreamController connectionChangeController = StreamController.broadcast();
 
   //This tracks the current connection status
   final Connectivity _connectivity = Connectivity();

@@ -1,32 +1,23 @@
 import 'dart:io';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map
 callCas(String? cas, String username, String? password, String url) async {
-  final storage = new FlutterSecureStorage();
-  await storage.write(key: "pronotecas", value: cas);
-  if (cas == null) {
-    cas = "aucun";
-  }
+  await KVS.write(key: "pronotecas", value: cas ?? "");
+  cas ??= "aucun";
   switch (cas.toLowerCase()) {
     case ("aucun"):
-      {
-        return null;
-      }
+      return null;
     case ("atrium sud"):
-      {
-        return await atriumSud(username, password);
-      }
+      return await atriumSud(username, password);
     case ("ile de france"):
-      {
-        return await idf(username, password, url);
-      }
+      return await idf(username, password, url);
   }
 }
 
@@ -74,7 +65,6 @@ atriumSud(String username, String? password) async {
 
 idf(String username, String? password, String url) async {
   final client = HttpClient();
-// ignore: close_sinks
   final request = await client.getUrl(Uri.parse(url));
   request.headers.set(HttpHeaders.contentTypeHeader, "plain/text");
   request.followRedirects = false;

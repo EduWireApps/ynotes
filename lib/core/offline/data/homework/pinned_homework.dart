@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class PinnedHomeworkOffline {
   late Offline parent;
@@ -14,13 +14,13 @@ class PinnedHomeworkOffline {
       Map notParsedList = parent.pinnedHomeworkBox!.toMap();
       List<DateTime> parsedList = [];
       notParsedList.removeWhere((key, value) => value == false);
-      notParsedList.keys.forEach((element) {
+      for (var element in notParsedList.keys) {
         parsedList.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
-      });
+      }
       return parsedList;
     } catch (e) {
       CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NjA=");
       return [];
     }
   }
@@ -34,7 +34,7 @@ class PinnedHomeworkOffline {
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
       CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NjE=");
       return null;
     }
   }
@@ -45,7 +45,7 @@ class PinnedHomeworkOffline {
       await parent.pinnedHomeworkBox?.put(date, value);
     } catch (e) {
       CustomLogger.log("PINNED HOMEWORK", "An error occured during the setPinnedHomeworkDateProcess");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NjI=");
     }
   }
 }

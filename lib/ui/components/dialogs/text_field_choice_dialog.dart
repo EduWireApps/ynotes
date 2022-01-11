@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 
@@ -6,7 +5,7 @@ class TextFieldChoiceDialog extends StatefulWidget {
   final String unit;
   final String? defaultText;
 
-  const TextFieldChoiceDialog(this.unit, this.defaultText);
+  const TextFieldChoiceDialog(this.unit, this.defaultText, {Key? key}) : super(key: key);
   @override
   _TextFieldChoiceDialogState createState() => _TextFieldChoiceDialogState();
 }
@@ -22,20 +21,18 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
       elevation: 50,
       backgroundColor: Theme.of(context).primaryColor,
       content: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 500),
-        child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        child: SizedBox(
           height: screenSize.size.height / 10 * 1.2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                child: Text(
-                  "Choisir ${widget.unit}",
-                  style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
-                  textAlign: TextAlign.left,
-                ),
+              Text(
+                "Choisir ${widget.unit}",
+                style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
+                textAlign: TextAlign.left,
               ),
-              Container(
+              SizedBox(
                 width: screenSize.size.width / 5 * 4.3,
                 height: screenSize.size.height / 10 * 0.8,
                 child: TextFormField(
@@ -72,7 +69,7 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
           },
         ),
         TextButton(
-          child: Text(
+          child: const Text(
             "VALIDER",
             style: TextStyle(color: Colors.green),
             textScaleFactor: 1.0,

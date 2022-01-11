@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/pronote/pronote_api.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 
 class PronoteLessonsConverter {
@@ -35,7 +35,9 @@ class PronoteLessonsConverter {
     }
 
     //Sort of null aware
-    catch (e) {}
+    catch (e) {
+      CustomLogger.error(e, stackHint:"MTc=");
+    }
     List<String?> teachers = [];
     try {
       mapGet(lessonData, ["ListeContenus", "V"]).forEach((element) {
@@ -43,7 +45,9 @@ class PronoteLessonsConverter {
           teachers.add(element["L"]);
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e, stackHint:"MTg=");
+    }
 
     //Some attributes
     String codeMatiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]).hashCode.toString();
@@ -81,13 +85,13 @@ class PronoteLessonsConverter {
     List<Lesson> lessonsList = [];
     List<Map> lessonsListRaw = (mapGet(lessonsData, ['donneesSec', 'donnees', 'ListeCours']) ?? []).cast<Map>();
 
-    lessonsListRaw.forEach((lesson) {
+    for (var lesson in lessonsListRaw) {
       try {
         lessonsList.add(PronoteLessonsConverter.lesson(client, lesson));
       } catch (e) {
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"MTk=");
       }
-    });
+    }
     return lessonsList;
   }
 }

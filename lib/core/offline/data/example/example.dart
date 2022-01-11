@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class Example extends HiveObject {
   int id;
@@ -28,7 +28,7 @@ class ExampleOffline {
       return parent.exampleBox?.values.toList();
     } catch (e) {
       CustomLogger.log("EXAMPLE", "An error occured while returning example");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTE=");
       return null;
     }
   }
@@ -70,7 +70,7 @@ class ExampleOffline {
       await parent.exampleBox?.addAll(newExamples);
     } catch (e) {
       CustomLogger.log("EXAMPLE", "An error occured while updating examples");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTI=");
     }
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
@@ -7,6 +6,8 @@ import '../../../components/dialogs.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 
 class NewRecipientDialog extends StatefulWidget {
+  const NewRecipientDialog({Key? key}) : super(key: key);
+
   @override
   _NewRecipientDialogState createState() => _NewRecipientDialogState();
 }
@@ -25,8 +26,8 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
       contentPadding: EdgeInsets.symmetric(
           horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
       backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-      content: Container(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+      content: SizedBox(
         width: screenSize.size.width / 5 * 3.2,
         height: screenSize.size.height / 10 * 4.5,
         child: Column(
@@ -43,7 +44,7 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
                   CustomDialogs.showAnyDialog(context, "Entrez un nom, un prénom et un ID");
                 }
               },
-              child: Container(
+              child: SizedBox(
                 width: screenSize.size.width,
                 height: screenSize.size.height / 10 * 0.5,
                 child: Row(
@@ -83,14 +84,14 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
                   });
                 }),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            Container(
+            SizedBox(
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: nameController,
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
-                decoration: new InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
                   labelText: 'Prénom',
                   labelStyle: TextStyle(
                       fontFamily: "Asap",
@@ -100,14 +101,14 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               ),
             ),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            Container(
+            SizedBox(
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: surnameController,
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
-                decoration: new InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
                   labelText: 'Nom de famille',
                   labelStyle: TextStyle(
                       fontFamily: "Asap",
@@ -117,14 +118,14 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               ),
             ),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            Container(
+            SizedBox(
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: disciplineController,
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
-                decoration: new InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
                   labelText: 'Matière',
                   labelStyle: TextStyle(
                       fontFamily: "Asap",
@@ -134,14 +135,14 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               ),
             ),
             SizedBox(height: screenSize.size.height / 10 * 0.1),
-            Container(
+            SizedBox(
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: idController,
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
-                decoration: new InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
                   labelText: 'Identifiant unique',
                   labelStyle: TextStyle(
                       fontFamily: "Asap",

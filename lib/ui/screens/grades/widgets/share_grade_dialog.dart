@@ -12,9 +12,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 shareBox(Grade grade, Discipline discipline) {}
 
@@ -27,7 +28,7 @@ class ShareBox extends StatefulWidget {
 }
 
 class _ShareBoxState extends State<ShareBox> {
-  GlobalKey _globalKey = new GlobalKey();
+  final GlobalKey _globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +36,15 @@ class _ShareBoxState extends State<ShareBox> {
     screenSize = MediaQuery.of(context);
     return AlertDialog(
       backgroundColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      contentPadding: EdgeInsets.only(top: 10.0),
-      content: Container(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      contentPadding: const EdgeInsets.only(top: 10.0),
+      content: SizedBox(
         height: screenSize.size.height / 10 * 4,
         width: screenSize.size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text(
+            const Text(
               "Partager cette note",
               style: TextStyle(fontFamily: "Asap", color: Colors.white),
             ),
@@ -52,7 +53,7 @@ class _ShareBoxState extends State<ShareBox> {
               child: Stack(
                 children: [
                   Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(32.0)),
                       ),
                       child: Stack(
@@ -66,13 +67,13 @@ class _ShareBoxState extends State<ShareBox> {
                                       child: Center(
                                         child: Text(
                                           widget.grade.disciplineName!,
-                                          style: TextStyle(fontFamily: "Asap", color: Colors.black),
+                                          style: const TextStyle(fontFamily: "Asap", color: Colors.black),
                                         ),
                                       ),
                                       width: screenSize.size.width / 5 * 5,
                                       height: screenSize.size.height / 10 * 0.5,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
+                                          borderRadius: const BorderRadius.only(
                                               topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
                                           color: Color(snapshot.data ?? 0)));
                                 }),
@@ -80,7 +81,7 @@ class _ShareBoxState extends State<ShareBox> {
                               width: screenSize.size.width / 5 * 5,
                               height: screenSize.size.height / 10 * 2,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(15.0), bottomRight: Radius.circular(15.0)),
                                   color: Theme.of(context).primaryColor),
                               child: Column(
@@ -117,7 +118,7 @@ class _ShareBoxState extends State<ShareBox> {
                                     width: screenSize.size.width / 5 * 2,
                                     height: screenSize.size.height / 10 * 0.6,
                                     decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        borderRadius: const BorderRadius.all(Radius.circular(50)),
                                         color: Theme.of(context).primaryColorDark),
                                     child: Center(
                                       child: AutoSizeText.rich(
@@ -152,7 +153,7 @@ class _ShareBoxState extends State<ShareBox> {
                             bottom: screenSize.size.height / 10 * 0.1,
                             right: screenSize.size.width / 5 * 0.1,
                             child: Image(
-                              image: AssetImage('assets/images/icons/app/AppIcon.png'),
+                              image: const AssetImage('assets/images/icons/app/AppIcon.png'),
                               color: ThemeUtils.textColor(),
                               height: screenSize.size.height / 10 * 0.3,
                               width: screenSize.size.width / 5 * 0.4,
@@ -166,9 +167,11 @@ class _ShareBoxState extends State<ShareBox> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.5, null, () async {
-                  await _capturePng();
-                }, label: "Partager", icon: MdiIcons.share)
+                YButton(
+                    onPressed: () async => await _capturePng(),
+                    text: "Partager",
+                    icon: MdiIcons.share,
+                    color: YColor.secondary),
               ],
             )
           ],
@@ -184,7 +187,7 @@ class _ShareBoxState extends State<ShareBox> {
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       var pngBytes = byteData?.buffer.asUint8List();
       final directory = (await getTemporaryDirectory()).path;
-      File imgFile = new File('$directory/screenshot.png');
+      File imgFile = File('$directory/screenshot.png');
       if (pngBytes != null) imgFile.writeAsBytes(pngBytes);
 
       final RenderBox box = context.findRenderObject() as RenderBox;
@@ -194,7 +197,7 @@ class _ShareBoxState extends State<ShareBox> {
       return pngBytes;
     } catch (e) {
       CustomLogger.log("DIALOGS", "(Share grade) AN error occured while trying to screenshot");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NQ==");
     }
   }
 }

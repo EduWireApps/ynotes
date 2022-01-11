@@ -1,15 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:battery_optimization/battery_optimization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:optimize_battery/optimize_battery.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
 
 class PersistantNotificationConfigDialog extends StatefulWidget {
+  const PersistantNotificationConfigDialog({Key? key}) : super(key: key);
+
   @override
   _PersistantNotificationConfigDialogState createState() => _PersistantNotificationConfigDialogState();
 }
@@ -23,16 +27,16 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-      contentPadding: EdgeInsets.only(top: 0.0),
-      content: Container(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+      contentPadding: const EdgeInsets.only(top: 0.0),
+      content: SizedBox(
         height: screenSize.size.height / 10 * 7,
         width: screenSize.size.width / 5 * 4.7,
         child: Column(
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(15.0),
                   topRight: Radius.circular(15.0),
                 ),
@@ -49,11 +53,11 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           height: screenSize.size.height / 10 * 1.8,
                           fit: BoxFit.scaleDown,
                           image: AssetImage(
-                              'assets/images/persistantNotification/persisIllu${appSys.themeName == "sombre" ? "Dark" : "Light"}.png'))),
-                  Container(
+                              'assets/images/pageItems/persistantNotification/persisIllu${appSys.themeName == "sombre" ? "Dark" : "Light"}.png'))),
+                  SizedBox(
                     width: screenSize.size.width / 5 * 4.4,
                     child: AutoSizeText.rich(
-                      TextSpan(
+                      const TextSpan(
                         text: "Soyez averti des cours en cours grâce à une",
                         children: <TextSpan>[
                           TextSpan(
@@ -84,11 +88,10 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     await AppNotification.cancelOnGoingNotification();
                   }
                 } else {
-                  if (await (CustomDialogs.showAuthorizationsDialog(
-                              context,
-                              "la configuration d'optimisation de batterie",
-                              "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                          as Future<bool?>) ??
+                  if (await CustomDialogs.showAuthorizationsDialog(
+                          context,
+                          "la configuration d'optimisation de batterie",
+                          "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                       false) {
                     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                       appSys.settings.user.agendaPage.agendaOnGoingNotification = value;
@@ -108,7 +111,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                 color: ThemeUtils.textColor(),
               ),
             ),
-            Divider(
+            const Divider(
               thickness: 1,
             ),
             SwitchListTile(
@@ -117,8 +120,24 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
+                final status = await Permission.accessNotificationPolicy.status;
+                if (!status.isGranted) {
+                  final res = await Permission.accessNotificationPolicy.request();
+                  UIUtils.setSystemUIOverlayStyle();
+                  if (!res.isGranted) {
+                    await YDialogs.showInfo(
+                        context,
+                        YInfoDialog(
+                          title: "Oups !",
+                          body: Text("Pour utiliser cette fonctionnalité, tu dois accorder cette permission à yNotes.",
+                              style: theme.texts.body1),
+                          confirmLabel: "OK",
+                        ));
+                    return;
+                  }
+                }
                 appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled = value;
-                appSys.saveSettings();
+                await appSys.saveSettings();
                 setState(() {});
               },
               secondary: Icon(
@@ -151,13 +170,13 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
               ),
               onTap: () async {
-                if (!((await BatteryOptimization.isIgnoringBatteryOptimizations()) ?? false) &&
+                if (!((await OptimizeBattery.isIgnoringBatteryOptimizations())) &&
                     await (CustomDialogs.showAuthorizationsDialog(
                             context,
                             "la configuration d'optimisation de batterie",
                             "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
                         as Future<bool>)) {
-                  await BatteryOptimization.openBatteryOptimizationSettings();
+                  await OptimizeBattery.stopOptimizingBatteryUsage();
                 }
                 await getAuth();
               },
@@ -173,9 +192,9 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
   }
 
   getAuth() async {
-    await BatteryOptimization.isIgnoringBatteryOptimizations().then((onValue) {
+    await OptimizeBattery.isIgnoringBatteryOptimizations().then((onValue) {
       setState(() {
-        if (onValue!) {
+        if (onValue) {
           setState(() {
             perm = "";
           });
@@ -188,6 +207,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
     });
   }
 
+  @override
   void initState() {
     super.initState();
     getAuth();

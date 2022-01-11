@@ -3,20 +3,20 @@ import 'dart:io';
 
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hive/hive.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'file_utils.dart';
-import 'logging_utils.dart';
 
 class HiveBackUpManager {
   Box? box;
   final String? subBoxName;
-  final dataToImport;
+  final dynamic dataToImport;
   HiveBackUpManager(this.box, {this.subBoxName, this.dataToImport});
   export() {
     try {
       CustomLogger.log("HIVE EXP. IMP. UTILS", "Exporting data");
       //getting map
-      Map map = this.box!.toMap();
-      var data;
+      Map map = box!.toMap();
+      dynamic data;
       if (subBoxName != null) {
         data = map[subBoxName];
         CustomLogger.log("HIVE EXP. IMP. UTILS", "Box data runtime type: ${data.runtimeType}");
@@ -33,20 +33,20 @@ class HiveBackUpManager {
       return encoded;
     } catch (e) {
       CustomLogger.log("HIVE EXP. IMP. UTILS", "An error occured while exporting data");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"MjQ=");
       throw "Failed to export a box :" + e.toString();
     }
   }
 
   import() async {
-    assert(this.dataToImport != null, "Data to import can't be null");
+    assert(dataToImport != null, "Data to import can't be null");
     //Old values
-    Map map = Map();
-    if (this.box != null) {
-      map = this.box!.toMap();
+    Map map = {};
+    if (box != null) {
+      map = box!.toMap();
 
       //New values (back up values)
-      var data = this.dataToImport;
+      var data = dataToImport;
 
       if (subBoxName != null) {
         if (data.runtimeType.toString().contains("List")) {
@@ -64,8 +64,8 @@ class HiveBackUpManager {
             data = finalData;
           }
         }
-        await this.box!.delete(subBoxName);
-        await this.box!.put(subBoxName, data);
+        await box!.delete(subBoxName);
+        await box!.put(subBoxName, data);
       } else {
         //Concatenate
         Map finalMap = {
@@ -73,9 +73,9 @@ class HiveBackUpManager {
           ...data,
         };
 
-        await this.box!.clear();
+        await box!.clear();
 
-        await this.box!.putAll(finalMap);
+        await box!.putAll(finalMap);
       }
     }
     CustomLogger.log("HIVE EXP. IMP. UTILS", "Imported data");
@@ -93,7 +93,7 @@ class HiveBackUpManager {
   }
 
   getBackUpFileData() async {
-    final params = OpenFileDialogParams(
+    const params = OpenFileDialogParams(
       dialogType: OpenFileDialogType.document,
     );
     final filePath = await (FlutterFileDialog.pickFile(params: params) as Future<String>);

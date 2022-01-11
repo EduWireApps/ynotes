@@ -53,7 +53,7 @@ class _ImpactState extends State<ImpactStat> {
                 children: [
                   Text(
                     getText(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: "Asap",
                       fontWeight: FontWeight.w600,
                     ),

@@ -1,16 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
-// ignore: must_be_immutable
 class MultipleChoicesDialog extends StatefulWidget {
-  List choices;
-  List<int> initialSelection;
-  bool singleChoice;
-  String? label;
-  MultipleChoicesDialog(this.choices, this.initialSelection, {this.singleChoice = true, this.label});
+  final List choices;
+  final List<int> initialSelection;
+  final bool singleChoice;
+  final String? label;
+  const MultipleChoicesDialog(this.choices, this.initialSelection, {Key? key, this.singleChoice = true, this.label})
+      : super(key: key);
   @override
   _MultipleChoicesDialogState createState() => _MultipleChoicesDialogState();
 }
@@ -23,10 +24,10 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
     screenSize = MediaQuery.of(context);
     return AlertDialog(
         backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-        contentPadding: EdgeInsets.only(top: 0.0),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        contentPadding: const EdgeInsets.only(top: 0.0),
         content: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Container(
             padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
             width: screenSize.size.width / 5 * 4,
@@ -35,7 +36,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (this.widget.label != null)
+                if (widget.label != null)
                   Container(
                     padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
                     child: Text(
@@ -44,16 +45,16 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                       style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     ),
                   ),
-                if (this.widget.label != null)
+                if (widget.label != null)
                   Divider(
                     color: ThemeUtils.textColor(),
                   ),
-                Container(
+                SizedBox(
                   height: screenSize.size.height / 10 * 3.5,
                   width: screenSize.size.width / 5 * 4,
                   child: ShaderMask(
                     shaderCallback: (Rect rect) {
-                      return LinearGradient(
+                      return const LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
@@ -93,9 +94,9 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                               child: Row(
                                 children: <Widget>[
                                   Checkbox(
-                                    side: BorderSide(width: 1, color: Colors.white),
+                                    side: const BorderSide(width: 1, color: Colors.white),
                                     fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
-                                    shape: CircleBorder(),
+                                    shape: const CircleBorder(),
                                     value: indexsSelected.contains(index),
                                     onChanged: (value) {
                                       if (widget.singleChoice) {
@@ -118,7 +119,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                                   ),
                                   Expanded(
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 5),
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
                                       child: AutoSizeText(
                                         widget.choices[index].toString(),
                                         style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
@@ -139,7 +140,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                     Navigator.of(context).pop(indexsSelected);
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     width: screenSize.size.width / 5 * 4,
                     height: screenSize.size.height / 10 * 0.6,
                     child: Row(
@@ -147,10 +148,19 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Container(margin: EdgeInsets.only(top: 5), child: buildCancelButton()),
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 5),
+                              child: YButton(
+                                  onPressed: () => Navigator.pop(context), text: "Annuler", color: YColor.warning)),
                         ),
+                        YHorizontalSpacer(YScale.s2),
                         Expanded(
-                          child: Container(margin: EdgeInsets.only(top: 5), child: buildValidateButton()),
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 5),
+                              child: YButton(
+                                  onPressed: () => Navigator.pop(context, indexsSelected),
+                                  text: "Valider",
+                                  color: YColor.success)),
                         ),
                       ],
                     ),
@@ -160,18 +170,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
             ),
           ),
         ));
-  }
-
-  buildCancelButton() {
-    return CustomButtons.materialButton(context, null, 45, () {
-      Navigator.of(context).pop();
-    }, label: "Annuler", backgroundColor: Colors.orange.shade300);
-  }
-
-  buildValidateButton() {
-    return CustomButtons.materialButton(context, null, 45, () {
-      Navigator.of(context).pop(indexsSelected);
-    }, label: "Valider", backgroundColor: Colors.green.shade300);
   }
 
   @override

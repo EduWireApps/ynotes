@@ -1,6 +1,6 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/useful_methods.dart';
 
 class DisciplinesOffline {
@@ -14,7 +14,7 @@ class DisciplinesOffline {
       return await parent.offlineBox?.get("disciplines").cast<Discipline>();
     } catch (e) {
       CustomLogger.log("DISCIPLINES", "An error occured while returning disciplines");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTc=");
       return null;
     }
   }
@@ -36,7 +36,7 @@ class DisciplinesOffline {
         listPeriods.sort((a, b) => a.name!.compareTo(b.name!));
       } catch (e) {
         CustomLogger.log("DISCIPLINES", "An error occured while sorting disciplines");
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"NTg=");
       }
       return listPeriods;
     } catch (e) {
@@ -52,7 +52,7 @@ class DisciplinesOffline {
       await parent.offlineBox?.put("disciplines", newData);
     } catch (e) {
       CustomLogger.log("DISCIPLINES", "An error occured while updating disciplines");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTk=");
     }
   }
 }

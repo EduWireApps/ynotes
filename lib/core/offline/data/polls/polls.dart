@@ -1,6 +1,6 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class PollsOffline {
   late Offline parent;
@@ -12,7 +12,7 @@ class PollsOffline {
       return await parent.offlineBox?.get("polls")?.cast<PollInfo>();
     } catch (e) {
       CustomLogger.log("POLLS", "An error occured while returning polls");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTM=");
       return null;
     }
   }
@@ -25,7 +25,7 @@ class PollsOffline {
       await parent.offlineBox?.put("polls", newData);
     } catch (e) {
       CustomLogger.log("POLLS", "An error occured while updating polls");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTQ=");
     }
   }
 }

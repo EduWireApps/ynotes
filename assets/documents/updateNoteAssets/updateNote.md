@@ -1,26 +1,64 @@
-## Mise à jour 0.12
-Cette mise à jour est assez riche en nouvelles fonctionnalités et en correctifs. C'est probablement la dernière série de mises à jour avant la 1.0 : l'application se stabilise donc progressivement et nous espérons que ses fonctionnalités répondent à vos principales attentes.
+# 0.14.7
 
-# Améliorations et nouvelles fonctionnalités
-Vous découvrirez dans cette nouvelle version :
-- Un **nouveau look pour la page des notes** : revue pour vous convenir au maximum, nous vous laissons découvrir le nouveau look de cette page et ses améliorations
-- Une **nouvelle page pour les devoirs** :
-  - Nous avons entièrement revu la **structure de la page de devoirs**, une nouvelle page s'ouvrira désormais pour vous permettre d'afficher les détails des devoirs ⭐
-  - Des tas de nouvelles fonctionnalités relatives aux **détails des devoirs**. Envie d'afficher la consigne du prochain DM de français en police 35 ? Pas de problème. Le prof de mathématiques a mis des couleurs horribles sur son devoir qui vous empêchent de bien le visualiser ? C'est prévu aussi 😏 Cliquez juste sur le petit oeil en haut à droite et amusez vous !
-  - Ajoutez des **devoirs personnalisés** : ça nous paraît clair 😎
-  - Désormais, **épingler des devoirs** est bien plus simple, une page dédiée sert à visualiser uniquement vos devoirs épinglés 📌
-  - **Filtrez vos devoirs**, vous pouvez même choisir **une seule ou plusieurs matières** à afficher
-- Des améliorations pour **la page des mails (EcoleDirecte)** :
-  - Une **barre de recherche** pour accéder rapidement à un mail
-  - Les mails peuvent désormais être lus **hors ligne**
-- **Signalez un problème** en **secouant votre téléphone** *pas trop quand même* 🐛
-- Nous avons **retiré la possibilité d'ajouter des évènements personnalisés sur l'agenda ou de modifier ceux existants** 🗑️: personne ne s'en servait, et cela rendait la structure trop compliquée pour nous. Vous pouvez cependant toujours ajouter des rappels. 
+Toute l'équipe vous souhaite de très joyeuses fêtes !
+# 0.14.6
+_On voulait faire un tour de magie. Mais vous n'avez pas trop apprécié._
+- Correction du bug de disparition des notes:
+    - Les utilisateurs EcoleDirecte devraient à nouveau être en mesure de voir leurs notes
+    - Notez que les coefficients "0" ont été remplacés par des coefficients 1
+- Correctif temporaire pour les notifications de nouvelles notes
+    - Nous avons fait quelques modifications qui devraient améliorer les notifications de nouvelles notes
+      - Sur Android : n'hésitez pas à utiliser l'outil "Réparer" si vous ne voyez toujours pas ces notifications
+      - Sur iOS : rien de nouveau, les notifications s'afficheront si vous utilisez régulièrement l'application
+    - La dernière note devrait bien s'afficher
+- Diverses corrections d'affichage pour l'écran d'accueil
+# 0.14.5
 
+- Le bug mentionné en 0.14.4 a vraiment été corrigé cette fois ;)
 
-# Correctifs 
-- Autoformater pour l'adresse URL Pronote, évite certains problèmes de connexion récurrents
-- Ajout d'un delai de sécurité pour les rafraichissements en arrière plan
-- Les utilisateurs ED peuvent désormais correctement lire les mails envoyés
-- Les utilisateurs ED peuvent désormais correctement afficher les destinataires pour envoyer un mail
-- Correctifs pour les téléchargements de pièces jointes Pronote et EcoleDirecte
-- Correctifs pour la page de tickets de vie scolaire (qui dépassait au scroll et les tickets étaient dans le mauvais sens)
+# 0.14.4
+
+- Correction d'un bug rendant la page d'accueil inutilisable introduit en 0.14.3
+
+# 0.14.3
+
+- Corrections mineures
+- Sur la page d'accueil, lorsque le compte à rebours n'est pas actif, des petits messages amusants (_on l'espère_) sont affichés à la place
+
+# 0.14.2
+
+## Accueil
+
+- Sur le compte à rebours, le texte est adapté si la salle n'est pas renseignée
+- Le graphique ne devrait plus être remplacé par un rectangle gris moche
+- La bonne semaine est désormais affichée dans la section des devoirs
+- Une interface dédiée est affichée lorsqu'il n'y a pas de données (Aucun devoir pour la semaine en cours par exemple)
+
+## Divers
+
+- La notification de nouvelle note a été desactivée car dysfonctionnelle. Elle sera corrigée dans une mise à jour ultérieure (prévue pour la 0.16 début 2022 pour le moment)
+- Nous essayons de régler les problèmes liés aux logs corrompus
+- La page des notes devrait fonctionner correctement désormais (problèmes liés aux compétences)
+
+# 0.14.1
+
+- Correction d'un bug sur la page d'accueil de Pronote qui la rendait complètement inutilisable
+- Correction (_fingers crossed_) des problèmes liés au logs corrompus
+
+# Mise à jour 0.14.0
+
+Enfin une nouvelle mise à jour avec plein de nouveautés !
+
+## Pages refaites
+
+4 pages ont été retravaillées :
+
+- Le **résumé**, renommé en **accueil**, fait peau neuve ! Tu peux enfin voir d'un coup d'oeil dans **quelle salle** tu as cours et dans **combien de temps**. Les statistiques ont été revues afin de les rendre **plus pertinentes**. Tu peux toujours voir quelles sont les dernières notes et nous avons remis les devoirs, pour la semaine en cours cette fois-ci
+- La **vie scolaire** (Ecole Directe uniquement), sans ajout particulier
+- Tous les **paramètres** on été refaits afin de mieux s'y retrouver
+- La vilaine méchante page d'**erreur**. On espère que tu ne la croiseras jamais (brrr) mais si ça devait malheureusement arriver (horreur !) envoie nous un petit message pour nous dire que ça ne va pas du tout (on comprendra).
+
+## Divers
+
+- Plusieurs problèmes en rapport avec les paramètres de l'**agenda** et la **notification constante** ont été corrigés
+- On utilise un système différent pour les polices d'écriture. C'est possible que ce soit un peu bizarre par endroit mais ce sera corrigé au fil des prochaines mises à jour

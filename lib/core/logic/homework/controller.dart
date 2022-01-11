@@ -7,19 +7,20 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/data/disciplines_filter.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
   List<Homework>? _old = [];
   List _hwCompletion = [100, 0, 0];
   List<Homework> unloadedHW = [];
-  homeworkFilter currentFilter = homeworkFilter.ALL;
+  homeworkFilter currentFilter = homeworkFilter.all;
   API? _api;
   bool isFetching = false;
   int examsCount = 0;
   int tomorrowCount = 0;
   int weekCount = 0;
+  int doneThisWeek = 0;
 
   HomeworkController(API? api) {
     _api = api;
@@ -36,16 +37,16 @@ class HomeworkController extends ChangeNotifier {
 
   List<Homework>? get pinned => _old?.where((element) => ((element.pinned ?? false))).toList();
   filterHW(List<Homework>? homeworkToFilter, showAll) {
-    if (showAll == true || currentFilter == homeworkFilter.ALL) {
+    if (showAll == true || currentFilter == homeworkFilter.all) {
       return homeworkToFilter;
     }
     List<Homework> toReturn = [];
-    (homeworkToFilter ?? []).forEach((f) {
+    for (var f in (homeworkToFilter ?? [])) {
       switch (currentFilter) {
-        case homeworkFilter.ALL:
+        case homeworkFilter.all:
           toReturn.add(f);
           break;
-        case homeworkFilter.LITERARY:
+        case homeworkFilter.literacy:
           if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["literary"]["ED"];
             if (codeMatiere.any((test) {
@@ -72,7 +73,7 @@ class HomeworkController extends ChangeNotifier {
           }
 
           break;
-        case homeworkFilter.SCIENCES:
+        case homeworkFilter.sciences:
           if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["sciences"]["ED"];
             if (codeMatiere.any((test) {
@@ -98,10 +99,10 @@ class HomeworkController extends ChangeNotifier {
             }
           }
           break;
-        case homeworkFilter.SPECIALTIES:
+        case homeworkFilter.specialties:
           break;
 
-        case homeworkFilter.CUSTOM:
+        case homeworkFilter.custom:
           List codeMatiere = jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? [];
           appSys.saveSettings();
           if (codeMatiere.any((test) {
@@ -115,7 +116,7 @@ class HomeworkController extends ChangeNotifier {
           }
           break;
       }
-    });
+    }
     return toReturn;
   }
 
@@ -161,7 +162,9 @@ class HomeworkController extends ChangeNotifier {
         await _api!.getHomeworkFor(hw.date, forceReload: true);
         try {
           unloadedHW.remove(hw);
-        } catch (e) {}
+        } catch (e) {
+          CustomLogger.error(e, stackHint:"NDA=");
+        }
         await refresh(refreshFromOffline: true);
 
         notifyListeners();
@@ -204,7 +207,9 @@ class HomeworkController extends ChangeNotifier {
         //Add element at the end of the task
         try {
           unloadedHW.add(element);
-        } catch (e) {}
+        } catch (e) {
+          CustomLogger.error(e, stackHint:"NDE=");
+        }
       }
     });
     CustomLogger.log("HOMEWORK", unloadedHW.toString());
@@ -214,8 +219,9 @@ class HomeworkController extends ChangeNotifier {
   void prepareTomorrowAndWeekCount() {
     List<Homework> hwList = (getHomework ?? []);
     tomorrowCount = hwList.where((element) => CalendarTime(element.date).isTomorrow).length;
-    weekCount = hwList.where((element) => CalendarTime(element.date).isNextWeek).length;
-
+    List<Homework> _weekHw = hwList.where((element) => CalendarTime(element.date).isNextWeek).toList();
+    weekCount = _weekHw.length;
+    doneThisWeek = _weekHw.where((w) => w.done == true).length;
     notifyListeners();
   }
 
@@ -246,8 +252,10 @@ class HomeworkController extends ChangeNotifier {
         unloadedHW.insert(0, hw);
         notifyListeners();
       }
-    } catch (e) {}
+    } catch (e) {
+      CustomLogger.error(e, stackHint:"NDI=");
+    }
   }
 }
 
-enum homeworkFilter { CUSTOM, SPECIALTIES, LITERARY, SCIENCES, ALL }
+enum homeworkFilter { custom, specialties, literacy, sciences, all }

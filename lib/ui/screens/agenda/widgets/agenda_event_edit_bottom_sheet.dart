@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -7,12 +6,14 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 ///Agenda event editor, has to be called with a `buildContext`, and the boolean `isLesson` is not optionnal to avoid any confusions.
 ///`customEvent` and `reminder` are optionals (for editing existing events), but can't both be set.
@@ -22,7 +23,7 @@ Future agendaEventEdit(context, isCustomEvent,
     {AgendaEvent? customEvent, AgendaReminder? reminder, String? lessonID, DateTime? defaultDate}) async {
   return showModalBottomSheet(
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Colors.transparent,
@@ -54,7 +55,9 @@ class AgendaEventEditLayout extends StatefulWidget {
   //Custom event stuff
   AgendaEvent? customEvent;
 
-  AgendaEventEditLayout(this.isCustomEvent, {this.reminder, this.lessonID, this.customEvent, this.defaultDate});
+  AgendaEventEditLayout(this.isCustomEvent,
+      {Key? key, this.reminder, this.lessonID, this.customEvent, this.defaultDate})
+      : super(key: key);
 
   @override
   _AgendaEventEditLayoutState createState() => _AgendaEventEditLayoutState();
@@ -95,11 +98,11 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
       alignment: WrapAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
               ),
               padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
               child: SingleChildScrollView(
@@ -110,14 +113,14 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                       child: Column(
                         children: [
                           SizedBox(height: screenSize.size.height / 10 * 0.2),
-                          DragHandle(),
+                          const DragHandle(),
                           SizedBox(height: screenSize.size.height / 10 * 0.2),
                           Container(
                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                             child: TextField(
                               controller: titleController,
                               style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 25),
-                              decoration: new InputDecoration.collapsed(
+                              decoration: InputDecoration.collapsed(
                                   hintText: 'Ajouter un titre',
                                   hintStyle:
                                       TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8))),
@@ -133,29 +136,25 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                 });
                               }
                             },
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  AnimatedContainer(
-                                    duration: Duration(milliseconds: 500),
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: tagColor,
-                                    ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 500),
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: tagColor,
                                   ),
-                                  SizedBox(width: screenSize.size.width / 5 * 0.1),
-                                  Text(
-                                    'Choisir une couleur',
-                                    style: TextStyle(
-                                        fontFamily: "Asap",
-                                        color: ThemeUtils.textColor().withOpacity(0.8),
-                                        fontSize: 25),
-                                  )
-                                ],
-                              ),
+                                ),
+                                SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                Text(
+                                  'Choisir une couleur',
+                                  style: TextStyle(
+                                      fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: 25),
+                                )
+                              ],
                             ),
                           ),
                           Divider(height: screenSize.size.height / 10 * 0.4),
@@ -209,7 +208,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                                   start = DateTime(start!.year, start!.month, start!.day, tempDate.hour,
                                                       tempDate.minute);
                                                   if (start!.isAfter(end!)) {
-                                                    end = start!.add(Duration(minutes: 30));
+                                                    end = start!.add(const Duration(minutes: 30));
                                                   }
                                                 });
                                               }
@@ -234,7 +233,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                             ),
                                           ),
                                         ),
-                                        Divider(),
+                                        const Divider(),
                                         Material(
                                           color: Colors.transparent,
                                           child: InkWell(
@@ -246,7 +245,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                                   end = DateTime(
                                                       end!.year, end!.month, end!.day, tempDate.hour, tempDate.minute);
                                                   if (end!.isBefore(start!)) {
-                                                    start = end!.subtract(Duration(minutes: 30));
+                                                    start = end!.subtract(const Duration(minutes: 30));
                                                   }
                                                 });
                                               }
@@ -311,7 +310,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                               ),
                             ),
                           ),
-                          Divider(),
+                          const Divider(),
                           GestureDetector(
                             onTap: () async {
                               var choice = await CustomDialogs.showMultipleChoicesDialog(
@@ -354,7 +353,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                               keyboardType: TextInputType.multiline,
                               controller: descriptionController,
                               maxLines: null,
-                              decoration: new InputDecoration.collapsed(
+                              decoration: InputDecoration.collapsed(
                                   hintText: 'Description',
                                   hintStyle:
                                       TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8))),
@@ -364,37 +363,30 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                                Navigator.pop(context);
-                              },
-                                  label: "Annuler",
-                                  backgroundColor: Colors.grey,
-                                  padding: EdgeInsets.all(5),
-                                  borderRadius: BorderRadius.circular(8)),
-                              if (this.widget.customEvent != null || this.widget.reminder != null)
-                                CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5,
-                                    () async {
-                                  deleteOrReset();
-                                },
-                                    label: (this.widget.isCustomEvent && this.widget.customEvent!.isLesson!)
+                              YButton(
+                                onPressed: () => Navigator.pop(context),
+                                text: "Annuler",
+                                color: YColor.secondary,
+                                invertColors: true,
+                              ),
+                              YHorizontalSpacer(YScale.s2),
+                              if (widget.customEvent != null || widget.reminder != null)
+                                YButton(
+                                    onPressed: () => deleteOrReset(),
+                                    text: (widget.isCustomEvent && widget.customEvent!.isLesson!)
                                         ? "Réinitialiser"
                                         : "Supprimer",
-                                    backgroundColor: Colors.orange,
-                                    padding: EdgeInsets.all(5),
-                                    borderRadius: BorderRadius.circular(8)),
-                              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                                createEvent();
-                              },
-                                  label: "J'ai fini",
-                                  backgroundColor:
-                                      !(widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!))
-                                          ? Colors.green
-                                          : Theme.of(context).primaryColorDark,
-                                  padding: EdgeInsets.all(5),
-                                  borderRadius: BorderRadius.circular(8)),
+                                    color: YColor.warning),
+                              YHorizontalSpacer(YScale.s2),
+                              YButton(
+                                  onPressed: () => createEvent(),
+                                  text: "Valider",
+                                  color: !(widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!))
+                                      ? YColor.success
+                                      : YColor.secondary),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           )
                         ],
@@ -436,15 +428,15 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
   }
 
   void deleteOrReset() async {
-    if (this.widget.customEvent != null) {
-      if (this.widget.customEvent!.recurrenceScheme != null && this.widget.customEvent!.recurrenceScheme != "0") {
-        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
-        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, this.widget.customEvent!.recurrenceScheme);
+    if (widget.customEvent != null) {
+      if (widget.customEvent!.recurrenceScheme != null && widget.customEvent!.recurrenceScheme != "0") {
+        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, await getWeek(widget.customEvent!.start!));
+        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, widget.customEvent!.recurrenceScheme);
       } else {
-        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
+        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, await getWeek(widget.customEvent!.start!));
       }
     }
-    if (this.widget.reminder != null) {
+    if (widget.reminder != null) {
       RemindersOffline(appSys.offline).remove(id);
     }
     Navigator.of(context).pop("removed");
@@ -457,52 +449,50 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
       CustomLogger.log("BOTTOM SHEET", "(Agenda event edit) Default data: ${widget.defaultDate}");
       setState(() {
         widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
-        start = widget.defaultDate!.add(Duration(hours: 8));
+        start = widget.defaultDate!.add(const Duration(hours: 8));
       });
     }
     if (end == null && widget.isCustomEvent) {
       setState(() {
         widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
-        end = widget.defaultDate!.add(Duration(hours: 9));
+        end = widget.defaultDate!.add(const Duration(hours: 9));
       });
     }
     settingExistingReminder();
     settingExistingCustomEvent();
     if (widget.isCustomEvent && id == null) {
-      // Create uuid object
-      var uuid = Uuid();
-      id = uuid.v1();
+      id = const Uuid().v1();
     }
   }
 
   void settingExistingCustomEvent() {
-    if (this.widget.customEvent != null) {
-      title = this.widget.customEvent?.name;
+    if (widget.customEvent != null) {
+      title = widget.customEvent?.name;
       titleController.text = title ?? "";
-      description = this.widget.customEvent?.description;
+      description = widget.customEvent?.description;
       descriptionController.text = description ?? "";
-      alarm = this.widget.customEvent?.alarm ?? AlarmType.none;
-      id = this.widget.customEvent?.id;
-      tagColor = this.widget.customEvent?.realColor ?? Colors.deepOrange;
-      wholeDay = this.widget.customEvent?.wholeDay;
-      start = this.widget.customEvent?.start;
-      end = this.widget.customEvent?.end;
-      lesson = this.widget.customEvent?.lesson;
-      location = this.widget.customEvent?.location;
-      canceled = this.widget.customEvent?.canceled;
-      recurringScheme = this.widget.customEvent?.recurrenceScheme;
+      alarm = widget.customEvent?.alarm ?? AlarmType.none;
+      id = widget.customEvent?.id;
+      tagColor = widget.customEvent?.realColor ?? Colors.deepOrange;
+      wholeDay = widget.customEvent?.wholeDay;
+      start = widget.customEvent?.start;
+      end = widget.customEvent?.end;
+      lesson = widget.customEvent?.lesson;
+      location = widget.customEvent?.location;
+      canceled = widget.customEvent?.canceled;
+      recurringScheme = widget.customEvent?.recurrenceScheme;
     }
   }
 
   void settingExistingReminder() {
-    if (this.widget.reminder != null) {
-      title = this.widget.reminder?.name;
+    if (widget.reminder != null) {
+      title = widget.reminder?.name;
       titleController.text = title!;
-      description = this.widget.reminder?.description;
+      description = widget.reminder?.description;
       descriptionController.text = description!;
-      alarm = this.widget.reminder?.alarm ?? AlarmType.none;
-      id = this.widget.reminder?.id;
-      tagColor = this.widget.reminder?.realTagColor ?? Colors.deepOrange;
+      alarm = widget.reminder?.alarm ?? AlarmType.none;
+      id = widget.reminder?.id;
+      tagColor = widget.reminder?.realTagColor ?? Colors.deepOrange;
     }
   }
 }

@@ -71,12 +71,6 @@ class Discipline {
       this.subdisciplineNames,
       this.minClassGeneralAverage});
 
-  
-  
-
-  @override
-  int get hashCode => super.hashCode;
-
   set setcolor(Color newcolor) {
     color = newcolor.value;
   }
@@ -90,6 +84,7 @@ class Discipline {
 
   //overrides == operator to avoid issues in selectors
   @override
+  // ignore: hash_and_equals
   bool operator ==(Object other) =>
       other is Discipline &&
       other.disciplineCode == disciplineCode &&
@@ -102,16 +97,22 @@ class Discipline {
     double average = 0.0;
     double counter = 0;
 
-    gradesList!.forEach((Grade grade) {
-      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.periodName) {
+    for (var grade in gradesList!) {
+      if (!grade.notSignificant! &&
+          (!grade.letters! || grade.countAsZero!) &&
+          grade.periodName == periodName) {
         counter += double.parse(grade.weight!);
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
-        average += double.parse(gradeStringValue.replaceAll(',', '.')) *
-            20 /
-            double.parse(grade.scale!.replaceAll(',', '.')) *
-            double.parse(grade.weight!.replaceAll(',', '.'));
+        final double? value =
+            double.tryParse(gradeStringValue.replaceAll(',', '.'));
+        if (value != null) {
+          average += value *
+              20 /
+              double.parse(grade.scale!.replaceAll(',', '.')) *
+              double.parse(grade.weight!.replaceAll(',', '.'));
+        }
       }
-    });
+    }
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
@@ -174,44 +175,48 @@ class Grade {
   final bool? simulated;
   @HiveField(20)
   final bool? countAsZero;
-  Grade({
-    this.max,
-    this.min,
-    this.testName,
-    this.periodCode,
-    this.disciplineCode,
-    this.subdisciplineCode,
-    this.disciplineName,
-    this.letters,
-    this.value,
-    this.weight,
-    this.scale,
-    this.classAverage,
-    this.testType,
-    this.date,
-    this.entryDate,
-    this.notSignificant,
-    this.periodName,
-    this.simulated = false,
-    this.countAsZero = false,
-  });
 
-  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String? nomPeriode) {
+  @HiveField(21)
+  final bool optional;
+  Grade(
+      {this.max,
+      this.min,
+      this.testName,
+      this.periodCode,
+      this.disciplineCode,
+      this.subdisciplineCode,
+      this.disciplineName,
+      this.letters,
+      this.value,
+      this.weight,
+      this.scale,
+      this.classAverage,
+      this.testType,
+      this.date,
+      this.entryDate,
+      this.notSignificant,
+      this.periodName,
+      this.simulated = false,
+      this.countAsZero = false,
+      this.optional = false});
+
+  factory Grade.fromEcoleDirecteJson(
+      Map<String, dynamic> json, String? nomPeriode) {
     return Grade(
-      min: json["minClasse"],
-      max: json["maxClasse"],
-      testName: json['devoir'],
-      periodCode: json['codePeriode'],
+      min: json["minClasse"]?.toString(),
+      max: json["maxClasse"]?.toString(),
+      testName: json['devoir']?.toString(),
+      periodCode: json['codePeriode']?.toString(),
       periodName: nomPeriode,
-      disciplineCode: json['codeMatiere'],
-      subdisciplineCode: json['codeSousMatiere'],
-      disciplineName: json['libelleMatiere'],
+      disciplineCode: json['codeMatiere']?.toString(),
+      subdisciplineCode: json['codeSousMatiere']?.toString(),
+      disciplineName: json['libelleMatiere']?.toString(),
       letters: json['enLettre'],
-      value: json['valeur'],
-      weight: json['coef'],
-      scale: json['noteSur'],
-      classAverage: json['moyenneClasse'],
-      testType: json['typeDevoir'],
+      value: json['valeur']?.toString(),
+      weight: (json['coef'] == 0) ? "1" : json['coef']?.toString(),
+      scale: json['noteSur']?.toString(),
+      classAverage: json['moyenneClasse']?.toString(),
+      testType: json['typeDevoir']?.toString(),
       date: DateTime.parse(json['date']),
       entryDate: DateTime.parse(json['dateSaisie']),
       notSignificant: json['nonSignificatif'],
@@ -221,10 +226,9 @@ class Grade {
   }
   //overrides == operator to avoid issues in selectors
   //We use the most operator possible to avoid duplicates
-  @override
-  int get hashCode => super.hashCode;
 
   @override
+  // ignore: hash_and_equals
   bool operator ==(Object other) =>
       other is Grade &&
       other.disciplineName == disciplineName &&
@@ -236,6 +240,8 @@ class Grade {
       other.testName == testName &&
       other.simulated == simulated &&
       other.scale == scale;
+
+  Iterable<Grade> average(List<Grade> eleemnt) => eleemnt;
 }
 
 class Period {

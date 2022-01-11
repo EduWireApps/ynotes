@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
@@ -12,17 +13,17 @@ import 'package:ynotes/useful_methods.dart';
 class BackgroundService {
 //Background task when when app is closed
   static Future<void> backgroundFetchHeadlessTask(String a, {bool headless = false}) async {
+    assert(Platform.isIOS || Platform.isAndroid);
     //await LocalNotification.showDebugNotification();
     try {
       //Ensure that grades notification are enabled and battery saver disabled
       bool gradesFetchEnabled =
           ((appSys.settings.user.global.notificationNewGrade && !appSys.settings.user.global.batterySaver));
-      appSys.saveSettings();
+
       //Ensure that mails notification are enabled, battery saver disabled and parser is EcoleDirecte
       bool mailsFetchEnabled = (appSys.settings.user.global.notificationNewMail &&
           !appSys.settings.user.global.batterySaver &&
           appSys.settings.system.chosenParser == 0);
-      appSys.saveSettings();
 
       CustomLogger.log("BACKGROUND", "Starting the headless closed bakground task");
 
@@ -32,31 +33,31 @@ class BackgroundService {
         if (headless) {
           CustomLogger.log("BACKGROUND", "headless");
           appSys = ApplicationSystem();
-          CustomLogger.saveLog(object: "BACKGROUND", text: "Headless task triggered.");
+          CustomLogger.log("BACKGROUND", "Headless task triggered.");
           await appSys.initApp();
         } else {
           //We have to refresh offline
           await appSys.initOffline();
           appSys.refreshControllersAPI();
         }
-        CustomLogger.saveLog(object: "BACKGROUND", text: "Initiated appSys.");
+        CustomLogger.log("BACKGROUND", "Initiated appSys.");
         await writeLastFetchStatus(appSys);
       }
       if (gradesFetchEnabled) {
-        CustomLogger.saveLog(object: "BACKGROUND", text: "New grade test triggered.");
+        CustomLogger.log("BACKGROUND", "New grade test triggered.");
         var res = (await testNewGrades());
         if (res[0]) {
           await Future.forEach(res[1], (Grade grade) async {
             await AppNotification.showNewGradeNotification(grade);
           });
         } else {
-          CustomLogger.saveLog(object: "BACKGROUND", text: "Grades: nothing updated.");
+          CustomLogger.log("BACKGROUND", "Grades: nothing updated.");
         }
       } else {
         CustomLogger.log("BACKGROUND", "New grade notification disabled");
       }
       if (mailsFetchEnabled) {
-        CustomLogger.saveLog(object: "BACKGROUND", text: "New mail test triggered.");
+        CustomLogger.log("BACKGROUND", "New mail test triggered.");
 
         Mail? mail = await testNewMails();
         if (mail != null) {
@@ -75,11 +76,11 @@ class BackgroundService {
       } else {
         CustomLogger.log("BACKGROUND", "On going notification disabled");
       }
-      CustomLogger.saveLog(object: "BACKGROUND", text: "Background fetch occured.");
+      CustomLogger.log("BACKGROUND", "Background fetch occured.");
       await AppNotification.cancelNotification(a.hashCode);
     } catch (e) {
       await AppNotification.cancelNotification(a.hashCode);
-      CustomLogger.saveLog(object: "ERROR", text: "An error occured during the background fetch : " + e.toString());
+      CustomLogger.error("An error occured during the background fetch : " + e.toString());
     }
   }
 
@@ -88,7 +89,7 @@ class BackgroundService {
     try {
       if (_appSys.settings.system.lastFetchDate != null) {
         DateTime date = DateTime.fromMillisecondsSinceEpoch(_appSys.settings.system.lastFetchDate!);
-        appSys.saveSettings();
+
         if (DateTime.now().difference(date).inMinutes >= 5) {
           return true;
         } else {
@@ -99,7 +100,7 @@ class BackgroundService {
       }
     } catch (e) {
       CustomLogger.log("BACKGROUND", "An error occured while readinf fetch status");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint: "Nzg=");
       return false;
     }
   }
@@ -109,7 +110,6 @@ class BackgroundService {
     try {
       //Get the old number of mails
       int oldGradesLength = appSys.settings.system.lastGradeCount;
-      appSys.saveSettings();
       //Getting the offline count of grades
       //instanciate an offline controller read only
 
@@ -120,8 +120,8 @@ class BackgroundService {
       //Login creds
       listOnlineGrades =
           getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true, sortByWritingDate: true);
-
-      CustomLogger.log("BACKGROUND", "Online grade length is ${listOnlineGrades!.length}");
+      listOnlineGrades = listOnlineGrades?.reversed.toList() ?? [];
+      CustomLogger.log("BACKGROUND", "Online grade length is ${listOnlineGrades.length}");
       if (oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
         int diff = (listOnlineGrades.length - (listOnlineGrades.length - oldGradesLength).clamp(0, 5));
         List<Grade> newGrades = listOnlineGrades.sublist(diff);
@@ -130,7 +130,7 @@ class BackgroundService {
         return [false];
       }
     } catch (e) {
-      CustomLogger.saveLog(object: "ERROR", text: "An error occured during the new grades test : " + e.toString());
+      CustomLogger.error("An error occured during the new grades test : " + e.toString());
       return [false];
     }
   }
@@ -141,7 +141,7 @@ class BackgroundService {
       //Get the old number of mails
 
       var oldMailLength = appSys.settings.system.lastMailCount;
-      appSys.saveSettings();
+
       CustomLogger.log("BACKGROUND", "Old length is $oldMailLength");
       //Get new mails
       List<Mail>? mails = await (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: true);
@@ -154,7 +154,7 @@ class BackgroundService {
       });
       var newMailLength = mails?.length ?? 0;
 
-      CustomLogger.saveLog(object: "BACKGROUND", text: "Mails checking triggered.");
+      CustomLogger.log("BACKGROUND", "Mails checking triggered.");
       CustomLogger.log("BACKGROUND", "New length is $newMailLength");
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength)) {
@@ -171,7 +171,7 @@ class BackgroundService {
       }
     } catch (e) {
       CustomLogger.log("BACKGROUND", "An error occured while checking new offline mails");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint: "Nzk=");
       return null;
     }
   }

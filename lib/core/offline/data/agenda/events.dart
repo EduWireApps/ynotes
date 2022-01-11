@@ -1,6 +1,6 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class AgendaEventsOffline {
   late Offline parent;
@@ -11,7 +11,7 @@ class AgendaEventsOffline {
   ///Update existing agenda events with passed data
   addAgendaEvent(AgendaEvent newData, var id) async {
     try {
-      Map<dynamic, dynamic> timeTable = Map();
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("agendaEvents");
       List<AgendaEvent> events = [];
       if (offline != null) {
@@ -29,7 +29,7 @@ class AgendaEventsOffline {
       CustomLogger.log("EVENTS", "Update offline agenda events (id : $id)");
     } catch (e) {
       CustomLogger.log("EVENTS", "An error occured while updating offline agenda events");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NzE=");
     }
   }
 
@@ -42,7 +42,7 @@ class AgendaEventsOffline {
       }
     } catch (e) {
       CustomLogger.log("EVENTS", "An error occured while returning agenda events for week $week");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NzI=");
       return null;
     }
   }
@@ -50,7 +50,7 @@ class AgendaEventsOffline {
   ///Remove an agenda event with a given `id` and at a given `week`
   removeAgendaEvent(String? id, var fetchID) async {
     try {
-      Map<dynamic, dynamic> timeTable = Map();
+      Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("agendaEvents");
       List<AgendaEvent> events = [];
       if (offline != null) {
@@ -66,7 +66,7 @@ class AgendaEventsOffline {
       await parent.agendaBox?.put("agendaEvents", timeTable);
     } catch (e) {
       CustomLogger.log("EVENTS", "An error occured while removing offline agenda events");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NzM=");
     }
   }
 }

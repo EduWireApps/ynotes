@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
-import 'package:ynotes/ui/components/y_page/mixins.dart';
-import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/index.dart';
-import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 class YDrawer extends StatefulWidget {
   const YDrawer({Key? key}) : super(key: key);
@@ -28,7 +26,7 @@ class _SpecialRoute {
   _SpecialRoute({required this.title, required this.icon, required this.onTap});
 }
 
-class _YDrawerState extends State<YDrawer> with YPageMixin {
+class _YDrawerState extends State<YDrawer> {
   @override
   Widget build(BuildContext context) {
     bool availableRoute(CustomRoute route) {
@@ -38,11 +36,8 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
     }
 
     final List<_SpecialRoute> specialRoutes = [
-      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => Wiredash.of(context)!.show()),
-      _SpecialRoute(
-          title: "Paramètres",
-          icon: Icons.settings,
-          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
+      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => BugReportUtils.report()),
+      _SpecialRoute(title: "Paramètres", icon: Icons.settings, onTap: () => Navigator.pushNamed(context, "/settings")),
     ];
 
     final List<_SpecialRoute> specialIcons = [
@@ -60,15 +55,17 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];
 
+    final Color backgroundColor = theme.colors.backgroundColor;
+
     return Drawer(
       child: Container(
-        color: Theme.of(context).primaryColorLight,
+        color: backgroundColor,
         child: SafeArea(
-          child: YShadowScrollContainer(color: Theme.of(context).primaryColorLight, children: [
-            AccountHeader(),
+          child: YShadowScrollContainer(color: backgroundColor, children: [
+            const AccountHeader(),
             ListView.builder(
                 shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 itemCount: routes.length,
                 itemBuilder: (context, i) {
                   final route = routes[i];
@@ -76,16 +73,18 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                   if (!availableRoute(route)) {
                     return Container();
                   }
+
+                  final bool isCurrent = ModalRoute.of(context)!.settings.name == route.path;
+                  final Color textColor = isCurrent ? theme.colors.foregroundColor : theme.colors.foregroundLightColor;
+
                   return Container(
-                    color: ModalRoute.of(context)!.settings.name == route.path ? Theme.of(context).primaryColor : null,
+                    color: isCurrent ? theme.colors.backgroundLightColor : null,
                     child: ListTile(
                       leading: Icon(
                         route.icon,
-                        color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                        color: textColor,
                       ),
-                      title: Text(route.title ?? "",
-                          style:
-                              TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87, fontSize: 18)),
+                      title: Text(route.title ?? "", style: TextStyle(color: textColor, fontSize: 18)),
                       onTap: () {
                         if (ModalRoute.of(context)!.settings.name == route.path) {
                           return;
@@ -97,14 +96,12 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     ),
                   );
                 }),
-            Divider(
-              color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
-              thickness: 0.5,
-              height: 0,
-            ),
+            YVerticalSpacer(YScale.s4),
+            const YDivider(),
+            YVerticalSpacer(YScale.s4),
             ListView.builder(
                 shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 itemCount: specialRoutes.length,
                 itemBuilder: (context, i) {
                   final _SpecialRoute route = specialRoutes[i];
@@ -112,29 +109,26 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                   return ListTile(
                     leading: Icon(
                       route.icon,
-                      color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                      color: theme.colors.foregroundLightColor,
                     ),
-                    title: Text(route.title,
-                        style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87, fontSize: 18)),
+                    title: Text(route.title, style: TextStyle(color: theme.colors.foregroundLightColor, fontSize: 18)),
                     onTap: route.onTap,
                   );
                 }),
-            Divider(
-              color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
-              thickness: 0.5,
-              height: 0,
-            ),
+            YVerticalSpacer(YScale.s4),
+            const YDivider(),
+            YVerticalSpacer(YScale.s4),
             Row(
               children: [
                 for (final e in specialIcons)
                   Expanded(
                       child: IconButton(
                     icon: Icon(e.icon),
-                    color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                    color: theme.colors.foregroundLightColor,
                     onPressed: e.onTap,
                   ))
               ],
-            )
+            ),
           ]),
         ),
       ),

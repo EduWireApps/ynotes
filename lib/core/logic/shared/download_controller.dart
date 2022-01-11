@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 ///Class download to notify view when download is ended
@@ -50,8 +50,8 @@ class DownloadController extends ChangeNotifier {
           _progress = 100;
           notifyListeners();
           CustomLogger.log("DOWNLOAD", "Téléchargement du fichier terminé : ${file.path}");
-          final dir = await FolderAppUtil.getDirectory(download: true);
-          final Directory _appDocDirFolder = Directory('$dir/yNotesDownloads/');
+          final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+          final Directory _appDocDirFolder = Directory('${dir.path}/');
 
           if (!await _appDocDirFolder.exists()) {
             //if folder already exists return path
@@ -61,7 +61,7 @@ class DownloadController extends ChangeNotifier {
           await file.writeAsBytes(bytes);
         } catch (e) {
           CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-          CustomLogger.error(e);
+          CustomLogger.error(e, stackHint:"MzM=");
           _isDownloading = false;
           _hasError = true;
           notifyListeners();
@@ -69,7 +69,7 @@ class DownloadController extends ChangeNotifier {
       },
       onError: (e) {
         CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"MzQ=");
         _isDownloading = false;
         _hasError = true;
         notifyListeners();
@@ -83,9 +83,8 @@ class DownloadController extends ChangeNotifier {
   Future<bool> fileExists(filename) async {
     try {
       if (await Permission.storage.request().isGranted) {
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        FolderAppUtil.createDirectory("$dir/yNotesDownloads/");
-        Directory downloadsDir = Directory("$dir/yNotesDownloads/");
+        final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+        final Directory downloadsDir = await FolderAppUtil.createDirectory("${dir.path}/yNotesDownloads/");
         List<FileSystemEntity> list = downloadsDir.listSync();
         bool toReturn = false;
         await Future.forEach(list, (dynamic element) async {

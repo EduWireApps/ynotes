@@ -1,6 +1,6 @@
 import 'package:html/parser.dart' show parse;
 import 'package:requests/requests.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class TotalBug {
   static parseNumber(var data) {

@@ -2,21 +2,21 @@ import 'package:json_annotation/json_annotation.dart';
 
 enum appTabs {
   @JsonValue("SUMMARY")
-  SUMMARY,
+  summary,
   @JsonValue("GRADES")
-  GRADES,
+  grades,
   @JsonValue("HOMEWORK")
-  HOMEWORK,
+  homework,
   @JsonValue("AGENDA")
-  AGENDA,
+  agenda,
   @JsonValue("POLLS")
-  POLLS,
+  polls,
   @JsonValue("MESSAGING")
-  MESSAGING,
+  messaging,
   @JsonValue("CLOUD")
-  CLOUD,
+  cloud,
   @JsonValue("FILES")
-  FILES,
+  files,
   @JsonValue("SCHOOL_LIFE")
-  SCHOOL_LIFE,
+  schoolLife,
 }

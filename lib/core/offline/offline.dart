@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 import 'data/example/example.dart';
@@ -36,7 +36,7 @@ class HiveBoxProvider {
         }
       } catch (e) {
         CustomLogger.log("OFFLINE", "An error occured while initiating Hive");
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"NDM=");
       }
       registerAdapters();
     }
@@ -73,12 +73,12 @@ class HiveBoxProvider {
 ///Unlock it on another thread/isolate could `definitely break the user database, so please be cautious`.
 class Offline {
   //Boxes name
-  static final String offlineCacheBoxName = "offlineData";
-  static final String doneHomeworkBoxName = "doneHomework";
-  static final String homeworkBoxName = "homework";
-  static final String pinnedHomeworkBoxName = "pinnedHomework";
-  static final String agendaBoxName = "agenda";
-  static final String mailsBoxName = "mails";
+  static const String offlineCacheBoxName = "offlineData";
+  static const String doneHomeworkBoxName = "doneHomework";
+  static const String homeworkBoxName = "homework";
+  static const String pinnedHomeworkBoxName = "pinnedHomework";
+  static const String agendaBoxName = "agenda";
+  static const String mailsBoxName = "mails";
   DateTime? dateOfOpening;
   //sample box for example.dart (do not delete)
   Box<Example>? exampleBox;
@@ -104,10 +104,10 @@ class Offline {
       await mailsBox?.deleteFromDisk();
       await homeworkBox?.deleteFromDisk();
 
-      await this.init();
+      await init();
     } catch (e) {
       CustomLogger.log("OFFLINE", "Failed to clear all db");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NDQ=");
     }
   }
 
@@ -115,7 +115,7 @@ class Offline {
   ///Deletes corrupted box
   deleteCorruptedBox(String boxName) async {
     await Hive.deleteBoxFromDisk(boxName);
-    CustomLogger.saveLog(object: "OFFLINE", text: "Recovered $boxName");
+    CustomLogger.log("OFFLINE", "Recovered $boxName");
   }
 
   //Called when instanciated
@@ -139,7 +139,7 @@ class Offline {
       CustomLogger.log("OFFLINE", "All boxes opened");
     } catch (e) {
       CustomLogger.log("OFFLINE", "An error occured while opening boxes");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NDU=");
     }
   }
 
@@ -148,18 +148,18 @@ class Offline {
     try {
       Box box = await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
         final String errorMessage = "Error while opening $boxName";
-        CustomLogger.saveLog(object: "OFFLINE", text: errorMessage);
+        CustomLogger.error("OFFLINE: $errorMessage");
         throw (errorMessage);
       });
       CustomLogger.log("OFFLINE", "Correctly opened $boxName");
       return box;
     } catch (e) {
       CustomLogger.log("OFFLINE", "An error occurend while opening $boxName");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NDY=");
       if (boxName.contains("offlineData")) {
         await appSys.hiveBoxProvider.deleteBox(boxName);
       }
-      await this.init();
+      await init();
 
       throw ("Error while opening $boxName");
     }

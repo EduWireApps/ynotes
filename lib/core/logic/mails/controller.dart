@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class MailsController extends ChangeNotifier {
   API? _api;
@@ -27,7 +27,7 @@ class MailsController extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       CustomLogger.log("MAILS", "An error occured while refreshing");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"MzI=");
       loading = false;
     }
     loading = false;

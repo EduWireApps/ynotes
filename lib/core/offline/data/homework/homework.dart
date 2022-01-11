@@ -1,7 +1,7 @@
 import 'package:calendar_time/calendar_time.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class HomeworkOffline {
   late Offline parent;
@@ -13,7 +13,7 @@ class HomeworkOffline {
       return (parent.homeworkBox?.values.toList().cast<Homework>());
     } catch (e) {
       CustomLogger.log("HOMEWORK", "An error occured while returning homework");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NjY=");
       return null;
     }
   }
@@ -25,7 +25,7 @@ class HomeworkOffline {
           .toList();
     } catch (e) {
       CustomLogger.log("HOMEWORK", "An error occured while returning homework");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Njc=");
       return null;
     }
   }
@@ -71,7 +71,7 @@ class HomeworkOffline {
       await parent.homeworkBox?.addAll(newHomeworks);
     } catch (e) {
       CustomLogger.log("HOMEWORK", "An error occured while updating homework");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"Njg=");
     }
   }
 

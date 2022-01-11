@@ -7,14 +7,14 @@ import 'package:stacked/stacked.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/download_controller.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 
 void showFilesModalBottomSheet(context, List<Document> files) {
   showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Theme.of(context).primaryColor,
@@ -46,7 +46,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            DragHandle(),
+            const DragHandle(),
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
@@ -91,7 +91,8 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
               margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
               child: LiquidLinearProgressIndicator(
                   value: model.downloadProgress ?? 0.0, // Defaults to 0.5.
-                  valueColor: AlwaysStoppedAnimation(Color(0xff27AE60)), // Defaults to the current Theme's accentColor.
+                  valueColor:
+                      const AlwaysStoppedAnimation(Color(0xff27AE60)), // Defaults to the current Theme's accentColor.
                   backgroundColor: ThemeUtils.isThemeDark
                       ? lightTheme.primaryColorDark
                       : darkTheme.primaryColorDark, // Defaults to the current Theme's backgroundColor.
@@ -191,7 +192,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
 
   Future<Color> getFileItemColor(DownloadController model, Document document) async {
     if (await model.fileExists(document.documentName)) {
-      return Color(0xff27AE60);
+      return const Color(0xff27AE60);
     } else {
       return ThemeUtils.isThemeDark ? lightTheme.primaryColorDark : darkTheme.primaryColorDark;
     }
@@ -199,7 +200,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
 
   Future<List> getIconColors(DownloadController model, Document document) async {
     if (await model.fileExists(document.documentName)) {
-      return [ThemeUtils.textColor(revert: true), Color(0xff27AE60), MdiIcons.eye];
+      return [ThemeUtils.textColor(revert: true), const Color(0xff27AE60), MdiIcons.eye];
     } else if (model.hasError) {
       return [Colors.red, ThemeUtils.textColor(revert: true), MdiIcons.fileAlert];
     } else {

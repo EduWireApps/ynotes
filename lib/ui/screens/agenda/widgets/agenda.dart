@@ -6,11 +6,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
-import 'package:ynotes/ui/screens/agenda/index.dart';
+import 'package:ynotes/ui/screens/agenda/agenda.dart';
+
 import 'agenda_grid.dart';
 import 'buttons.dart';
 
@@ -25,7 +26,7 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
             DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
             DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
         .toList();
-    if (dailyLessons.length != 0) {
+    if (dailyLessons.isNotEmpty) {
       //Get current lesson
       try {
         lesson = dailyLessons.firstWhere((lesson) =>
@@ -33,7 +34,7 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting current lesson");
         CustomLogger.log("AGENDA", "Lessons: $lessons");
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"Ng==");
       }
 
       return lesson;
@@ -54,14 +55,14 @@ getNextLesson(List<Lesson>? lessons) {
             DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
             DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
         .toList();
-    if (dailyLessons.length != 0) {
+    if (dailyLessons.isNotEmpty) {
       //Get current lesson
       try {
         dailyLessons.sort((a, b) => a.start!.compareTo(b.start!));
         lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting the current lesson");
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"Nw==");
       }
 
       return lesson;
@@ -74,6 +75,8 @@ getNextLesson(List<Lesson>? lessons) {
 }
 
 class Agenda extends StatefulWidget {
+  const Agenda({Key? key}) : super(key: key);
+
   @override
   _AgendaState createState() => _AgendaState();
 }
@@ -102,18 +105,18 @@ class _AgendaState extends State<Agenda> {
                 height: screenSize.size.height,
                 padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
                 child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   child: Column(
                     children: <Widget>[
                       _buildAgendaButtons(context),
-                      Container(
+                      SizedBox(
                         height: screenSize.size.height / 10 * 8,
                         child: Stack(
                           children: [
                             FutureBuilder<List<AgendaEvent>?>(
                                 future: agendaFuture,
                                 builder: (context, snapshot) {
-                                  if (snapshot.hasData && snapshot.data != null && (snapshot.data ?? []).length != 0) {
+                                  if (snapshot.hasData && snapshot.data != null && (snapshot.data ?? []).isNotEmpty) {
                                     return RefreshIndicator(
                                         onRefresh: refreshAgendaFuture,
                                         child: AgendaGrid(
@@ -121,7 +124,7 @@ class _AgendaState extends State<Agenda> {
                                           initState,
                                         ));
                                   }
-                                  if (snapshot.data != null && snapshot.data!.length == 0) {
+                                  if (snapshot.data != null && snapshot.data!.isEmpty) {
                                     return Center(
                                       child: FittedBox(
                                         child: Column(
@@ -130,7 +133,7 @@ class _AgendaState extends State<Agenda> {
                                             Container(
                                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
                                               height: screenSize.size.height / 10 * 1.9,
-                                              child: Image(
+                                              child: const Image(
                                                   fit: BoxFit.fitWidth,
                                                   image: AssetImage('assets/images/pageItems/agenda/noEvent.png')),
                                             ),
@@ -148,7 +151,7 @@ class _AgendaState extends State<Agenda> {
                                               child: TextButton(
                                                 style: TextButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
-                                                      borderRadius: new BorderRadius.circular(18.0),
+                                                      borderRadius: BorderRadius.circular(18.0),
                                                       side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                                 ),
                                                 onPressed: () async {

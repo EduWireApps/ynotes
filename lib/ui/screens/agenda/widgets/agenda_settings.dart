@@ -8,6 +8,8 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 
 class AgendaSettings extends StatefulWidget {
+  const AgendaSettings({Key? key}) : super(key: key);
+
   @override
   _AgendaSettingsState createState() => _AgendaSettingsState();
 }
