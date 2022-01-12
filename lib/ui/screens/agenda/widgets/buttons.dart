@@ -56,7 +56,15 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           setState(() {
-                            agendaDate = CalendarTime(agendaDate).startOfDay.subtract(const Duration(hours: 24));
+                            if (agendaDate?.weekday == DateTime.monday && appSys.settings.user.agendaPage.hideSaturdayAndSunday) {
+                              agendaDate = CalendarTime(agendaDate)
+                                  .startOfDay
+                                  .subtract(const Duration(hours: 72));
+                            } else {
+                              agendaDate = CalendarTime(agendaDate)
+                                  .startOfDay
+                                  .subtract(const Duration(hours: 24));
+                            }
                           });
                           await widget.getLessons!(agendaDate);
                         },
@@ -140,7 +148,15 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           setState(() {
-                            agendaDate = CalendarTime(agendaDate).startOfDay.add(const Duration(hours: 25));
+                            if (agendaDate?.weekday == DateTime.friday && appSys.settings.user.agendaPage.hideSaturdayAndSunday) {
+                              agendaDate = CalendarTime(agendaDate)
+                                  .startOfDay
+                                  .add(const Duration(hours: 73));
+                            } else {
+                              agendaDate = CalendarTime(agendaDate)
+                                  .startOfDay
+                                  .add(const Duration(hours: 25));
+                            }
                           });
                           await widget.getLessons!(agendaDate);
                         },

@@ -5,6 +5,7 @@ class AgendaPageSettings {
   int lessonReminderDelay;
   bool enableDNDWhenOnGoingNotifEnabled;
   bool disableAtDayEnd;
+  bool hideSaturdayAndSunday;
 
   AgendaPageSettings({
     required this.lighteningOverride,
@@ -13,6 +14,7 @@ class AgendaPageSettings {
     required this.lessonReminderDelay,
     required this.enableDNDWhenOnGoingNotifEnabled,
     required this.disableAtDayEnd,
+    required this.hideSaturdayAndSunday,
   });
 
   factory AgendaPageSettings.fromJson(Map<String, dynamic> json) =>
@@ -25,6 +27,7 @@ class AgendaPageSettings {
         enableDNDWhenOnGoingNotifEnabled:
             (json['enableDNDWhenOnGoingNotifEnabled'] as bool?) ?? false,
         disableAtDayEnd: (json['disableAtDayEnd'] as bool?) == false,
+        hideSaturdayAndSunday: (json['hideSaturdayAndSunday'] as bool?) ?? false,
       );
 
   Map<String, Object> toJson() => {
@@ -34,6 +37,7 @@ class AgendaPageSettings {
         'lessonReminderDelay': lessonReminderDelay,
         'enableDNDWhenOnGoingNotifEnabled': enableDNDWhenOnGoingNotifEnabled,
         'disableAtDayEnd': disableAtDayEnd,
+        'hideSaturdayAndSunday': hideSaturdayAndSunday,
       };
 }
 
