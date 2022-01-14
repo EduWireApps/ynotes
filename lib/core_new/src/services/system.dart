@@ -39,6 +39,7 @@ class SystemService {
       BugReport.init();
       schoolApi = schoolApiManager(SettingsService.settings.global.api);
       await schoolApi.init();
+      await NotificationService.init();
       await BackgroundService.init();
     } else {
       if (essential) {
