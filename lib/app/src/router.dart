@@ -115,6 +115,8 @@ class AppRouter {
     return _generateRoute(const AppRoute(path: "", widget: ErrorPage()), settings);
   }
 
+  static T getArgs<T>(BuildContext context) => ModalRoute.of(context)!.settings.arguments as T;
+
   /// The routes for the whole application.
   static final List<AppRoute> routes = [
     // IMPORTANT: routes are duplicated because of [initialRoute].

@@ -5,6 +5,7 @@ Future<void> backwardCompatibility() async {
   // await _fromV12ToV13();
   // await _fromV13ToV14();
   // await _extRemovalMigration();
+  await _fromV14ToV15();
 }
 
 Future<void> _extRemovalMigration() async {
@@ -101,4 +102,13 @@ Future<void> _fromV13ToV14() async {
     CustomLogger.log("BACKWARD COMPATIBILITY", "Reset logs (2)");
   }
   CustomLogger.log("BACKWARD COMPATIBILITY", "End of process: v13 to v14");
+}
+
+Future<void> _fromV14ToV15() async {
+  final bool fullReset0 = (await KVS.read(key: "fullReset0")) == "true";
+  if (!fullReset0) {
+    final Directory dir = await FolderAppUtil.getDirectory();
+    dir.deleteSync(recursive: true);
+    await KVS.write(key: "fullReset0", value: "true");
+  }
 }
