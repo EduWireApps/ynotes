@@ -8,6 +8,7 @@ Future<void> backwardCompatibility() async {
   await _fromV14ToV15();
 }
 
+// ignore: unused_element
 Future<void> _extRemovalMigration() async {
   if (Platform.isAndroid) {
     try {
@@ -19,13 +20,12 @@ Future<void> _extRemovalMigration() async {
 
         List<FileSystemEntity>? files = await oldDownloadsDirectory.list().toList();
 
-        if ((files).isNotEmpty) {
-          String path = (await FolderAppUtil.getDirectory(downloads: true)).path;
-          Future.forEach(files, (FileSystemEntity element) async {
-            String? fileName = await FileAppUtil.getFileNameWithExtension(element);
-            var result = await Process.run('cp', ['-r', element.path, path + "/"]);
-            print("$fileName $result");
-          });
+        if (files.isNotEmpty) {
+          // String path = (await FolderAppUtil.getDirectory(downloads: true)).path;
+          // Future.forEach(files, (FileSystemEntity element) async {
+          // String? fileName = await FileAppUtil.getFileNameWithExtension(element);
+          // var result = await Process.run('cp', ['-r', element.path, path + "/"]);
+          // });
         }
         await KVS.write(key: "migratedOldExtFiles0", value: "true");
       }
@@ -35,6 +35,7 @@ Future<void> _extRemovalMigration() async {
   }
 }
 
+// ignore: unused_element
 Future<void> _fromV12ToV13() async {
   CustomLogger.log("BACKWARD COMPATIBILITY", "Start process: v12 to v13");
   // API_TYPE enum values has been changed to respect the naming conventions.
@@ -84,6 +85,7 @@ Future<void> _fromV12ToV13() async {
   CustomLogger.log("BACKWARD COMPATIBILITY", "End of process: v12 to v13");
 }
 
+// ignore: unused_element
 Future<void> _fromV13ToV14() async {
   CustomLogger.log("BACKWARD COMPATIBILITY", "Start process: v13 to v14");
   // We still try to reset the logs. We don't use `logsReset1` because already used in 0.14.

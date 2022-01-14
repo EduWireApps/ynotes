@@ -196,12 +196,13 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
                                                     vertical: screenSize.size.height / 10 * 0.2),
                                                 child: HtmlWidget(
                                                   htmlColors(snapshot.data),
-                                                  hyperlinkColor: Colors.blue.shade300,
+                                                  //hyperlinkColor: Colors.blue.shade300,
                                                   onTapUrl: (url) async {
                                                     if (await canLaunch(url)) {
                                                       await launch(url);
+                                                      return true;
                                                     } else {
-                                                      throw "Unable to launch url";
+                                                      return false;
                                                     }
                                                   },
                                                   textStyle: TextStyle(color: ThemeUtils.textColor()),

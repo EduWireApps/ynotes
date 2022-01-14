@@ -12,7 +12,7 @@ class RecipientsOffline {
       return parent.offlineBox?.get("recipients")?.cast<Recipient>();
     } catch (e) {
       CustomLogger.log("MAILS", "An error occured while returning recipients");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NjM=");
       return null;
     }
   }
@@ -27,7 +27,7 @@ class RecipientsOffline {
       await parent.offlineBox!.put("recipients", newData);
     } catch (e) {
       CustomLogger.log("MAILS", "An error occured while updating recipients");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NjQ=");
     }
   }
 }

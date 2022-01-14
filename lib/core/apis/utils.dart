@@ -54,7 +54,7 @@ Future<bool> checkPronoteURL(String url) async {
       return false;
     }
   } catch (e) {
-    CustomLogger.error(e);
+    CustomLogger.error(e, stackHint:"NQ==");
     return false;
   }
 }

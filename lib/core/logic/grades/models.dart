@@ -172,6 +172,9 @@ class Grade {
   final bool? simulated;
   @HiveField(20)
   final bool? countAsZero;
+
+  @HiveField(21)
+  final bool optional;
   Grade({
     this.max,
     this.min,
@@ -192,6 +195,7 @@ class Grade {
     this.periodName,
     this.simulated = false,
     this.countAsZero = false,
+    this.optional = false
   });
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String? nomPeriode) {

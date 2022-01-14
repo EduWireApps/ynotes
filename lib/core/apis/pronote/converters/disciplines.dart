@@ -70,7 +70,7 @@ class PronoteDisciplineConverter {
           : null;
       bool countAsZero =
           client.utils.shouldCountAsZero(client.utils.gradeTranslate(mapGet(gradeData, ["note", "V"]) ?? ""));
-
+      bool optional = mapGet(gradeData, ["estFacultatif"]) ?? false;
       grades.add(Grade(
           value: value,
           testName: testName,
@@ -89,7 +89,8 @@ class PronoteDisciplineConverter {
           notSignificant: notSignificant,
           testType: testType,
           entryDate: entryDate,
-          countAsZero: countAsZero));
+          countAsZero: countAsZero,
+          optional: optional));
     }
     return grades;
   }

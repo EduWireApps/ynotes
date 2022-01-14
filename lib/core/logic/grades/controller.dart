@@ -311,7 +311,7 @@ class GradesController extends ChangeNotifier {
           averages.add(_average);
         }
       } catch (e) {
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"MjI=");
       }
     }
 

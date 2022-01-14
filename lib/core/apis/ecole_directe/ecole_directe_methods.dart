@@ -340,7 +340,7 @@ class EcoleDirecteMethod {
         await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       } catch (e) {
-        CustomLogger.error(e);
+        CustomLogger.error(e, stackHint:"Ng==");
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
@@ -350,7 +350,7 @@ class EcoleDirecteMethod {
         try {
           data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
-          CustomLogger.error(e);
+          CustomLogger.error(e, stackHint:"Nw==");
         }
       }
       if (data == null) {
@@ -358,7 +358,7 @@ class EcoleDirecteMethod {
           await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
           return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
-          CustomLogger.error(e);
+          CustomLogger.error(e, stackHint:"OA==");
         }
       }
       return data;

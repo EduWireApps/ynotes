@@ -100,7 +100,7 @@ class ApplicationSystem extends ChangeNotifier {
       updateTheme("clair");
     } catch (e) {
       CustomLogger.log("APPSYS", "Error occured when exiting the app");
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"MjE=");
     }
   }
 
