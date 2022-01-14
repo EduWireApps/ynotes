@@ -89,7 +89,7 @@ class EcoleDirecteMethod {
     });
     if (homework != null) {
       await HomeworkOffline(_offlineController).updateHomework(homework);
-      CustomLogger.log("ED", "Updated homework");
+      Logger.log("ED", "Updated homework");
     }
 
     //await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
@@ -132,7 +132,7 @@ class EcoleDirecteMethod {
 
     if (mails != null) {
       await MailsOffline(_offlineController).updateMails(mails);
-      CustomLogger.log("ED", "Updated mails");
+      Logger.log("ED", "Updated mails");
     }
     return mails;
   }
@@ -151,7 +151,7 @@ class EcoleDirecteMethod {
 
     if (homeworkList != null) {
       await HomeworkOffline(_offlineController).updateHomework(homeworkList);
-      CustomLogger.log("ED", "Updated homework");
+      Logger.log("ED", "Updated homework");
     }
     return homeworkList;
   }
@@ -176,7 +176,7 @@ class EcoleDirecteMethod {
     String? password = await KVS.read(key: "password");
     String? username = await KVS.read(key: "username");
     var url = endpoints.login;
-    CustomLogger.log("LOGIN", url);
+    Logger.log("LOGIN", url);
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
@@ -191,11 +191,11 @@ class EcoleDirecteMethod {
       }
       //Return an error
       else {
-        CustomLogger.log("LOGIN", req['code']);
+        Logger.log("LOGIN", req['code']);
         throw "Error while refreshing token. (internal code)";
       }
     } else {
-      CustomLogger.log("LOGIN", url);
+      Logger.log("LOGIN", url);
 
       throw "Error while refreshing token. (server code : ${response.statusCode})";
     }
@@ -275,17 +275,17 @@ class EcoleDirecteMethod {
     "token": "$token"
     }""";
 
-    CustomLogger.logWrapped("ED", "Mail data to send", data);
+    Logger.logWrapped("ED", "Mail data to send", data);
     var body = data;
     var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
-    CustomLogger.log("ED", "Starting the mail reading");
+    Logger.log("ED", "Starting the mail reading");
     try {
       if (response.statusCode == 200) {
         Map<String, dynamic> req = jsonDecode(response.body);
         if (req['code'] == 200) {
-          CustomLogger.log("ED", "Mail sent");
+          Logger.log("ED", "Mail sent");
           return;
         }
         //Return an error
@@ -293,7 +293,7 @@ class EcoleDirecteMethod {
           throw "Error wrong internal status code ";
         }
       } else {
-        CustomLogger.log("ERROR", "${response.statusCode}: wrong status code.");
+        Logger.log("ERROR", "${response.statusCode}: wrong status code.");
         throw "Error wrong status code";
       }
     } catch (e) {
@@ -342,7 +342,7 @@ class EcoleDirecteMethod {
         await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       } catch (e) {
-        CustomLogger.error(e, stackHint: "Ng==");
+        Logger.error(e, stackHint: "Ng==");
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
@@ -352,7 +352,7 @@ class EcoleDirecteMethod {
         try {
           data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
-          CustomLogger.error(e, stackHint: "Nw==");
+          Logger.error(e, stackHint: "Nw==");
         }
       }
       if (data == null) {
@@ -360,7 +360,7 @@ class EcoleDirecteMethod {
           await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
           return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
-          CustomLogger.error(e, stackHint: "OA==");
+          Logger.error(e, stackHint: "OA==");
         }
       }
       return data;
@@ -393,7 +393,7 @@ class EcoleDirecteMethod {
         response = await http.post(Uri.parse(finalUrl), headers: headers, body: data);
       }
 
-      CustomLogger.logWrapped("ED", "Final url", finalUrl);
+      Logger.logWrapped("ED", "Final url", finalUrl);
       Map<String, dynamic>? responseData = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200 &&
           responseData != null &&
@@ -407,7 +407,7 @@ class EcoleDirecteMethod {
         }
         return parsedData;
       } else {
-        CustomLogger.logWrapped("ED", "Response data", responseData.toString());
+        Logger.logWrapped("ED", "Response data", responseData.toString());
         throw (onErrorBody + "  Server returned wrong statuscode : ${response.statusCode}");
       }
     } catch (e) {

@@ -12,8 +12,8 @@ class HomeworkOffline {
     try {
       return (parent.homeworkBox?.values.toList().cast<Homework>());
     } catch (e) {
-      CustomLogger.log("HOMEWORK", "An error occured while returning homework");
-      CustomLogger.error(e, stackHint:"MzU=");
+      Logger.log("HOMEWORK", "An error occured while returning homework");
+      Logger.error(e, stackHint: "MzU=");
       return null;
     }
   }
@@ -24,8 +24,8 @@ class HomeworkOffline {
           ?.where((element) => (CalendarTime(element.date).isSameDayAs(date)))
           .toList();
     } catch (e) {
-      CustomLogger.log("HOMEWORK", "An error occured while returning homework");
-      CustomLogger.error(e, stackHint:"MzY=");
+      Logger.log("HOMEWORK", "An error occured while returning homework");
+      Logger.error(e, stackHint: "MzY=");
       return null;
     }
   }
@@ -33,7 +33,7 @@ class HomeworkOffline {
   ///Update existing appSys.offline.homework.get() with passed data
   ///if `add` boolean is set to true passed data is combined with old data
   updateHomework(List<Homework> newHomeworks) async {
-    CustomLogger.log("HOMEWORK", "Update offline homework");
+    Logger.log("HOMEWORK", "Update offline homework");
     try {
       List<Homework>? oldHW = [];
       if (parent.homeworkBox?.values != null) {
@@ -66,12 +66,12 @@ class HomeworkOffline {
       if (old != null) {
         newHomeworks
             .removeWhere((newHomework) => old.any((oldPieceOfHomework) => oldPieceOfHomework.id == newHomework.id));
-        CustomLogger.log("HOMEWORK", "New homework length: ${newHomeworks.length}");
+        Logger.log("HOMEWORK", "New homework length: ${newHomeworks.length}");
       }
       await parent.homeworkBox?.addAll(newHomeworks);
     } catch (e) {
-      CustomLogger.log("HOMEWORK", "An error occured while updating homework");
-      CustomLogger.error(e, stackHint:"Mzc=");
+      Logger.log("HOMEWORK", "An error occured while updating homework");
+      Logger.error(e, stackHint: "Mzc=");
     }
   }
 

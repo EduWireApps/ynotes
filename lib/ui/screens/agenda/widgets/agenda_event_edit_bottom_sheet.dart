@@ -284,8 +284,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                   recurringScheme = temp;
                                 });
 
-                                CustomLogger.log(
-                                    "BOTTOM SHEET", "(Agenda event edit) Recurring scheme: $recurringScheme");
+                                Logger.log("BOTTOM SHEET", "(Agenda event edit) Recurring scheme: $recurringScheme");
                               }
                             },
                             child: Container(
@@ -446,7 +445,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
   void initState() {
     super.initState();
     if (start == null && widget.isCustomEvent) {
-      CustomLogger.log("BOTTOM SHEET", "(Agenda event edit) Default data: ${widget.defaultDate}");
+      Logger.log("BOTTOM SHEET", "(Agenda event edit) Default data: ${widget.defaultDate}");
       setState(() {
         widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
         start = widget.defaultDate!.add(const Duration(hours: 8));

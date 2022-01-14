@@ -19,7 +19,7 @@ class SchoolLifeController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false}) async {
-    CustomLogger.log("SCHOOL LIFE", "Refresh tickets");
+    Logger.log("SCHOOL LIFE", "Refresh tickets");
     _loading = true;
     notifyListeners();
     try {
@@ -27,8 +27,8 @@ class SchoolLifeController extends ChangeNotifier {
       _tickets = tickets;
       notifyListeners();
     } catch (e) {
-      CustomLogger.log("SCHOOL LIFE", "An error occured while refreshing");
-      CustomLogger.error(e, stackHint:"MTA=");
+      Logger.log("SCHOOL LIFE", "An error occured while refreshing");
+      Logger.error(e, stackHint: "MTA=");
     }
     _loading = false;
     notifyListeners();

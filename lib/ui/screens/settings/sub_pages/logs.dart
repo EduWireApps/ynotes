@@ -106,7 +106,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                                                         leading: Icon(Icons.code_rounded,
                                                             color: theme.colors.foregroundLightColor),
                                                         onTap: () {
-                                                          CustomLogger.logWrapped("JSON", "", jsonEncode(log));
+                                                          Logger.logWrapped("JSON", "", jsonEncode(log));
                                                         },
                                                       ),
                                                     ListTile(

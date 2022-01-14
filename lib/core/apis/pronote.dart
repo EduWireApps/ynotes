@@ -109,8 +109,8 @@ class APIPronote extends API {
 
       return listPeriods;
     } catch (e) {
-      CustomLogger.log("PRONOTE", "Error while collecting offline periods.");
-      CustomLogger.error(e, stackHint: "OA==");
+      Logger.log("PRONOTE", "Error while collecting offline periods.");
+      Logger.error(e, stackHint: "OA==");
     }
   }
 
@@ -133,8 +133,8 @@ class APIPronote extends API {
         return listPeriod;
       }
     } catch (e) {
-      CustomLogger.log("PRONOTE", "Error while getting periods.");
-      CustomLogger.error(e, stackHint: "OQ==");
+      Logger.log("PRONOTE", "Error while getting periods.");
+      Logger.error(e, stackHint: "OQ==");
     }
   }
 
@@ -163,7 +163,7 @@ class APIPronote extends API {
     Random random = Random();
     await Future.delayed(Duration(milliseconds: (random.nextDouble() * 100).round()), () => "1");
     while (loginLock == true && req < 8 && appSys.loginController.actualState != loginStatus.loggedIn) {
-      CustomLogger.log("PRONOTE", "Locked, trying in 15 seconds...");
+      Logger.log("PRONOTE", "Locked, trying in 15 seconds...");
       req++;
       await Future.delayed(const Duration(seconds: 15), () => "1");
     }
@@ -189,7 +189,7 @@ class APIPronote extends API {
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
           } else {
             loginLock = false;
-            CustomLogger.log("PRONOTE", "Impossible to collect accounts.");
+            Logger.log("PRONOTE", "Impossible to collect accounts.");
             return [0, "Impossible de collecter les comptes."];
           }
 
@@ -208,8 +208,8 @@ class APIPronote extends API {
         loginLock = false;
         final String err = e.toString();
         localClient.stepsLogger.add("❌ Pronote login failed : " + err);
-        CustomLogger.log("PRONOTE", "Login failed.");
-        CustomLogger.error(e, stackHint: "MTA=");
+        Logger.log("PRONOTE", "Login failed.");
+        Logger.error(e, stackHint: "MTA=");
         String error = "Une erreur a eu lieu. " + err;
         if (err.contains("invalid url")) {
           error = "L'URL entrée est invalide";
@@ -245,7 +245,7 @@ class APIPronote extends API {
         if (err.contains("Failed login request")) {
           error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
         }
-        CustomLogger.error("Pronote: " + error);
+        Logger.error("Pronote: " + error);
         return ([0, error, localClient.stepsLogger]);
       }
     } else {
@@ -294,10 +294,10 @@ class APIPronote extends API {
           "saisieActualite": false
         }
       };
-      CustomLogger.log("PRONOTE", "Poll: ${jsonEncode(data)}");
+      Logger.log("PRONOTE", "Poll: ${jsonEncode(data)}");
       var a =
           await PronoteMethod(localClient, offlineController).request("SaisieActualites", null, data: data, onglet: 8);
-      CustomLogger.log("PRONOTE", a);
+      Logger.log("PRONOTE", a);
       return true;
     } catch (e) {
       return false;
@@ -344,10 +344,10 @@ class APIPronote extends API {
           "saisieActualite": false
         }
       };
-      CustomLogger.log("PRONOTE", "Poll: ${jsonEncode(data)}");
+      Logger.log("PRONOTE", "Poll: ${jsonEncode(data)}");
       var a =
           await PronoteMethod(localClient, offlineController).request("SaisieActualites", null, data: data, onglet: 8);
-      CustomLogger.log("PRONOTE", a);
+      Logger.log("PRONOTE", a);
       return true;
     } catch (e) {
       return false;

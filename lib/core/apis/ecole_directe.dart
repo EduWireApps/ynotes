@@ -84,19 +84,19 @@ class APIEcoleDirecte extends API {
     switch (appname) {
       case "mail":
         {
-          CustomLogger.log("ED", "Returning mails");
+          Logger.log("ED", "Returning mails");
           List<Mail>? mails = await (getMails());
 
           return mails;
         }
       case "cloud":
         {
-          CustomLogger.log("ED", "Returning cloud");
+          Logger.log("ED", "Returning cloud");
           return await getCloud(args, action, folder);
         }
       case "mailRecipients":
         {
-          CustomLogger.log("ED", "Returing mail recipients");
+          Logger.log("ED", "Returing mail recipients");
           return (await EcoleDirecteMethod.fetchAnyData(
               methods.recipients, RecipientsOffline(offlineController).getRecipients));
         }
@@ -209,8 +209,8 @@ class APIEcoleDirecte extends API {
           try {
             appSys.account = EcoleDirecteAccountConverter.account.convert(req);
           } catch (e) {
-            CustomLogger.log("ED", "Impossible to get accounts " + e.toString());
-            CustomLogger.error(e, stackHint: "MA==");
+            Logger.log("ED", "Impossible to get accounts " + e.toString());
+            Logger.error(e, stackHint: "MA==");
           }
 
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
@@ -244,7 +244,7 @@ class APIEcoleDirecte extends API {
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);
         } catch (e) {
-          CustomLogger.log("ED", "Error while getting user info " + e.toString());
+          Logger.log("ED", "Error while getting user info " + e.toString());
         }
         loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
@@ -280,7 +280,7 @@ class APIEcoleDirecte extends API {
     var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
-    CustomLogger.log("ED", "Starting the mail reading");
+    Logger.log("ED", "Starting the mail reading");
     try {
       if (response.statusCode == 200) {
         Map<String, dynamic> req = jsonDecode(response.body);
@@ -292,15 +292,15 @@ class APIEcoleDirecte extends API {
         }
         //Return an error
         else {
-          CustomLogger.logWrapped("ED", "Response body", response.body);
+          Logger.logWrapped("ED", "Response body", response.body);
           throw "Error wrong internal status code ";
         }
       } else {
-        CustomLogger.log("ERROR", "${response.statusCode}: wrong status code.");
+        Logger.log("ERROR", "${response.statusCode}: wrong status code.");
         throw "Error wrong status code";
       }
     } catch (e) {
-      CustomLogger.log("ED", "error during the mail reading $e");
+      Logger.log("ED", "error during the mail reading $e");
     }
   }
 
@@ -310,13 +310,13 @@ class APIEcoleDirecte extends API {
       //Getting the offline count of grades
       List<Grade> listOfflineGrades =
           getAllGrades(await DisciplinesOffline(offlineController).getDisciplines(), overrideLimit: true)!;
-      CustomLogger.log("ED", "Offline length is ${listOfflineGrades.length}");
+      Logger.log("ED", "Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades = getAllGrades(await methods.grades(), overrideLimit: true)!;
-      CustomLogger.log("ED", "Online length is ${listOnlineGrades.length}");
+      Logger.log("ED", "Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
-      CustomLogger.error(e, stackHint: "MQ==");
+      Logger.error(e, stackHint: "MQ==");
       return null;
     }
   }
@@ -336,10 +336,10 @@ class APIEcoleDirecte extends API {
 
           var response = await request.send();
           if (response.statusCode == 200) {
-            CustomLogger.log("ED", "File uploaded");
+            Logger.log("ED", "File uploaded");
           }
           response.stream.transform(utf8.decoder).listen((value) {
-            CustomLogger.log("ED", "File stream value: $value");
+            Logger.log("ED", "File stream value: $value");
           });
         }
     }

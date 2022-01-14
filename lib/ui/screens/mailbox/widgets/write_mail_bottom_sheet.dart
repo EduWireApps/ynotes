@@ -75,7 +75,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            CustomLogger.log("BOTTOM SHEET", "(Write mail) Editor text: ${await controller.getText()}");
+                            Logger.log("BOTTOM SHEET", "(Write mail) Editor text: ${await controller.getText()}");
 
                             if (selectedRecipients!.isNotEmpty) {
                               Navigator.pop(context, [
@@ -163,7 +163,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                           List<String> recipientsName = [];
                           if (recipients != null) {
                             for (var element in recipients) {
-                              CustomLogger.log("BOTTOM SHEET", "(Write mail) Recipient id: ${element.id}");
+                              Logger.log("BOTTOM SHEET", "(Write mail) Recipient id: ${element.id}");
                               String name = element.name ?? "";
                               String surname = element.surname ?? "";
                               String discipline = element.discipline ?? "";
@@ -179,7 +179,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               context, recipientsName, alreadySelected,
                               singleChoice: false))) as List<int>?;
                           if (selection != null) {
-                            CustomLogger.log("BOTTOM SHEET", "(Write mail) Selection: $selection");
+                            Logger.log("BOTTOM SHEET", "(Write mail) Selection: $selection");
                             setState(() {
                               for (var index in selection) {
                                 if (!selectedRecipients!.contains(recipients![index])) {

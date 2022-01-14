@@ -10,7 +10,7 @@ class LogsManager {
 
   /// Returns the log file for a given [category].
   static Future<File> _readLogFile(String category) async {
-    final directory = await FolderAppUtil.getDirectory();
+    final directory = await FileStorage.getAppDirectory();
     final String fileName = await _encrypt(category);
     return File("${directory.path}/logs/$fileName.txt");
   }
@@ -38,7 +38,7 @@ class LogsManager {
     try {
       await file.writeAsString(content, mode: FileMode.write);
     } catch (e) {
-      CustomLogger.error(e, stackHint:"NDk=");
+      Logger.error(e, stackHint: "NDk=");
     }
     _editingFile = false;
   }
@@ -54,7 +54,7 @@ class LogsManager {
     } else {
       final File log = await _readLogFile(category);
       await log.delete();
-      final Directory appDir = await FolderAppUtil.getDirectory();
+      final Directory appDir = await FileStorage.getAppDirectory();
       final Directory dir = Directory("${appDir.path}/logs");
       if (!dir.existsSync()) {
         dir.createSync();
@@ -86,7 +86,7 @@ class LogsManager {
 
   /// Returns all categories.
   static Future<List<String>> getCategories() async {
-    final directory = await FolderAppUtil.getDirectory();
+    final directory = await FileStorage.getAppDirectory();
     final List<FileInfo> files = await FileAppUtil.getFilesList("${directory.path}/logs");
     final List<String> categories =
         await Future.wait(files.where((file) => file.fileName?.endsWith(".txt") ?? false).map((file) async {

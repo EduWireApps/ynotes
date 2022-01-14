@@ -137,21 +137,21 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
       );
       //situation where nothing matches (might be pronote/)
       if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
-        CustomLogger.log("LOGIN", "(Pronote URL) Nothing matches");
+        Logger.log("LOGIN", "(Pronote URL) Nothing matches");
         suffix = "/mobile.eleve.html";
         return (regExp.firstMatch(url)?.group(1) ?? "") + suffix;
       }
       //situation where only mobile. is missing
       else if (suffixMatches.firstMatch(suffix)?.group(1) == null &&
           suffixMatches.firstMatch(suffix)?.group(2) != null) {
-        CustomLogger.log("LOGIN", "(Pronote URL) 'mobile.' is missing.");
+        Logger.log("LOGIN", "(Pronote URL) 'mobile.' is missing.");
         suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
         return (regExp.firstMatch(url)?.group(1) ?? "") + suffix;
       }
 
       //situation where everything matches
       else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
-        CustomLogger.log("LOGIN", "(Pronote URL) Everything matches");
+        Logger.log("LOGIN", "(Pronote URL) Everything matches");
         suffix = "/" +
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
             (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
@@ -159,7 +159,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
         return (regExp.firstMatch(url)?.group(1) ?? "") + suffix;
       }
     }
-    CustomLogger.log("LOGIN", "(Pronote URL) Invalid url.");
+    Logger.log("LOGIN", "(Pronote URL) Invalid url.");
     return null;
   }
 
@@ -169,7 +169,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
     if (isValid) url = res;
     if (isValid && await checkPronoteURL(url)) {
       final bool isCas = await testIfPronoteCas(url);
-      CustomLogger.log("LOGIN", "(Pronote URL) Is CAS: $isCas");
+      Logger.log("LOGIN", "(Pronote URL) Is CAS: $isCas");
       if (isCas) {
         if (kIsWeb || Platform.isWindows || Platform.isLinux) {
           return _ProcessUrlResponse(

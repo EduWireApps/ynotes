@@ -25,7 +25,7 @@ class DownloadController extends ChangeNotifier {
     String? filename = document.documentName;
     notifyListeners();
     Request request = await appSys.api!.downloadRequest(document);
-    CustomLogger.log("DOWNLOAD", "Download request url: ${request.url}");
+    Logger.log("DOWNLOAD", "Download request url: ${request.url}");
     //Make a response client
     final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;
@@ -33,7 +33,7 @@ class DownloadController extends ChangeNotifier {
 
     _progress = 0;
     notifyListeners();
-    CustomLogger.log("DOWNLOAD", "Downloading a file : $filename");
+    Logger.log("DOWNLOAD", "Downloading a file : $filename");
 
     List<int> bytes = [];
     final file = await FileAppUtil.getFilePath(filename);
@@ -49,7 +49,7 @@ class DownloadController extends ChangeNotifier {
         try {
           _progress = 100;
           notifyListeners();
-          CustomLogger.log("DOWNLOAD", "Téléchargement du fichier terminé : ${file.path}");
+          Logger.log("DOWNLOAD", "Téléchargement du fichier terminé : ${file.path}");
           final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
           final Directory _appDocDirFolder = Directory('${dir.path}/');
 
@@ -60,16 +60,16 @@ class DownloadController extends ChangeNotifier {
 
           await file.writeAsBytes(bytes);
         } catch (e) {
-          CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-          CustomLogger.error(e, stackHint: "MTE=");
+          Logger.log("DOWNLOAD", "An error occured while downloading $filename");
+          Logger.error(e, stackHint: "MTE=");
           _isDownloading = false;
           _hasError = true;
           notifyListeners();
         }
       },
       onError: (e) {
-        CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-        CustomLogger.error(e, stackHint: "MTI=");
+        Logger.log("DOWNLOAD", "An error occured while downloading $filename");
+        Logger.error(e, stackHint: "MTI=");
         _isDownloading = false;
         _hasError = true;
         notifyListeners();
@@ -94,7 +94,7 @@ class DownloadController extends ChangeNotifier {
         });
         return toReturn;
       } else {
-        CustomLogger.log("DOWNLOAD", "Not granted");
+        Logger.log("DOWNLOAD", "Not granted");
         return false;
       }
     } catch (e) {

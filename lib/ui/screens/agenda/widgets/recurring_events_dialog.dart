@@ -186,7 +186,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   export() {
     String scheme = "";
     if (enabled!) {
-      CustomLogger.log("DIALOGS", "(Recurring events) Week type: $weekType");
+      Logger.log("DIALOGS", "(Recurring events) Week type: $weekType");
       scheme += weekType.toString();
       scheme += (everyDay! ? "1" : "0");
       for (int i = 1; i < 8; i++) {

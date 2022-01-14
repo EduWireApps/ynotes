@@ -49,7 +49,7 @@ class PronoteMethod {
         data = await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
       if (data == null) {
-        CustomLogger.log("PRONOTE", "Online fetch because offline is null");
+        Logger.log("PRONOTE", "Online fetch because offline is null");
         await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
         return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
@@ -76,7 +76,7 @@ class PronoteMethod {
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
       });
     }
-    CustomLogger.log("PRONOTE", "Completed disciplines request");
+    Logger.log("PRONOTE", "Completed disciplines request");
 
     await DisciplinesOffline(_offlineController).updateDisciplines(listDisciplines);
     appSys.settings.system.lastGradeCount = (getAllGrades(listDisciplines, overrideLimit: true) ?? []).length;
@@ -160,17 +160,17 @@ class PronoteMethod {
       try {
         //Lock current function
         locks[lockName] = true;
-        CustomLogger.log("PRONOTE", "Fetching task with name $lockName");
+        Logger.log("PRONOTE", "Fetching task with name $lockName");
         var toReturn = await (arguments != null ? onlineFetch(arguments) : onlineFetch());
         //Unlock it
         locks[lockName] = false;
         return toReturn;
       } catch (e) {
-        CustomLogger.log("PRONOTE", "Error while fetching for " + (lockName ?? ""));
-        CustomLogger.error(e, stackHint: "MTI=");
+        Logger.log("PRONOTE", "Error while fetching for " + (lockName ?? ""));
+        Logger.error(e, stackHint: "MTI=");
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
-          CustomLogger.log("PRONOTE", "Refreshing client");
+          Logger.log("PRONOTE", "Refreshing client");
           locks["recursive_" + lockName] = true;
         }
       }

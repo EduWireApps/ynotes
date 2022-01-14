@@ -80,7 +80,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
 
   Widget buildBackground(DownloadController model, Document document, {Widget? child}) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    CustomLogger.log("BOTTOM SHEETS", "(Files) is downloading: ${model.isDownloading}");
+    Logger.log("BOTTOM SHEETS", "(Files) is downloading: ${model.isDownloading}");
     if (model.isDownloading) {
       return FutureBuilder<Color>(
           future: getFileItemColor(model, document),

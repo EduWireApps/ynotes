@@ -19,7 +19,7 @@ class GradesUtils {
           averages.add(_average);
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint:"NQ==");
+        Logger.error(e, stackHint: "NQ==");
       }
     });
 
@@ -50,7 +50,7 @@ class GradesUtils {
               double.parse(grade.scale!.replaceAll(',', '.')) *
               double.parse((grade.weight ?? "1.0").replaceAll(',', '.'));
         } catch (e) {
-          CustomLogger.log("ERREUR TEST", e);
+          Logger.log("ERREUR TEST", e);
         }
       }
     }
@@ -70,7 +70,7 @@ class GradesUtils {
           _counter = tempCounter;
         }
       } catch (e) {
-        CustomLogger.log("ERREUR TEST", e);
+        Logger.log("ERREUR TEST", e);
       }
     }
     return _average / _counter;

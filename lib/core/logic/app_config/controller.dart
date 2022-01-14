@@ -96,8 +96,8 @@ class ApplicationSystem extends ChangeNotifier {
       }
       updateTheme("clair");
     } catch (e) {
-      CustomLogger.log("APPSYS", "Error occured when exiting the app");
-      CustomLogger.error(e, stackHint: "MzE=");
+      Logger.log("APPSYS", "Error occured when exiting the app");
+      Logger.error(e, stackHint: "MzE=");
     }
   }
 
@@ -145,7 +145,7 @@ class ApplicationSystem extends ChangeNotifier {
 
   /// Updates the theme. **WARNING:** will change.
   updateTheme(String themeName) {
-    CustomLogger.log("APPSYS", "Updating theme to $themeName");
+    Logger.log("APPSYS", "Updating theme to $themeName");
     themeData = appThemes[themeName];
     this.themeName = themeName;
     if (themeName == "clair") {
@@ -161,7 +161,7 @@ class ApplicationSystem extends ChangeNotifier {
 
   _initBackgroundFetch() async {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      CustomLogger.log("APPSYS", "Configuring background fetch");
+      Logger.log("APPSYS", "Configuring background fetch");
       int i = await BackgroundFetch.configure(
         BackgroundFetchConfig(
             minimumFetchInterval: 15,
@@ -182,7 +182,7 @@ class ApplicationSystem extends ChangeNotifier {
           BackgroundFetch.finish(taskId);
         },
       );
-      CustomLogger.log("APPSYS", "Background fetch configured: $i");
+      Logger.log("APPSYS", "Background fetch configured: $i");
     }
   }
 }

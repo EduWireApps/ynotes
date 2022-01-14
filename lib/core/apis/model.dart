@@ -26,7 +26,7 @@ abstract class API {
   Future<AppAccount?> account() async {
     String? appAccount = await KVS.read(key: "appAccount");
     if (appAccount != null) {
-      CustomLogger.log("API MODEL", "Returning account");
+      Logger.log("API MODEL", "Returning account");
       return AppAccount.fromJson(jsonDecode(appAccount));
     } else {
       return null;
@@ -190,7 +190,7 @@ class YConverter {
         LogsManager.saveLogs(logs: [YLog(category: logSlot!, comment: anonymizedData)], category: logSlot!);
         BugReport.prepareReportData();
       } catch (e) {
-        CustomLogger.log("CONVERTER", "Error anonymizing data");
+        Logger.log("CONVERTER", "Error anonymizing data");
       }
     }
     return converter(data);

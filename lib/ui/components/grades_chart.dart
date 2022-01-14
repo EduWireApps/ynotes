@@ -97,8 +97,8 @@ getHeight(var listValues, index, var screenSize, var lineSize, var gradeContaine
       return screenSize.size.height / 10 * 0.4;
     }
   } catch (e) {
-    CustomLogger.log("GRADES CHART", "An error occured while getting height");
-    CustomLogger.error(e, stackHint:"NTE=");
+    Logger.log("GRADES CHART", "An error occured while getting height");
+    Logger.error(e, stackHint: "NTE=");
     return screenSize.size.height / 10 * 0.4;
   }
 }

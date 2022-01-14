@@ -83,7 +83,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                           : () {
                               if (path != "/") {
                                 var splits = path.split("/");
-                                CustomLogger.log("CLOUD", "Splits length: ${splits.length}");
+                                Logger.log("CLOUD", "Splits length: ${splits.length}");
                                 if (splits.length > 2) {
                                   var finalList = splits.sublist(1, splits.length - 2);
                                   var concatenate = StringBuffer();
@@ -91,7 +91,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                   for (var item in finalList) {
                                     concatenate.write(r'/' + item);
                                   }
-                                  CustomLogger.log("CLOUD", "Concatenate: $concatenate");
+                                  Logger.log("CLOUD", "Concatenate: $concatenate");
                                   setState(() {
                                     path = concatenate.toString() + '/';
                                   });
@@ -384,7 +384,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
   }
 
   changeDirectory(CloudItem? item) async {
-    CustomLogger.log("CLOUD", "New path: $path");
+    Logger.log("CLOUD", "New path: $path");
     setState(() {
       cloudFolderFuture = getCloud(path, "CD", item);
       isLoading = true;

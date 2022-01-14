@@ -19,8 +19,8 @@ class PinnedHomeworkOffline {
       }
       return parsedList;
     } catch (e) {
-      CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
-      CustomLogger.error(e, stackHint:"Mzg=");
+      Logger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
+      Logger.error(e, stackHint: "Mzg=");
       return [];
     }
   }
@@ -33,8 +33,8 @@ class PinnedHomeworkOffline {
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
-      CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
-      CustomLogger.error(e, stackHint:"Mzk=");
+      Logger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
+      Logger.error(e, stackHint: "Mzk=");
       return null;
     }
   }
@@ -44,8 +44,8 @@ class PinnedHomeworkOffline {
     try {
       await parent.pinnedHomeworkBox?.put(date, value);
     } catch (e) {
-      CustomLogger.log("PINNED HOMEWORK", "An error occured during the setPinnedHomeworkDateProcess");
-      CustomLogger.error(e, stackHint:"NDA=");
+      Logger.log("PINNED HOMEWORK", "An error occured during the setPinnedHomeworkDateProcess");
+      Logger.error(e, stackHint: "NDA=");
     }
   }
 }

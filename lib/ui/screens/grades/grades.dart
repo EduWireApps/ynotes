@@ -266,7 +266,7 @@ class _GradesPageState extends State<GradesPage> with LayoutMixin {
                               .disciplines()!
                               .lastWhere((disciplinesList) => disciplinesList.periodName == model.period);
                         } catch (e) {
-                          CustomLogger.error(e, stackHint: "NA==");
+                          Logger.error(e, stackHint: "NA==");
                         }
 
                         //If everything is ok, show stuff

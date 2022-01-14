@@ -196,8 +196,8 @@ class _ShareBoxState extends State<ShareBox> {
       setState(() {});
       return pngBytes;
     } catch (e) {
-      CustomLogger.log("DIALOGS", "(Share grade) AN error occured while trying to screenshot");
-      CustomLogger.error(e, stackHint: "NTc=");
+      Logger.log("DIALOGS", "(Share grade) AN error occured while trying to screenshot");
+      Logger.error(e, stackHint: "NTc=");
     }
   }
 }

@@ -248,8 +248,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                           } else {
                             return GestureDetector(
                               onTap: () async {
-                                CustomLogger.log(
-                                    "BOTTOM SHEET", "(Agenda event details) Reminders ${reminders[index]}");
+                                Logger.log("BOTTOM SHEET", "(Agenda event details) Reminders ${reminders[index]}");
 
                                 var reminder = await agendaEventEdit(context, false,
                                     lessonID: widget.event.id, reminder: reminders[index]);

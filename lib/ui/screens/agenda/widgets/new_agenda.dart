@@ -35,7 +35,7 @@ class _Agenda2State extends State<Agenda2> {
                     appSys.agendaController
                         .setDay(CalendarTime(DateTime.now()).startOfDay.add(Duration(days: (position - 365))));
 
-                    CustomLogger.log("NEW AGENDA", "Page position: $position");
+                    Logger.log("NEW AGENDA", "Page position: $position");
                   },
                   preloadPagesCount: 3,
                   controller: con,

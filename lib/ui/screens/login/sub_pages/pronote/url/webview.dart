@@ -38,9 +38,9 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
 
   getCredentials(String credsData) {
     if (credsData.isNotEmpty) {
-      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData, save: false);
+      Logger.logWrapped("LOGIN", "Credentials data", credsData, save: false);
       final Map<String, dynamic> decoded = json.decode(credsData);
-      CustomLogger.log("LOGIN", "(Web view) Status: ${decoded["status"]}");
+      Logger.log("LOGIN", "(Web view) Status: ${decoded["status"]}");
       if (decoded["status"] == 0) {
         if (!authenticated) {
           Navigator.of(context).pop(decoded);
@@ -51,7 +51,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
       } else {}
     } else {
       //This can happen if the page is not fully loaded
-      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
+      Logger.log("LOGIN", "(Web view) Credentials are null");
     }
   }
 
@@ -130,7 +130,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                     onLoadError: (a, b, c, d) {},
                     onLoadStop: (controller, url) async {
                       if (!cookiesSet) {
-                        CustomLogger.log("LOGIN", "(Web view) Setting cookie");
+                        Logger.log("LOGIN", "(Web view) Setting cookie");
                         // generate UUID
                         appSys.settings.system.uuid = const Uuid().v4();
                         appSys.saveSettings();
@@ -161,7 +161,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                           await (_controller!.evaluateJavascript(source: redirectScript));
                         }
                       } else {
-                        CustomLogger.log("LOGIN", "(Web view) Validating profile");
+                        Logger.log("LOGIN", "(Web view) Validating profile");
                         timer ??= Timer.periodic(const Duration(milliseconds: 2000), (_) async {
                           if (!authenticated) {
                             const String script =

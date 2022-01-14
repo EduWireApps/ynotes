@@ -22,8 +22,8 @@ class DoneHomeworkOffline {
     try {
       return parent.homeworkDoneBox!.keys.length;
     } catch (e) {
-      CustomLogger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
-      CustomLogger.error(e, stackHint:"MzI=");
+      Logger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
+      Logger.error(e, stackHint: "MzI=");
       return 0;
     }
   }
@@ -40,19 +40,19 @@ class DoneHomeworkOffline {
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
-      CustomLogger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
-      CustomLogger.error(e, stackHint:"MzM=");
+      Logger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
+      Logger.error(e, stackHint: "MzM=");
       return false;
     }
   }
 
   setHWCompletion(String? id, bool? state) async {
-    CustomLogger.log("DONE HOMEWORK", "Setting homework state to $state");
+    Logger.log("DONE HOMEWORK", "Setting homework state to $state");
     try {
       await parent.homeworkDoneBox!.put(id.toString(), state);
     } catch (e) {
-      CustomLogger.log("DONE HOMEWORK", "An error occured during the setHomeworkDoneProcess");
-      CustomLogger.error(e, stackHint:"MzQ=");
+      Logger.log("DONE HOMEWORK", "An error occured during the setHomeworkDoneProcess");
+      Logger.error(e, stackHint: "MzQ=");
     }
   }
 }

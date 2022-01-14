@@ -35,8 +35,8 @@ class RecurringEventSchemes {
         selectedDays.add(i - 1);
       }
     }
-    CustomLogger.log("RECURRING EVENTS", "Selected days: $selectedDays");
-    CustomLogger.log("RECURRING EVENTS", "Date: $date");
+    Logger.log("RECURRING EVENTS", "Selected days: $selectedDays");
+    Logger.log("RECURRING EVENTS", "Date: $date");
     return (stringScheme.length == 9 &&
         (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date!.weekday)) ||
             stringScheme[1] == "1"));

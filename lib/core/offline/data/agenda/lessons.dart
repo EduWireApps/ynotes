@@ -14,8 +14,8 @@ class LessonsOffline {
     try {
       return parent.agendaBox?.get("lessons")?[week]?.cast<Lesson>();
     } catch (e) {
-      CustomLogger.log("LESSONS", "An error occurred while returning lessons");
-      CustomLogger.error(e, stackHint:"MjE=");
+      Logger.log("LESSONS", "An error occurred while returning lessons");
+      Logger.error(e, stackHint: "MjE=");
       return null;
     }
   }
@@ -24,7 +24,7 @@ class LessonsOffline {
   ///shorten fetching delays, it should ALWAYS be from a same starting point
   updateLessons(List<Lesson> newData, int week) async {
     try {
-      CustomLogger.log("LESSONS", "Update offline lessons (week : $week, length : ${newData.length})");
+      Logger.log("LESSONS", "Update offline lessons (week : $week, length : ${newData.length})");
       Map<dynamic, dynamic> timeTable = {};
       var offline = await parent.agendaBox?.get("lessons");
       if (offline != null) {
@@ -46,8 +46,8 @@ class LessonsOffline {
 
       return true;
     } catch (e) {
-      CustomLogger.log("LESSONS", "An error occurred while updating offline lessons");
-      CustomLogger.error(e, stackHint:"MjI=");
+      Logger.log("LESSONS", "An error occurred while updating offline lessons");
+      Logger.error(e, stackHint: "MjI=");
     }
   }
 }

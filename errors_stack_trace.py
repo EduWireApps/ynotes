@@ -3,16 +3,16 @@ import os.path
 import re
 from os import replace
 
-# README : The goal of this file is to get a list of every files containing a call to CustomLogger.
-# We are then able to get a full stacktrace (with file name and line) at each call of CustomLogger.error()
-# This script should be runned at each add of a CustomLogger.error()
+# README : The goal of this file is to get a list of every files containing a call to Logger.
+# We are then able to get a full stacktrace (with file name and line) at each call of Logger.error()
+# This script should be runned at each add of a Logger.error()
 rootdir=('./lib')
 
 
-# In this function we will walk into the whole directory to search for CustomLogger.error calls
-# Each time we encounter a CustomLogger.error() we add its line and the filename to a dictionnary
+# In this function we will walk into the whole directory to search for Logger.error calls
+# Each time we encounter a Logger.error() we add its line and the filename to a dictionnary
 def metas():
-    pattern = "CustomLogger\.error\(e(.*stackHint\:\"(.*)\")?\)"
+    pattern = "Logger\.error\(e(.*stackHint\:\"(.*)\")?\)"
     counter = 0
     dic = {}
     for folder, dirs, files in os.walk(rootdir):
@@ -30,7 +30,7 @@ def metas():
                             base64_bytes = base64.b64encode(line_bytes)
                             base64_string = base64_bytes.decode('ascii')
                             dic[base64_string] = {"line":line_counter,"file_path": fullpath}
-                            changes =  re.sub(pattern, ('CustomLogger.error(e, stackHint:"' + base64_string +'")'), line)
+                            changes =  re.sub(pattern, ('Logger.error(e, stackHint:"' + base64_string +'")'), line)
                             replacement = replacement + changes
                             counter += 1 
                         else:

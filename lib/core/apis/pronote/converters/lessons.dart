@@ -19,8 +19,7 @@ class PronoteLessonsConverter {
     for (Map? endTime in (client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V'])) {
       if (endTime?['G'] == endPlace) {
         if (endTime != null) {
-          CustomLogger.log(
-              "PRONOTE", "Lessons: " + matiere! + " " + "START " + start.toString() + " END " + endTime["L"]);
+          Logger.log("PRONOTE", "Lessons: " + matiere! + " " + "START " + start.toString() + " END " + endTime["L"]);
         }
         DateTime endTimeDate = DateFormat("""HH'h'mm""").parse(endTime?["L"]);
         end = DateTime(start.year, start.month, start.day, endTimeDate.hour, endTimeDate.minute);
@@ -35,7 +34,7 @@ class PronoteLessonsConverter {
 
     //Sort of null aware
     catch (e) {
-      CustomLogger.error(e, stackHint: "MTc=");
+      Logger.error(e, stackHint: "MTc=");
     }
     List<String?> teachers = [];
     try {
@@ -45,7 +44,7 @@ class PronoteLessonsConverter {
         }
       });
     } catch (e) {
-      CustomLogger.error(e, stackHint: "MTg=");
+      Logger.error(e, stackHint: "MTg=");
     }
 
     //Some attributes
@@ -88,7 +87,7 @@ class PronoteLessonsConverter {
       try {
         lessonsList.add(PronoteLessonsConverter.lesson(client, lesson));
       } catch (e) {
-        CustomLogger.error(e, stackHint: "MTk=");
+        Logger.error(e, stackHint: "MTk=");
       }
     }
     return lessonsList;

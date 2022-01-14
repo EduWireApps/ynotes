@@ -106,12 +106,12 @@ class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     for (final route in routes) {
       if (settings.name == route.path) {
-        CustomLogger.log("ROUTER", 'Going to "${settings.name}".');
+        Logger.log("ROUTER", 'Going to "${settings.name}".');
         return _generateRoute(route, settings);
       }
     }
 
-    CustomLogger.log("ROUTER", 'Route "${settings.name}" not found.');
+    Logger.log("ROUTER", 'Route "${settings.name}" not found.');
     return _generateRoute(const AppRoute(path: "", widget: ErrorPage()), settings);
   }
 

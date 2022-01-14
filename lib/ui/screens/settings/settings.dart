@@ -95,8 +95,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: "Secure Logger",
                           subtitle: "Print secure logger categories",
                           onTap: () async {
-                            CustomLogger.log("Test", "test");
-                            CustomLogger.log("SECURE LOGGER", "Categories: ${await LogsManager.getCategories()}");
+                            Logger.log("Test", "test");
+                            Logger.log("SECURE LOGGER", "Categories: ${await LogsManager.getCategories()}");
                           }),
                     ])
                 ])));

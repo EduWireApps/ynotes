@@ -11,8 +11,8 @@ class MailsOffline {
     try {
       return parent.mailsBox?.values.toList();
     } catch (e) {
-      CustomLogger.log("MAILS", "An error occured while returning mail");
-      CustomLogger.error(e, stackHint:"NDE=");
+      Logger.log("MAILS", "An error occured while returning mail");
+      Logger.error(e, stackHint: "NDE=");
       return null;
     }
   }
@@ -28,7 +28,7 @@ class MailsOffline {
 
   ///Update existing mails with passed data
   updateMails(List<Mail> mails) async {
-    CustomLogger.log("MAILS", "Update offline mails");
+    Logger.log("MAILS", "Update offline mails");
     try {
       List<Mail>? oldMails = [];
       if (parent.mailsBox?.values != null) {
@@ -51,12 +51,12 @@ class MailsOffline {
           ?.where((oldMail) => mails.any((newMail) => newMail.id == oldMail.id));
       if (old != null) {
         mails.removeWhere((newMail) => old.any((oldMail) => oldMail.id == newMail.id));
-        CustomLogger.log("MAILS", "Mails length: ${mails.length}");
+        Logger.log("MAILS", "Mails length: ${mails.length}");
       }
       await parent.mailsBox?.addAll(mails);
     } catch (e) {
-      CustomLogger.log("MAILS", "An error occured while updating mail");
-      CustomLogger.error(e, stackHint:"NDI=");
+      Logger.log("MAILS", "An error occured while updating mail");
+      Logger.error(e, stackHint: "NDI=");
     }
   }
 }

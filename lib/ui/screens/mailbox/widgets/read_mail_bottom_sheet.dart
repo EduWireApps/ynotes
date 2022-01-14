@@ -31,7 +31,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
 
   @override
   Widget build(BuildContext context) {
-    CustomLogger.log("BOTTOM SHEET", "(Read mail) Mail id: ${widget.mail.id}");
+    Logger.log("BOTTOM SHEET", "(Read mail) Mail id: ${widget.mail.id}");
     MediaQueryData screenSize = MediaQuery.of(context);
     return Wrap(
       alignment: WrapAlignment.center,

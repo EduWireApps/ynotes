@@ -73,8 +73,8 @@ class FileAppUtil {
         try {
           file = Directory(path).listSync();
         } catch (e) {
-          CustomLogger.log("FILE UTILS", "An error occured while getting the file list");
-          CustomLogger.error(e, stackHint: "MjU=");
+          Logger.log("FILE UTILS", "An error occured while getting the file list");
+          Logger.error(e, stackHint: "MjU=");
         }
         //use your folder name insted of resume.
         List<FileInfo> listFiles = [];
@@ -84,8 +84,8 @@ class FileAppUtil {
             listFiles.add(FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
-            CustomLogger.log("FILE UTILS", "An error occured while adding file to list");
-            CustomLogger.error(e, stackHint: "MjY=");
+            Logger.log("FILE UTILS", "An error occured while adding file to list");
+            Logger.error(e, stackHint: "MjY=");
           }
         });
 
@@ -108,7 +108,7 @@ class FileAppUtil {
         return null;
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint: "Mjc=");
+      Logger.error(e, stackHint: "Mjc=");
     }
   }
 
@@ -130,8 +130,8 @@ class FileAppUtil {
 
       await OpenFile.open(path!);
     } catch (e) {
-      CustomLogger.log("FILE UTILS", "An error occured while opening file");
-      CustomLogger.error(e, stackHint: "Mjg=");
+      Logger.log("FILE UTILS", "An error occured while opening file");
+      Logger.error(e, stackHint: "Mjg=");
     }
   }
 
@@ -145,14 +145,14 @@ class FileAppUtil {
   }
 
   static writeInFile(String data, String fileName) async {
-    CustomLogger.log("FILE UTILS", "Writing file");
+    Logger.log("FILE UTILS", "Writing file");
     try {
       final directory = await FolderAppUtil.getDirectory();
       final File file = File('${directory.path}/$fileName.txt');
       await file.writeAsString(data, mode: FileMode.write);
     } catch (e) {
-      CustomLogger.log("FILE UTILS", "An error occured while writing $fileName²");
-      CustomLogger.error(e, stackHint: "Mjk=");
+      Logger.log("FILE UTILS", "An error occured while writing $fileName²");
+      Logger.error(e, stackHint: "Mjk=");
     }
   }
 }
@@ -172,7 +172,7 @@ class FolderAppUtil {
     final Directory dir = Directory(path);
     if (!await dir.exists()) {
       await dir.create(recursive: true);
-      CustomLogger.log("FILE UTILS", "Created $path folder");
+      Logger.log("FILE UTILS", "Created $path folder");
     }
     return dir;
   }

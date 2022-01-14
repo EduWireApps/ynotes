@@ -71,7 +71,7 @@ class GradesController extends ChangeNotifier {
 
   //Get school periods;
   Future<void> refresh({bool force = false, bool refreshFromOffline = false}) async {
-    CustomLogger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
+    Logger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
     if (isSimulating && force) {
       isSimulating = false;
     }
@@ -148,7 +148,7 @@ class GradesController extends ChangeNotifier {
             classNumber: e.classNumber,
             generalRank: e.generalRank))
         .toList());
-    CustomLogger.log("GRADES", "Merging");
+    Logger.log("GRADES", "Merging");
     for (var discipline in _simulatedDisciplines) {
       discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
           element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
@@ -273,7 +273,7 @@ class GradesController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            CustomLogger.log("GRADES", "Specialties list is null");
+            Logger.log("GRADES", "Specialties list is null");
           }
           break;
       }
@@ -311,7 +311,7 @@ class GradesController extends ChangeNotifier {
           averages.add(_average);
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint: "Mzg=");
+        Logger.error(e, stackHint: "Mzg=");
       }
     }
 

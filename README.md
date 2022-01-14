@@ -160,9 +160,9 @@ L'organisation des fichiers est néanmoins succeptible de changer.
 
 N'utilisez pas de `print(text);` mais plutôt:
 
-- `CustomLogger.log(object, text);`
-- `CustomLogger.logWrapped(object, description, text);`
-- `CustomLogger.error(e);`
+- `Logger.log(object, text);`
+- `Logger.logWrapped(object, description, text);`
+- `Logger.error(e);`
 
 ### Déboguer une application déjà installée
 

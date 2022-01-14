@@ -105,10 +105,10 @@ class Communication {
     } catch (e) {
       isOldAPIUsed = false;
       client.stepsLogger.add("ⓘ 2020 API");
-      CustomLogger.log("PRONOTE", "Surely using the 2020 API");
+      Logger.log("PRONOTE", "Surely using the 2020 API");
     }
     var key = md5.convert(toBytes(work));
-    CustomLogger.log("PRONOTE", "New key : $key");
+    Logger.log("PRONOTE", "New key : $key");
     encryption.aesKey = key;
   }
 
@@ -120,13 +120,13 @@ class Communication {
   }
 
   Future<List<Object?>> initialise() async {
-    CustomLogger.log("PRONOTE", "Getting hostname");
+    Logger.log("PRONOTE", "Getting hostname");
     // get rsa keys and session id
     String hostName = Requests.getHostname(rootSite + "/" + htmlPage);
 
     //set the cookies for ENT
     if (cookies != null) {
-      CustomLogger.log("PRONOTE", "Cookies set");
+      Logger.log("PRONOTE", "Cookies set");
       Requests.setStoredCookies(hostName, cookies);
     }
 
@@ -146,9 +146,9 @@ class Communication {
     } else {
       url += "?fd=1";
     }
-    CustomLogger.log("PRONOTE", "Url is $url");
+    Logger.log("PRONOTE", "Url is $url");
     client.stepsLogger.add("ⓘ Used url is `$url`");
-    CustomLogger.log("PRONOTE", (client.mobileLogin ?? false) ? "CAS" : "NOT CAS");
+    Logger.log("PRONOTE", (client.mobileLogin ?? false) ? "CAS" : "NOT CAS");
 //?fd=1 bypass the old navigator issue
     var getResponse = await Requests.get(url, headers: headers).catchError((e) {
       client.stepsLogger.add("❌ Failed login request " + e.toString());
@@ -157,7 +157,7 @@ class Communication {
     client.stepsLogger.add("✅ Posted login request");
 
     if (getResponse.hasError) {
-      CustomLogger.log("PRONOTE", "|pImpossible de se connecter à l'adresse fournie");
+      Logger.log("PRONOTE", "|pImpossible de se connecter à l'adresse fournie");
     }
 
     attributes = parseHtml(getResponse.content());
@@ -189,7 +189,7 @@ class Communication {
     var onload = parsed.getElementById("id_body");
 
     String onloadC;
-    CustomLogger.log("PRONOTE", onload.toString());
+    Logger.log("PRONOTE", onload.toString());
     if (onload != null) {
       onloadC = onload.attributes["onload"]!.substring(14, onload.attributes["onload"]!.length - 37);
     } else {
@@ -220,16 +220,16 @@ class Communication {
     }
 
     if (shouldCompressRequests) {
-      CustomLogger.log("PRONOTE", "Compress request");
+      Logger.log("PRONOTE", "Compress request");
       data = conv.jsonEncode(data);
 
-      CustomLogger.log("PRONOTE", data);
+      Logger.log("PRONOTE", data);
       var zlibInstance = ZLibCodec(level: 6, raw: true);
       data = zlibInstance.encode(conv.utf8.encode(conv.hex.encode(conv.utf8.encode(data))));
       client.stepsLogger.add("✅ Compressed request");
     }
     if (shouldEncryptRequests) {
-      CustomLogger.log("PRONOTE", "Encrypt requests");
+      Logger.log("PRONOTE", "Encrypt requests");
       data = encryption.aesEncrypt(data);
       client.stepsLogger.add("✅ Encrypted request");
     }
@@ -242,12 +242,12 @@ class Communication {
       'donneesSec': data
     };
     String pSite = rootSite + '/appelfonction/' + attributes!['a'] + '/' + attributes!['h'] + '/' + rNumber;
-    CustomLogger.log("PRONOTE", pSite);
+    Logger.log("PRONOTE", pSite);
 
     requestNumber += 2;
-    CustomLogger.log("PRONOTE", json.toString());
+    Logger.log("PRONOTE", json.toString());
     var response = await Requests.post(pSite, json: json).catchError((onError) {
-      CustomLogger.log("PRONOTE", "Error occured during request : $onError");
+      Logger.log("PRONOTE", "Error occured during request : $onError");
     });
 
     lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
@@ -256,8 +256,8 @@ class Communication {
       throw "Status code: ${response.statusCode}";
     }
     if (response.content().contains("Erreur")) {
-      CustomLogger.log("PRONOTE", "Error occured");
-      CustomLogger.log("PRONOTE", response.content());
+      Logger.log("PRONOTE", "Error occured");
+      Logger.log("PRONOTE", response.content());
       var responseJson = response.json();
 
       if (responseJson["Erreur"]['G'] == 22) {
@@ -278,16 +278,16 @@ class Communication {
     }
 
     if (decryptionChange != null) {
-      CustomLogger.log("PRONOTE", "decryption change");
+      Logger.log("PRONOTE", "decryption change");
       if (decryptionChange.toString().contains("iv")) {
-        CustomLogger.log("PRONOTE", "decryption_change contains IV");
-        CustomLogger.log("PRONOTE", decryptionChange['iv']);
+        Logger.log("PRONOTE", "decryption_change contains IV");
+        Logger.log("PRONOTE", decryptionChange['iv']);
         encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
       }
 
       if (decryptionChange.toString().contains("key")) {
-        CustomLogger.log("PRONOTE", "decryption_change contains key");
-        CustomLogger.log("PRONOTE", decryptionChange['key']);
+        Logger.log("PRONOTE", "decryption_change contains key");
+        Logger.log("PRONOTE", decryptionChange['key']);
         encryption.aesKey = decryptionChange['key'];
       }
     }
@@ -296,7 +296,7 @@ class Communication {
 
     if (shouldEncryptRequests) {
       responseData['donneesSec'] = encryption.aesDecryptAsBytes(conv.hex.decode(responseData['donneesSec']));
-      CustomLogger.log("PRONOTE", "décrypté données sec");
+      Logger.log("PRONOTE", "décrypté données sec");
       client.stepsLogger.add("✅ Decrypted response");
     }
     var zlibInstanceDecoder = ZLibDecoder(raw: true);
@@ -343,7 +343,7 @@ class Encryption {
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
-    CustomLogger.log("PRONOTE", aesIV?.base16.toString() ?? "");
+    Logger.log("PRONOTE", aesIV?.base16.toString() ?? "");
 
     try {
       return aesEncrypter.decrypt64(conv.base64.encode(data), iv: aesIV);
@@ -357,7 +357,7 @@ class Encryption {
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
-    CustomLogger.log("PRONOTE", aesIV.toString());
+    Logger.log("PRONOTE", aesIV.toString());
 
     try {
       return aesEncrypter.decryptBytes(Encrypted.from64(conv.base64.encode(data)), iv: aesIV);
@@ -370,9 +370,9 @@ class Encryption {
     try {
       dynamic iv;
       var key = Key.fromBase16(aesKey.toString());
-      CustomLogger.log("PRONOTE", "KEY :" + aesKey.toString());
+      Logger.log("PRONOTE", "KEY :" + aesKey.toString());
       iv = aesIV;
-      CustomLogger.log("PRONOTE", iv.base16);
+      Logger.log("PRONOTE", iv.base16);
       final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
       final encrypted = encrypter.encryptBytes(data, iv: iv).base16;
 
@@ -404,7 +404,7 @@ class Encryption {
 
   rsaEncrypt(Uint8List data) async {
     try {
-      CustomLogger.log("PRONOTE", rsaKeys.toString());
+      Logger.log("PRONOTE", rsaKeys.toString());
       String? modulusBytes = rsaKeys['MR'];
 
       var modulus = BigInt.parse(modulusBytes!, radix: 16);
@@ -489,7 +489,7 @@ class PronoteClient {
       {String? username, String? password, var cookies, this.mobileLogin, this.qrCodeLogin}) {
     this.username = username ?? "";
     this.password = password ?? "";
-    CustomLogger.log("PRONOTE", "Initiate communication");
+    Logger.log("PRONOTE", "Initiate communication");
 
     communication = Communication(pronoteUrl, cookies, this);
   }
@@ -507,10 +507,10 @@ class PronoteClient {
           libelle +
           '?Session=' +
           attributes['h'].toString();
-      if (url != null) CustomLogger.log("PRONOTE", url);
+      if (url != null) Logger.log("PRONOTE", url);
       return url;
     } catch (e) {
-      CustomLogger.error(e, stackHint: "MTM=");
+      Logger.error(e, stackHint: "MTM=");
     }
   }
 
@@ -532,10 +532,10 @@ class PronoteClient {
     funcOptions = attributesandfunctions[1];
 
     if (attributes["e"] != null && attributes["f"] != null) {
-      CustomLogger.log("PRONOTE", "LOGIN AS ENT");
+      Logger.log("PRONOTE", "LOGIN AS ENT");
       ent = true;
     } else {
-      CustomLogger.log("PRONOTE", "LOGIN AS REGULAR USER");
+      Logger.log("PRONOTE", "LOGIN AS REGULAR USER");
       ent = false;
     }
     stepsLogger.add("✅ Login passed : using " + ((ent ?? false) ? "ent" : "direct") + "connection");
@@ -607,21 +607,21 @@ class PronoteClient {
         try {
           listToReturn.add(PronoteConverter.lesson(this, lesson));
         } catch (e) {
-          CustomLogger.error(e, stackHint:"NA==");
+          Logger.error(e, stackHint:"NA==");
         }
       });
-      CustomLogger.log("PRONOTE", "Agenda collecte succeeded");
+      Logger.log("PRONOTE", "Agenda collecte succeeded");
       return listToReturn;
     }*/
   }
 
   List<PronotePeriod> periods() {
-    CustomLogger.log("PRONOTE", "GETTING PERIODS");
+    Logger.log("PRONOTE", "GETTING PERIODS");
     dynamic json;
     try {
       json = funcOptions['donneesSec']['donnees']['General']['ListePeriodes'];
     } catch (e) {
-      CustomLogger.log("PRONOTE", "ERROR WHILE PARSING JSON " + e.toString());
+      Logger.log("PRONOTE", "ERROR WHILE PARSING JSON " + e.toString());
     }
 
     List<PronotePeriod> toReturn = [];
@@ -632,7 +632,7 @@ class PronoteClient {
   }
 
   refresh() async {
-    CustomLogger.log("PRONOTE", "Reinitialisation");
+    Logger.log("PRONOTE", "Reinitialisation");
 
     communication = Communication(pronoteUrl, null, this);
     var future = await communication!.initialise();
@@ -652,14 +652,14 @@ class PronoteClient {
         .parse(funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
 
     oneHourDuration = hourEnd.difference(hourStart).inMinutes;
-    CustomLogger.log("PRONOTE", "ohduration " + oneHourDuration.toString());
+    Logger.log("PRONOTE", "ohduration " + oneHourDuration.toString());
 
     expired = true;
   }
 
   setPollRead(String meta) async {
     var user = paramsUser?['donneesSec']['donnees']['ressource'];
-    CustomLogger.log("PRONOTE", user);
+    Logger.log("PRONOTE", user);
     List metas = meta.split("/");
     Map data = {
       "_Signature_": {"onglet": 8},
@@ -681,7 +681,7 @@ class PronoteClient {
     };
 
     var response = await communication!.post('SaisieActualites', data: data);
-    CustomLogger.log("PRONOTE", response);
+    Logger.log("PRONOTE", response);
   }
 
   setPollResponse(String meta) async {
@@ -718,9 +718,9 @@ class PronoteClient {
         }
       };
       var response = await communication!.post('SaisieActualites', data: data);
-      CustomLogger.log("PRONOTE", response);
+      Logger.log("PRONOTE", response);
     } catch (e) {
-      CustomLogger.error(e, stackHint: "MTU=");
+      Logger.error(e, stackHint: "MTU=");
     }
   }
 
@@ -737,9 +737,9 @@ class PronoteClient {
       await KVS.write(key: "pronoteurl", value: pronoteUrl);
       await KVS.write(key: "ispronotecas", value: ((mobileLogin ?? false) || (qrCodeLogin ?? false)).toString());
 
-      CustomLogger.log("PRONOTE", "Saved credentials");
+      Logger.log("PRONOTE", "Saved credentials");
     } catch (e) {
-      CustomLogger.log("PRONOTE", "failed to write values");
+      Logger.log("PRONOTE", "failed to write values");
     }
     if (ent != null && ent!) {
       username = attributes['e'];
@@ -761,8 +761,8 @@ class PronoteClient {
     var idr = await communication!.post("Identification", data: {'donnees': indentJson});
     stepsLogger.add("✅ Posted identification successfully");
 
-    CustomLogger.log("PRONOTE", "Identification");
-    CustomLogger.log(
+    Logger.log("PRONOTE", "Identification");
+    Logger.log(
         "PRONOTE",
         "Using following credentials : " +
             username +
@@ -786,21 +786,21 @@ class PronoteClient {
 
       //Convert credentials to lowercase if needed (API returns 1)
       if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog'] != 0) {
-        CustomLogger.log("PRONOTE", "LOWER CASE ID");
-        CustomLogger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompLog'].toString());
+        Logger.log("PRONOTE", "LOWER CASE ID");
+        Logger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompLog'].toString());
         u = u.toString().toLowerCase();
         stepsLogger.add("ⓘ Lowercased id");
       }
 
       if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
-        CustomLogger.log("PRONOTE", "LOWER CASE PASSWORD");
-        CustomLogger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompMdp'].toString());
+        Logger.log("PRONOTE", "LOWER CASE PASSWORD");
+        Logger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompMdp'].toString());
         p = p.toString().toLowerCase();
         stepsLogger.add("ⓘ Lowercased password");
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
-      CustomLogger.log("PRONOTE", alea);
+      Logger.log("PRONOTE", alea);
       List<int> encoded = conv.utf8.encode((alea ?? "") + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = conv.hex.encode(motdepasse.bytes);
@@ -821,7 +821,7 @@ class PronoteClient {
     stepsLogger.add("✅ Identification passed");
 
     try {
-      CustomLogger.log("PRONOTE", "Authentification");
+      Logger.log("PRONOTE", "Authentification");
       authResponse =
           await communication!.post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
     } catch (e) {
@@ -832,7 +832,7 @@ class PronoteClient {
     try {
       if ((mobileLogin == true || qrCodeLogin == true) &&
           authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"] != null) {
-        CustomLogger.log("PRONOTE", "Saving token");
+        Logger.log("PRONOTE", "Saving token");
         await KVS.write(key: "password", value: authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
         password = authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];
       }
@@ -853,20 +853,20 @@ class PronoteClient {
             } catch (e) {
               stepsLogger.add("❌ Failed to register UserInfos");
 
-              CustomLogger.log("PRONOTE", "Failed to register UserInfos");
-              CustomLogger.error(e, stackHint: "MTY=");
+              Logger.log("PRONOTE", "Failed to register UserInfos");
+              Logger.error(e, stackHint: "MTY=");
             }
           } catch (e) {
             stepsLogger.add("ⓘ Using old api ");
 
-            CustomLogger.log("PRONOTE", "Surely using OLD API");
+            Logger.log("PRONOTE", "Surely using OLD API");
           }
         }
 
-        CustomLogger.log("PRONOTE", "Successfully logged in as $username");
+        Logger.log("PRONOTE", "Successfully logged in as $username");
         return true;
       } else {
-        CustomLogger.log("PRONOTE", "Login failed");
+        Logger.log("PRONOTE", "Login failed");
         return false;
       }
     } catch (e) {
@@ -918,7 +918,7 @@ class PronotePeriod {
     //The average data for the given matiere
 
     var averageData = services.firstWhere((element) => element["L"].hashCode.toString() == codeMatiere);
-    //CustomLogger.log("PRONOTE", averageData["moyEleve"]["V"]);
+    //Logger.log("PRONOTE", averageData["moyEleve"]["V"]);
 
     return [
       gradeTranslate(averageData["moyEleve"]["V"]),

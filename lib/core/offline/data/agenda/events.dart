@@ -17,7 +17,7 @@ class AgendaEventsOffline {
       if (offline != null) {
         timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("agendaEvents"));
       }
-      CustomLogger.log("EVENTS", "Timetable: $timeTable");
+      Logger.log("EVENTS", "Timetable: $timeTable");
       if (timeTable[id] != null) {
         events.addAll(timeTable[id].cast<AgendaEvent>());
         events.removeWhere((element) => element.id == newData.id);
@@ -26,10 +26,10 @@ class AgendaEventsOffline {
       //Update the timetable
       timeTable.update(id, (value) => events, ifAbsent: () => events);
       await parent.agendaBox?.put("agendaEvents", timeTable);
-      CustomLogger.log("EVENTS", "Update offline agenda events (id : $id)");
+      Logger.log("EVENTS", "Update offline agenda events (id : $id)");
     } catch (e) {
-      CustomLogger.log("EVENTS", "An error occured while updating offline agenda events");
-      CustomLogger.error(e, stackHint:"MTg=");
+      Logger.log("EVENTS", "An error occured while updating offline agenda events");
+      Logger.error(e, stackHint: "MTg=");
     }
   }
 
@@ -41,8 +41,8 @@ class AgendaEventsOffline {
         return parent.agendaBox?.get("agendaEvents")?[week]?.cast<AgendaEvent>().where(await selector).toList();
       }
     } catch (e) {
-      CustomLogger.log("EVENTS", "An error occured while returning agenda events for week $week");
-      CustomLogger.error(e, stackHint:"MTk=");
+      Logger.log("EVENTS", "An error occured while returning agenda events for week $week");
+      Logger.error(e, stackHint: "MTk=");
       return null;
     }
   }
@@ -59,14 +59,14 @@ class AgendaEventsOffline {
       if (timeTable[fetchID] != null) {
         events.addAll(timeTable[fetchID].cast<AgendaEvent>());
         events.removeWhere((element) => element.id == id);
-        CustomLogger.log("EVENTS", "Removed offline agenda event (fetchID : $fetchID, id: $id)");
+        Logger.log("EVENTS", "Removed offline agenda event (fetchID : $fetchID, id: $id)");
       }
       //Update the timetable
       timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
       await parent.agendaBox?.put("agendaEvents", timeTable);
     } catch (e) {
-      CustomLogger.log("EVENTS", "An error occured while removing offline agenda events");
-      CustomLogger.error(e, stackHint:"MjA=");
+      Logger.log("EVENTS", "An error occured while removing offline agenda events");
+      Logger.error(e, stackHint: "MjA=");
     }
   }
 }

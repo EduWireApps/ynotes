@@ -27,15 +27,15 @@ class ExampleOffline {
       //Caution box can be null
       return parent.exampleBox?.values.toList();
     } catch (e) {
-      CustomLogger.log("EXAMPLE", "An error occured while returning example");
-      CustomLogger.error(e, stackHint:"MzA=");
+      Logger.log("EXAMPLE", "An error occured while returning example");
+      Logger.error(e, stackHint: "MzA=");
       return null;
     }
   }
 
   ///Here we update existing data : but we don't want every fields to be updated each time
   update(List<Example> newExamples) async {
-    CustomLogger.log("EXAMPLE", "Update examples (length : ${newExamples.length})");
+    Logger.log("EXAMPLE", "Update examples (length : ${newExamples.length})");
     try {
       //Here we get already persisted data
       List<Example>? oldExamples = [];
@@ -63,14 +63,14 @@ class ExampleOffline {
           ?.where((oldExample) => newExamples.any((newExample) => newExample.id == oldExample.id));
       if (old != null) {
         newExamples.removeWhere((newExample) => old.any((oldExample) => newExample.id == oldExample.id));
-        CustomLogger.log("EXAMPLE", "New examples length: ${newExamples.length}");
+        Logger.log("EXAMPLE", "New examples length: ${newExamples.length}");
       }
 
       //We add to the database the others
       await parent.exampleBox?.addAll(newExamples);
     } catch (e) {
-      CustomLogger.log("EXAMPLE", "An error occured while updating examples");
-      CustomLogger.error(e, stackHint:"MzE=");
+      Logger.log("EXAMPLE", "An error occured while updating examples");
+      Logger.error(e, stackHint: "MzE=");
     }
   }
 }

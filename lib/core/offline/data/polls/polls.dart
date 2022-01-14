@@ -11,21 +11,21 @@ class PollsOffline {
     try {
       return await parent.offlineBox?.get("polls")?.cast<PollInfo>();
     } catch (e) {
-      CustomLogger.log("POLLS", "An error occured while returning polls");
-      CustomLogger.error(e, stackHint:"NDU=");
+      Logger.log("POLLS", "An error occured while returning polls");
+      Logger.error(e, stackHint: "NDU=");
       return null;
     }
   }
 
   ///Update existing polls (clear old data) with passed data
   update(List<PollInfo>? newData) async {
-    CustomLogger.log("POLLS", "Update offline polls (length : ${newData!.length})");
+    Logger.log("POLLS", "Update offline polls (length : ${newData!.length})");
     try {
       await parent.offlineBox?.delete("polls");
       await parent.offlineBox?.put("polls", newData);
     } catch (e) {
-      CustomLogger.log("POLLS", "An error occured while updating polls");
-      CustomLogger.error(e, stackHint:"NDY=");
+      Logger.log("POLLS", "An error occured while updating polls");
+      Logger.error(e, stackHint: "NDY=");
     }
   }
 }

@@ -332,7 +332,7 @@ class CustomDialogs {
         });
     if (mailData != null) {
       await (appSys.api as APIEcoleDirecte).methods.sendMail(mailData[0], mailData[1], mailData[2]).then((value) {
-        CustomLogger.log("DIALOGS", "Mail sent");
+        Logger.log("DIALOGS", "Mail sent");
         CustomDialogs.showAnyDialog(context, "Le mail a été envoyé.");
       }).catchError((Object error) {
         CustomDialogs.showAnyDialog(context, "Le mail n'a pas été envoyé !");

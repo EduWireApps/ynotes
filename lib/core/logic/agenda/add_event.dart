@@ -10,7 +10,7 @@ import 'package:ynotes/ui/screens/agenda/widgets/agenda_event_edit_bottom_sheet.
 addEvent(context) async {
   AgendaEvent? temp = (await (agendaEventEdit(context, true, defaultDate: agendaDate))) as AgendaEvent?;
   if (temp != null) {
-    CustomLogger.log("AGENDA", "(Add event) Recurrence scheme: ${temp.recurrenceScheme}");
+    Logger.log("AGENDA", "(Add event) Recurrence scheme: ${temp.recurrenceScheme}");
     if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
       await AgendaEventsOffline(appSys.offline).addAgendaEvent(temp, temp.recurrenceScheme);
     } else {

@@ -23,8 +23,8 @@ class TermsPage extends StatelessWidget {
                   future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      CustomLogger.log("LOGIN", "An error occured while getting the TOS");
-                      CustomLogger.error(snapshot.error);
+                      Logger.log("LOGIN", "An error occured while getting the TOS");
+                      Logger.error(snapshot.error);
                     }
                     return Text(
                       snapshot.data.toString(),

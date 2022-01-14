@@ -75,7 +75,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                                 chosenSpecialties!
                                                     .removeWhere((element) => element == disciplines[index]);
                                               });
-                                              CustomLogger.log(
+                                              Logger.log(
                                                   "DIALOGS", "(Specialties) Chosen specialties: $chosenSpecialties");
                                               setChosenSpecialties();
                                             } else {
@@ -104,7 +104,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                                         chosenSpecialties!
                                                             .removeWhere((element) => element == disciplines[index]);
                                                       });
-                                                      CustomLogger.log("DIALOGS",
+                                                      Logger.log("DIALOGS",
                                                           "(Specialties) Chosen specialties: $chosenSpecialties");
                                                       setChosenSpecialties();
                                                     } else {
@@ -179,7 +179,6 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
     if (chosenSpecialties != null && chosenSpecialties!.every((element) => element != null)) {
       prefs.setStringList("listSpecialties", chosenSpecialties!.cast<String>());
     }
-    CustomLogger.log(
-        "DIALOGS", "(Specialties) Chosen specialties (from prefs): ${prefs.getStringList("listSpecialties")}");
+    Logger.log("DIALOGS", "(Specialties) Chosen specialties (from prefs): ${prefs.getStringList("listSpecialties")}");
   }
 }

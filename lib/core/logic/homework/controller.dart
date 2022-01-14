@@ -163,7 +163,7 @@ class HomeworkController extends ChangeNotifier {
         try {
           unloadedHW.remove(hw);
         } catch (e) {
-          CustomLogger.error(e, stackHint:"Ng==");
+          Logger.error(e, stackHint: "Ng==");
         }
         await refresh(refreshFromOffline: true);
 
@@ -208,11 +208,11 @@ class HomeworkController extends ChangeNotifier {
         try {
           unloadedHW.add(element);
         } catch (e) {
-          CustomLogger.error(e, stackHint:"Nw==");
+          Logger.error(e, stackHint: "Nw==");
         }
       }
     });
-    CustomLogger.log("HOMEWORK", unloadedHW.toString());
+    Logger.log("HOMEWORK", unloadedHW.toString());
     await loadAll();
   }
 
@@ -226,7 +226,7 @@ class HomeworkController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    CustomLogger.log("HOMEWORK", "Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
+    Logger.log("HOMEWORK", "Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
     if (refreshFromOffline) {
@@ -253,7 +253,7 @@ class HomeworkController extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint:"OA==");
+      Logger.error(e, stackHint: "OA==");
     }
   }
 }

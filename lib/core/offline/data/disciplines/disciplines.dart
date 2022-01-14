@@ -13,8 +13,8 @@ class DisciplinesOffline {
     try {
       return await parent.offlineBox?.get("disciplines").cast<Discipline>();
     } catch (e) {
-      CustomLogger.log("DISCIPLINES", "An error occured while returning disciplines");
-      CustomLogger.error(e, stackHint:"Mjc=");
+      Logger.log("DISCIPLINES", "An error occured while returning disciplines");
+      Logger.error(e, stackHint: "Mjc=");
       return null;
     }
   }
@@ -35,8 +35,8 @@ class DisciplinesOffline {
       try {
         listPeriods.sort((a, b) => a.name!.compareTo(b.name!));
       } catch (e) {
-        CustomLogger.log("DISCIPLINES", "An error occured while sorting disciplines");
-        CustomLogger.error(e, stackHint:"Mjg=");
+        Logger.log("DISCIPLINES", "An error occured while sorting disciplines");
+        Logger.error(e, stackHint: "Mjg=");
       }
       return listPeriods;
     } catch (e) {
@@ -47,12 +47,12 @@ class DisciplinesOffline {
   ///Update existing disciplines (clear old data) with passed data
   updateDisciplines(List<Discipline> newData) async {
     try {
-      CustomLogger.log("DISCIPLINES", "Updating disciplines");
+      Logger.log("DISCIPLINES", "Updating disciplines");
       await parent.offlineBox?.delete("disciplines");
       await parent.offlineBox?.put("disciplines", newData);
     } catch (e) {
-      CustomLogger.log("DISCIPLINES", "An error occured while updating disciplines");
-      CustomLogger.error(e, stackHint:"Mjk=");
+      Logger.log("DISCIPLINES", "An error occured while updating disciplines");
+      Logger.error(e, stackHint: "Mjk=");
     }
   }
 }

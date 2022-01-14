@@ -73,7 +73,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                   onTap: () async {
                                     if ((initialPath ?? "") + path != initialPath) {
                                       var splits = path.split("/");
-                                      CustomLogger.log("DOWNLOADS", "Splits length: ${splits.length}");
+                                      Logger.log("DOWNLOADS", "Splits length: ${splits.length}");
                                       if (splits.length > 1) {
                                         var finalList = splits.sublist(1, splits.length - 1);
                                         var concatenate = StringBuffer();
@@ -382,14 +382,13 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                         await element.element
                                             .copy((initialPath ?? "") + path + "/" + (element.fileName ?? ""));
                                       } catch (e) {
-                                        CustomLogger.log(
-                                            "DOWNLOADS", "An error occured while copying element to clipboard");
-                                        CustomLogger.error(e, stackHint: "NTQ=");
+                                        Logger.log("DOWNLOADS", "An error occured while copying element to clipboard");
+                                        Logger.error(e, stackHint: "NTQ=");
                                         if (!kIsWeb && Platform.isAndroid) {
-                                          CustomLogger.log("DOWNLOADS", "Try to paste");
+                                          Logger.log("DOWNLOADS", "Try to paste");
                                           var result = await Process.run(
                                               'cp', ['-r', element.element.path, (initialPath ?? "") + path + "/"]);
-                                          CustomLogger.log("DOWNLOADS", "Result: ${result.stdout}");
+                                          Logger.log("DOWNLOADS", "Result: ${result.stdout}");
                                         }
                                       }
                                     });
@@ -487,7 +486,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                                 },
                                                 onTap: () async {
                                                   if (selectionMode) {
-                                                    CustomLogger.log("DOWNLOADS",
+                                                    Logger.log("DOWNLOADS",
                                                         "Number of selected files: ${selectedFiles.length}");
                                                     listFiles![index].selected = !listFiles![index].selected;
                                                     setState(() {});
@@ -591,8 +590,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                     }
                   } else {
                     if (snapshot.hasError) {
-                      CustomLogger.log("DOWNLOADS", "An error occured while fetching files");
-                      CustomLogger.error(snapshot.error);
+                      Logger.log("DOWNLOADS", "An error occured while fetching files");
+                      Logger.error(snapshot.error);
                     }
                     return Center(
                       child: CustomLoader(500, screenSize.size.height / 10 * 2.4, Theme.of(context).primaryColorDark),
@@ -659,8 +658,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                 }
               });
             } catch (e) {
-              CustomLogger.log("DOWNLOADS", "An error occured while sorting files");
-              CustomLogger.error(e, stackHint: "NTU=");
+              Logger.log("DOWNLOADS", "An error occured while sorting files");
+              Logger.error(e, stackHint: "NTU=");
             }
           });
 
@@ -676,7 +675,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                 }
               });
             } catch (e) {
-              CustomLogger.error(e, stackHint: "NTY=");
+              Logger.error(e, stackHint: "NTY=");
             }
           });
 

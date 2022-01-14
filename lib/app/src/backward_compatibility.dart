@@ -13,7 +13,7 @@ Future<void> backwardCompatibility() async {
 
 // ignore: unused_element
 Future<void> _fromV12ToV13() async {
-  CustomLogger.log("BACKWARD COMPATIBILITY", "Start process: v12 to v13");
+  Logger.log("BACKWARD COMPATIBILITY", "Start process: v12 to v13");
   // API_TYPE enum values has been changed to respect the naming conventions.
   // Because this value is json encoded in the local storage, it can't be interpreted directly.
   //
@@ -49,20 +49,20 @@ Future<void> _fromV12ToV13() async {
       }
       await KVS.write(key: "logsReset0", value: "true");
     } catch (e) {
-      CustomLogger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
+      Logger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
     }
   }
   // Logging is done in another check because the logs would have been removed
   // more or less at the same time otherwise, and would cause application crash.
   if (!logsReset0) {
-    CustomLogger.log("BACKWARD COMPATIBILITY", "Reset logs (0)");
+    Logger.log("BACKWARD COMPATIBILITY", "Reset logs (0)");
   }
-  CustomLogger.log("BACKWARD COMPATIBILITY", "End of process: v12 to v13");
+  Logger.log("BACKWARD COMPATIBILITY", "End of process: v12 to v13");
 }
 
 // ignore: unused_element
 Future<void> _fromV13ToV14() async {
-  CustomLogger.log("BACKWARD COMPATIBILITY", "Start process: v13 to v14");
+  Logger.log("BACKWARD COMPATIBILITY", "Start process: v13 to v14");
   // We still try to reset the logs. We don't use `logsReset1` because already used in 0.14.
   final bool logsReset2 = (await KVS.read(key: "logsReset2")) == "true";
   if (!logsReset2) {
@@ -70,15 +70,15 @@ Future<void> _fromV13ToV14() async {
       await LogsManager.deleteLogs();
       await KVS.write(key: "logsReset2", value: "true");
     } catch (e) {
-      CustomLogger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
+      Logger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
     }
   }
   // Logging is done in another check because the logs would have been removed
   // more or less at the same time otherwise, and would cause application crash.
   if (!logsReset2) {
-    CustomLogger.log("BACKWARD COMPATIBILITY", "Reset logs (2)");
+    Logger.log("BACKWARD COMPATIBILITY", "Reset logs (2)");
   }
-  CustomLogger.log("BACKWARD COMPATIBILITY", "End of process: v13 to v14");
+  Logger.log("BACKWARD COMPATIBILITY", "End of process: v13 to v14");
 }
 
 Future<void> _fromV14ToV15() async {

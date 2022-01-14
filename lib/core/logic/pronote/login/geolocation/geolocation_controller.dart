@@ -124,7 +124,7 @@ class PronoteGeolocationController extends ChangeNotifier {
       // We get the position. If the geolocation is not activated, a native dialog will be shown.
       // If the user declines, it throws an error and executes the catch block.
       pos = await Geolocator.getCurrentPosition();
-      CustomLogger.log("PRONOTE", "Current position: ${pos.longitude} ${pos.latitude}");
+      Logger.log("PRONOTE", "Current position: ${pos.longitude} ${pos.latitude}");
       try {
         // await _locateSchoolsAround(longitude: pos.longitude, latitude: pos.latitude);
         _status = GeolocationStatus.success;
@@ -176,7 +176,7 @@ class PronoteGeolocationController extends ChangeNotifier {
       _status = GeolocationStatus.error;
       notifyListeners();
     }
-    CustomLogger.log("PRONOTE", "(Schools) Request response status code: ${response.statusCode}");
+    Logger.log("PRONOTE", "(Schools) Request response status code: ${response.statusCode}");
   }
 
   /// The schools filtered by name. Used for the search bar.
@@ -200,7 +200,7 @@ class PronoteGeolocationController extends ChangeNotifier {
         final List<PronoteSchoolSpace> spaces = [];
         dynamic data = json.decode(response.body);
         for (var space in data["espaces"]) {
-          CustomLogger.log("PRONOTE", "(Schools) Space name: ${space["nom"].toUpperCase()}");
+          Logger.log("PRONOTE", "(Schools) Space name: ${space["nom"].toUpperCase()}");
           if (space["nom"].toUpperCase().contains("ÉLÈVES")) {
             spaces.add(PronoteSchoolSpace(
                 name: space["nom"], spaceUrl: "${school.url!}/${space["URL"]}", schoolUrl: school.url!));

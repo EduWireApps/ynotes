@@ -32,9 +32,9 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
         lesson = dailyLessons.firstWhere((lesson) =>
             (now ?? DateTime.now()).isBefore(lesson.end!) && (now ?? DateTime.now()).isAfter(lesson.start!));
       } catch (e) {
-        CustomLogger.log("AGENDA", "An error occured while getting current lesson");
-        CustomLogger.log("AGENDA", "Lessons: $lessons");
-        CustomLogger.error(e, stackHint: "NTI=");
+        Logger.log("AGENDA", "An error occured while getting current lesson");
+        Logger.log("AGENDA", "Lessons: $lessons");
+        Logger.error(e, stackHint: "NTI=");
       }
 
       return lesson;
@@ -61,8 +61,8 @@ getNextLesson(List<Lesson>? lessons) {
         dailyLessons.sort((a, b) => a.start!.compareTo(b.start!));
         lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
-        CustomLogger.log("AGENDA", "An error occured while getting the current lesson");
-        CustomLogger.error(e, stackHint: "NTM=");
+        Logger.log("AGENDA", "An error occured while getting the current lesson");
+        Logger.error(e, stackHint: "NTM=");
       }
 
       return lesson;

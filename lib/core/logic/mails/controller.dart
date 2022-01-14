@@ -19,15 +19,15 @@ class MailsController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false}) async {
-    CustomLogger.log("MAILS", "Refresh");
+    Logger.log("MAILS", "Refresh");
     loading = true;
     notifyListeners();
     try {
       mails = await (_api as APIEcoleDirecte).getMails(forceReload: force);
       notifyListeners();
     } catch (e) {
-      CustomLogger.log("MAILS", "An error occured while refreshing");
-      CustomLogger.error(e, stackHint:"OQ==");
+      Logger.log("MAILS", "An error occured while refreshing");
+      Logger.error(e, stackHint: "OQ==");
       loading = false;
     }
     loading = false;

@@ -18,8 +18,8 @@ class RemindersOffline {
           .toList()
           ?.cast<AgendaReminder>();
     } catch (e) {
-      CustomLogger.log("REMINDERS", "An error occured while returning agenda reminders");
-      CustomLogger.error(e, stackHint:"MjM=");
+      Logger.log("REMINDERS", "An error occured while returning agenda reminders");
+      Logger.error(e, stackHint: "MjM=");
       return null;
     }
   }
@@ -37,8 +37,8 @@ class RemindersOffline {
       }
       await parent.agendaBox?.put("reminders", offline);
     } catch (e) {
-      CustomLogger.log("REMINDERS", "An error occured while removing reminders");
-      CustomLogger.error(e, stackHint:"MjQ=");
+      Logger.log("REMINDERS", "An error occured while removing reminders");
+      Logger.error(e, stackHint: "MjQ=");
     }
   }
 
@@ -55,8 +55,8 @@ class RemindersOffline {
       }
       await parent.agendaBox?.put("reminders", offline);
     } catch (e) {
-      CustomLogger.log("REMINDERS", "An error occured while removing reminders");
-      CustomLogger.error(e, stackHint:"MjU=");
+      Logger.log("REMINDERS", "An error occured while removing reminders");
+      Logger.error(e, stackHint: "MjU=");
     }
   }
 
@@ -84,10 +84,10 @@ class RemindersOffline {
       offline.add(newData);
       await parent.agendaBox?.put("reminders", offline);
 
-      CustomLogger.log("REMINDERS", "Updated reminders");
+      Logger.log("REMINDERS", "Updated reminders");
     } catch (e) {
-      CustomLogger.log("REMINDERS", "An error occured while updating reminders");
-      CustomLogger.error(e, stackHint:"MjY=");
+      Logger.log("REMINDERS", "An error occured while updating reminders");
+      Logger.error(e, stackHint: "MjY=");
     }
   }
 }

@@ -34,8 +34,8 @@ class HiveBoxProvider {
           Hive.init("${dir.path}/offline");
         }
       } catch (e) {
-        CustomLogger.log("OFFLINE", "An error occured while initiating Hive");
-        CustomLogger.error(e, stackHint: "MTQ=");
+        Logger.log("OFFLINE", "An error occured while initiating Hive");
+        Logger.error(e, stackHint: "MTQ=");
       }
       registerAdapters();
     }
@@ -105,8 +105,8 @@ class Offline {
 
       await init();
     } catch (e) {
-      CustomLogger.log("OFFLINE", "Failed to clear all db");
-      CustomLogger.error(e, stackHint: "MTU=");
+      Logger.log("OFFLINE", "Failed to clear all db");
+      Logger.error(e, stackHint: "MTU=");
     }
   }
 
@@ -114,17 +114,17 @@ class Offline {
   ///Deletes corrupted box
   deleteCorruptedBox(String boxName) async {
     await Hive.deleteBoxFromDisk(boxName);
-    CustomLogger.log("OFFLINE", "Recovered $boxName");
+    Logger.log("OFFLINE", "Recovered $boxName");
   }
 
   //Called when instanciated
   void dispose() async {
     await Hive.close();
-    CustomLogger.log("OFFLINE", "Disposed Hive");
+    Logger.log("OFFLINE", "Disposed Hive");
   }
 
   init() async {
-    CustomLogger.log("OFFLINE", "Init");
+    Logger.log("OFFLINE", "Init");
     //Register adapters once
 
     try {
@@ -135,10 +135,10 @@ class Offline {
       agendaBox = await appSys.hiveBoxProvider.openBox(agendaBoxName);
       mailsBox = await appSys.hiveBoxProvider.openBox<Mail>(mailsBoxName);
 
-      CustomLogger.log("OFFLINE", "All boxes opened");
+      Logger.log("OFFLINE", "All boxes opened");
     } catch (e) {
-      CustomLogger.log("OFFLINE", "An error occured while opening boxes");
-      CustomLogger.error(e, stackHint: "MTY=");
+      Logger.log("OFFLINE", "An error occured while opening boxes");
+      Logger.error(e, stackHint: "MTY=");
     }
   }
 
@@ -147,14 +147,14 @@ class Offline {
     try {
       Box box = await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
         final String errorMessage = "Error while opening $boxName";
-        CustomLogger.error("OFFLINE: $errorMessage");
+        Logger.error("OFFLINE: $errorMessage");
         throw (errorMessage);
       });
-      CustomLogger.log("OFFLINE", "Correctly opened $boxName");
+      Logger.log("OFFLINE", "Correctly opened $boxName");
       return box;
     } catch (e) {
-      CustomLogger.log("OFFLINE", "An error occurend while opening $boxName");
-      CustomLogger.error(e, stackHint: "MTc=");
+      Logger.log("OFFLINE", "An error occurend while opening $boxName");
+      Logger.error(e, stackHint: "MTc=");
       if (boxName.contains("offlineData")) {
         await appSys.hiveBoxProvider.deleteBox(boxName);
       }

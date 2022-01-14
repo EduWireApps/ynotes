@@ -59,7 +59,7 @@ class PronoteAccountConverter {
     }
     tabsNumbers = tabsNumbers.toSet().toList();
     tabsNumbers.sort();
-    CustomLogger.log("ACCOUNT", "Tabs numbers: $tabsNumbers");
+    Logger.log("ACCOUNT", "Tabs numbers: $tabsNumbers");
     for (var element in (hiddenTabs ?? [])) {
       tabsNumbers.remove(element);
     }

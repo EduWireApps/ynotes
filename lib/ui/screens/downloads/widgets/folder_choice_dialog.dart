@@ -146,7 +146,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                   await element.element.delete(recursive: true);
                 } catch (e) {
                   if (!kIsWeb && Platform.isAndroid) {
-                    CustomLogger.log("DIALOGS", "(Folder choice) Trying with commandlines");
+                    Logger.log("DIALOGS", "(Folder choice) Trying with commandlines");
                     await Process.run('cp', ['-r', element.element.path, widget.path + "/" + value!]);
                     await element.element.delete(recursive: true);
                   }

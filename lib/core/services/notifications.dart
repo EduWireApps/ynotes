@@ -44,8 +44,8 @@ class AppNotification {
           "cas": cas,
         });
       } catch (e) {
-        CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
-        CustomLogger.error(e, stackHint: "ODA=");
+        Logger.log("NOTIFICATIONS", "An error occured while logging in");
+        Logger.error(e, stackHint: "ODA=");
       }
     }
     var date = DateTime.now();
@@ -60,8 +60,8 @@ class AppNotification {
       Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
-      CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
-      CustomLogger.error(e, stackHint: "ODE=");
+      Logger.log("NOTIFICATIONS", "An error occured while registering adapter");
+      Logger.error(e, stackHint: "ODE=");
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("offlineData");
@@ -73,8 +73,8 @@ class AppNotification {
       try {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
-        CustomLogger.log("NOTIFICATIONS", "An error occured collecting online lessons");
-        CustomLogger.error(e, stackHint: "ODI=");
+        Logger.log("NOTIFICATIONS", "An error occured collecting online lessons");
+        Logger.error(e, stackHint: "ODI=");
 
         Box _offlineBox = await Hive.openBox("offlineData");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -96,9 +96,8 @@ class AppNotification {
     } else {
       final prefs = await (SharedPreferences.getInstance());
       bool? value = prefs.getBool("disableAtDayEnd");
-      CustomLogger.log("NOTIFICATIONS", "disableAtDayEnd (prefs): $value");
-      CustomLogger.log(
-          "NOTIFICATIONS", "disableAtDayEnd (settings): ${appSys.settings.user.agendaPage.disableAtDayEnd}");
+      Logger.log("NOTIFICATIONS", "disableAtDayEnd (prefs): $value");
+      Logger.log("NOTIFICATIONS", "disableAtDayEnd (settings): ${appSys.settings.user.agendaPage.disableAtDayEnd}");
 
       if (appSys.settings.user.agendaPage.disableAtDayEnd) {
         await cancelOnGoingNotification();
@@ -109,22 +108,22 @@ class AppNotification {
     }
     //Logs for tests
     if (lesson != null) {
-      CustomLogger.log("NOTIFICATIONS",
+      Logger.log("NOTIFICATIONS",
           "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
     } else {
-      CustomLogger.log("NOTIFICATIONS", "Persistant notification next lesson callback triggered : you are in break.");
+      Logger.log("NOTIFICATIONS", "Persistant notification next lesson callback triggered : you are in break.");
     }
   }
 
 //Chose which triggered action to use
   static Future<void> cancelNotification(int id) async {
     await AwesomeNotifications().cancel(id);
-    CustomLogger.log("NOTIFICATIONS", "Unscheduled $id");
+    Logger.log("NOTIFICATIONS", "Unscheduled $id");
   }
 
   static Future<void> cancelOnGoingNotification() async {
     await cancelNotification(333);
-    CustomLogger.log("NOTIFICATIONS", "Cancelled on going notification");
+    Logger.log("NOTIFICATIONS", "Cancelled on going notification");
   }
 
   static getRelatedAction(
@@ -180,7 +179,7 @@ class AppNotification {
           await getRelatedAction(receivedNotification, context, navigatorCallback);
         });
       } catch (e) {
-        CustomLogger.error(e, stackHint: "ODM=");
+        Logger.error(e, stackHint: "ODM=");
       }
     }
   }
@@ -228,12 +227,12 @@ class AppNotification {
                     ? NotificationLayout.Default
                     : NotificationLayout.BigText),
             schedule: NotificationCalendar.fromDate(date: event.start!.subtract(delay).toUtc()));
-        CustomLogger.log("NOTIFICATIONS",
+        Logger.log("NOTIFICATIONS",
             "Scheduled an alarm" + event.start!.subtract(delay).toString() + " " + event.id.hashCode.toString());
       }
     } catch (e) {
-      CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling agenda reminders");
-      CustomLogger.error(e, stackHint: "ODQ=");
+      Logger.log("NOTIFICATIONS", "An error occured while scheduling agenda reminders");
+      Logger.error(e, stackHint: "ODQ=");
     }
   }
 
@@ -273,8 +272,8 @@ class AppNotification {
           delay = const Duration(days: 1);
         }
         String text = "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
-        CustomLogger.log("NOTIFICATIONS", "Event will start in ${event.start!.subtract(delay)}");
-        CustomLogger.log("NOTIFICATIONS", text);
+        Logger.log("NOTIFICATIONS", "Event will start in ${event.start!.subtract(delay)}");
+        Logger.log("NOTIFICATIONS", text);
 
         await AwesomeNotifications().createNotification(
             content: NotificationContent(
@@ -292,7 +291,7 @@ class AppNotification {
   ///Set an on going notification which is automatically refreshed (online or not) each hour
   static Future<void> setOnGoingNotification({bool dontShowActual = false}) async {
     //Logs for tests
-    CustomLogger.log("NOTIFICATIONS", "Setting on going notification.");
+    Logger.log("NOTIFICATIONS", "Setting on going notification.");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? lessons = [];
     API api = apiManager(appSys.offline);
@@ -308,8 +307,8 @@ class AppNotification {
           "cas": cas,
         });
       } catch (e) {
-        CustomLogger.log("NOTIFICATIONS", "An error occured while logging in");
-        CustomLogger.error(e, stackHint: "ODU=");
+        Logger.log("NOTIFICATIONS", "An error occured while logging in");
+        Logger.error(e, stackHint: "ODU=");
       }
     }
     var date = DateTime.now();
@@ -325,8 +324,8 @@ class AppNotification {
       Hive.registerAdapter(HomeworkAdapter());
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
-      CustomLogger.log("NOTIFICATIONS", "An error occured while registering adapter");
-      CustomLogger.error(e, stackHint: "ODY=");
+      Logger.log("NOTIFICATIONS", "An error occured while registering adapter");
+      Logger.error(e, stackHint: "ODY=");
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
       Box _offlineBox = await Hive.openBox("agenda");
@@ -338,8 +337,8 @@ class AppNotification {
       try {
         lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
-        CustomLogger.log("NOTIFICATIONS", "An error occured while collecting online lessons");
-        CustomLogger.error(e, stackHint: "ODc=");
+        Logger.log("NOTIFICATIONS", "An error occured while collecting online lessons");
+        Logger.error(e, stackHint: "ODc=");
 
         Box _offlineBox = await Hive.openBox("offlineData2");
         var offlineLessons = await _offlineBox.get("lessons");
@@ -365,22 +364,22 @@ class AppNotification {
             if (await AndroidAlarmManager.oneShotAt(
                 lesson.start!.subtract(Duration(minutes: minutes ?? 15)), lesson.start.hashCode, callback,
                 allowWhileIdle: true, rescheduleOnReboot: true)) {
-              CustomLogger.log(
+              Logger.log(
                   "NOTIFICATIONS", "Scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
             }
           } catch (e) {
-            CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling lesson notification");
-            CustomLogger.error(e, stackHint: "ODg=");
+            Logger.log("NOTIFICATIONS", "An error occured while scheduling lesson notification");
+            Logger.error(e, stackHint: "ODg=");
           }
         }
       });
       try {
         if (await AndroidAlarmManager.oneShotAt(
             lessons.last.end!.subtract(Duration(minutes: minutes ?? 15)), lessons.last.end.hashCode, callback,
-            allowWhileIdle: true, rescheduleOnReboot: true)) CustomLogger.log("NOTIFICATIONS", "Scheduled last lesson");
+            allowWhileIdle: true, rescheduleOnReboot: true)) Logger.log("NOTIFICATIONS", "Scheduled last lesson");
       } catch (e) {
-        CustomLogger.log("NOTIFICATIONS", "An error occured while scheduling last lesson");
-        CustomLogger.error(e, stackHint: "ODk=");
+        Logger.log("NOTIFICATIONS", "An error occured while scheduling last lesson");
+        Logger.error(e, stackHint: "ODk=");
       }
     }
   }
@@ -504,8 +503,8 @@ class AppNotification {
         locked: false,
       ));
     } catch (e) {
-      CustomLogger.log("NOTIFICATIONS", "An error occurred while setting ongoin notification");
-      CustomLogger.error(e, stackHint: "OTI=");
+      Logger.log("NOTIFICATIONS", "An error occurred while setting ongoin notification");
+      Logger.error(e, stackHint: "OTI=");
     }
   }
 
@@ -576,10 +575,10 @@ class AppNotification {
           sentence = "Votre cours a été annulé.";
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint: "OTA=");
+        Logger.error(e, stackHint: "OTA=");
       }
       try {
-        CustomLogger.log(
+        Logger.log(
             "NOTIFICATIONS", "Ongoing notification text length is ${parse(sentence).documentElement!.text.length}");
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
@@ -599,8 +598,8 @@ class AppNotification {
           ],
         );
       } catch (e) {
-        CustomLogger.log("NOTIFICATIONS", "An error occured while setting ongoing notification");
-        CustomLogger.error(e, stackHint: "OTE=");
+        Logger.log("NOTIFICATIONS", "An error occured while setting ongoing notification");
+        Logger.error(e, stackHint: "OTE=");
       }
     }
   }

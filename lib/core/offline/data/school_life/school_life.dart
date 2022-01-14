@@ -11,21 +11,21 @@ class SchoolLifeOffline {
     try {
       return parent.offlineBox?.get("schoolLife")?.cast<SchoolLifeTicket>();
     } catch (e) {
-      CustomLogger.log("SCHOOL LIFE", "An error occured while returning tickets");
-      CustomLogger.error(e, stackHint:"NDc=");
+      Logger.log("SCHOOL LIFE", "An error occured while returning tickets");
+      Logger.error(e, stackHint: "NDc=");
       return null;
     }
   }
 
   ///Update existing polls (clear old data) with passed data
   update(List<SchoolLifeTicket>? newData) async {
-    CustomLogger.log("SCHOOL LIFE", "Update school life tickets (length : ${newData!.length})");
+    Logger.log("SCHOOL LIFE", "Update school life tickets (length : ${newData!.length})");
     try {
       await parent.offlineBox?.delete("schoolLife");
       await parent.offlineBox?.put("schoolLife", newData);
     } catch (e) {
-      CustomLogger.log("SCHOOL LIFE", "An error occured while updating tickets");
-      CustomLogger.error(e, stackHint:"NDg=");
+      Logger.log("SCHOOL LIFE", "An error occured while updating tickets");
+      Logger.error(e, stackHint: "NDg=");
     }
   }
 }

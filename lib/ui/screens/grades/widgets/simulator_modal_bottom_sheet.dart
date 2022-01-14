@@ -88,7 +88,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
         choices.add(element);
       }
       choices.add(null);
-      CustomLogger.log("BOTTOM SHEET", "(Simulator) Choices: $choices");
+      Logger.log("BOTTOM SHEET", "(Simulator) Choices: $choices");
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -193,7 +193,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
             margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.25),
             child: YButton(
                 onPressed: () async {
-                  CustomLogger.log("BOTTOM SHEET", "(Simulator) Period name: ${disciplineChoice!.periodName}");
+                  Logger.log("BOTTOM SHEET", "(Simulator) Period name: ${disciplineChoice!.periodName}");
 
                   if (gradeValue != null && disciplineChoice != null) {
                     if (gradeValue! > gradeOn) {

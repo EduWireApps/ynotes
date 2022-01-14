@@ -20,7 +20,7 @@ class LoginController extends ChangeNotifier {
 
   bool attemptedToRelogin = false;
   LoginController() {
-    CustomLogger.log("LOGIN", "Init controller");
+    Logger.log("LOGIN", "Init controller");
     _connectivity.onConnectivityChanged.listen(connectionChanged);
   }
 
@@ -51,7 +51,7 @@ class LoginController extends ChangeNotifier {
 
 //on connection change
   init() async {
-    CustomLogger.log("LOGIN", "Init connection status");
+    Logger.log("LOGIN", "Init connection status");
 
     if (await _connectivity.checkConnectivity() == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
@@ -70,7 +70,7 @@ class LoginController extends ChangeNotifier {
   login() async {
     try {
       _actualState = loginStatus.loggedOff;
-      CustomLogger.log("Login", "Login attempt...");
+      Logger.log("Login", "Login attempt...");
       _details = "Connexion à l'API...";
       notifyListeners();
       String? u = await KVS.read(key: "username");
@@ -79,11 +79,11 @@ class LoginController extends ChangeNotifier {
       String? cas = await KVS.read(key: "pronotecas");
       bool? iscas = (await KVS.read(key: "ispronotecas") == "true");
       bool? demo = (await KVS.read(key: "demo") == "true");
-      if (demo) CustomLogger.log("Login", "Login in demo mode");
+      if (demo) Logger.log("Login", "Login in demo mode");
 
       var z = await KVS.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        CustomLogger.log("Login", "Username and passwird are not null and terms are agreed");
+        Logger.log("Login", "Username and passwird are not null and terms are agreed");
 
         await appSys.api!
             .login(u, p, additionnalSettings: {"url": url, "mobileCasLogin": iscas, "cas": cas, "demo": demo}).then(
@@ -102,7 +102,7 @@ class LoginController extends ChangeNotifier {
 
             notifyListeners();
           } else {
-            CustomLogger.log("LOGIN", "La valeur est : ${loginValues[1]}");
+            Logger.log("LOGIN", "La valeur est : ${loginValues[1]}");
             if (loginValues[1].contains("IP")) {
               _details = "Ban temporaire IP !";
             } else {
@@ -127,7 +127,7 @@ class LoginController extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint: "MzI=");
+      Logger.error(e, stackHint: "MzI=");
     }
   }
 

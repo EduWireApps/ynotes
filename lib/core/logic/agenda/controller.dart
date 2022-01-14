@@ -101,7 +101,7 @@ class AgendaController extends ChangeNotifier {
       }
       i++;
     });
-    CustomLogger.log("AGENDA", "Agenda events set");
+    Logger.log("AGENDA", "Agenda events set");
   }
 
   initWeek() {

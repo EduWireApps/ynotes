@@ -89,8 +89,8 @@ class QrLoginController extends ChangeNotifier {
     } catch (e) {
       _status = QrStatus.error;
       notifyListeners();
-      CustomLogger.log("LOGIN", "(QR Code) An error occured with the PIN");
-      CustomLogger.error(e, stackHint: "MzY=");
+      Logger.log("LOGIN", "(QR Code) An error occured with the PIN");
+      Logger.error(e, stackHint: "MzY=");
     }
   }
 

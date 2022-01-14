@@ -17,7 +17,7 @@ class EcoleDirecteCloudConverter {
               date = split[0];
             }
           } catch (e) {
-            CustomLogger.error(e, stackHint:"MA==");
+            Logger.error(e, stackHint: "MA==");
           }
           String? title = folderData["titre"];
           String elementType = "FOLDER";

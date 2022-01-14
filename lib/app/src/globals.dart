@@ -14,7 +14,7 @@ SchoolApi schoolApiManager(Apis api) {
     case Apis.ecoleDirecte:
       _api = EcoleDirecteApi();
   }
-  CustomLogger.log("SCHOOL API MANAGER", "Selected: ${_api.metadata.name}");
+  Logger.log("SCHOOL API MANAGER", "Selected: ${_api.metadata.name}");
   return _api;
 }
 

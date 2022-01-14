@@ -76,7 +76,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
             style: TextStyle(color: Colors.green, fontFamily: "Asap"),
           ),
           onPressed: () {
-            CustomLogger.log("COLOR PICKER", "$pickerColor");
+            Logger.log("COLOR PICKER", "$pickerColor");
             Navigator.pop(context, pickerColor);
           },
         )
