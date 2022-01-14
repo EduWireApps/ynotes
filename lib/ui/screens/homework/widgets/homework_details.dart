@@ -5,7 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:share/share.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 
 class DialogHomework extends StatefulWidget {
   final Homework? hw;

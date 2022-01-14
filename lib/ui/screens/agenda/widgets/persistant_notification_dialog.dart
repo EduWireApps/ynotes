@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:optimize_battery/optimize_battery.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/dialogs.dart';

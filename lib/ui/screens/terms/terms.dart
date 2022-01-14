@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes_packages/components.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 
 class NumberChoiceDialog extends StatefulWidget {
   final String unit;

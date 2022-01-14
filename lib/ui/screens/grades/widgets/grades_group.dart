@@ -7,7 +7,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/stats/grades_stats.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';

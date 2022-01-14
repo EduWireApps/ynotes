@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/anonymizer_utils.dart';
+import 'package:ynotes/core/legacy/anonymizer_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 class EcoleDirecteHomeworkConverter {
@@ -78,7 +78,7 @@ class EcoleDirecteHomeworkConverter {
               homeworkList.add(hw);
             }
           } catch (e) {
-            CustomLogger.error(e, stackHint:"Mw==");
+            CustomLogger.error(e, stackHint: "Mw==");
           }
         }
         return homeworkList;

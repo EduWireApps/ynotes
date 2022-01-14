@@ -16,7 +16,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';

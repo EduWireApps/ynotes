@@ -8,9 +8,9 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart' as path_package;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
@@ -384,7 +384,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                       } catch (e) {
                                         CustomLogger.log(
                                             "DOWNLOADS", "An error occured while copying element to clipboard");
-                                        CustomLogger.error(e, stackHint:"NTQ=");
+                                        CustomLogger.error(e, stackHint: "NTQ=");
                                         if (!kIsWeb && Platform.isAndroid) {
                                           CustomLogger.log("DOWNLOADS", "Try to paste");
                                           var result = await Process.run(
@@ -660,7 +660,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
               });
             } catch (e) {
               CustomLogger.log("DOWNLOADS", "An error occured while sorting files");
-              CustomLogger.error(e, stackHint:"NTU=");
+              CustomLogger.error(e, stackHint: "NTU=");
             }
           });
 
@@ -676,7 +676,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                 }
               });
             } catch (e) {
-              CustomLogger.error(e, stackHint:"NTY=");
+              CustomLogger.error(e, stackHint: "NTY=");
             }
           });
 

@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 
 class FolderChoiceDialog extends StatefulWidget {
   final BuildContext context;

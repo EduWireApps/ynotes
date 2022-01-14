@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';

@@ -5,7 +5,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/key_values.dart';

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/screens/agenda/agenda.dart';
@@ -34,7 +34,7 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting current lesson");
         CustomLogger.log("AGENDA", "Lessons: $lessons");
-        CustomLogger.error(e, stackHint:"NTI=");
+        CustomLogger.error(e, stackHint: "NTI=");
       }
 
       return lesson;
@@ -62,7 +62,7 @@ getNextLesson(List<Lesson>? lessons) {
         lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting the current lesson");
-        CustomLogger.error(e, stackHint:"NTM=");
+        CustomLogger.error(e, stackHint: "NTM=");
       }
 
       return lesson;

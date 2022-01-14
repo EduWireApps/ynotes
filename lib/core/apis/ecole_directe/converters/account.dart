@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/anonymizer_utils.dart';
+import 'package:ynotes/core/legacy/anonymizer_utils.dart';
 
 class EcoleDirecteAccountConverter {
   static API_TYPE apiType = API_TYPE.ecoleDirecte;

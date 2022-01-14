@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
 
@@ -61,7 +61,7 @@ class DownloadController extends ChangeNotifier {
           await file.writeAsBytes(bytes);
         } catch (e) {
           CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-          CustomLogger.error(e, stackHint:"MTE=");
+          CustomLogger.error(e, stackHint: "MTE=");
           _isDownloading = false;
           _hasError = true;
           notifyListeners();
@@ -69,7 +69,7 @@ class DownloadController extends ChangeNotifier {
       },
       onError: (e) {
         CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-        CustomLogger.error(e, stackHint:"MTI=");
+        CustomLogger.error(e, stackHint: "MTI=");
         _isDownloading = false;
         _hasError = true;
         notifyListeners();

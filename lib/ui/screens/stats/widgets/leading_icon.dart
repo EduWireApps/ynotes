@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/theme_utils.dart';
+import 'package:ynotes/core/legacy/theme_utils.dart';
 
 class LeadingAndSubtitle extends StatefulWidget {
   final Widget leading;

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/anonymizer_utils.dart';
+import 'package:ynotes/core/legacy/anonymizer_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 import '../../model.dart';
@@ -102,7 +102,7 @@ class EcoleDirecteDisciplineConverter {
                       .subdisciplineNames!
                       .add(rawData['discipline']);
                 } catch (e) {
-                  CustomLogger.error(e, stackHint:"MQ==");
+                  CustomLogger.error(e, stackHint: "MQ==");
                 }
               }
             }
@@ -123,7 +123,7 @@ class EcoleDirecteDisciplineConverter {
               }
             }
           } catch (e) {
-            CustomLogger.error(e, stackHint:"Mg==");
+            CustomLogger.error(e, stackHint: "Mg==");
           }
         }
         return disciplinesList;
