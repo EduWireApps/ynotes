@@ -10,7 +10,6 @@ import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/routing_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes_packages/components.dart';
@@ -58,7 +57,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
 
   @override
   Widget build(BuildContext context) {
-    final _url = RoutingUtils.getArgs<String>(context);
+    final _url = AppRouter.getArgs<String>(context);
     setState(() {
       url = _url;
     });

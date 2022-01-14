@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    UIUtils.showPatchNotes(context);
+    UIU.showPatchNotes(context);
   }
 
   @override

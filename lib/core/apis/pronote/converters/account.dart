@@ -1,18 +1,18 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/app_config/models.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/null_safe_map_getter.dart';
+
 import 'package:uuid/uuid.dart';
 
 class PronoteAccountConverter {
   static AppAccount account(Map accountData) {
-    Map? data = mapGet(accountData, ["donneesSec", "donnees", "ressource"]);
-    List<appTabs> tabs = availableTabs(mapGet(accountData, ["donneesSec", "donnees", "listeOnglets"]),
-        mapGet(accountData, ["donneesSec", "donnees", "listeOngletsInvisibles"]));
-    if (mapGet(data, ["listeRessources"]) != null) {
-      String? name = mapGet(data, ["L"]);
+    Map? data = accountData["donneesSec"]["donnees"]["ressource"];
+    List<appTabs> tabs = availableTabs(accountData["donneesSec"]["donnees"]["listeOnglets"],
+        accountData["donneesSec"]["donnees"]["listeOngletsInvisibles"]);
+    if (data?["listeRessources"] != null) {
+      String? name = data?["L"];
       bool isParentMainAccount = true;
-      List<SchoolAccount> accounts = schoolAccounts(mapGet(data, ["listeRessources"]));
+      List<SchoolAccount> accounts = schoolAccounts(data?["listeRessources"]);
       for (var element in (accounts)) {
         element.availableTabs = tabs;
       }
@@ -27,7 +27,7 @@ class PronoteAccountConverter {
     }
     //If this is a single account
     else {
-      String? name = mapGet(data, ["L"]);
+      String? name = data?["L"];
       bool isParentMainAccount = false;
       List<SchoolAccount> accounts = [singleSchoolAccount((data ?? {}))];
       String id = const Uuid().v1();
@@ -89,10 +89,10 @@ class PronoteAccountConverter {
   static List<SchoolAccount> schoolAccounts(List? schoolAccountsData) {
     List<SchoolAccount> accounts = [];
     for (var studentData in (schoolAccountsData ?? [])) {
-      String? name = mapGet(studentData, ["L"]);
-      String? studentClass = mapGet(studentData, ["classeDEleve", "L"]);
-      String? schoolName = mapGet(studentData, ["Etablissement", "V", "L"]);
-      String? studentID = mapGet(studentData, ["N"]);
+      String? name = studentData["L"];
+      String? studentClass = studentData["classeDEleve"]["L"];
+      String? schoolName = studentData["Etablissement"]["V"]["L"];
+      String? studentID = studentData["N"];
 
       accounts.add(SchoolAccount(
           name: name, studentClass: studentClass, studentID: studentID, availableTabs: [], schoolName: schoolName));
@@ -101,10 +101,10 @@ class PronoteAccountConverter {
   }
 
   static SchoolAccount singleSchoolAccount(Map schoolAccountData) {
-    String? name = mapGet(schoolAccountData, ["L"]);
-    String? schoolName = mapGet(schoolAccountData, ["Etablissement", "V", "L"]);
-    String? studentClass = mapGet(schoolAccountData, ["classeDEleve", "L"]);
-    String? studentID = mapGet(schoolAccountData, ["N"]);
+    String? name = schoolAccountData["L"];
+    String? schoolName = schoolAccountData["Etablissement"]["V"]["L"];
+    String? studentClass = schoolAccountData["classeDEleve"]["L"];
+    String? studentID = schoolAccountData["N"];
     return SchoolAccount(
         name: name, studentClass: studentClass, studentID: studentID, availableTabs: [], schoolName: schoolName);
   }

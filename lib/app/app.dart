@@ -14,7 +14,7 @@ import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';

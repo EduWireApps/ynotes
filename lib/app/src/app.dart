@@ -20,7 +20,7 @@ class _AppState extends State<App> {
 
     return FocusDetector(
       onForegroundGained: () {
-        UIUtils.setSystemUIOverlayStyle();
+        UIU.setSystemUIOverlayStyle();
       },
       child: Responsive(builder: (context) {
         return YApp(

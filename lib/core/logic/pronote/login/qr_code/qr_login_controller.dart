@@ -8,8 +8,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/pronote/pronote_api.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/null_safe_map_getter.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 
 /// The status of the controller
@@ -38,7 +37,7 @@ class QrLoginController extends ChangeNotifier {
     }
     if (status.isDenied) {
       final res = await Permission.camera.request();
-      UIUtils.setSystemUIOverlayStyle();
+      UIU.setSystemUIOverlayStyle();
       if (res.isGranted) {
         return null;
       } else {
@@ -55,7 +54,7 @@ class QrLoginController extends ChangeNotifier {
     try {
       Map? raw = jsonDecode(barCode.code);
       if (raw != null) {
-        if (mapGet(raw, ["jeton"]) != null && mapGet(raw, ["login"]) != null && mapGet(raw, ["url"]) != null) {
+        if (raw["jeton"] != null && raw["login"] != null && raw["url"] != null) {
           _status = QrStatus.loading;
           _loginData = raw;
           notifyListeners();
@@ -91,7 +90,7 @@ class QrLoginController extends ChangeNotifier {
       _status = QrStatus.error;
       notifyListeners();
       CustomLogger.log("LOGIN", "(QR Code) An error occured with the PIN");
-      CustomLogger.error(e, stackHint:"MzY=");
+      CustomLogger.error(e, stackHint: "MzY=");
     }
   }
 

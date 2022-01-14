@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
@@ -26,7 +26,7 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       final notificationPermission = await Permission.notification.request();
       final batteryPermission = await Permission.ignoreBatteryOptimizations.request();
-      UIUtils.setSystemUIOverlayStyle();
+      UIU.setSystemUIOverlayStyle();
       if (notificationPermission.isGranted && batteryPermission.isGranted) {
         fn();
         await SettingsService.update();
@@ -93,7 +93,7 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                                 if (!batteryOptimizationStatus.isGranted) {
                                   if (batteryOptimizationStatus.isDenied) {
                                     final res = await Permission.ignoreBatteryOptimizations.request();
-                                    UIUtils.setSystemUIOverlayStyle();
+                                    UIU.setSystemUIOverlayStyle();
                                     if (!res.isGranted) {
                                       await YDialogs.showInfo(
                                           context,

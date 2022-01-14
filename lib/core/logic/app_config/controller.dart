@@ -20,7 +20,7 @@ import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/settings/model.dart';
 import 'package:ynotes/core/utils/settings/settings_utils.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/ui/themes.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -100,7 +100,7 @@ class ApplicationSystem extends ChangeNotifier {
       updateTheme("clair");
     } catch (e) {
       CustomLogger.log("APPSYS", "Error occured when exiting the app");
-      CustomLogger.error(e, stackHint:"MzE=");
+      CustomLogger.error(e, stackHint: "MzE=");
     }
   }
 
@@ -160,7 +160,7 @@ class ApplicationSystem extends ChangeNotifier {
       theme.updateCurrentTheme(2);
     }
     settings.user.global.theme = themeName;
-    UIUtils.setSystemUIOverlayStyle();
+    UIU.setSystemUIOverlayStyle();
     notifyListeners();
   }
 

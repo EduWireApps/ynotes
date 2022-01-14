@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes_packages/components.dart';
@@ -53,7 +53,7 @@ class _LoadingPageState extends State<LoadingPage> {
   void initState() {
     super.initState();
     // We set the system ui
-    UIUtils.setSystemUIOverlayStyle();
+    UIU.setSystemUIOverlayStyle();
     WidgetsBinding.instance?.addPostFrameCallback((_) => redirect());
   }
 

@@ -16,7 +16,6 @@ dependencies:
   auto_size_text: ^3.0.0-nullsafety.0
   awesome_notifications: ^0.0.6+7
   background_fetch: ^1.0.3
-    
   optimize_battery: ^0.0.1
   calendar_time: ^2.0.0-nullsafety.0
   connectivity_plus: ^1.0.2

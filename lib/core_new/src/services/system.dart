@@ -10,7 +10,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/packages/shared.dart';
 import 'package:ynotes_packages/components.dart';
@@ -100,7 +100,7 @@ class SystemService {
       return const Response();
     }
     final PermissionStatus status = await (first ? permission.status : permission.request());
-    UIUtils.setSystemUIOverlayStyle();
+    UIU.setSystemUIOverlayStyle();
     switch (status) {
       case PermissionStatus.granted:
         return const Response();

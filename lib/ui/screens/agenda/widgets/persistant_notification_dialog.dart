@@ -5,7 +5,7 @@ import 'package:optimize_battery/optimize_battery.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/components.dart';
@@ -123,7 +123,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                 final status = await Permission.accessNotificationPolicy.status;
                 if (!status.isGranted) {
                   final res = await Permission.accessNotificationPolicy.request();
-                  UIUtils.setSystemUIOverlayStyle();
+                  UIU.setSystemUIOverlayStyle();
                   if (!res.isGranted) {
                     await YDialogs.showInfo(
                         context,

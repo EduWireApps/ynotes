@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 
 ///Every action related to files
 class FileAppUtil {
@@ -72,7 +72,7 @@ class FileAppUtil {
           file = Directory(path).listSync();
         } catch (e) {
           CustomLogger.log("FILE UTILS", "An error occured while getting the file list");
-          CustomLogger.error(e, stackHint:"MjU=");
+          CustomLogger.error(e, stackHint: "MjU=");
         }
         //use your folder name insted of resume.
         List<FileInfo> listFiles = [];
@@ -83,7 +83,7 @@ class FileAppUtil {
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
             CustomLogger.log("FILE UTILS", "An error occured while adding file to list");
-            CustomLogger.error(e, stackHint:"MjY=");
+            CustomLogger.error(e, stackHint: "MjY=");
           }
         });
 
@@ -94,7 +94,7 @@ class FileAppUtil {
       List<FileInfo> listFiles = [];
       return listFiles;
     }
-    UIUtils.setSystemUIOverlayStyle();
+    UIU.setSystemUIOverlayStyle();
     return [];
   }
 
@@ -106,7 +106,7 @@ class FileAppUtil {
         return null;
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint:"Mjc=");
+      CustomLogger.error(e, stackHint: "Mjc=");
     }
   }
 
@@ -129,7 +129,7 @@ class FileAppUtil {
       await OpenFile.open(path!);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while opening file");
-      CustomLogger.error(e, stackHint:"Mjg=");
+      CustomLogger.error(e, stackHint: "Mjg=");
     }
   }
 
@@ -150,7 +150,7 @@ class FileAppUtil {
       await file.writeAsString(data, mode: FileMode.write);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while writing $fileName²");
-      CustomLogger.error(e, stackHint:"Mjk=");
+      CustomLogger.error(e, stackHint: "Mjk=");
     }
   }
 }

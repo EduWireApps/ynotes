@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/ui/screens/intro/widgets/slides/slides.dart';
 import 'package:ynotes/ui/screens/intro/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -59,7 +59,7 @@ class _IntroPageState extends State<IntroPage> {
   // The [YTColor]'s foreground color used as background color here.
   Color get _foregroundColor {
     final Color res = _pageOffset.toInt() + 1 < _colors.length ? _color.foregroundColor : _colors.last.foregroundColor;
-    UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: res);
+    UIU.setSystemUIOverlayStyle(systemNavigationBarColor: res);
     return res;
   }
 
@@ -81,14 +81,14 @@ class _IntroPageState extends State<IntroPage> {
       });
     });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: _foregroundColor);
+      UIU.setSystemUIOverlayStyle(systemNavigationBarColor: _foregroundColor);
     });
   }
 
   @override
   void dispose() {
     // Set default overlay colors.
-    UIUtils.setSystemUIOverlayStyle();
+    UIU.setSystemUIOverlayStyle();
     _pageController.dispose();
     super.dispose();
   }
@@ -187,7 +187,7 @@ class _IntroPageState extends State<IntroPage> {
   Widget build(BuildContext context) {
     return FocusDetector(
       onForegroundGained: () {
-        UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: _foregroundColor);
+        UIU.setSystemUIOverlayStyle(systemNavigationBarColor: _foregroundColor);
       },
       child: Scaffold(
           backgroundColor: _foregroundColor,

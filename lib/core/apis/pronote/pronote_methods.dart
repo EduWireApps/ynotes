@@ -13,7 +13,7 @@ import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/null_safe_map_getter.dart';
+
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/useful_methods.dart';
 
@@ -101,7 +101,7 @@ class PronoteMethod {
 
   Future<List<Lesson>?> lessons(DateTime dateFrom, {DateTime? dateTo}) async {
     List<Lesson>? lessons = [];
-    var user = mapGet(client?.paramsUser, ['donneesSec', 'donnees', 'ressource']) ?? "";
+    var user = client?.paramsUser?['donneesSec']['donnees']['ressource'] ?? "";
     Map jsonData = {
       "donnees": {
         "ressource": user,
@@ -167,7 +167,7 @@ class PronoteMethod {
         return toReturn;
       } catch (e) {
         CustomLogger.log("PRONOTE", "Error while fetching for " + (lockName ?? ""));
-        CustomLogger.error(e, stackHint:"MTI=");
+        CustomLogger.error(e, stackHint: "MTI=");
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           CustomLogger.log("PRONOTE", "Refreshing client");

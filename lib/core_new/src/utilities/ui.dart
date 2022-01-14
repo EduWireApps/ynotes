@@ -5,8 +5,9 @@ import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes_packages/theme.dart';
 
-class UIUtils {
-  const UIUtils._();
+/// A class that manages ui related actions. UIU stands for User Interface Utilities.
+class UIU {
+  const UIU._();
 
   /// Sets the status bar and navigation bar styles.
   static void setSystemUIOverlayStyle({Color? systemNavigationBarColor, bool? isDark}) {

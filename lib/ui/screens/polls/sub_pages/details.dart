@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/pronote.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/routing_utils.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -78,7 +78,7 @@ class _PollsDetailsPageState extends State<PollsDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = RoutingUtils.getArgs<PollsDetailsPageArguments>(context);
+    final arguments = AppRouter.getArgs<PollsDetailsPageArguments>(context);
     poll ??= arguments.poll;
     api ??= arguments.api;
 

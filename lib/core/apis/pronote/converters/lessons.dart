@@ -2,67 +2,66 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/pronote/pronote_api.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 
 class PronoteLessonsConverter {
   static Lesson lesson(PronoteClient client, Map lessonData) {
-    String? matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
-    DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(mapGet(lessonData, ["DateDuCours", "V"]));
+    String? matiere = lessonData["ListeContenus"]["V"][0]["L"];
+    DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(lessonData["DateDuCours"]["V"]);
     DateTime? end;
 
-    int? endPlace = (mapGet(lessonData, ['place']) %
+    int? endPlace = (lessonData['place'] %
             ((client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V']).length - 1)) +
-        (mapGet(lessonData, ['duree']) - 1);
+        (lessonData['duree'] - 1);
 
     ///Get the correct hours
     ///Pronote gives us the place where the hour should be in a week, when we modulo that with the amount of
     ///hours in a day we can get the "place" when the hour starts. Then we just add the duration (and substract 1)
-    for (Map? endTime in (mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']))) {
-      if (mapGet(endTime, ['G']) == endPlace) {
+    for (Map? endTime in (client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V'])) {
+      if (endTime?['G'] == endPlace) {
         if (endTime != null) {
           CustomLogger.log(
               "PRONOTE", "Lessons: " + matiere! + " " + "START " + start.toString() + " END " + endTime["L"]);
         }
-        DateTime endTimeDate = DateFormat("""HH'h'mm""").parse(mapGet(endTime, ["L"]));
+        DateTime endTimeDate = DateFormat("""HH'h'mm""").parse(endTime?["L"]);
         end = DateTime(start.year, start.month, start.day, endTimeDate.hour, endTimeDate.minute);
       }
     }
 
     String? room;
     try {
-      var roomContainer = mapGet(lessonData, ["ListeContenus", "V"]) ?? [].firstWhere((element) => element["G"] == 17);
-      room = mapGet(roomContainer, ["L"]);
+      var roomContainer = lessonData["ListeContenus"]["V"] ?? [].firstWhere((element) => element["G"] == 17);
+      room = roomContainer["L"];
     }
 
     //Sort of null aware
     catch (e) {
-      CustomLogger.error(e, stackHint:"MTc=");
+      CustomLogger.error(e, stackHint: "MTc=");
     }
     List<String?> teachers = [];
     try {
-      mapGet(lessonData, ["ListeContenus", "V"]).forEach((element) {
+      lessonData["ListeContenus"]["V"].forEach((element) {
         if (element["G"] == 3) {
           teachers.add(element["L"]);
         }
       });
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MTg=");
+      CustomLogger.error(e, stackHint: "MTg=");
     }
 
     //Some attributes
-    String codeMatiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]).hashCode.toString();
+    String codeMatiere = lessonData["ListeContenus"]["V"][0]["L"].hashCode.toString();
 
-    String? id = mapGet(lessonData, ["N"]);
+    String? id = lessonData["N"];
 
     String? status;
     bool? canceled = false;
 
     //Set lesson status
-    if (mapGet(lessonData, ["Statut"]) != null) {
-      status = mapGet(lessonData, ["Statut"]);
+    if (lessonData["Statut"] != null) {
+      status = lessonData["Statut"];
     }
-    if (mapGet(lessonData, ["estAnnule"]) != null) {
-      canceled = mapGet(lessonData, ["estAnnule"]);
+    if (lessonData["estAnnule"] != null) {
+      canceled = lessonData["estAnnule"];
     }
 
     //Finally set attributes
@@ -83,13 +82,13 @@ class PronoteLessonsConverter {
 
   static lessons(PronoteClient client, Map lessonsData) {
     List<Lesson> lessonsList = [];
-    List<Map> lessonsListRaw = (mapGet(lessonsData, ['donneesSec', 'donnees', 'ListeCours']) ?? []).cast<Map>();
+    List<Map> lessonsListRaw = (lessonsData['donneesSec']['donnees']['ListeCours'] ?? []).cast<Map>();
 
     for (var lesson in lessonsListRaw) {
       try {
         lessonsList.add(PronoteLessonsConverter.lesson(client, lesson));
       } catch (e) {
-        CustomLogger.error(e, stackHint:"MTk=");
+        CustomLogger.error(e, stackHint: "MTk=");
       }
     }
     return lessonsList;

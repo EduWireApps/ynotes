@@ -9,7 +9,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/ui.dart';
+import 'package:ynotes/core_new/utilities.dart';
 
 /// The status of the geolocation
 enum GeolocationStatus {
@@ -145,7 +145,7 @@ class PronoteGeolocationController extends ChangeNotifier {
       }
     }
     // Set the system ui because the native dialog modifies it
-    UIUtils.setSystemUIOverlayStyle();
+    UIU.setSystemUIOverlayStyle();
   }
 
   /// Get the schools around the user's location.

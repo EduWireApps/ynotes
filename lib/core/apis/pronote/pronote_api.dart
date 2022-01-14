@@ -15,7 +15,7 @@ import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/null_safe_map_getter.dart';
+
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/app/app.dart';
 
@@ -510,7 +510,7 @@ class PronoteClient {
       if (url != null) CustomLogger.log("PRONOTE", url);
       return url;
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MTM=");
+      CustomLogger.error(e, stackHint: "MTM=");
     }
   }
 
@@ -658,7 +658,7 @@ class PronoteClient {
   }
 
   setPollRead(String meta) async {
-    var user = mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource']);
+    var user = paramsUser?['donneesSec']['donnees']['ressource'];
     CustomLogger.log("PRONOTE", user);
     List metas = meta.split("/");
     Map data = {
@@ -687,7 +687,7 @@ class PronoteClient {
   setPollResponse(String meta) async {
     try {
       List metas = meta.split("/ynsplit");
-      var user = mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource']);
+      var user = paramsUser?['donneesSec']['donnees']['ressource'];
       Map mapData = conv.jsonDecode(metas[0]);
       Map pollMapData = conv.jsonDecode(metas[1]);
       String answer = metas[2];
@@ -720,7 +720,7 @@ class PronoteClient {
       var response = await communication!.post('SaisieActualites', data: data);
       CustomLogger.log("PRONOTE", response);
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MTU=");
+      CustomLogger.error(e, stackHint: "MTU=");
     }
   }
 
@@ -843,20 +843,18 @@ class PronoteClient {
             paramsUser = await communication!.post("ParametresUtilisateur", data: {'donnees': {}});
             encryption.aesKey = communication?.encryption.aesKey;
 
-            communication!.authorizedTabs = prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'listeOnglets']));
+            communication!.authorizedTabs = prepareTabs(paramsUser?['donneesSec']['donnees']['listeOnglets']);
 
             stepsLogger.add("✅ Prepared tabs");
 
             try {
-              KVS.write(
-                  key: "classe",
-                  value: mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
-              KVS.write(key: "userFullName", value: mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
+              KVS.write(key: "classe", value: paramsUser?['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
+              KVS.write(key: "userFullName", value: paramsUser?['donneesSec']['donnees']['ressource']["L"]);
             } catch (e) {
               stepsLogger.add("❌ Failed to register UserInfos");
 
               CustomLogger.log("PRONOTE", "Failed to register UserInfos");
-              CustomLogger.error(e, stackHint:"MTY=");
+              CustomLogger.error(e, stackHint: "MTY=");
             }
           } catch (e) {
             stepsLogger.add("ⓘ Using old api ");
@@ -947,34 +945,32 @@ class PronotePeriod {
     var response = (codePeriode == 2) ? a.json() : {};
     */
     var response = await _client.communication!.post('DernieresNotes', data: jsonData);
-    var grades = mapGet(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
-    moyenneGenerale = gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
-    moyenneGeneraleClasse = gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "");
+    var grades = response['donneesSec']['donnees']['listeDevoirs']['V'] ?? [];
+    moyenneGenerale = gradeTranslate(response['donneesSec']['donnees']['moyGenerale']['V'] ?? "");
+    moyenneGeneraleClasse = gradeTranslate(response['donneesSec']['donnees']['moyGeneraleClasse']['V'] ?? "");
 
     var other = [];
     grades.forEach((element) async {
       list.add(Grade(
-          value: gradeTranslate(mapGet(element, ["note", "V"]) ?? ""),
+          value: gradeTranslate(element["note"]["V"] ?? ""),
           testName: element["commentaire"],
           periodCode: id,
           periodName: name,
-          disciplineCode: (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString(),
+          disciplineCode: (element["service"]["V"]["L"] ?? "").hashCode.toString(),
           subdisciplineCode: null,
-          disciplineName: mapGet(element, ["service", "V", "L"]),
-          letters: (mapGet(element, ["note", "V"]) ?? "").contains("|"),
-          weight: mapGet(element, ["coefficient"]).toString(),
-          scale: mapGet(element, ["bareme", "V"]),
-          min: gradeTranslate(mapGet(element, ["noteMin", "V"]) ?? ""),
-          max: gradeTranslate(mapGet(element, ["noteMax", "V"]) ?? ""),
-          classAverage: gradeTranslate(mapGet(element, ["moyenne", "V"]) ?? ""),
-          date: mapGet(element, ["date", "V"]) != null ? DateFormat("dd/MM/yyyy").parse(element["date"]["V"]) : null,
-          notSignificant: gradeTranslate(mapGet(element, ["note", "V"]) ?? "") == "NonNote",
+          disciplineName: element["service"]["V"]["L"],
+          letters: (element["note"]["V"] ?? "").contains("|"),
+          weight: element["coefficient"].toString(),
+          scale: element["bareme"]["V"],
+          min: gradeTranslate(element["noteMin"]["V"] ?? ""),
+          max: gradeTranslate(element["noteMax"]["V"] ?? ""),
+          classAverage: gradeTranslate(element["moyenne"]["V"] ?? ""),
+          date: element["date"]["V"] != null ? DateFormat("dd/MM/yyyy").parse(element["date"]["V"]) : null,
+          notSignificant: gradeTranslate(element["note"]["V"] ?? "") == "NonNote",
           testType: "Interrogation",
-          entryDate: mapGet(element, ["date", "V"]) != null
-              ? DateFormat("dd/MM/yyyy").parse(mapGet(element, ["date", "V"]))
-              : null,
-          countAsZero: shouldCountAsZero(gradeTranslate(mapGet(element, ["note", "V"]) ?? ""))));
-      other.add(average(response, (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString()));
+          entryDate: element["date"]["V"] != null ? DateFormat("dd/MM/yyyy").parse(element["date"]["V"]) : null,
+          countAsZero: shouldCountAsZero(gradeTranslate(element["note"]["V"] ?? ""))));
+      other.add(average(response, (element["service"]["V"]["L"] ?? "").hashCode.toString()));
     });
     return [list, other];
   }

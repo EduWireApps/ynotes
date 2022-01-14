@@ -18,7 +18,7 @@ import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/null_safe_map_getter.dart';
+
 import 'package:ynotes/app/app.dart';
 
 class APIPronote extends API {
@@ -110,7 +110,7 @@ class APIPronote extends API {
       return listPeriods;
     } catch (e) {
       CustomLogger.log("PRONOTE", "Error while collecting offline periods.");
-      CustomLogger.error(e, stackHint:"OA==");
+      CustomLogger.error(e, stackHint: "OA==");
     }
   }
 
@@ -134,7 +134,7 @@ class APIPronote extends API {
       }
     } catch (e) {
       CustomLogger.log("PRONOTE", "Error while getting periods.");
-      CustomLogger.error(e, stackHint:"OQ==");
+      CustomLogger.error(e, stackHint: "OQ==");
     }
   }
 
@@ -209,7 +209,7 @@ class APIPronote extends API {
         final String err = e.toString();
         localClient.stepsLogger.add("❌ Pronote login failed : " + err);
         CustomLogger.log("PRONOTE", "Login failed.");
-        CustomLogger.error(e, stackHint:"MTA=");
+        CustomLogger.error(e, stackHint: "MTA=");
         String error = "Une erreur a eu lieu. " + err;
         if (err.contains("invalid url")) {
           error = "L'URL entrée est invalide";
@@ -256,9 +256,9 @@ class APIPronote extends API {
 
   Future<bool> setPronotePollRead(PollInfo poll, PollQuestion question) async {
     try {
-      String publicID = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
-      int publicType = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
-      String publicName = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
+      String publicID = localClient.paramsUser!["donneesSec"]["donnees"]["ressource"]["N"];
+      int publicType = localClient.paramsUser!["donneesSec"]["donnees"]["ressource"]["G"];
+      String publicName = localClient.paramsUser!["donneesSec"]["donnees"]["ressource"]["L"];
 
       var data = {
         "donnees": {
@@ -306,9 +306,9 @@ class APIPronote extends API {
 
   Future<bool> setPronotePolls(PollInfo poll, PollQuestion question, PollChoice choice) async {
     try {
-      String publicID = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
-      int publicType = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
-      String publicName = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
+      String publicID = localClient.paramsUser!["donneesSec"]["donnees"]["ressource"]["N"];
+      int publicType = localClient.paramsUser!["donneesSec"]["donnees"]["ressource"]["G"];
+      String publicName = localClient.paramsUser!["donneesSec"]["donnees"]["ressource"]["L"];
 
       var data = {
         "donnees": {

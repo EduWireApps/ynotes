@@ -5,7 +5,6 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/anonymizer_utils.dart';
-import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 
 class EcoleDirecteAccountConverter {
   static API_TYPE apiType = API_TYPE.ecoleDirecte;
@@ -18,12 +17,12 @@ class EcoleDirecteAccountConverter {
         return AnonymizerUtils.severalValues(jsonEncode(accountData), toAnonymize);
       },
       converter: (Map<dynamic, dynamic> accountData) {
-        List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"])?.cast<Map>();
+        List<Map>? rawSchoolAccounts = accountData["data"]["accounts"][0]["profile"]["eleves"]?.cast<Map>();
 
         if (rawSchoolAccounts != null) {
-          var data = mapGet(accountData, ["data", "accounts", 0]);
-          String? name = utf8convert(mapGet(data, ["prenom"]));
-          String? surname = utf8convert(mapGet(data, ["nom"]));
+          var data = accountData["data"]["accounts"][0];
+          String? name = utf8convert(data["prenom"]);
+          String? surname = utf8convert(data["nom"]);
           String? id = const Uuid().v1();
           bool isParentMainAccount = true;
           List<SchoolAccount> _schoolAccountsList = schoolAccounts(rawSchoolAccounts);
@@ -101,12 +100,12 @@ class EcoleDirecteAccountConverter {
   static List<SchoolAccount> schoolAccounts(List<Map<dynamic, dynamic>> schoolAccountsData) {
     List<SchoolAccount> accounts = [];
     for (var rawAccountData in schoolAccountsData) {
-      String? name = utf8convert(mapGet(rawAccountData, ["prenom"]));
-      String? surname = utf8convert(mapGet(rawAccountData, ["nom"]));
-      String? schoolName = utf8convert(mapGet(rawAccountData, ["nomEtablissement"]));
-      String? studentClass = utf8convert(mapGet(rawAccountData, ["classe", "libelle"]));
-      String? studentID = mapGet(rawAccountData, ["id"]).toString();
-      List<appTabs> tabs = availableTabs(mapGet(rawAccountData, ["modules"]));
+      String? name = utf8convert(rawAccountData["prenom"]);
+      String? surname = utf8convert(rawAccountData["nom"]);
+      String? schoolName = utf8convert(rawAccountData["nomEtablissement"]);
+      String? studentClass = utf8convert(rawAccountData["classe"]["libelle"]);
+      String? studentID = rawAccountData["id"].toString();
+      List<appTabs> tabs = availableTabs(rawAccountData["modules"]);
       accounts.add(SchoolAccount(
           name: name,
           surname: surname,
@@ -119,14 +118,14 @@ class EcoleDirecteAccountConverter {
   }
 
   static SchoolAccount singleSchoolAccount(Map<dynamic, dynamic> schoolAccountsData) {
-    schoolAccountsData = mapGet(schoolAccountsData, ["data", "accounts", 0]);
-    String? name = utf8convert(mapGet(schoolAccountsData, ["prenom"]));
-    String? surname = utf8convert(mapGet(schoolAccountsData, ["nom"]));
-    String? schoolName = utf8convert(mapGet(schoolAccountsData, ["profile", "nomEtablissement"]));
-    String? studentClass = utf8convert(mapGet(schoolAccountsData, ["profile", "classe", "libelle"]));
-    String? studentID = mapGet(schoolAccountsData, ["id"]).toString();
-    List<appTabs> tabs = availableTabs(mapGet(schoolAccountsData, ["modules"]));
-    String? profilePicture = utf8convert(mapGet(schoolAccountsData, ["profile", "photo"]));
+    schoolAccountsData = schoolAccountsData["data"]["accounts"][0];
+    String? name = utf8convert(schoolAccountsData["prenom"]);
+    String? surname = utf8convert(schoolAccountsData["nom"]);
+    String? schoolName = utf8convert(schoolAccountsData["profile"]["nomEtablissement"]);
+    String? studentClass = utf8convert(schoolAccountsData["profile"]["classe"]["libelle"]);
+    String? studentID = schoolAccountsData["id"].toString();
+    List<appTabs> tabs = availableTabs(schoolAccountsData["modules"]);
+    String? profilePicture = utf8convert(schoolAccountsData["profile"]["photo"]);
     return SchoolAccount(
         name: name,
         surname: surname,
