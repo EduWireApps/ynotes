@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:background_fetch/background_fetch.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -13,8 +11,6 @@ import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/school_life/controller.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/services/background.dart';
-import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
@@ -118,9 +114,6 @@ class ApplicationSystem extends ChangeNotifier {
         currentSchoolAccount = account!.managableAccounts![settings.system.accountIndex];
       }
     }
-    //Set background fetch
-    await _initBackgroundFetch();
-    //Set controllers
   }
 
   Future<void> saveSettings() async {
@@ -157,32 +150,5 @@ class ApplicationSystem extends ChangeNotifier {
     settings.user.global.theme = themeName;
     UIU.setSystemUIOverlayStyle();
     notifyListeners();
-  }
-
-  _initBackgroundFetch() async {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      Logger.log("APPSYS", "Configuring background fetch");
-      int i = await BackgroundFetch.configure(
-        BackgroundFetchConfig(
-            minimumFetchInterval: 15,
-            stopOnTerminate: false,
-            startOnBoot: true,
-            enableHeadless: true,
-            requiresBatteryNotLow: false,
-            requiresCharging: false,
-            requiresStorageNotLow: false,
-            requiresDeviceIdle: false,
-            requiredNetworkType: NetworkType.ANY),
-        (String taskId) async {
-          await BackgroundService.backgroundFetchHeadlessTask(taskId);
-          BackgroundFetch.finish(taskId);
-        },
-        (String taskId) async {
-          await AppNotification.cancelNotification(taskId.hashCode);
-          BackgroundFetch.finish(taskId);
-        },
-      );
-      Logger.log("APPSYS", "Background fetch configured: $i");
-    }
   }
 }

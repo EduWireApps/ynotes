@@ -11,22 +11,6 @@ import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
 
-//Return the good API (will be extended to Pronote)
-List<String> colorList = [
-  "#f07aa0",
-  "#17d0c9",
-  "#a3f7bf",
-  "#cecece",
-  "#ffa41b",
-  "#ff5151",
-  "#b967e1",
-  "#8a7ca7",
-  "#f18867",
-  "#ffc0da",
-  "#739832",
-  "#8ac6d1"
-];
-
 sta.Stack<String> colorStack = sta.Stack();
 
 apiManager(Offline _offline) {
@@ -147,16 +131,4 @@ Future<bool> testIfPronoteCas(String url) async {
 String utf8convert(String? text) {
   List<int> bytes = text.toString().codeUnits;
   return utf8.decode(bytes);
-}
-
-class HexColor extends Color {
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
-
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
 }

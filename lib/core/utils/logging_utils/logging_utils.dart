@@ -11,6 +11,6 @@ import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/logs_stacklist.dart';
 
-part 'src/custom_logger.dart';
+part 'src/logger.dart';
 part 'src/logs_manager.dart';
 part 'src/y_log.dart';
