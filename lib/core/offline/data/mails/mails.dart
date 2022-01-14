@@ -12,7 +12,7 @@ class MailsOffline {
       return parent.mailsBox?.values.toList();
     } catch (e) {
       CustomLogger.log("MAILS", "An error occured while returning mail");
-      CustomLogger.error(e, stackHint:"NDc=");
+      CustomLogger.error(e, stackHint:"NDE=");
       return null;
     }
   }
@@ -56,7 +56,7 @@ class MailsOffline {
       await parent.mailsBox?.addAll(mails);
     } catch (e) {
       CustomLogger.log("MAILS", "An error occured while updating mail");
-      CustomLogger.error(e, stackHint:"NDg=");
+      CustomLogger.error(e, stackHint:"NDI=");
     }
   }
 }

@@ -28,7 +28,7 @@ class ExampleOffline {
       return parent.exampleBox?.values.toList();
     } catch (e) {
       CustomLogger.log("EXAMPLE", "An error occured while returning example");
-      CustomLogger.error(e, stackHint:"NTE=");
+      CustomLogger.error(e, stackHint:"MzA=");
       return null;
     }
   }
@@ -70,7 +70,7 @@ class ExampleOffline {
       await parent.exampleBox?.addAll(newExamples);
     } catch (e) {
       CustomLogger.log("EXAMPLE", "An error occured while updating examples");
-      CustomLogger.error(e, stackHint:"NTI=");
+      CustomLogger.error(e, stackHint:"MzE=");
     }
   }
 }

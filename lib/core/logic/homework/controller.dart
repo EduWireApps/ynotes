@@ -163,7 +163,7 @@ class HomeworkController extends ChangeNotifier {
         try {
           unloadedHW.remove(hw);
         } catch (e) {
-          CustomLogger.error(e, stackHint:"NDA=");
+          CustomLogger.error(e, stackHint:"Ng==");
         }
         await refresh(refreshFromOffline: true);
 
@@ -208,7 +208,7 @@ class HomeworkController extends ChangeNotifier {
         try {
           unloadedHW.add(element);
         } catch (e) {
-          CustomLogger.error(e, stackHint:"NDE=");
+          CustomLogger.error(e, stackHint:"Nw==");
         }
       }
     });
@@ -253,7 +253,7 @@ class HomeworkController extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint:"NDI=");
+      CustomLogger.error(e, stackHint:"OA==");
     }
   }
 }

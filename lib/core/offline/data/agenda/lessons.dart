@@ -15,7 +15,7 @@ class LessonsOffline {
       return parent.agendaBox?.get("lessons")?[week]?.cast<Lesson>();
     } catch (e) {
       CustomLogger.log("LESSONS", "An error occurred while returning lessons");
-      CustomLogger.error(e, stackHint:"Njk=");
+      CustomLogger.error(e, stackHint:"MjE=");
       return null;
     }
   }
@@ -47,7 +47,7 @@ class LessonsOffline {
       return true;
     } catch (e) {
       CustomLogger.log("LESSONS", "An error occurred while updating offline lessons");
-      CustomLogger.error(e, stackHint:"NzA=");
+      CustomLogger.error(e, stackHint:"MjI=");
     }
   }
 }

@@ -61,7 +61,7 @@ class DownloadController extends ChangeNotifier {
           await file.writeAsBytes(bytes);
         } catch (e) {
           CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-          CustomLogger.error(e, stackHint:"MzM=");
+          CustomLogger.error(e, stackHint:"MTE=");
           _isDownloading = false;
           _hasError = true;
           notifyListeners();
@@ -69,7 +69,7 @@ class DownloadController extends ChangeNotifier {
       },
       onError: (e) {
         CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
-        CustomLogger.error(e, stackHint:"MzQ=");
+        CustomLogger.error(e, stackHint:"MTI=");
         _isDownloading = false;
         _hasError = true;
         notifyListeners();

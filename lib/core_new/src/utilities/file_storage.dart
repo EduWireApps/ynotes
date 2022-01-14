@@ -20,7 +20,7 @@ class FileStorage {
       await OpenFile.open(file.path);
       return const Response();
     } catch (e) {
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"NTA=");
       return Response(error: e.toString());
     }
   }
