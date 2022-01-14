@@ -7,7 +7,7 @@ class SubjectsFiltersManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<GradesModule>(
+    return ChangeNotifierConsumer<GradesModule>(
         controller: schoolApi.gradesModule,
         builder: (context, module, _) {
           return Row(

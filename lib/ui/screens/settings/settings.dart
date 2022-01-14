@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
@@ -24,7 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Paramètres"),
-        body: ControllerConsumer<Settings>(
+        body: ChangeNotifierConsumer<Settings>(
             controller: SettingsService.settings,
             builder: (context, settings, _) => YSettingsSections(sections: [
                   YSettingsSection(tiles: [

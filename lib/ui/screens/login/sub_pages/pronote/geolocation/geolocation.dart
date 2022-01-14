@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/pronote/login/geolocation/geolocation_controller.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -91,7 +91,7 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<PronoteGeolocationController>(
+    return ChangeNotifierConsumer<PronoteGeolocationController>(
         controller: geolocationController,
         builder: (context, controller, child) {
           return YPage(

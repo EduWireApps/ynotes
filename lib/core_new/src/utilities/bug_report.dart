@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/extensions.dart';
@@ -16,9 +16,9 @@ import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 
-/// The class that handles the bug reporting process
-class BugReportUtils {
-  const BugReportUtils._();
+/// The class that handles the bug reporting process.
+class BugReport {
+  const BugReport._();
 
   /// Initializes the bug report client
   static void init() {

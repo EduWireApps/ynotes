@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -38,7 +38,7 @@ class HomeworkElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<GradesController>(
+    return ChangeNotifierConsumer<GradesController>(
         controller: appSys.gradesController,
         builder: (context, controller, _) {
           return InkWell(

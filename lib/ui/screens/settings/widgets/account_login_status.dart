@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -122,7 +122,7 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
                 color: YColor.success),
             YHorizontalSpacer(YScale.s2),
             YButton(
-              onPressed: () => BugReportUtils.report(),
+              onPressed: () => BugReport.report(),
               text: "Support",
               color: status == AuthStatus.error ? YColor.danger : YColor.secondary,
               invertColors: true,

@@ -5,7 +5,7 @@ class AccountSwitcherTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<AuthModule>(
+    return ChangeNotifierConsumer<AuthModule>(
         controller: schoolApi.authModule,
         builder: (context, module, _) {
           return YSettingsTile(

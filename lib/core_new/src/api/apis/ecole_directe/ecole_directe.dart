@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/utils/app_colors.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/packages/shared.dart';

@@ -7,10 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
-import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/packages/shared.dart';
 import 'package:ynotes_packages/components.dart';
@@ -38,7 +36,7 @@ class SystemService {
     if (all) {
       await backwardCompatibility();
       await SettingsService.init();
-      BugReportUtils.init();
+      BugReport.init();
       schoolApi = schoolApiManager(SettingsService.settings.global.api);
       await schoolApi.init();
       await BackgroundService.init();
@@ -51,7 +49,7 @@ class SystemService {
         store.current = 1;
         store.text = "Intitialisation de l'outil de report de bug...";
         store._notify();
-        BugReportUtils.init();
+        BugReport.init();
         await Future.delayed(const Duration(milliseconds: 500));
         store.current = 2;
         store.text = "Choix du service scolaire...";

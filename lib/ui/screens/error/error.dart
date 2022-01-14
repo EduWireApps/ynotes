@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -39,7 +39,7 @@ class _ErrorPageState extends State<ErrorPage> {
                   text: "Revenir à l'accueil",
                 ),
                 YHorizontalSpacer(YScale.s2),
-                YButton(onPressed: () => BugReportUtils.report(), text: "Signaler le bug", color: YColor.secondary)
+                YButton(onPressed: () => BugReport.report(), text: "Signaler le bug", color: YColor.secondary)
               ],
             )
           ],

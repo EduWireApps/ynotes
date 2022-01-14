@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
@@ -80,7 +80,7 @@ class _HomeworkSectionState extends State<HomeworkSection> {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<HomeworkController>(
+    return ChangeNotifierConsumer<HomeworkController>(
         controller: controller,
         builder: (context, controller, _) {
           return week.isNotEmpty

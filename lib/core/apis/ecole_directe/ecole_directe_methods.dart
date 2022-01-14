@@ -16,7 +16,7 @@ import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/school_life/school_life.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/useful_methods.dart';
@@ -58,13 +58,11 @@ class EcoleDirecteMethod {
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList ?? []);
 
-    await DisciplinesOffline(_offlineController)
-        .updateDisciplines(disciplinesList);
+    await DisciplinesOffline(_offlineController).updateDisciplines(disciplinesList);
 
     createStack();
 
-    appSys.settings.system.lastGradeCount =
-        (getAllGrades(disciplinesList, overrideLimit: true) ?? []).length;
+    appSys.settings.system.lastGradeCount = (getAllGrades(disciplinesList, overrideLimit: true) ?? []).length;
     appSys.saveSettings();
 
     return disciplinesList;
@@ -102,8 +100,7 @@ class EcoleDirecteMethod {
     await testToken();
     String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
     String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
-    String data =
-        'data={"token": "$token", "dateDebut":"$dateDebut", "dateFin":"$dateFin"}';
+    String data = 'data={"token": "$token", "dateDebut":"$dateDebut", "dateFin":"$dateFin"}';
     try {
       List<Lesson>? lessonsList = await request(
         data: data,
@@ -114,8 +111,7 @@ class EcoleDirecteMethod {
       int week = await getWeek(dateToUse);
 
       if (lessonsList != null) {
-        await LessonsOffline(_offlineController)
-            .updateLessons(lessonsList, week);
+        await LessonsOffline(_offlineController).updateLessons(lessonsList, week);
       }
 
       return lessonsList;
@@ -182,13 +178,10 @@ class EcoleDirecteMethod {
     var url = endpoints.login;
     CustomLogger.log("LOGIN", url);
     Map<String, String> headers = {"Content-type": "text/plain"};
-    String data =
-        'data={"identifiant": "$username", "motdepasse": "$password"}';
+    String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;
-    var response = await http
-        .post(Uri.parse(url), headers: headers, body: body)
-        .catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard. ${e.toString()}");
     });
     if (response.statusCode == 200) {
@@ -223,14 +216,11 @@ class EcoleDirecteMethod {
     return schoolLifeList;
   }
 
-  Future sendMail(
-      String? subject, String content, List<Recipient> recipientsList) async {
+  Future sendMail(String? subject, String content, List<Recipient> recipientsList) async {
     String recipients = "";
 
-    String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(
-        content,
-        characters:
-            "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
+    String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content,
+        characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
     for (var element in recipientsList) {
       String eOrp = element.isTeacher! ? "P" : "E";
       int? id = int.tryParse(element.id!);
@@ -265,8 +255,7 @@ class EcoleDirecteMethod {
 
     await testToken();
     String? id = appSys.currentSchoolAccount?.studentID ?? "";
-    var url =
-        'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
+    var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
 
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = """data={
@@ -288,9 +277,7 @@ class EcoleDirecteMethod {
 
     CustomLogger.logWrapped("ED", "Mail data to send", data);
     var body = data;
-    var response = await http
-        .post(Uri.parse(url), headers: headers, body: body)
-        .catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
     CustomLogger.log("ED", "Starting the mail reading");
@@ -325,8 +312,7 @@ class EcoleDirecteMethod {
       //encode Map to JSON
       var body = data;
 
-      var response =
-          await http.post(Uri.parse(url), headers: headers, body: body);
+      var response = await http.post(Uri.parse(url), headers: headers, body: body);
 
       if (response.statusCode == 200) {
         Map<String, dynamic> req = jsonDecode(response.body);
@@ -345,51 +331,34 @@ class EcoleDirecteMethod {
 
 //Refresh the token if expired
   static fetchAnyData(dynamic onlineFetch, dynamic offlineFetch,
-      {bool forceFetch = false,
-      isOfflineLocked = false,
-      onlineArguments,
-      offlineArguments}) async {
+      {bool forceFetch = false, isOfflineLocked = false, onlineArguments, offlineArguments}) async {
     //Test connection status
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
     if (connectivityResult == ConnectivityResult.none && !isOfflineLocked) {
-      return await ((offlineArguments != null)
-          ? offlineFetch(offlineArguments)
-          : offlineFetch());
+      return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
     } else if (forceFetch && !isOfflineLocked) {
       try {
-        await ((onlineArguments != null)
-            ? onlineFetch(onlineArguments)
-            : onlineFetch());
-        return await ((offlineArguments != null)
-            ? offlineFetch(offlineArguments)
-            : offlineFetch());
+        await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+        return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       } catch (e) {
         CustomLogger.error(e, stackHint: "Ng==");
-        return await ((offlineArguments != null)
-            ? offlineFetch(offlineArguments)
-            : offlineFetch());
+        return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
       //Offline data;
       dynamic data;
       if (!isOfflineLocked) {
         try {
-          data = await ((offlineArguments != null)
-              ? offlineFetch(offlineArguments)
-              : offlineFetch());
+          data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
           CustomLogger.error(e, stackHint: "Nw==");
         }
       }
       if (data == null) {
         try {
-          await ((onlineArguments != null)
-              ? onlineFetch(onlineArguments)
-              : onlineFetch());
-          return await ((offlineArguments != null)
-              ? offlineFetch(offlineArguments)
-              : offlineFetch());
+          await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+          return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
           CustomLogger.error(e, stackHint: "OA==");
         }
@@ -404,9 +373,7 @@ class EcoleDirecteMethod {
   }
 
   static getNextSunday(DateTime date) {
-    return date
-        .subtract(Duration(days: date.weekday - 1))
-        .add(const Duration(days: 6));
+    return date.subtract(Duration(days: date.weekday - 1)).add(const Duration(days: 6));
   }
 
   static Future<dynamic> request(
@@ -423,13 +390,11 @@ class EcoleDirecteMethod {
       if (getRequest) {
         response = await http.get(Uri.parse(finalUrl), headers: headers);
       } else {
-        response =
-            await http.post(Uri.parse(finalUrl), headers: headers, body: data);
+        response = await http.post(Uri.parse(finalUrl), headers: headers, body: data);
       }
 
       CustomLogger.logWrapped("ED", "Final url", finalUrl);
-      Map<String, dynamic>? responseData =
-          json.decode(utf8.decode(response.bodyBytes));
+      Map<String, dynamic>? responseData = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200 &&
           responseData != null &&
           responseData['code'] != null &&
@@ -443,8 +408,7 @@ class EcoleDirecteMethod {
         return parsedData;
       } else {
         CustomLogger.logWrapped("ED", "Response data", responseData.toString());
-        throw (onErrorBody +
-            "  Server returned wrong statuscode : ${response.statusCode}");
+        throw (onErrorBody + "  Server returned wrong statuscode : ${response.statusCode}");
       }
     } catch (e) {
       throw (onErrorBody + " " + e.toString());

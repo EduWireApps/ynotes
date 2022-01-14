@@ -21,7 +21,7 @@ class _Drawer extends StatelessWidget {
             Future.delayed(const Duration(milliseconds: 0), () {
               Scaffold.of(context).openEndDrawer();
             });
-            BugReportUtils.report();
+            BugReport.report();
           }),
       _SpecialRoute(title: "Paramètres", icon: Icons.settings, onTap: () => Navigator.pushNamed(context, "/settings")),
     ];
@@ -48,7 +48,7 @@ class _Drawer extends StatelessWidget {
           child: SingleChildScrollView(
         child: Column(
           children: [
-            ControllerConsumer<AuthModule>(
+            ChangeNotifierConsumer<AuthModule>(
                 controller: schoolApi.authModule,
                 builder: (context, module, _) {
                   final SchoolAccount? account = schoolApi.authModule.schoolAccount;

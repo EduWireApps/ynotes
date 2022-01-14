@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/core_new/services.dart';
@@ -22,7 +22,7 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Compte"),
-        body: ControllerConsumer<AuthModule>(
+        body: ChangeNotifierConsumer<AuthModule>(
             controller: schoolApi.authModule,
             builder: (context, module, _) => Column(
                   children: [

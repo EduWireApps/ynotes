@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   YIconButton(icon: Icons.refresh_rounded, onPressed: onRefresh),
                 // if (schoolApi.emailsModule.isEnabled)
-                //   ControllerConsumer<EmailsModule>(
+                //   ChangeNotifierConsumer<EmailsModule>(
                 //       controller: schoolApi.emailsModule,
                 //       builder: (context, module, _) {
                 //         final List<Email> emailsUnread = module.emailsReceived.where((email) => !email.read).toList();
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                 //         ]);
                 //       }),
                 // if (schoolApi.schoolLifeModule.isEnabled)
-                //   ControllerConsumer<SchoolLifeModule>(
+                //   ChangeNotifierConsumer<SchoolLifeModule>(
                 //       controller: schoolApi.schoolLifeModule,
                 //       builder: (context, module, _) {
                 //         final List<SchoolLifeTicket> unjustifiedTickets =

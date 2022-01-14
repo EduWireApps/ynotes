@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
@@ -18,7 +18,7 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Assistance"),
-        body: ControllerConsumer<Settings>(
+        body: ChangeNotifierConsumer<Settings>(
             controller: SettingsService.settings,
             builder: (context, settings, _) => Column(
                   children: [
@@ -30,7 +30,7 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
                             onSwitchValueChanged: (bool value) async {
                               settings.global.shakeToReport = value;
                               await SettingsService.update();
-                              BugReportUtils.updateShakeFeatureStatus();
+                              BugReport.updateShakeFeatureStatus();
                             }),
                         YSettingsTile(
                             title: "Logs",

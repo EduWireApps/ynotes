@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -83,15 +83,11 @@ class LoginController extends ChangeNotifier {
 
       var z = await KVS.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        CustomLogger.log(
-            "Login", "Username and passwird are not null and terms are agreed");
+        CustomLogger.log("Login", "Username and passwird are not null and terms are agreed");
 
-        await appSys.api!.login(u, p, additionnalSettings: {
-          "url": url,
-          "mobileCasLogin": iscas,
-          "cas": cas,
-          "demo": demo
-        }).then((List loginValues) {
+        await appSys.api!
+            .login(u, p, additionnalSettings: {"url": url, "mobileCasLogin": iscas, "cas": cas, "demo": demo}).then(
+                (List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;

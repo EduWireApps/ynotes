@@ -5,7 +5,7 @@ class ThemeSwitcherTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<YCurrentTheme>(
+    return ChangeNotifierConsumer<YCurrentTheme>(
         controller: theme,
         builder: (context, theme, _) {
           final List<Color> colors = [

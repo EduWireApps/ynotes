@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
 import 'package:ynotes_packages/components.dart';
@@ -35,7 +35,7 @@ class _YDrawerState extends State<YDrawer> {
     }
 
     final List<_SpecialRoute> specialRoutes = [
-      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => BugReportUtils.report()),
+      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => BugReport.report()),
       _SpecialRoute(title: "Paramètres", icon: Icons.settings, onTap: () => Navigator.pushNamed(context, "/settings")),
     ];
 

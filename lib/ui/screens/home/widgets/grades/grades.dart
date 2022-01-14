@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/extensions.dart';
@@ -69,7 +69,7 @@ class _GradesSectionState extends State<GradesSection> {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<GradesModule>(
+    return ChangeNotifierConsumer<GradesModule>(
         controller: module,
         builder: (context, module, _) {
           return chartElements.isNotEmpty

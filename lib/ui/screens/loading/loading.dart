@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
@@ -35,7 +35,7 @@ class _LoadingPageState extends State<LoadingPage> {
             YVerticalSpacer(YScale.s12),
             const SizedBox(width: 200, child: YLinearProgressBar()),
             YVerticalSpacer(YScale.s8),
-            ControllerConsumer<SystemServiceStore>(
+            ChangeNotifierConsumer<SystemServiceStore>(
                 controller: SystemService.store,
                 builder: (context, store, _) {
                   return Text(

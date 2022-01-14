@@ -16,11 +16,9 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
-import 'package:ynotes/core/utils/kvs.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core/utils/settings/model.dart';
-import 'package:ynotes/core/utils/settings/settings_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/legacy/settings_model.dart';
 import 'package:ynotes/ui/themes.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -88,7 +86,6 @@ class ApplicationSystem extends ChangeNotifier {
       await preferences.clear();
       //delte local setings and init them
 
-      _initSettings();
       //Import secureStorage
       //Delete all
       await KVS.deleteAll();
@@ -108,7 +105,6 @@ class ApplicationSystem extends ChangeNotifier {
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
     //set settings
-    await _initSettings();
     //Set theme to default
     updateTheme(settings.user.global.theme);
     //Set offline
@@ -128,8 +124,7 @@ class ApplicationSystem extends ChangeNotifier {
   }
 
   Future<void> saveSettings() async {
-    await SettingsUtils.setSetting(settings);
-    notifyListeners();
+    throw "Settings should not be used through [appSys]. Use SettingsService instead";
   }
 
   initOffline() async {
@@ -189,12 +184,5 @@ class ApplicationSystem extends ChangeNotifier {
       );
       CustomLogger.log("APPSYS", "Background fetch configured: $i");
     }
-  }
-
-  _initSettings() async {
-    settings = await SettingsUtils.getSettings();
-    //Set theme to default
-    updateTheme(settings.user.global.theme);
-    notifyListeners();
   }
 }

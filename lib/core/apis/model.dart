@@ -8,8 +8,8 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurring_events.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
 
@@ -44,12 +44,10 @@ abstract class API {
   Future<Request> downloadRequest(Document document);
 
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date,
-      {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
-    List<Lesson>? lessons =
-        await (appSys.api!.getNextLessons(date, forceReload: forceReload));
+    List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
     int week = await getWeek(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -62,16 +60,15 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await AgendaEventsOffline(appSys.offline)
-        .getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await AgendaEventsOffline(appSys.offline).getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.isNotEmpty) {
       for (var recurringEvent in recurringEvents) {
         events.removeWhere((element) => element.id == recurringEvent.id);
         if (recurringEvent.start != null && recurringEvent.end != null) {
-          recurringEvent.start = DateTime(date.year, date.month, date.day,
-              recurringEvent.start!.hour, recurringEvent.start!.minute);
-          recurringEvent.end = DateTime(date.year, date.month, date.day,
-              recurringEvent.end!.hour, recurringEvent.end!.minute);
+          recurringEvent.start =
+              DateTime(date.year, date.month, date.day, recurringEvent.start!.hour, recurringEvent.start!.minute);
+          recurringEvent.end =
+              DateTime(date.year, date.month, date.day, recurringEvent.end!.hour, recurringEvent.end!.minute);
         }
       }
 
@@ -84,8 +81,7 @@ abstract class API {
   Future<List<Discipline>?> getGrades({bool? forceReload});
 
   ///Get the list of homework only for a specific day (time travel feature)
-  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework,
-      {bool? forceReload});
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload});
 
   //Get a list of lessons for the agenda part
   ///Get the list of all the next homework (sent by specifics API).
@@ -136,8 +132,7 @@ class AppAccount {
     required this.isParentMainAccount,
     required this.apiType,
   });
-  factory AppAccount.fromJson(Map<String, dynamic> json) =>
-      _$AppAccountFromJson(json);
+  factory AppAccount.fromJson(Map<String, dynamic> json) => _$AppAccountFromJson(json);
   Map<String, dynamic> toJson() => _$AppAccountToJson(this);
 }
 
@@ -170,8 +165,7 @@ class SchoolAccount {
       this.schoolName,
       this.profilePicture})
       : super();
-  factory SchoolAccount.fromJson(Map<String, dynamic> json) =>
-      _$SchoolAccountFromJson(json);
+  factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
 }
 
@@ -194,10 +188,8 @@ class YConverter {
     if (logSlot != null && anonymizer != null) {
       try {
         final String anonymizedData = anonymizer!(data);
-        LogsManager.saveLogs(
-            logs: [YLog(category: logSlot!, comment: anonymizedData)],
-            category: logSlot!);
-        BugReportUtils.prepareReportData();
+        LogsManager.saveLogs(logs: [YLog(category: logSlot!, comment: anonymizedData)], category: logSlot!);
+        BugReport.prepareReportData();
       } catch (e) {
         CustomLogger.log("CONVERTER", "Error anonymizing data");
       }

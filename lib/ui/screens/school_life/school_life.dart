@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/school_life/controller.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
@@ -37,7 +37,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<SchoolLifeController>(
+    return ChangeNotifierConsumer<SchoolLifeController>(
         controller: appSys.schoolLifeController,
         builder: (context, controller, _) {
           final bool noTickets = controller.tickets == null || controller.tickets!.isEmpty;

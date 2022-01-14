@@ -7,7 +7,7 @@ import 'package:convert/convert.dart' as conv;
 import 'package:encrypt/encrypt.dart' as crypto;
 import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid_util.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/logs_stacklist.dart';
 

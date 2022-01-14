@@ -34,7 +34,7 @@ class __ConnectionStatusState extends State<_ConnectionStatus> with TickerProvid
   Widget build(BuildContext context) {
     final double paddingTop = MediaQuery.of(context).padding.top;
     final double height = YScale.s8;
-    return ControllerConsumer<AuthModule>(
+    return ChangeNotifierConsumer<AuthModule>(
         controller: schoolApi.authModule,
         builder: (context, module, _) {
           if (_status == AuthStatus.authenticated) {

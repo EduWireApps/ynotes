@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
@@ -37,7 +37,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
             YSettingsSections(
               sections: [
                 if (Platform.isAndroid || Platform.isIOS)
-                  ControllerConsumer<Settings>(
+                  ChangeNotifierConsumer<Settings>(
                       controller: SettingsService.settings,
                       builder: (context, settings, _) {
                         return YSettingsSection(tiles: [

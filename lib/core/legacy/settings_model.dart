@@ -15,15 +15,12 @@ class AgendaPageSettings {
     required this.disableAtDayEnd,
   });
 
-  factory AgendaPageSettings.fromJson(Map<String, dynamic> json) =>
-      AgendaPageSettings(
+  factory AgendaPageSettings.fromJson(Map<String, dynamic> json) => AgendaPageSettings(
         lighteningOverride: (json['lighteningOverride'] as bool?) ?? false,
-        agendaOnGoingNotification:
-            (json['agendaOnGoingNotification'] as bool?) ?? false,
+        agendaOnGoingNotification: (json['agendaOnGoingNotification'] as bool?) ?? false,
         reverseWeekNames: (json['reverseWeekNames'] as bool?) ?? false,
         lessonReminderDelay: (json['lessonReminderDelay'] as int?) ?? 5,
-        enableDNDWhenOnGoingNotifEnabled:
-            (json['enableDNDWhenOnGoingNotifEnabled'] as bool?) ?? false,
+        enableDNDWhenOnGoingNotifEnabled: (json['enableDNDWhenOnGoingNotifEnabled'] as bool?) ?? false,
         disableAtDayEnd: (json['disableAtDayEnd'] as bool?) == false,
       );
 
@@ -37,6 +34,7 @@ class AgendaPageSettings {
       };
 }
 
+@Deprecated("Use SettingsService for any settings related action.")
 class FormSettings {
   SystemSettings system;
   UserSettings user;
@@ -79,8 +77,7 @@ class GlobalUserSettings {
     required this.autoCloseDrawer,
   });
 
-  factory GlobalUserSettings.fromJson(Map<String, dynamic> json) =>
-      GlobalUserSettings(
+  factory GlobalUserSettings.fromJson(Map<String, dynamic> json) => GlobalUserSettings(
         nightmode: (json['nightmode'] as bool?) ?? false,
         theme: (json['theme'] as String?) ?? 'clair',
         batterySaver: (json['batterySaver'] as bool?) ?? false,
@@ -116,15 +113,12 @@ class HomeworkPageSettings {
     required this.customDisciplinesList,
   });
 
-  factory HomeworkPageSettings.fromJson(Map<String, dynamic> json) =>
-      HomeworkPageSettings(
+  factory HomeworkPageSettings.fromJson(Map<String, dynamic> json) => HomeworkPageSettings(
         isExpandedByDefault: (json['isExpandedByDefault'] as bool?) ?? false,
-        forceMonochromeContent:
-            (json['forceMonochromeContent'] as bool?) ?? false,
+        forceMonochromeContent: (json['forceMonochromeContent'] as bool?) ?? false,
         fontSize: (json['fontSize'] as int?) ?? 20,
         pageColorVariant: (json['pageColorVariant'] as int?) ?? 0,
-        customDisciplinesList:
-            (json['customDisciplinesList'] as String?) ?? '[]',
+        customDisciplinesList: (json['customDisciplinesList'] as String?) ?? '[]',
       );
 
   Map<String, Object> toJson() => {
@@ -143,8 +137,7 @@ class SummaryPageSettings {
     required this.summaryQuickHomework,
   });
 
-  factory SummaryPageSettings.fromJson(Map<String, dynamic> json) =>
-      SummaryPageSettings(
+  factory SummaryPageSettings.fromJson(Map<String, dynamic> json) => SummaryPageSettings(
         summaryQuickHomework: (json['summaryQuickHomework'] as int?) ?? 11,
       );
 

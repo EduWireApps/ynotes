@@ -26,7 +26,7 @@ class _AppState extends State<App> {
         return YApp(
             initialTheme: SettingsService.settings.global.themeId,
             themes: themes,
-            builder: (context) => ControllerConsumer<Settings>(
+            builder: (context) => ChangeNotifierConsumer<Settings>(
                 controller: SettingsService.settings,
                 builder: (context, _, __) => HiveLifecycleManager(
                         child: MaterialApp(

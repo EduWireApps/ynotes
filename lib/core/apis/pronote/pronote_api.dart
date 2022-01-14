@@ -16,7 +16,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
 
 import '../utils.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/ui/components/NEW/components.dart';
 import 'package:ynotes/ui/screens/grades_new/widgets/widgets.dart';
@@ -22,7 +22,7 @@ class _GradesPageState extends State<GradesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerConsumer<GradesModule>(
+    return ChangeNotifierConsumer<GradesModule>(
         controller: module,
         builder: (context, module, _) {
           final bool empty = module.grades.isEmpty && module.currentPeriod == null;

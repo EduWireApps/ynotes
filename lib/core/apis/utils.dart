@@ -7,7 +7,7 @@ import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/apis/pronote.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/kvs.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
 
@@ -54,7 +54,7 @@ Future<bool> checkPronoteURL(String url) async {
       return false;
     }
   } catch (e) {
-    CustomLogger.error(e, stackHint:"MTE=");
+    CustomLogger.error(e, stackHint: "MTE=");
     return false;
   }
 }

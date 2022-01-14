@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/utils/controller_consumer.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes_packages/components.dart';
@@ -48,7 +48,7 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Notifications"),
-        body: ControllerConsumer<Settings>(
+        body: ChangeNotifierConsumer<Settings>(
             controller: SettingsService.settings,
             builder: (context, settings, _) => Column(
                   children: [
