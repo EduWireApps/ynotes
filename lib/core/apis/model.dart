@@ -9,7 +9,6 @@ import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurring_events.dart';
 import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
 

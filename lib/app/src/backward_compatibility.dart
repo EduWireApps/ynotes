@@ -1,38 +1,14 @@
 part of app;
 
+// v12tov13 and v13tov14 functions are kept even if unused
+// to remember what have been done before without going
+// through the git history. DO NOT DELETE THEM.
+
 /// A function that migrates things from an implementation to another
 Future<void> backwardCompatibility() async {
   // await _fromV12ToV13();
   // await _fromV13ToV14();
-  // await _extRemovalMigration();
   await _fromV14ToV15();
-}
-
-// ignore: unused_element
-Future<void> _extRemovalMigration() async {
-  if (Platform.isAndroid) {
-    try {
-      final bool migratedOldExtFiles0 = (await KVS.read(key: "migratedOldExtFiles0")) == "true";
-      if (migratedOldExtFiles0) {
-        ///Olds download directory
-        Directory oldDownloadsDirectory = Directory(
-            (await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS))! + "/yNotesDownloads");
-
-        List<FileSystemEntity>? files = await oldDownloadsDirectory.list().toList();
-
-        if (files.isNotEmpty) {
-          // String path = (await FolderAppUtil.getDirectory(downloads: true)).path;
-          // Future.forEach(files, (FileSystemEntity element) async {
-          // String? fileName = await FileAppUtil.getFileNameWithExtension(element);
-          // var result = await Process.run('cp', ['-r', element.path, path + "/"]);
-          // });
-        }
-        await KVS.write(key: "migratedOldExtFiles0", value: "true");
-      }
-    } catch (e) {
-      CustomLogger.log("BACKWARD COMPATIBILITY NO EXT MIGRATION", "Error while moving files: $e");
-    }
-  }
 }
 
 // ignore: unused_element
@@ -56,7 +32,7 @@ Future<void> _fromV12ToV13() async {
     }
   }
   // As the logging system changed, the `logs.txt` file is no longer useful.
-  final directory = await FolderAppUtil.getDirectory();
+  final directory = await FileStorage.getAppDirectory();
   final File file = File("${directory.path}/logs.txt");
   if (await file.exists()) {
     await file.delete();
@@ -66,8 +42,7 @@ Future<void> _fromV12ToV13() async {
   // is deleted.
   final bool logsReset0 = (await KVS.read(key: "logsReset0")) == "true";
   if (!logsReset0) {
-    final Directory dir = await FolderAppUtil.getDirectory();
-    final Directory logsDirectory = Directory("${dir.path}/logs");
+    final Directory logsDirectory = Directory("${directory.path}/logs");
     try {
       if (await logsDirectory.exists()) {
         await logsDirectory.delete(recursive: true);
@@ -107,9 +82,12 @@ Future<void> _fromV13ToV14() async {
 }
 
 Future<void> _fromV14ToV15() async {
+  // Reset evrything: shared preferences as well as all files in the app directory.
+  // We don't deal with files located in the Android downloads folder.
   final bool fullReset0 = (await KVS.read(key: "fullReset0")) == "true";
   if (!fullReset0) {
-    final Directory dir = await FolderAppUtil.getDirectory();
+    await KVS.deleteAll();
+    final Directory dir = await FileStorage.getAppDirectory();
     dir.deleteSync(recursive: true);
     await KVS.write(key: "fullReset0", value: "true");
   }

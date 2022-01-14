@@ -2,7 +2,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Stands for Key Value Store. Uses [FlutterSecureStorage] under the hood.
 class KVS {
-  static const _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
 
   /// Stands for Key Value Store. Uses [FlutterSecureStorage] under the hood.
   const KVS._();

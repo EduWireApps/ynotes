@@ -1,7 +1,6 @@
 library app;
 
 import 'dart:io';
-import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +10,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/api.dart';
 import 'package:ynotes/core_new/services.dart';

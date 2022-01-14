@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core_new/api.dart';
 
@@ -74,8 +73,8 @@ class Offline {
     } else {
       // We initialize Hive on the device. Hive files are stored in `/files/offline`
       //directory in the app's storage, depending of the platform.
-      final dir = await FolderAppUtil.getDirectory();
-      Hive.init("${dir.path}/offlineTest"); // TODO: change offline path
+      final dir = await FileStorage.getAppDirectory();
+      Hive.init("${dir.path}/offline");
     }
     // We register custom adapters
     _registerAdapters();

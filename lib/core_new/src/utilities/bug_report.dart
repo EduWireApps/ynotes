@@ -7,7 +7,6 @@ import 'package:shake_flutter/shake_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/services.dart';
@@ -48,7 +47,7 @@ class BugReport {
     try {
       final String json = generateCleanJson(await LogsManager.getLogs());
       // create a temp file containing logs as json
-      final directory = await FolderAppUtil.getDirectory();
+      final directory = await FileStorage.getAppDirectory();
       final File file = File('${directory.path}/logs/temp.json');
       if (await file.exists()) {
         await file.delete();
