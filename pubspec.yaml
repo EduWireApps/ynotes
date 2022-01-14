@@ -19,7 +19,6 @@ dependencies:
   optimize_battery: ^0.0.1
   calendar_time: ^2.0.0-nullsafety.0
   connectivity_plus: ^1.0.2
-  csv: ^5.0.0
   date_field: ^2.0.1
   dotted_line: ^3.0.0
   encrypt: ^5.0.0
