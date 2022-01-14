@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:ynotes/app/app.dart';
 
+@Deprecated("Use theme instead.")
 ThemeData darkTheme = ThemeData(
     backgroundColor: const Color(0xff313131),
     primaryColor: const Color(0xff414141),
@@ -10,6 +11,8 @@ ThemeData darkTheme = ThemeData(
     primaryColorDark: const Color(0xff333333),
     indicatorColor: const Color(0xff525252),
     tabBarTheme: const TabBarTheme(labelColor: Colors.black));
+
+@Deprecated("Use theme instead.")
 ThemeData lightTheme = ThemeData(
     backgroundColor: Colors.white,
     primaryColor: const Color(0xffF3F3F3),
@@ -18,6 +21,7 @@ ThemeData lightTheme = ThemeData(
     indicatorColor: const Color(0xffDCDCDC),
     tabBarTheme: const TabBarTheme(labelColor: Colors.black));
 
+@Deprecated("Use theme instead.")
 class ThemeUtils {
   static get isThemeDark => appSys.themeName!.contains("sombre");
 

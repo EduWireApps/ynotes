@@ -12,6 +12,8 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/utilities.dart';
 
+@Deprecated("Use [FileStorage] instead.")
+
 ///Every action related to files
 class FileAppUtil {
   static getCsv(List<Grade> associateGradeList) async {
@@ -155,6 +157,7 @@ class FileAppUtil {
   }
 }
 
+@Deprecated("Will be deleted in a future release.")
 class FileInfo {
   final dynamic element;
   final DateTime? lastModifiedDate;
@@ -163,6 +166,7 @@ class FileInfo {
   FileInfo(this.element, this.lastModifiedDate, this.fileName, {this.selected = false});
 }
 
+@Deprecated("Use [FileStorage] instead.")
 class FolderAppUtil {
   static Future<Directory> createDirectory(String path) async {
     final Directory dir = Directory(path);

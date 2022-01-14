@@ -25,8 +25,7 @@ class Document {
 
   /// The [File] from app's directory and [fileName].
   Future<File> file() async {
-    // TODO: find a better way to handle storage, or/and rework [FolderAppUtil]
-    final Directory dir = await FolderAppUtil.getDirectory(downloads: true);
+    final Directory dir = await FileStorage.getAppDirectory(downloads: true);
     return File("${dir.path}/$fileName");
   }
 

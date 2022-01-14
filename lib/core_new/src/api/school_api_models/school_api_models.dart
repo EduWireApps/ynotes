@@ -8,8 +8,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core_new/api.dart';
+import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:crypto/crypto.dart';
 
