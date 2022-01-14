@@ -323,15 +323,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.1"
-  ext_storage:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: "98faf095ed6786a0bb0db26cb2f3966513f3f7aa"
-      url: "https://github.com/GitJournal/ext_storage"
-    source: git
-    version: "1.0.3"
   fading_edge_scrollview:
     dependency: transitive
     description:
@@ -386,13 +377,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_file_dialog:
-    dependency: "direct main"
-    description:
-      name: flutter_file_dialog
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.3.0"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -550,13 +534,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.3"
-  flutter_weather_bg_null_safety:
-    dependency: "direct main"
-    description:
-      name: flutter_weather_bg_null_safety
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -639,13 +616,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
-  gotrue:
-    dependency: transitive
-    description:
-      name: gotrue
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.7"
   graphs:
     dependency: transitive
     description:
@@ -765,13 +735,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.3"
-  jwt_decode:
-    dependency: transitive
-    description:
-      name: jwt_decode
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.1"
   latlong2:
     dependency: "direct main"
     description:
@@ -1073,13 +1036,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  postgrest:
-    dependency: transitive
-    description:
-      name: postgrest
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.9"
   preload_page_view:
     dependency: "direct main"
     description:
@@ -1136,13 +1092,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1+1"
-  realtime_client:
-    dependency: transitive
-    description:
-      name: realtime_client
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.5"
   requests:
     dependency: "direct main"
     description:
@@ -1304,13 +1253,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
-  storage_client:
-    dependency: transitive
-    description:
-      name: storage_client
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.6+2"
   stream_channel:
     dependency: transitive
     description:
@@ -1332,13 +1274,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  supabase:
-    dependency: "direct main"
-    description:
-      name: supabase
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.5"
   supercharged:
     dependency: "direct main"
     description:
@@ -1409,13 +1344,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.1"
-  universal_io:
-    dependency: transitive
-    description:
-      name: universal_io
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
   url_launcher:
     dependency: "direct main"
     description:
