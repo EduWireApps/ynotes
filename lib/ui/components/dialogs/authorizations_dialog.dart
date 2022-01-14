@@ -47,7 +47,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                         child: Transform.translate(
                           offset: Offset(screenSize.size.width / 5 * 0.05, 0),
                           child: Icon(
-                            MdiIcons.handLeft,
+                            MdiIcons.handBackRight,
                             size: screenSize.size.width / 5 * 1.1,
                             color: Colors.blueGrey,
                           ),

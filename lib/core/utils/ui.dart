@@ -20,7 +20,7 @@ class UIUtils {
 
   /// Show a dialog containing the patch notes.
   static Future<void> showPatchNotes(BuildContext context) async {
-    const String version = "0.14.5";
+    const String version = "0.14.7";
     if ((SettingsService.settings.global.lastReadPatchNotes != version)) {
       SettingsService.settings.global.lastReadPatchNotes = version;
       await SettingsService.update();

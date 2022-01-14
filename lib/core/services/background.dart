@@ -47,10 +47,9 @@ class BackgroundService {
         CustomLogger.log("BACKGROUND", "New grade test triggered.");
         var res = (await testNewGrades());
         if (res[0]) {
-          // TODO: Fix grades notifications
-          // await Future.forEach(res[1], (Grade grade) async {
-          //   await AppNotification.showNewGradeNotification(grade);
-          // });
+          await Future.forEach(res[1], (Grade grade) async {
+            await AppNotification.showNewGradeNotification(grade);
+          });
         } else {
           CustomLogger.log("BACKGROUND", "Grades: nothing updated.");
         }
@@ -101,7 +100,7 @@ class BackgroundService {
       }
     } catch (e) {
       CustomLogger.log("BACKGROUND", "An error occured while readinf fetch status");
-      CustomLogger.error(e, stackHint:"Njk=");
+      CustomLogger.error(e, stackHint: "Nzg=");
       return false;
     }
   }
@@ -121,8 +120,8 @@ class BackgroundService {
       //Login creds
       listOnlineGrades =
           getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true, sortByWritingDate: true);
-
-      CustomLogger.log("BACKGROUND", "Online grade length is ${listOnlineGrades!.length}");
+      listOnlineGrades = listOnlineGrades?.reversed.toList() ?? [];
+      CustomLogger.log("BACKGROUND", "Online grade length is ${listOnlineGrades.length}");
       if (oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
         int diff = (listOnlineGrades.length - (listOnlineGrades.length - oldGradesLength).clamp(0, 5));
         List<Grade> newGrades = listOnlineGrades.sublist(diff);
@@ -172,7 +171,7 @@ class BackgroundService {
       }
     } catch (e) {
       CustomLogger.log("BACKGROUND", "An error occured while checking new offline mails");
-      CustomLogger.error(e, stackHint:"NzA=");
+      CustomLogger.error(e, stackHint: "Nzk=");
       return null;
     }
   }

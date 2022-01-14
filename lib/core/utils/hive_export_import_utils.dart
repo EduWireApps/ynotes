@@ -33,7 +33,7 @@ class HiveBackUpManager {
       return encoded;
     } catch (e) {
       CustomLogger.log("HIVE EXP. IMP. UTILS", "An error occured while exporting data");
-      CustomLogger.error(e, stackHint:"OTA=");
+      CustomLogger.error(e, stackHint:"MjQ=");
       throw "Failed to export a box :" + e.toString();
     }
   }

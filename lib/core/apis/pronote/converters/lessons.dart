@@ -36,7 +36,7 @@ class PronoteLessonsConverter {
 
     //Sort of null aware
     catch (e) {
-      CustomLogger.error(e, stackHint:"MTg=");
+      CustomLogger.error(e, stackHint:"MTc=");
     }
     List<String?> teachers = [];
     try {
@@ -46,7 +46,7 @@ class PronoteLessonsConverter {
         }
       });
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MTk=");
+      CustomLogger.error(e, stackHint:"MTg=");
     }
 
     //Some attributes
@@ -89,7 +89,7 @@ class PronoteLessonsConverter {
       try {
         lessonsList.add(PronoteLessonsConverter.lesson(client, lesson));
       } catch (e) {
-        CustomLogger.error(e, stackHint:"MjA=");
+        CustomLogger.error(e, stackHint:"MTk=");
       }
     }
     return lessonsList;

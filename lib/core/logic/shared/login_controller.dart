@@ -70,6 +70,7 @@ class LoginController extends ChangeNotifier {
   login() async {
     try {
       _actualState = loginStatus.loggedOff;
+      CustomLogger.log("Login", "Login attempt...");
       _details = "Connexion à l'API...";
       notifyListeners();
       String? u = await KVS.read(key: "username");
@@ -78,12 +79,19 @@ class LoginController extends ChangeNotifier {
       String? cas = await KVS.read(key: "pronotecas");
       bool? iscas = (await KVS.read(key: "ispronotecas") == "true");
       bool? demo = (await KVS.read(key: "demo") == "true");
+      if (demo) CustomLogger.log("Login", "Login in demo mode");
 
       var z = await KVS.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await appSys.api!
-            .login(u, p, additionnalSettings: {"url": url, "mobileCasLogin": iscas, "cas": cas, "demo": demo}).then(
-                (List loginValues) {
+        CustomLogger.log(
+            "Login", "Username and passwird are not null and terms are agreed");
+
+        await appSys.api!.login(u, p, additionnalSettings: {
+          "url": url,
+          "mobileCasLogin": iscas,
+          "cas": cas,
+          "demo": demo
+        }).then((List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
@@ -123,7 +131,7 @@ class LoginController extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MzI=");
+      CustomLogger.error(e, stackHint: "MzI=");
     }
   }
 

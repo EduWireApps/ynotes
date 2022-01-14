@@ -54,7 +54,8 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                   children: [
                     YSettingsSections(sections: [
                       YSettingsSection(tiles: [
-                        YSettingsTile.switchTile(
+                        /// TODO : fix emails notifications
+                        /*YSettingsTile.switchTile(
                           title: "Nouvel email",
                           switchValue: settings.notifications.newEmail,
                           onSwitchValueChanged: (bool value) async =>
@@ -64,7 +65,7 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                               message:
                                   "Tu as activé l'économiseur de batterie, qui désactive l'envoi de notifications."),
                           enabled: !settings.global.batterySaver,
-                        ),
+                        ),*/
                         YSettingsTile.switchTile(
                           title: "Nouvelle note",
                           switchValue: settings.notifications.newGrade,

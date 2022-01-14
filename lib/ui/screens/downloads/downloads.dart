@@ -384,7 +384,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                                       } catch (e) {
                                         CustomLogger.log(
                                             "DOWNLOADS", "An error occured while copying element to clipboard");
-                                        CustomLogger.error(e, stackHint:"OTU=");
+                                        CustomLogger.error(e, stackHint:"MQ==");
                                         if (!kIsWeb && Platform.isAndroid) {
                                           CustomLogger.log("DOWNLOADS", "Try to paste");
                                           var result = await Process.run(
@@ -660,7 +660,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
               });
             } catch (e) {
               CustomLogger.log("DOWNLOADS", "An error occured while sorting files");
-              CustomLogger.error(e, stackHint:"OTY=");
+              CustomLogger.error(e, stackHint:"Mg==");
             }
           });
 
@@ -676,7 +676,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
                 }
               });
             } catch (e) {
-              CustomLogger.error(e, stackHint:"OTc=");
+              CustomLogger.error(e, stackHint:"Mw==");
             }
           });
 

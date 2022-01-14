@@ -46,7 +46,7 @@ class BugReportUtils {
       return;
     }
     try {
-      final String json = jsonEncode(await LogsManager.getLogs());
+      final String json = generateCleanJson(await LogsManager.getLogs());
       // create a temp file containing logs as json
       final directory = await FolderAppUtil.getDirectory();
       final File file = File('${directory.path}/logs/temp.json');
@@ -62,8 +62,20 @@ class BugReportUtils {
       //set api metadata
       Shake.setMetadata("schoolApi", appSys.api?.apiName ?? "{undefined}");
     } catch (e) {
-      CustomLogger.error(e, stackHint:"ODQ=");
+      CustomLogger.error(e, stackHint: "Nzg=");
     }
+  }
+
+  static String generateCleanJson(List<YLog> logs) {
+    Map finalMap = {};
+    for (YLog element in logs) {
+      if (finalMap.containsKey(element.category)) {
+        finalMap[element.category].add(element);
+      } else {
+        finalMap[element.category] = [element];
+      }
+    }
+    return jsonEncode(finalMap);
   }
 
   /// Opens the report widget

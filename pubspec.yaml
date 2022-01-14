@@ -4,7 +4,7 @@ description: yNotes application de gestion de vie scolaire
 # Don't delete the `+9`
 #
 # Before building the app for Windows, go to `windows/runner/Runner.rc` and edit `VERSION_AS_NUMBER` and `VERSION_AS_STRING`
-version: 0.14.5+9
+version: 0.14.7+9
 publish_to: none
 
 environment:
@@ -15,7 +15,7 @@ dependencies:
   another_flushbar: ^1.10.17
   auto_size_text: ^3.0.0-nullsafety.0
   awesome_notifications: ^0.0.6+7
-  background_fetch: ^1.0.0-nullsafety.2
+  background_fetch: ^1.0.3
     
   optimize_battery: ^0.0.1
   calendar_time: ^2.0.0-nullsafety.0
@@ -46,12 +46,13 @@ dependencies:
   flutter_staggered_grid_view: ^0.4.0
   flutter_tex: ^4.0.1
   flutter_typeahead: ^3.1.3
-  flutter_widget_from_html_core: ^0.8.3+1  
+  flutter_widget_from_html_core: ^0.8.4
+  flutter_weather_bg_null_safety: ^1.0.0
   focus_detector: ^2.0.0
   font_awesome_flutter: ^9.1.0
   geolocator: ^7.0.3
   google_fonts: ^2.1.0
-  hive: ^2.0.4
+  hive: ^2.0.5
   hive_flutter: ^1.1.0
   html_character_entities: ^1.0.0+1
   html_editor_enhanced: ^1.8.0
@@ -62,11 +63,11 @@ dependencies:
   latlong2: ^0.8.1
   liquid_progress_indicator_ns: ^1.0.0
   marquee: ^2.0.0
-  material_design_icons_flutter: ^5.0.5955-rc.1
+  material_design_icons_flutter: ^5.0.6595
   open_file: ^3.0.1
   package_info_plus: ^1.3.0
   path_provider: ^2.0.1
-  permission_handler: ^6.1.1
+  permission_handler: ^8.3.0
   pointycastle: ^3.0.1
   preload_page_view: ^0.1.6
   provider: ^5.0.0
@@ -80,10 +81,7 @@ dependencies:
   share: ^2.0.1
   shared_preferences: ^2.0.5
   shimmer: ^2.0.0-nullsafety.0
-  simple_animations:
-    git:
-      ref: nullsafety3
-      url: "https://github.com/felixblaschke/simple_animations"
+  simple_animations: ^4.0.1
   sliding_up_panel: ^2.0.0+1
   smooth_page_indicator: ^0.3.0-nullsafety.0
   stack: ^0.2.1
@@ -100,6 +98,7 @@ dependencies:
   dotted_border: ^2.0.0+2
 
 dependency_overrides: 
+  visibility_detector: ^0.2.2
   args: ^2.1.1
   build: ^2.0.0
   intl: ^0.17.0-nullsafety.2

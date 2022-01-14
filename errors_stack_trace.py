@@ -42,11 +42,11 @@ def metas():
     return dic    
 
 def stackListExists():
-    if os.path.isfile('./lib/logsStackLists.dart') == False:
-        f = open("./lib/logsStackLists.dart", "w")
+    if os.path.isfile('./lib/logs_stacklist.dart') == False:
+        f = open("./lib/logs_stacklist.dart", "w")
 
 def writeInStackList(dic):
-    f = open("./lib/logsStackLists.dart", "w")
+    f = open("./lib/logs_stacklist.dart", "w")
     # Lets write our super stack list file
     f.write("Map stackList = " + str(dic) + ";")
 stack_dic = metas()

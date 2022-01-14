@@ -210,7 +210,7 @@ class APIEcoleDirecte extends API {
             appSys.account = EcoleDirecteAccountConverter.account.convert(req);
           } catch (e) {
             CustomLogger.log("ED", "Impossible to get accounts " + e.toString());
-            CustomLogger.error(e, stackHint:"MA==");
+            CustomLogger.error(e, stackHint: "MA==");
           }
 
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
@@ -237,6 +237,7 @@ class APIEcoleDirecte extends API {
           KVS.write(key: "userID", value: userID);
           KVS.write(key: "classe", value: classe);
           KVS.write(key: "demo", value: additionnalSettings?["demo"].toString() ?? "");
+
           //random date
           KVS.write(key: "startday", value: DateTime.parse("2020-02-02").toString());
 
@@ -315,7 +316,7 @@ class APIEcoleDirecte extends API {
       CustomLogger.log("ED", "Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MQ==");
+      CustomLogger.error(e, stackHint: "MQ==");
       return null;
     }
   }
@@ -334,7 +335,9 @@ class APIEcoleDirecte extends API {
             ..fields['asap'] = '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
 
           var response = await request.send();
-          if (response.statusCode == 200) CustomLogger.log("ED", "File uploaded");
+          if (response.statusCode == 200) {
+            CustomLogger.log("ED", "File uploaded");
+          }
           response.stream.transform(utf8.decoder).listen((value) {
             CustomLogger.log("ED", "File stream value: $value");
           });
