@@ -60,7 +60,7 @@ class Grade {
   /// The value out of 20. Use this to calculate averages.
   double get realValue => 20 * value / outOf;
 
-  Subject subject(List<Subject> subjects) => subjects.firstWhere(
+  Subject? subject(List<Subject> subjects) => subjects.firstWhereOrNull(
         (subject) => subject.id == subjectId,
       );
 

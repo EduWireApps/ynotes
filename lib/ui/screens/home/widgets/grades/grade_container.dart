@@ -47,9 +47,9 @@ class GradeContainer extends StatelessWidget {
     );
   }
 
-  Subject get subject => grade.subject(schoolApi.gradesModule.subjects);
+  Subject? get subject => grade.subject(schoolApi.gradesModule.subjects);
 
-  YTColor get color => subject.color;
+  YTColor? get color => subject?.color;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,8 @@ class GradeContainer extends StatelessWidget {
           child: Row(children: [
             Container(
                 padding: YPadding.p(YScale.s1),
-                decoration: BoxDecoration(color: color.backgroundColor, borderRadius: YBorderRadius.lg),
+                decoration: BoxDecoration(
+                    color: color?.backgroundColor ?? theme.colors.backgroundColor, borderRadius: YBorderRadius.lg),
                 child: SizedBox(
                   width: YScale.s10,
                   height: YScale.s10,
@@ -78,7 +79,7 @@ class GradeContainer extends StatelessWidget {
                         grade.value.display(),
                         style: TextStyle(
                           fontWeight: YFontWeight.semibold,
-                          color: color.foregroundColor,
+                          color: color?.foregroundColor ?? theme.colors.foregroundColor,
                           fontSize: YFontSize.xl,
                         ),
                         softWrap: false,
@@ -100,7 +101,7 @@ class GradeContainer extends StatelessWidget {
                       style: theme.texts.body1
                           .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold),
                       overflow: TextOverflow.ellipsis),
-                  Text(subject.name,
+                  Text(subject?.name ?? grade.subjectId,
                       style: theme.texts.body1.copyWith(fontSize: YFontSize.sm), overflow: TextOverflow.ellipsis),
                   YVerticalSpacer(YScale.s1),
                   Text(date, style: theme.texts.body2, overflow: TextOverflow.ellipsis),

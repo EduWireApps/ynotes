@@ -33,7 +33,6 @@ class SystemService {
   static final SystemServiceStore store = SystemServiceStore();
 
   static Future<void> init({bool all = true, bool essential = false, bool loading = false}) async {
-    await BackgroundService.init();
     await NotificationService.init();
     if (all) {
       await backwardCompatibility();

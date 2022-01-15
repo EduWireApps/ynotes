@@ -34,14 +34,9 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
     if (online) {
       final res = await repository.get();
       if (res.error != null) return res;
+      // Handling periods.
       _periods = res.data!["periods"] ?? [];
-      final List<Grade> __grades = res.data!["grades"] ?? [];
-      if (__grades.length > _grades.length) {
-        // TODO: check if this really works
-        final List<Grade> newGrades = __grades.sublist(_grades.length);
-        // TODO: trigger notification
-      }
-      _grades = [...__grades, ...grades.where((grade) => grade.custom)];
+      // Handling subjects.
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
       for (final __subject in __subjects) {
         final Subject? _subject = _subjects.firstWhereOrNull((subject) => subject.id == __subject.id);
@@ -50,6 +45,15 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
         }
       }
       _subjects = __subjects;
+      // Handling grades.
+      final List<Grade> __grades = res.data!["grades"] ?? [];
+      if (__grades.length > _grades.length) {
+        // TODO: check if this really works
+        final List<Grade> newGrades = __grades.sublist(_grades.length);
+        // TODO: trigger notification
+      }
+      _grades = [...__grades, ...grades.where((grade) => grade.custom)];
+      // Saving data.
       await offline.setPeriods(_periods);
       await offline.setSubjects(_subjects);
       await offline.setGrades(_grades);

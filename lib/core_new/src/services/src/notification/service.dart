@@ -11,7 +11,7 @@ class NotificationService {
   static const String _logKey = "NOTIFICATION SERVICE";
 
   static Future<void> init() async {
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('appicon');
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(onDidReceiveLocalNotification: (_, __, ___, ____) {});
     const MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings();

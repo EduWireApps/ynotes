@@ -5,13 +5,13 @@ class Notification {
   final String? title;
   final String? body;
   final String? payload;
-  final NotificationDetails? details;
+  final NotificationDetails details =
+      NotificationDetails(android: AndroidNotificationDetails("id", "ynotes_notifications"));
 
   Notification({
     required this.id,
     this.title,
     this.body,
-    this.details,
     NotificationPayload? payload,
   }) : payload = json.encode(payload?.toJson());
 }
