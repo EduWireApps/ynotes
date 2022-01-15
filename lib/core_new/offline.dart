@@ -89,20 +89,26 @@ class Offline {
 
   /// Private method called during [init] to register custom adapters.
   static void _registerAdapters() {
-    Hive.registerAdapter(SchoolLifeTicketAdapter());
-    Hive.registerAdapter(SchoolLifeSanctionAdapter());
-    Hive.registerAdapter(GradeAdapter());
-    Hive.registerAdapter(SubjectsFilterAdapter());
-    Hive.registerAdapter(PeriodAdapter());
-    Hive.registerAdapter(SubjectAdapter());
-    Hive.registerAdapter(ColorAdapter());
-    Hive.registerAdapter(YTColorAdapter());
-    Hive.registerAdapter(EmailAdapter());
-    Hive.registerAdapter(RecipientAdapter());
-    Hive.registerAdapter(HomeworkAdapter());
-    Hive.registerAdapter(DocumentAdapter());
-    Hive.registerAdapter(AppAccountAdapter());
-    Hive.registerAdapter(SchoolAccountAdapter());
+    _registerAdapter(SchoolLifeTicketAdapter());
+    _registerAdapter(SchoolLifeSanctionAdapter());
+    _registerAdapter(GradeAdapter());
+    _registerAdapter(SubjectsFilterAdapter());
+    _registerAdapter(PeriodAdapter());
+    _registerAdapter(SubjectAdapter());
+    _registerAdapter(ColorAdapter());
+    _registerAdapter(YTColorAdapter());
+    _registerAdapter(EmailAdapter());
+    _registerAdapter(RecipientAdapter());
+    _registerAdapter(HomeworkAdapter());
+    _registerAdapter(DocumentAdapter());
+    _registerAdapter(AppAccountAdapter());
+    _registerAdapter(SchoolAccountAdapter());
+  }
+
+  static void _registerAdapter<T>(TypeAdapter<T> adapter) {
+    if (!Hive.isAdapterRegistered(adapter.typeId)) {
+      Hive.registerAdapter<T>(adapter);
+    }
   }
 }
 

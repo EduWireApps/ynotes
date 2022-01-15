@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core_new/utilities.dart';
@@ -75,13 +76,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       YSettingsTile(
                           title: "Send notification 0",
                           onTap: () async {
-                            await NotificationService.show(
-                                OSNotification(id: 0, title: "Nouvelle note", body: "Anglais: 18/20"));
-                          }),
-                      YSettingsTile(
-                          title: "Send notification 1",
-                          onTap: () async {
-                            await NotificationService.show(OSNotification(id: 1, title: "awesome!", body: "blabla"));
+                            await NotificationService.show(GradeNotification(
+                                grade: schoolApi.gradesModule.grades.last, subjects: schoolApi.gradesModule.subjects));
                           }),
                       YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, "")),
                       YSettingsTile(

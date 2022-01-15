@@ -18,6 +18,10 @@ class NotificationService {
     final InitializationSettings initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS, macOS: initializationSettingsMacOS);
     await _plugin.initialize(initializationSettings, onSelectNotification: _onSelectNotification);
+    final NotificationAppLaunchDetails? appLaunchDetails = await _plugin.getNotificationAppLaunchDetails();
+    if (appLaunchDetails != null && appLaunchDetails.didNotificationLaunchApp) {
+      _onSelectNotification(appLaunchDetails.payload);
+    }
   }
 
   /// The functions that gets triggered when a notification is tapped.
@@ -26,7 +30,10 @@ class NotificationService {
       Logger.log(_logKey, "Notification tapped with no payload.");
       return;
     }
+    debugPrint(payload);
     final NotificationPayload notificationPayload = NotificationPayload.fromJson(json.decode(payload));
+    Navigator.of(AppConfig.navigatorKey.currentState!.context)
+        .pushNamed(notificationPayload.routePath, arguments: notificationPayload.arguments);
     // TODO: handle payload
   }
 

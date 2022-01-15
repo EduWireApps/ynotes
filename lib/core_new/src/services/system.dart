@@ -17,7 +17,7 @@ import 'package:ynotes_packages/theme.dart';
 class SystemServiceStore extends ChangeNotifier {
   SystemServiceStore();
 
-  final int total = 3;
+  final int total = 4;
   int current = 0;
   String text = "";
   bool initialized = false;
@@ -33,13 +33,13 @@ class SystemService {
   static final SystemServiceStore store = SystemServiceStore();
 
   static Future<void> init({bool all = true, bool essential = false, bool loading = false}) async {
-    await NotificationService.init();
     if (all) {
       await backwardCompatibility();
       await SettingsService.init();
       BugReport.init();
       schoolApi = schoolApiManager(SettingsService.settings.global.api);
       await schoolApi.init();
+      await NotificationService.init();
     } else {
       if (essential) {
         await backwardCompatibility();
@@ -59,6 +59,10 @@ class SystemService {
         store.text = "Intitialisation de l'outil de report de bug...";
         store._notify();
         BugReport.init();
+        store.current = 4;
+        store.text = "Intitialisation du service de notifications...";
+        store._notify();
+        await NotificationService.init();
         store.text = "Chargement terminé !";
         store._notify();
       }
