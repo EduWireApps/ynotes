@@ -73,9 +73,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   if (!kReleaseMode)
                     YSettingsSection(title: "[DEV ONLY]", tiles: [
                       YSettingsTile(
-                          title: "Show logs",
-                          subtitle: "Print secure logger categories",
-                          onTap: () => Navigator.pushNamed(context, "/settings/logs")),
+                          title: "Send notification 0",
+                          onTap: () async {
+                            await NotificationService.show(
+                                OSNotification(id: 0, title: "Nouvelle note", body: "Anglais: 18/20"));
+                          }),
+                      YSettingsTile(
+                          title: "Send notification 1",
+                          onTap: () async {
+                            await NotificationService.show(OSNotification(id: 1, title: "awesome!", body: "blabla"));
+                          }),
                       YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, "")),
                       YSettingsTile(
                           title: "Trigger notification",

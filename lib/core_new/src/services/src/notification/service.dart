@@ -30,7 +30,7 @@ class NotificationService {
     // TODO: handle payload
   }
 
-  static Future<void> show(Notification n) async {
+  static Future<void> show(OSNotification n) async {
     await _plugin.show(n.id, n.title, n.body, n.details, payload: n.payload);
   }
 

@@ -1,14 +1,17 @@
 part of notification_service;
 
-class Notification {
+final Color _color = Colors.indigo[600]!;
+
+class OSNotification {
   final int id;
   final String? title;
   final String? body;
   final String? payload;
-  final NotificationDetails details =
-      NotificationDetails(android: AndroidNotificationDetails("id", "ynotes_notifications"));
+  final NotificationDetails details = NotificationDetails(
+      android: AndroidNotificationDetails("yn", "ynotes_notifications",
+          importance: Importance.high, priority: Priority.high, color: _color, subText: "Notes"));
 
-  Notification({
+  OSNotification({
     required this.id,
     this.title,
     this.body,
