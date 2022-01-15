@@ -17,6 +17,11 @@ class BackgroundService {
   /// Starts the background service.
   static Future<void> init() async {
     Logger.log(_logKey, "Intializing...");
+    if (!(Platform.isAndroid || Platform.isIOS)) {
+      Logger.log(_logKey, "Unsupported platform");
+      return;
+    }
+
     await _registerHeadlessTask();
     Logger.log(_logKey, "Headless task registered.");
     Logger.log(_logKey, "Configuring.");
@@ -38,7 +43,6 @@ class BackgroundService {
 
   /// Registers the headless task in [BackgroundFetch].
   static Future<void> _registerHeadlessTask() async {
-    if (!(Platform.isAndroid || Platform.isIOS)) return;
     BackgroundFetch.registerHeadlessTask((HeadlessTask task) async {
       String taskId = task.taskId;
       bool isTimeout = task.timeout;

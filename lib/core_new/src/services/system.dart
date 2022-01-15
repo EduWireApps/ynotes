@@ -17,7 +17,7 @@ import 'package:ynotes_packages/theme.dart';
 class SystemServiceStore extends ChangeNotifier {
   SystemServiceStore();
 
-  final int total = 4;
+  final int total = 3;
   int current = 0;
   String text = "";
   bool initialized = false;
@@ -33,14 +33,14 @@ class SystemService {
   static final SystemServiceStore store = SystemServiceStore();
 
   static Future<void> init({bool all = true, bool essential = false, bool loading = false}) async {
+    await BackgroundService.init();
+    await NotificationService.init();
     if (all) {
       await backwardCompatibility();
       await SettingsService.init();
       BugReport.init();
       schoolApi = schoolApiManager(SettingsService.settings.global.api);
       await schoolApi.init();
-      await NotificationService.init();
-      await BackgroundService.init();
     } else {
       if (essential) {
         await backwardCompatibility();
@@ -48,23 +48,18 @@ class SystemService {
       }
       if (loading) {
         store.current = 1;
-        store.text = "Intitialisation de l'outil de report de bug...";
-        store._notify();
-        BugReport.init();
-        await Future.delayed(const Duration(milliseconds: 500));
-        store.current = 2;
         store.text = "Choix du service scolaire...";
         store._notify();
         schoolApi = schoolApiManager(SettingsService.settings.global.api);
-        await Future.delayed(const Duration(milliseconds: 500));
-        store.current = 3;
+        await Future.delayed(const Duration(milliseconds: 200));
+        store.current = 2;
         store.text = "Initialisation du service scolaire...";
         store._notify();
         await schoolApi.init();
-        store.current = 4;
-        store.text = "Initialisation du service d'arrière-plan...";
+        store.current = 3;
+        store.text = "Intitialisation de l'outil de report de bug...";
         store._notify();
-        await BackgroundService.init();
+        BugReport.init();
         store.text = "Chargement terminé !";
         store._notify();
       }
