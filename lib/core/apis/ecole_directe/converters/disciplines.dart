@@ -61,7 +61,7 @@ class EcoleDirecteDisciplineConverter {
                 String? classNumber = periodeElement["ensembleMatieres"]["effectif"]?.toString();
                 String? generalRank =
                     (settings["moyenneRang"] ?? false) ? periodeElement["ensembleMatieres"]["rang"]?.toString() : null;
-                String weight = rawData["coef"].toString();
+                String weight = (settings["coefficientNote"] as bool) ? rawData["coef"].toString() : "1";
 
                 disciplinesList.add(Discipline(
                     maxClassGeneralAverage: maxClassGeneralAverage,
@@ -102,7 +102,7 @@ class EcoleDirecteDisciplineConverter {
                       .subdisciplineNames!
                       .add(rawData['discipline']);
                 } catch (e) {
-                  CustomLogger.error(e, stackHint:"MjA=");
+                  CustomLogger.error(e, stackHint: "MjA=");
                 }
               }
             }
@@ -123,7 +123,7 @@ class EcoleDirecteDisciplineConverter {
               }
             }
           } catch (e) {
-            CustomLogger.error(e, stackHint:"MjE=");
+            CustomLogger.error(e, stackHint: "MjE=");
           }
         }
         return disciplinesList;
