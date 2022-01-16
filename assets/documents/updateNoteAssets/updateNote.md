@@ -1,3 +1,8 @@
+# 0.14.8
+
+- Pronote: à la connexion par géolocalisation, certaines URLs étaient invalides, ce n'est plus le cas
+- EcoleDirecte: Lorsque les coefficients sont désactivés, une valeur de 1 leur est attribué
+
 # 0.14.7
 
 Toute l'équipe vous souhaite de très joyeuses fêtes !
