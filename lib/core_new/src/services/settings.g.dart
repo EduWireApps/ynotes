@@ -28,7 +28,7 @@ GlobalSettings _$GlobalSettingsFromJson(Map<String, dynamic> json) {
     api: _$enumDecode(_$ApisEnumMap, json['api']),
     batterySaver: json['batterySaver'] as bool,
     shakeToReport: json['shakeToReport'] as bool,
-    uuid: json['uuid'] as String,
+    uuid: json['uuid'] as String?,
   );
 }
 

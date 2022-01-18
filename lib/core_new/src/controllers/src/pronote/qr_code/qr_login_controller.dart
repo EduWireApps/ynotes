@@ -61,9 +61,11 @@ class QrLoginController extends ChangeNotifier {
 
   /// Decrypts the [_loginData] with the pin code set on the Pronote website/app
   List<String>? decrypt(String code) {
+    // TODO: finish pronote_client and uncomment
+    return null;
+    /*
     _status = QrStatus.loading;
     notifyListeners();
-    // TODO: finish pronote_client first
     final Encryption encrypt = Encryption();
     // We set the key
     encrypt.aesKey = md5.convert(utf8.encode(code));
@@ -82,6 +84,7 @@ class QrLoginController extends ChangeNotifier {
       Logger.log("LOGIN", "(QR Code) An error occured with the PIN");
       Logger.error(e, stackHint: "MzY=");
     }
+    */
   }
 
   /// Reset the controller

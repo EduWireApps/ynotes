@@ -8,7 +8,7 @@ version: 0.14.7+9
 publish_to: none
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
   android_alarm_manager_plus: ^2.0.3

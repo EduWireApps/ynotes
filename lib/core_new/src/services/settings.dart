@@ -1,5 +1,6 @@
 library settings_service;
 
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
