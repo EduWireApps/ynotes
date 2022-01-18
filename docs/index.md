@@ -16,6 +16,8 @@ WIP
 - app
 - core
 - ui
+- packages
+- experiments
 
 ## Apis
 
@@ -39,6 +41,7 @@ WIP
 
 - VSC
 - flutter logs
+- script python pour les erreurs
 
 ## Setup et développement
 

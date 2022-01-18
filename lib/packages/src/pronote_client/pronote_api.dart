@@ -608,7 +608,7 @@ class PronoteClient {
         try {
           listToReturn.add(PronoteConverter.lesson(this, lesson));
         } catch (e) {
-          Logger.error(e, stackHint:"NA==");
+          Logger.error(e, stackHint:"MA==");
         }
       });
       Logger.log("PRONOTE", "Agenda collecte succeeded");
