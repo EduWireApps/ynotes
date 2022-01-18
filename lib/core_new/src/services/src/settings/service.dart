@@ -30,13 +30,19 @@ class SettingsService {
   }
 
   static Map<String, dynamic> _migrate(Map<String, dynamic> map, {Map<String, dynamic>? defaultSettings}) {
+    // If [defaultSettings] is not provided, use the default settings.
     defaultSettings ??= _defaultSettings;
+    // We iterate through the entries of the default settings;
     for (final entry in defaultSettings.entries) {
       final String key = entry.key;
       final dynamic value = entry.value;
+      // If the key is in the map, we have to do several checks.
+      // If not, we just add the default value.
       if (map.containsKey(key)) {
+        // If the value is a map, we migrate the map. (recursive)
         if (map[key] is Map && value is Map) {
           map[key] = _migrate(Map<String, dynamic>.from(map[key]), defaultSettings: value as Map<String, dynamic>);
+          // If the type of the value has changed, we have to assign the default value to the value.
         } else if (map[key].runtimeType != value.runtimeType) {
           map[key] = value;
         }
@@ -44,6 +50,7 @@ class SettingsService {
         map[key] = value;
       }
     }
+    // If they are unused values, we delete them.
     final List<String> extraKeys = [];
     for (final key in map.keys) {
       if (!defaultSettings.containsKey(key)) {
