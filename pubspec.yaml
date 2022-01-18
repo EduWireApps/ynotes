@@ -128,7 +128,7 @@ flutter:
     - assets/images/pageItems/homework/
     - assets/images/pageItems/persistantNotification/
     - assets/images/pageItems/login/
-    - assets/documents/updateNoteAssets/
+    - assets/documents/patchNotes/
     - assets/appico/
     - assets/appico/foreground.png
     - assets/documents/TOS_fr.txt

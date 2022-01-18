@@ -18,10 +18,11 @@ class NotificationService {
     final InitializationSettings initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS, macOS: initializationSettingsMacOS);
     await _plugin.initialize(initializationSettings, onSelectNotification: _onSelectNotification);
-    final NotificationAppLaunchDetails? appLaunchDetails = await _plugin.getNotificationAppLaunchDetails();
-    if (appLaunchDetails != null && appLaunchDetails.didNotificationLaunchApp) {
-      _onSelectNotification(appLaunchDetails.payload);
-    }
+    // TODO: handle intents.
+    // final NotificationAppLaunchDetails? appLaunchDetails = await _plugin.getNotificationAppLaunchDetails();
+    // if (appLaunchDetails != null && appLaunchDetails.didNotificationLaunchApp) {
+    //   _onSelectNotification(appLaunchDetails.payload);
+    // }
   }
 
   /// The functions that gets triggered when a notification is tapped.

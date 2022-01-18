@@ -42,6 +42,8 @@ class _SettingsPatchNotesPageState extends State<SettingsPatchNotesPage> {
               Markdown(
                   data: data ?? "**Chargement en cours...**",
                   selectable: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
                   // TODO: take care of styles
                   styleSheet: MarkdownStyleSheet(
                     p: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),

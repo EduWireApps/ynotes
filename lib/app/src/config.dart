@@ -15,6 +15,6 @@ class _Shake {
 }
 
 class _PatchNotes {
-  final String thumbnailPath = "assets/documents/patch_notes/thumbnail.png";
-  final String textPath = "assets/documents/patch_notes/patch_notes.md";
+  final String thumbnailPath = "assets/documents/patchNotes/thumbnail.png";
+  final String textPath = "assets/documents/patchNotes/patchNotes.md";
 }
