@@ -1,3 +1,5 @@
+// TODO: rework (lazy loading list)
+
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -203,6 +205,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
         ));
   }
 
+  @override
   initState() {
     super.initState();
     refreshLogs();

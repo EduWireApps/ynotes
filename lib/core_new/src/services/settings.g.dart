@@ -28,6 +28,7 @@ GlobalSettings _$GlobalSettingsFromJson(Map<String, dynamic> json) {
     api: _$enumDecode(_$ApisEnumMap, json['api']),
     batterySaver: json['batterySaver'] as bool,
     shakeToReport: json['shakeToReport'] as bool,
+    uuid: json['uuid'] as String,
   );
 }
 
@@ -38,6 +39,7 @@ Map<String, dynamic> _$GlobalSettingsToJson(GlobalSettings instance) =>
       'api': _$ApisEnumMap[instance.api],
       'batterySaver': instance.batterySaver,
       'shakeToReport': instance.shakeToReport,
+      'uuid': instance.uuid,
     };
 
 K _$enumDecode<K, V>(

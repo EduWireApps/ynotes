@@ -1,11 +1,5 @@
 part of app;
 
-Future<List<AgendaEvent>?>? spaceAgendaFuture;
-
-Future<List<AgendaEvent>?>? agendaFuture;
-
-late ApplicationSystem appSys;
-
 late SchoolApi schoolApi;
 
 SchoolApi schoolApiManager(Apis api) {

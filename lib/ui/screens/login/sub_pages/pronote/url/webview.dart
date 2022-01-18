@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
@@ -61,7 +61,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
     setState(() {
       url = _url;
     });
-    final String infoUrl = getInfoUrl(url);
+    final String infoUrl = ApisUtilities.getPronoteInfoUrl(url);
     return YPage(
       scrollable: false,
       appBar: YAppBar(
@@ -132,8 +132,8 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                       if (!cookiesSet) {
                         Logger.log("LOGIN", "(Web view) Setting cookie");
                         // generate UUID
-                        appSys.settings.system.uuid = const Uuid().v4();
-                        appSys.saveSettings();
+                        SettingsService.settings.global.uuid = const Uuid().v4();
+                        await SettingsService.update();
                         // We use the window function to create a cookie
                         // Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
                         final String script = """
@@ -143,7 +143,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                         document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();
                         if(!!lJetonCas) {
                         document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();
-                        document.cookie = "uuidAppliMobile=${appSys.settings.system.uuid!};expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();
+                        document.cookie = "uuidAppliMobile=${SettingsService.settings.global.uuid!};expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();
                         document.cookie = "ielang=1036;expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();
                         return true;
                         } else return false;

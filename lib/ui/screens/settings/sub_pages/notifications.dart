@@ -1,3 +1,8 @@
+// TODO: fix when notifications are done
+// ignore: unused_element
+const _fake = null;
+
+/*
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -152,3 +157,4 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                 )));
   }
 }
+*/

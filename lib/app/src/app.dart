@@ -28,8 +28,7 @@ class _AppState extends State<App> {
             themes: themes,
             builder: (context) => ChangeNotifierConsumer<Settings>(
                 controller: SettingsService.settings,
-                builder: (context, _, __) => HiveLifecycleManager(
-                        child: MaterialApp(
+                builder: (context, _, __) => MaterialApp(
                       localizationsDelegates: const [
                         // ... app-specific localization delegate[s] here
                         GlobalMaterialLocalizations.delegate,
@@ -47,7 +46,7 @@ class _AppState extends State<App> {
                       themeMode: ThemeMode.light,
                       onGenerateRoute: AppRouter.onGenerateRoute,
                       // onGenerateRoute: onGenerateRoute,
-                    ))));
+                    )));
       }),
     );
   }

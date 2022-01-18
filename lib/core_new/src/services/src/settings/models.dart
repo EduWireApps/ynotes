@@ -1,6 +1,8 @@
 part of settings_service;
 
-// Run flutter pub run build_runner build --delete-conflicting-outputs
+// flutter pub run build_runner build --delete-conflicting-outputs
+
+// TODO: documentation
 
 @JsonSerializable()
 class Settings extends ChangeNotifier {
@@ -24,13 +26,15 @@ class GlobalSettings {
   Apis api;
   bool batterySaver;
   bool shakeToReport;
+  String? uuid;
 
   GlobalSettings(
       {required this.lastReadPatchNotes,
       required this.themeId,
       required this.api,
       required this.batterySaver,
-      required this.shakeToReport});
+      required this.shakeToReport,
+      required this.uuid});
 
   factory GlobalSettings.fromJson(Map<String, dynamic> json) => _$GlobalSettingsFromJson(json);
 

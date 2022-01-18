@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/ui/components/NEW/components.dart';
+import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 

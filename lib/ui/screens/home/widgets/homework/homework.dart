@@ -1,3 +1,8 @@
+// TODO: fix when homework is done
+// ignore: unused_element
+const _fake = null;
+
+/*
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
@@ -159,3 +164,4 @@ class _HomeworkSectionState extends State<HomeworkSection> {
         });
   }
 }
+*/

@@ -1,3 +1,8 @@
+// TODO: fix when homework is done
+// ignore: unused_element
+const _fake = null;
+
+/*
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
@@ -131,3 +136,4 @@ class HomeworkElement extends StatelessWidget {
         });
   }
 }
+*/

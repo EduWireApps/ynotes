@@ -85,7 +85,7 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAut
     await offline.setSchoolAccount(schoolAccount);
   }
 
-  Future<Response<void>> login(
+  Future<Response<String>> login(
       {required String username, required String password, Map<String, dynamic>? parameters}) async {
     final res = await repository.login(username: username, password: password, parameters: parameters);
     if (res.error != null) {
@@ -93,7 +93,7 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAut
       details = "Erreur de connexion";
       logs = res.error;
       notifyListeners();
-      return res;
+      return Response(error: res.error);
     }
     await setCredentials({"username": username, "password": password, "parameters": parameters});
     await save();
@@ -104,7 +104,8 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAut
     account = res.data!["appAccount"];
     schoolAccount = res.data!["schoolAccount"];
     notifyListeners();
-    return const Response();
+    // return const Response();
+    return Response(data: "Bienvenue ${account!.fullName}");
   }
 
   @override

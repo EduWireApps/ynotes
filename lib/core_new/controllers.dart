@@ -1,1 +1,1 @@
-library controllers;
+export 'src/controllers/pronote.dart';

@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/legacy/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/ui/components/NEW/components.dart';
+import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -20,7 +20,7 @@ class TermsPage extends StatelessWidget {
           child: Column(
             children: [
               FutureBuilder<String>(
-                  future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
+                  future: FileStorage.loadProjectAsset("assets/documents/TOS_fr.txt"),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       Logger.log("LOGIN", "An error occured while getting the TOS");

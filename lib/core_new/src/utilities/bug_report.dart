@@ -11,7 +11,7 @@ import 'package:ynotes/core_new/utilities.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core_new/services.dart';
 import 'package:ynotes/extensions.dart';
-import 'package:ynotes/ui/components/NEW/components.dart';
+import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -59,7 +59,7 @@ class BugReport {
       //set shake report files
       Shake.setShakeReportData(shakeFiles);
       //set api metadata
-      Shake.setMetadata("schoolApi", appSys.api?.apiName ?? "{undefined}");
+      Shake.setMetadata("schoolApi", schoolApi.metadata.name);
     } catch (e) {
       Logger.error(e, stackHint: "Nzg=");
     }

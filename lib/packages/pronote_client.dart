@@ -1,0 +1,1 @@
+library pronote_client;
