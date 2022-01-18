@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/extensions.dart';
-import 'package:ynotes/core_new/api.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/core/extensions.dart';
+import 'package:ynotes/core/api.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes/packages/shared.dart';
-import 'package:ynotes/core_new/offline.dart';
+import 'package:ynotes/core/offline.dart';
 
 // TODO: document all
 // TODO: use getters and private attributes

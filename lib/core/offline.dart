@@ -4,8 +4,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core_new/api.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/core/api.dart';
 
 /// The class that handles [Offline]'s state, mostly about configuration.
 ///

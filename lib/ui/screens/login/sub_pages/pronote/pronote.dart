@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/extensions.dart';
+import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';

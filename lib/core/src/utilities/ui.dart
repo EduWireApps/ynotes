@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ynotes/core_new/services.dart';
+import 'package:ynotes/core/services.dart';
 import 'package:ynotes_packages/theme.dart';
 
 /// A class that manages ui related actions. UIU stands for User Interface Utilities.

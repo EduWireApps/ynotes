@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
 
 class ApisUtilities {
   const ApisUtilities._();

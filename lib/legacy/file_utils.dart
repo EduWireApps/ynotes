@@ -7,8 +7,8 @@ import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/utilities.dart';
 
 @Deprecated("Use [FileStorage] instead.")
 

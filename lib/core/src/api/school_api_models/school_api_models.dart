@@ -9,8 +9,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ynotes/core_new/api.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/api.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:crypto/crypto.dart';
 

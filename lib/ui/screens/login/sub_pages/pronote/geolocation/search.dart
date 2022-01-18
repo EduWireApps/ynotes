@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core_new/controllers.dart';
+import 'package:ynotes/core/controllers.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';

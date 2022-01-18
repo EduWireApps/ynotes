@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core_new/services.dart';
+import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/services.dart';
 
 /// A class that manages background interactions. Works only on
 /// Android and iOS (handled within [init]).

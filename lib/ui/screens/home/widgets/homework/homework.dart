@@ -6,7 +6,7 @@ const _fake = null;
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/extensions.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';

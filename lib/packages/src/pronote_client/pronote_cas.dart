@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/utilities.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map

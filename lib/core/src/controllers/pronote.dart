@@ -13,10 +13,10 @@ import 'package:crypto/crypto.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ynotes/core_new/services.dart';
+import 'package:ynotes/core/services.dart';
 import 'package:ynotes/packages/src/pronote_client/pronote_api.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/utilities.dart';
 
 part 'src/pronote/geolocation/geolocation_controller.dart';
 part 'src/pronote/geolocation/school_model.dart';
