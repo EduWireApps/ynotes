@@ -34,7 +34,7 @@ class SystemService {
 
   static Future<void> init({bool all = true, bool essential = false, bool loading = false}) async {
     if (all) {
-      await backwardCompatibility();
+      await migrations();
       await SettingsService.init();
       BugReport.init();
       schoolApi = schoolApiManager(SettingsService.settings.global.api);
@@ -42,7 +42,7 @@ class SystemService {
       await NotificationService.init();
     } else {
       if (essential) {
-        await backwardCompatibility();
+        await migrations();
         await SettingsService.init();
       }
       if (loading) {

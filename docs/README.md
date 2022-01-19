@@ -49,6 +49,8 @@ En tant qu'application Flutter, yNotes a donc une structure "classique" mais ce 
 - `logs_stacklist.dart`: Fichier qui liste les erreurs soulevés via le `Logger` ([Voir plus bas](#debugging))
 - `main.dart`: Point d'entrée de l'application. Lors de son exécution, la fonction `main` est exécutée
 
+[En savoir plus](architecture.md)
+
 ## APIs
 
 Pour communiquer avec les APIs des services scolaires, une classe abstraite a été définie: `SchoolApi` (`/lib/core/src/api/school_api`). Toute API doit être dérivée de cette classe.

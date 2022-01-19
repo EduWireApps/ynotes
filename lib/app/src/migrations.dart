@@ -5,7 +5,7 @@ part of app;
 // through the git history. DO NOT DELETE THEM.
 
 /// A function that migrates things from an implementation to another
-Future<void> backwardCompatibility() async {
+Future<void> migrations() async {
   // await _fromV12ToV13();
   // await _fromV13ToV14();
   await _fromV14ToV15();

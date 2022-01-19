@@ -24,7 +24,7 @@ import 'package:ynotes_packages/config.dart';
 import 'package:ynotes_packages/theme.dart';
 
 part 'src/app.dart';
-part 'src/backward_compatibility.dart';
+part 'src/migrations.dart';
 part 'src/config.dart';
-part 'src/globals.dart';
+part 'src/school_api.dart';
 part 'src/router.dart';

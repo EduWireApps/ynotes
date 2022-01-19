@@ -45,7 +45,6 @@ class _AppState extends State<App> {
                       initialRoute: "loading",
                       themeMode: ThemeMode.light,
                       onGenerateRoute: AppRouter.onGenerateRoute,
-                      // onGenerateRoute: onGenerateRoute,
                     )));
       }),
     );
