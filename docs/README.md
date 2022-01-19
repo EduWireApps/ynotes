@@ -22,7 +22,6 @@ En tant qu'application Flutter, yNotes a donc une structure "classique" mais ce 
 - `/ui`: Contient les widgets (interface). A noter qu'une partie conséquente de l'interface est développée au sein du package `ynotes_packages` ([Github](https://github.com/EduWireApps/ynotes-packages))
 - `/packages`: Contient des modules autres, des utilitaires ou des apis (indépendantes de l'application) par exemple
 - `/experiments`: Contient des tests qui n'ont pas vocation à être utilisé dans l'application mais seulement pendant le développement.
-- `genereated_plugin_registrant.dart`: Fichier généré lors du développement de l'application, il est inutile d'y toucher. Même s'il contient des erreurs, elles n'empêchent pas l'exécution du code car ce fichier est seulement utilisé pour le web (ce qui n'est pas une cible de déploiement de yNotes)
 - `logs_stacklist.dart`: Fichier qui liste les erreurs soulevés via le `Logger` ([Voir plus bas](#debugging))
 - `main.dart`: Point d'entrée de l'application. Lors de son exécution, la fonction `main` est exécutée
 

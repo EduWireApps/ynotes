@@ -40,8 +40,9 @@ class QrLoginController extends ChangeNotifier {
 
   /// Check if the Qr code is valid for the connection.
   bool isQrCodeValid(Barcode barCode) {
+    if (barCode.code == null) return false;
     try {
-      Map? raw = jsonDecode(barCode.code);
+      Map? raw = jsonDecode(barCode.code!);
       if (raw != null) {
         if (raw["jeton"] != null && raw["login"] != null && raw["url"] != null) {
           _status = QrStatus.loading;
