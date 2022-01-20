@@ -1,5 +1,5 @@
 part of pronote_client;
-
+/*
 class PronotePeriod {
   DateTime? end;
 
@@ -126,3 +126,4 @@ class PronotePeriod {
     }
   }
 }
+*/

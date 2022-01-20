@@ -1,5 +1,5 @@
 part of pronote_client;
-
+/*
 class Encryption {
   IV? aesIV;
 
@@ -99,3 +99,4 @@ class Encryption {
     }
   }
 }
+*/

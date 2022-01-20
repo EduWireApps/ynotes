@@ -1,5 +1,5 @@
 part of pronote_client;
-
+/*
 class KeepAlive {
   Communication? _connection;
 
@@ -21,3 +21,4 @@ class KeepAlive {
     keepAlive = true;
   }
 }
+*/

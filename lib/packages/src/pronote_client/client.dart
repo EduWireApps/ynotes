@@ -1,5 +1,5 @@
 part of pronote_client;
-
+/*
 class PronoteClient {
   dynamic username;
   dynamic password;
@@ -416,3 +416,4 @@ class PronoteClient {
     }
   }
 }
+*/

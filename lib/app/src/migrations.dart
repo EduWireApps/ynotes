@@ -67,7 +67,9 @@ Future<void> _fromV13ToV14() async {
   final bool logsReset2 = (await KVS.read(key: "logsReset2")) == "true";
   if (!logsReset2) {
     try {
-      await LogsManager.deleteLogs();
+      // This method doesn't exist anymore, replaced by [reset].
+      //
+      // await LogsManager.deleteLogs();
       await KVS.write(key: "logsReset2", value: "true");
     } catch (e) {
       Logger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");

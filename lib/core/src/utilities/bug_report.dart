@@ -45,7 +45,7 @@ class BugReport {
       return;
     }
     try {
-      final String json = generateCleanJson(await LogsManager.getLogs());
+      final String json = generateCleanJson(LogsManager.logs);
       // create a temp file containing logs as json
       final directory = await FileStorage.getAppDirectory();
       final File file = File('${directory.path}/logs/temp.json');
@@ -58,6 +58,7 @@ class BugReport {
       shakeFiles.add(ShakeFile.create(file.path, 'userLogs'));
       //set shake report files
       Shake.setShakeReportData(shakeFiles);
+      await file.delete();
       //set api metadata
       Shake.setMetadata("schoolApi", schoolApi.metadata.name);
     } catch (e) {
@@ -65,9 +66,9 @@ class BugReport {
     }
   }
 
-  static String generateCleanJson(List<YLog> logs) {
+  static String generateCleanJson(List<Log> logs) {
     Map finalMap = {};
-    for (YLog element in logs) {
+    for (Log element in logs) {
       if (finalMap.containsKey(element.category)) {
         finalMap[element.category].add(element);
       } else {

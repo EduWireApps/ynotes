@@ -1,5 +1,5 @@
 part of pronote_client;
-
+/*
 ///Communication class used to send requests to Pronote
 class Communication {
   dynamic cookies;
@@ -263,3 +263,4 @@ class Communication {
     return ints;
   }
 }
+*/

@@ -1,5 +1,5 @@
 part of pronote_client;
-
+/*
 ///Redirect to the good CAS
 ///Return type : cookies as Map
 callCas(String? cas, String username, String? password, String url) async {
@@ -88,3 +88,4 @@ idf(String username, String? password, String url) async {
   Logger.logWrapped("PRONOTE", "Cookies", cookies.toString());
   return cookies;
 }
+*/

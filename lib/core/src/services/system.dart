@@ -71,8 +71,8 @@ class SystemService {
 
   static Future<void> exit(BuildContext context) async {
     await schoolApi.reset(auth: true);
+    await LogsManager.reset();
     await KVS.deleteAll();
-    LogsManager.deleteLogs();
     await SettingsService.reset();
     Phoenix.rebirth(context);
   }

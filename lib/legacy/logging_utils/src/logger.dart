@@ -13,8 +13,7 @@ class Logger {
   /// Logs a title and a message.
   static void log(String object, dynamic text, {String? stackTrace, bool save = true}) {
     if (save) {
-      LogsManager.saveLogs(
-          logs: [YLog(category: object, stacktrace: stackTrace, comment: text.toString())], category: object);
+      LogsManager.add([Log(category: object, stacktrace: stackTrace, comment: text.toString())]);
     }
     debugPrint('[${object.toUpperCase()}' + (stackTrace != null ? ' ' + stackTrace : "") + '] ' + text.toString());
   }
@@ -23,7 +22,7 @@ class Logger {
   static void logWrapped(String object, String description, String text, {bool save = true}) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     if (save) {
-      LogsManager.saveLogs(logs: [YLog(category: object, comment: "$description: $text")], category: object);
+      LogsManager.add([Log(category: object, comment: "$description: $text")]);
     }
     pattern.allMatches(text).forEach((match) => debugPrint(match.group(0)));
   }

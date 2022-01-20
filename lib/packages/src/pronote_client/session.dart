@@ -1,5 +1,5 @@
 part of pronote_client;
-
+/*
 class Session {
   Map<String, String> headers = {};
 
@@ -24,3 +24,4 @@ class Session {
     }
   }
 }
+*/
