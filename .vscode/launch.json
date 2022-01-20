@@ -8,24 +8,11 @@
             "name": "Flutter",
             "request": "launch",
             "type": "dart",
-            "osx": {
-                "args": [
-                    "--flavor",
-                    "dev"
-                ]
-            },
-            "windows": {
-                "args": [
-                    "--flavor",
-                    "dev"
-                ]
-            },
-            "linux": {
-                "args": [
-                    "--flavor",
-                    "dev"
-                ]
-            },
+            "args": [
+                "--flavor",
+                "dev",
+                "--no-sound-null-safety"
+            ],
         }
     ]
 }
