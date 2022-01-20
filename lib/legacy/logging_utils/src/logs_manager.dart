@@ -4,6 +4,9 @@ String? _encryptionKey;
 bool _editingFile = false;
 bool _busy = false;
 
+// TODO: can't be stored in secure storage because object is too large
+// but we should save it to a file instead: /logs.txt
+
 /// Manages logs storage and encryption
 class LogsManager {
   /// Manages logs storage and encryption
