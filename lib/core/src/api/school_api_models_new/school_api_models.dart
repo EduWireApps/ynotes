@@ -4,11 +4,12 @@ library new_models;
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:ynotes/core/api.dart';
 
 import 'package:collection/collection.dart';
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ynotes/core_new/api.dart';
+import 'package:ynotes/core/src/api/school_api/school_api.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:uuid/uuid.dart';
 import 'src/internal/adapters.dart';

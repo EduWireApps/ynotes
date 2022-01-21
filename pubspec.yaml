@@ -35,7 +35,6 @@ dependencies:
   hive_flutter: ^1.1.0
   html_character_entities: ^1.0.0+1
   html_unescape: ^2.0.0
-  intl: ^0.16.1
   isar: ^2.0.0-dev.1
   isar_flutter_libs: ^2.0.0-dev.1 # contains the binaries
   isar_connect: ^2.0.0-dev.1 # if you want to use the Isar Inspector
