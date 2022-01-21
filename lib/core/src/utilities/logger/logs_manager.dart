@@ -49,14 +49,18 @@ class LogsManager {
     _queue = Queue();
     logs.clear();
     final File file = await _getFile();
-    await file.delete(recursive: true);
+    await file.delete();
     await init();
   }
 
   /// Adds logs to the logs manager.
   static Future<void> add(List<Log> _logs) async {
     for (final l in _logs) {
-      await _queue.add(() async => await _add(l));
+      try {
+        await _queue.add(() async => await _add(l));
+      } catch (e) {
+        debugPrint("Error adding log: $e");
+      }
     }
   }
 

@@ -1,5 +1,3 @@
-// TODO: rework (lazy loading list)
-
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
