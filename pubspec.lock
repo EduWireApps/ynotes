@@ -203,7 +203,7 @@ packages:
       name: connectivity_plus_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.2.0"
   connectivity_plus_macos:
     dependency: transitive
     description:
@@ -217,7 +217,7 @@ packages:
       name: connectivity_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.2.0"
   connectivity_plus_web:
     dependency: transitive
     description:
@@ -259,7 +259,7 @@ packages:
       name: csv
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.1"
   dart_style:
     dependency: transitive
     description:
@@ -280,14 +280,14 @@ packages:
       name: dbus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2"
+    version: "0.6.8"
   dependency_validator:
     dependency: "direct dev"
     description:
       name: dependency_validator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.0"
   dotted_line:
     dependency: "direct main"
     description:
@@ -345,7 +345,7 @@ packages:
       name: ffi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.2"
   file:
     dependency: transitive
     description:
@@ -673,7 +673,7 @@ packages:
       name: hive_generator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.2"
   html:
     dependency: transitive
     description:
@@ -806,7 +806,7 @@ packages:
       name: logger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   logging:
     dependency: transitive
     description:
@@ -870,6 +870,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  nm:
+    dependency: transitive
+    description:
+      name: nm
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2"
   open_file:
     dependency: "direct main"
     description:
@@ -1255,6 +1262,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  source_helper:
+    dependency: transitive
+    description:
+      name: source_helper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.3.0"
   source_span:
     dependency: transitive
     description:
@@ -1526,10 +1540,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "633d5e988900b90b26dda7226b611ed2ffdf4ef5"
+      resolved-ref: "0c5bf08b972dc2f08bdf55a131fb84ab35962668"
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
-    version: "0.5.5"
+    version: "0.6.4"
 sdks:
   dart: ">=2.15.0-7.0.dev <3.0.0"
   flutter: ">=2.6.0-0"
