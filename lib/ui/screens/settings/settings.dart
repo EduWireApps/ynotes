@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utilities.dart';
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+
 import 'package:ynotes/core/services.dart';
 import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
@@ -85,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           subtitle: "Print secure logger categories",
                           onTap: () async {
                             Logger.log("Test", "test");
-                            Logger.log("SECURE LOGGER", "Categories: ${await LogsManager.categories()}");
+                            Logger.log("SECURE LOGGER", "Categories: ${LogsManager.categories()}");
                           }),
                     ])
                 ])));

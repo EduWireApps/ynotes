@@ -1,4 +1,4 @@
-part of logging_utils;
+part of logger;
 
 String? _encryptionKey;
 File? _file;

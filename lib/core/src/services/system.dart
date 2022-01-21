@@ -8,7 +8,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utilities.dart';
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+
 import 'package:ynotes/core/services.dart';
 import 'package:ynotes/packages/shared.dart';
 import 'package:ynotes_packages/components.dart';

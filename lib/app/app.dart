@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:ynotes/core/utilities.dart';
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/services.dart';
 import 'package:ynotes/ui/screens/error/error.dart';

@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/services.dart';
 import 'package:ynotes/core/utilities.dart';
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes_packages/components.dart';

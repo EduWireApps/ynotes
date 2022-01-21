@@ -13,7 +13,7 @@ import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+
 
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/useful_methods.dart';
