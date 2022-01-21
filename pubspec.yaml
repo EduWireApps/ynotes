@@ -51,6 +51,9 @@ dependencies:
   html_unescape: ^2.0.0
   http: ^0.13.0
   intl: ^0.16.1
+  isar: ^2.0.0-dev.1
+  isar_flutter_libs: ^2.0.0-dev.1 # contains the binaries
+  isar_connect: ^2.0.0-dev.1 # if you want to use the Isar Inspector
   json_annotation: ^4.0.1
   latlong2: ^0.8.1
   liquid_progress_indicator_ns: ^1.0.0
@@ -89,7 +92,7 @@ dependencies:
   dotted_border: ^2.0.0+2
   flutter_local_notifications: ^9.2.0
 
-dependency_overrides: 
+dependency_overrides:
   visibility_detector: ^0.2.2
   args: ^2.1.1
   build: ^2.0.0
@@ -97,15 +100,15 @@ dependency_overrides:
   markdown: ^4.0.0
   mime: ^1.0.0
 
-dev_dependencies: 
+dev_dependencies:
+  isar_generator: ^2.0.0-dev.1
   build_runner: ^2.0.4 # flutter packages pub run build_runner build --delete-conflicting-outputs
   dependency_validator: ^3.1.0 # flutter pub run dependency_validator
   flutter_lints: ^1.0.4
-  flutter_test: 
+  flutter_test:
     sdk: flutter
   hive_generator: ^1.1.1
-  json_serializable: ^4.1.0
-
+  json_serializable: ^6.1.4
 flutter_icons:
   ios: true
   android: true

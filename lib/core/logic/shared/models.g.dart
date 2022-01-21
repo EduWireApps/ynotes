@@ -53,14 +53,12 @@ class DocumentAdapter extends TypeAdapter<Document> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Document _$DocumentFromJson(Map<String, dynamic> json) {
-  return Document(
-    documentName: json['documentName'] as String?,
-    id: json['id'] as String?,
-    type: json['type'] as String?,
-    length: json['length'] as int?,
-  )..dbId = json['dbId'] as int?;
-}
+Document _$DocumentFromJson(Map<String, dynamic> json) => Document(
+      documentName: json['documentName'] as String?,
+      id: json['id'] as String?,
+      type: json['type'] as String?,
+      length: json['length'] as int?,
+    )..dbId = json['dbId'] as int?;
 
 Map<String, dynamic> _$DocumentToJson(Document instance) => <String, dynamic>{
       'dbId': instance.dbId,

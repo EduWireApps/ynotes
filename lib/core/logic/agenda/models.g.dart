@@ -6,65 +6,6 @@ part of 'models.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class AlarmTypeAdapter extends TypeAdapter<AlarmType> {
-  @override
-  final int typeId = 7;
-
-  @override
-  AlarmType read(BinaryReader reader) {
-    switch (reader.readByte()) {
-      case 0:
-        return AlarmType.none;
-      case 1:
-        return AlarmType.exactly;
-      case 2:
-        return AlarmType.fiveMinutes;
-      case 3:
-        return AlarmType.fifteenMinutes;
-      case 4:
-        return AlarmType.thirtyMinutes;
-      case 5:
-        return AlarmType.oneDay;
-      default:
-        return AlarmType.none;
-    }
-  }
-
-  @override
-  void write(BinaryWriter writer, AlarmType obj) {
-    switch (obj) {
-      case AlarmType.none:
-        writer.writeByte(0);
-        break;
-      case AlarmType.exactly:
-        writer.writeByte(1);
-        break;
-      case AlarmType.fiveMinutes:
-        writer.writeByte(2);
-        break;
-      case AlarmType.fifteenMinutes:
-        writer.writeByte(3);
-        break;
-      case AlarmType.thirtyMinutes:
-        writer.writeByte(4);
-        break;
-      case AlarmType.oneDay:
-        writer.writeByte(5);
-        break;
-    }
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AlarmTypeAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
 class LessonAdapter extends TypeAdapter<Lesson> {
   @override
   final int typeId = 4;
@@ -259,6 +200,65 @@ class AgendaEventAdapter extends TypeAdapter<AgendaEvent> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AgendaEventAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class AlarmTypeAdapter extends TypeAdapter<AlarmType> {
+  @override
+  final int typeId = 7;
+
+  @override
+  AlarmType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return AlarmType.none;
+      case 1:
+        return AlarmType.exactly;
+      case 2:
+        return AlarmType.fiveMinutes;
+      case 3:
+        return AlarmType.fifteenMinutes;
+      case 4:
+        return AlarmType.thirtyMinutes;
+      case 5:
+        return AlarmType.oneDay;
+      default:
+        return AlarmType.none;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, AlarmType obj) {
+    switch (obj) {
+      case AlarmType.none:
+        writer.writeByte(0);
+        break;
+      case AlarmType.exactly:
+        writer.writeByte(1);
+        break;
+      case AlarmType.fiveMinutes:
+        writer.writeByte(2);
+        break;
+      case AlarmType.fifteenMinutes:
+        writer.writeByte(3);
+        break;
+      case AlarmType.thirtyMinutes:
+        writer.writeByte(4);
+        break;
+      case AlarmType.oneDay:
+        writer.writeByte(5);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlarmTypeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

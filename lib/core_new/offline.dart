@@ -91,10 +91,7 @@ class Offline {
   static void _registerAdapters() {
     _registerAdapter(SchoolLifeTicketAdapter());
     _registerAdapter(SchoolLifeSanctionAdapter());
-    _registerAdapter(GradeAdapter());
-    _registerAdapter(SubjectsFilterAdapter());
     _registerAdapter(PeriodAdapter());
-    _registerAdapter(SubjectAdapter());
     _registerAdapter(ColorAdapter());
     _registerAdapter(YTColorAdapter());
     _registerAdapter(EmailAdapter());
