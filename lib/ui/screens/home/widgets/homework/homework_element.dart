@@ -1,3 +1,8 @@
+// TODO: fix when homework is done
+// ignore: unused_element
+const _fake = null;
+
+/*
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
@@ -6,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -131,3 +136,4 @@ class HomeworkElement extends StatelessWidget {
         });
   }
 }
+*/

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/extensions.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -40,19 +40,19 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
             final dynamic res =
                 await Navigator.pushNamed(context, "/login/pronote/url/webview", arguments: response.url);
             if (res != null) {
-              final List<dynamic>? data = await appSys.api!.login(res["login"], res["mdp"], additionnalSettings: {
+              final res0 = await schoolApi.authModule.login(username: res["login"], password: res["mdp"], parameters: {
                 "url": response.url,
                 "mobileCasLogin": true,
               });
-              if (data != null && data[0] == 1) {
+              if (res0.error != null) {
+                YSnackbars.error(context, title: LoginContent.pronote.url.error, message: res0.error!);
+              } else {
                 setState(() {
                   _canNavigate = false;
                 });
-                YSnackbars.success(context, title: LoginContent.pronote.url.connected, message: data[1]);
+                YSnackbars.success(context, title: LoginContent.pronote.url.connected, message: res0.data!);
                 await Future.delayed(const Duration(seconds: 3));
                 Navigator.pushReplacementNamed(context, "/terms");
-              } else {
-                YSnackbars.error(context, title: LoginContent.pronote.url.error, message: data![1]);
               }
             }
             break;
@@ -167,8 +167,8 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
     final String? res = _formatUrl(url);
     final bool isValid = res != null;
     if (isValid) url = res;
-    if (isValid && await checkPronoteURL(url)) {
-      final bool isCas = await testIfPronoteCas(url);
+    if (isValid && await ApisUtilities.checkPronoteURL(url)) {
+      final bool isCas = await ApisUtilities.checkPronoteCas(url);
       Logger.log("LOGIN", "(Pronote URL) Is CAS: $isCas");
       if (isCas) {
         if (kIsWeb || Platform.isWindows || Platform.isLinux) {

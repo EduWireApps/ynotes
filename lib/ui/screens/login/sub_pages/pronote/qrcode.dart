@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:ynotes/core/logic/pronote/login/qr_code/qr_login_controller.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/controllers.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
@@ -146,18 +146,18 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     }
 
     //Login
-    final List<dynamic>? data = await appSys.api!.login(decryptedData[0], decryptedData[1], additionnalSettings: {
+    final res = await schoolApi.authModule.login(username: decryptedData[0], password: decryptedData[1], parameters: {
       "url": controller.url + "?login=true",
       "qrCodeLogin": true,
       "mobileCasLogin": false,
     });
-    if (data != null && data[0] == 1) {
-      YSnackbars.success(context, title: LoginContent.pronote.qrCode.connected, message: data[1]);
-      await Future.delayed(const Duration(seconds: 3));
-      Navigator.pushReplacementNamed(context, "/terms");
-    } else {
-      YSnackbars.error(context, title: LoginContent.pronote.qrCode.error, message: data![1]);
+    if (res.error != null) {
+      YSnackbars.error(context, title: LoginContent.pronote.qrCode.error, message: res.error!);
       controller.reset();
+      return;
     }
+    YSnackbars.success(context, title: LoginContent.pronote.qrCode.connected, message: res.data!);
+    await Future.delayed(const Duration(seconds: 3));
+    Navigator.pushReplacementNamed(context, "/terms");
   }
 }

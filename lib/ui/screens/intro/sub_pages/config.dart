@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core_new/services.dart';
-import 'package:ynotes/ui/components/NEW/components.dart';
+import 'package:ynotes/core/services.dart';
+import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 import 'package:ynotes_packages/utilities.dart';

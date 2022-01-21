@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/ui/components/NEW/components.dart';
+import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';

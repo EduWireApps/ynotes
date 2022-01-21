@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core_new/api.dart';
-import 'package:ynotes/extensions.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/core/api.dart';
+import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:supercharged/supercharged.dart';
 
 enum AniProps { opacity, translateY, translateX }
 
@@ -13,8 +12,8 @@ class FadeAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tween = MultiTween<AniProps>()
-      ..add(AniProps.opacity, 0.0.tweenTo(1.0), 500.milliseconds)
-      ..add(AniProps.translateY, (-30.0).tweenTo(0.0), 500.milliseconds, Curves.easeOut);
+      ..add(AniProps.opacity, Tween<double>(begin: 0, end: 1), const Duration(milliseconds: 500))
+      ..add(AniProps.translateY, Tween<double>(begin: -30, end: 0), const Duration(milliseconds: 500), Curves.easeOut);
 
     return PlayAnimation<MultiTweenValues<AniProps>>(
       delay: Duration(milliseconds: (500 * delay).round()),
@@ -38,7 +37,7 @@ class FadeAnimationLeftToRight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tween = MultiTween<AniProps>()
-      ..add(AniProps.translateX, (-230.0).tweenTo(0.0), 250.milliseconds, Curves.easeOut);
+      ..add(AniProps.translateX, Tween<double>(begin: -230, end: 0), const Duration(milliseconds: 250), Curves.easeOut);
 
     return PlayAnimation<MultiTweenValues<AniProps>>(
       delay: Duration(milliseconds: (500 * delay).round()),

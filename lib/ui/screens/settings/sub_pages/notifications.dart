@@ -1,3 +1,8 @@
+// TODO: fix when notifications are done
+// ignore: unused_element
+const _fake = null;
+
+/*
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -7,9 +12,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core_new/utilities.dart';
-import 'package:ynotes/core_new/services.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/core/services.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -152,3 +157,4 @@ class _SettingsNotificationsPageState extends State<SettingsNotificationsPage> {
                 )));
   }
 }
+*/

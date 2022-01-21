@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/ui/screens/intro/widgets/slides/slides.dart';
 import 'package:ynotes/ui/screens/intro/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';

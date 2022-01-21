@@ -1,4 +1,4 @@
-import 'package:ynotes/core_new/utilities.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes_packages/theme.dart';
 
 import '../widgets.dart';

@@ -49,8 +49,7 @@ class _LoginFormState extends State<LoginForm> {
       setState(() {
         _canNavigate = false;
       });
-      YSnackbars.success(context,
-          title: LoginContent.widgets.form.connected, message: "Bienvenue ${schoolApi.authModule.account!.fullName}");
+      YSnackbars.success(context, title: LoginContent.widgets.form.connected, message: res.data!);
       await Future.delayed(const Duration(seconds: 3));
       Navigator.pushReplacementNamed(context, "/terms");
     }

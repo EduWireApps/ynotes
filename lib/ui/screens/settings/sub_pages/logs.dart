@@ -1,10 +1,12 @@
+// TODO: rework (lazy loading list)
+
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
+import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -17,16 +19,16 @@ class SettingsLogsPage extends StatefulWidget {
 }
 
 class _SettingsLogsPageState extends State<SettingsLogsPage> {
-  late Future<List<YLog>> logsFuture;
+  late Future<List<Log>> logsFuture;
 
   int? _categoryId;
   @override
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Logs"),
-        onRefresh: refreshLogs,
+        onRefresh: () async => await LogsManager.load(),
         body: FutureBuilder(
-          future: LogsManager.getCategories(),
+          future: LogsManager.categories(),
           builder: (_, AsyncSnapshot<List<String>> snapshot) {
             List<YConfirmationDialogOption<int>> _options = [];
             List<String>? _categories;
@@ -58,10 +60,10 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                   padding: YPadding.py(YScale.s4),
                   child: FutureBuilder(
                       future: logsFuture,
-                      builder: (_, AsyncSnapshot<List<YLog>> snapshot) {
+                      builder: (_, AsyncSnapshot<List<Log>> snapshot) {
                         if (snapshot.hasData) {
-                          final List<YLog> logs = snapshot.data!;
-                          final List<YLog> filteredLogs = _categoryId == null
+                          final List<Log> logs = snapshot.data!;
+                          final List<Log> filteredLogs = _categoryId == null
                               ? logs
                               : logs.where((log) => log.category == _categories![_categoryId!]).toList();
                           if (filteredLogs.isEmpty) {
@@ -80,7 +82,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
-                                    final YLog log = filteredLogs[index];
+                                    final Log log = filteredLogs[index];
                                     return ListTile(
                                         title: Text(_generateTitle(log),
                                             style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
@@ -203,19 +205,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
         ));
   }
 
-  initState() {
-    super.initState();
-    refreshLogs();
-  }
-
-  Future<void> refreshLogs() async {
-    setState(() {
-      logsFuture = LogsManager.getLogs();
-    });
-    await logsFuture;
-  }
-
-  String _generateTitle(YLog log) {
+  String _generateTitle(Log log) {
     String parsedDate = DateFormat('dd/MM/yyyy HH:mm:ss').format(log.date);
     return "${log.category} - $parsedDate";
   }
