@@ -35,6 +35,7 @@ class _GradesRepository extends Repository {
           }
         }
       }
+      // TODO: check for all grades if subject code is not in disciplines and it to the list with something like: `Unknown`
       final colors = AppColors.colors;
       final Random random = Random();
       final List<Subject> subjects = disciplines.map<Subject>((e) {
