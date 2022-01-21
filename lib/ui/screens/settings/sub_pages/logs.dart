@@ -19,30 +19,24 @@ class SettingsLogsPage extends StatefulWidget {
 }
 
 class _SettingsLogsPageState extends State<SettingsLogsPage> {
-  late Future<List<Log>> logsFuture;
-
   int? _categoryId;
   @override
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Logs"),
-        onRefresh: () async => await LogsManager.load(),
-        body: FutureBuilder(
-          future: LogsManager.categories(),
-          builder: (_, AsyncSnapshot<List<String>> snapshot) {
+        body: Builder(
+          builder: (context) {
             List<YConfirmationDialogOption<int>> _options = [];
             List<String>? _categories;
-            if (snapshot.hasData) {
-              _categories = snapshot.data!..sort((a, b) => a.compareTo(b));
-              _options = _categories.asMap().entries.map((entry) {
-                final int i = entry.key;
-                final String category = entry.value;
-                return YConfirmationDialogOption<int>(
-                  value: i,
-                  label: category,
-                );
-              }).toList();
-            }
+            _categories = LogsManager.categories()..sort((a, b) => a.compareTo(b));
+            _options = _categories.asMap().entries.map((entry) {
+              final int i = entry.key;
+              final String category = entry.value;
+              return YConfirmationDialogOption<int>(
+                value: i,
+                label: category,
+              );
+            }).toList();
             return Column(
               children: [
                 if (_options.isNotEmpty)
@@ -58,146 +52,84 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                   ),
                 Padding(
                   padding: YPadding.py(YScale.s4),
-                  child: FutureBuilder(
-                      future: logsFuture,
-                      builder: (_, AsyncSnapshot<List<Log>> snapshot) {
-                        if (snapshot.hasData) {
-                          final List<Log> logs = snapshot.data!;
-                          final List<Log> filteredLogs = _categoryId == null
-                              ? logs
-                              : logs.where((log) => log.category == _categories![_categoryId!]).toList();
-                          if (filteredLogs.isEmpty) {
-                            return Text("Aucun log disponible.", style: theme.texts.body1);
-                          }
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: YScale.s6, left: YScale.s2),
-                                child: Text("${filteredLogs.length} log${filteredLogs.length > 1 ? 's' : ''}",
-                                    style: theme.texts.body1),
-                              ),
-                              ListView.builder(
-                                  itemCount: filteredLogs.length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    final Log log = filteredLogs[index];
-                                    return ListTile(
-                                        title: Text(_generateTitle(log),
-                                            style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
-                                        subtitle: Text(
-                                          log.comment,
-                                          style: theme.texts.body2,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        trailing: Icon(Icons.copy_rounded, color: theme.colors.foregroundLightColor),
-                                        onTap: () {
-                                          if (log.stacktrace == null) {
-                                            Clipboard.setData(ClipboardData(text: jsonEncode(log)));
-                                            YSnackbars.success(context, message: "Copié !", hasIcon: false);
-                                          } else {
-                                            YModalBottomSheets.show(
-                                                context: context,
-                                                child: Column(
-                                                  children: [
-                                                    if (kDebugMode)
-                                                      ListTile(
-                                                        title: Text("Print le JSON", style: theme.texts.body1),
-                                                        leading: Icon(Icons.code_rounded,
-                                                            color: theme.colors.foregroundLightColor),
-                                                        onTap: () {
-                                                          Logger.logWrapped("JSON", "", jsonEncode(log));
-                                                        },
-                                                      ),
-                                                    ListTile(
-                                                      title: Text("Copier en tant que JSON", style: theme.texts.body1),
-                                                      leading: Icon(Icons.code_rounded,
-                                                          color: theme.colors.foregroundLightColor),
-                                                      onTap: () {
-                                                        Clipboard.setData(ClipboardData(text: jsonEncode(log)));
-                                                        Navigator.pop(context);
-                                                        YSnackbars.success(context, message: "Copié !", hasIcon: false);
-                                                      },
-                                                    ),
-                                                    ListTile(
-                                                      title: Text("Copier la stack-trace", style: theme.texts.body1),
-                                                      leading: Icon(Icons.bug_report_rounded,
-                                                          color: theme.colors.foregroundLightColor),
-                                                      onTap: () {
-                                                        Clipboard.setData(
-                                                            ClipboardData(text: jsonEncode(log.stacktrace)));
-                                                        Navigator.pop(context);
-                                                        YSnackbars.success(context, message: "Copié !", hasIcon: false);
-                                                      },
-                                                    )
-                                                  ],
-                                                ));
-                                          }
-                                        });
-                                  }),
-                              /*...filteredLogs
-                                  .map((log) => ListTile(
-                                      title: Text(_generateTitle(log),
-                                          style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
-                                      subtitle: Text(
-                                        log.comment,
-                                        style: theme.texts.body2,
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      trailing: Icon(Icons.copy_rounded, color: theme.colors.foregroundLightColor),
-                                      onTap: () {
-                                        if (log.stacktrace == null) {
-                                          Clipboard.setData(ClipboardData(text: jsonEncode(log)));
-                                          YSnackbars.success(context, message: "Copié !", hasIcon: false);
-                                        } else {
-                                          YModalBottomSheets.show(
-                                              context: context,
-                                              child: Column(
-                                                children: [
-                                                  ListTile(
-                                                    title: Text("Copier en tant que JSON", style: theme.texts.body1),
-                                                    leading: Icon(Icons.code_rounded,
-                                                        color: theme.colors.foregroundLightColor),
-                                                    onTap: () {
-                                                      Clipboard.setData(ClipboardData(text: jsonEncode(log)));
-                                                      Navigator.pop(context);
-                                                      YSnackbars.success(context, message: "Copié !", hasIcon: false);
-                                                    },
-                                                  ),
-                                                  ListTile(
-                                                    title: Text("Copier la stack-trace", style: theme.texts.body1),
-                                                    leading: Icon(Icons.bug_report_rounded,
-                                                        color: theme.colors.foregroundLightColor),
-                                                    onTap: () {
-                                                      Clipboard.setData(
-                                                          ClipboardData(text: jsonEncode(log.stacktrace)));
-                                                      Navigator.pop(context);
-                                                      YSnackbars.success(context, message: "Copié !", hasIcon: false);
-                                                    },
-                                                  )
-                                                ],
-                                              ));
-                                        }
-                                      }))
-                                  .toList()*/
-                            ],
-                          );
-                        }
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("Chargement...", style: theme.texts.body1),
-                              YVerticalSpacer(YScale.s2),
-                              const SizedBox(width: 250, child: YLinearProgressBar())
-                            ],
-                          ),
-                        );
-                      }),
+                  child: Builder(builder: (context) {
+                    final List<Log> logs = LogsManager.logs;
+                    final List<Log> filteredLogs = _categoryId == null
+                        ? logs
+                        : logs.where((log) => log.category == _categories![_categoryId!]).toList();
+                    if (filteredLogs.isEmpty) {
+                      return Text("Aucun log disponible.", style: theme.texts.body1);
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: YScale.s6, left: YScale.s2),
+                          child: Text("${filteredLogs.length} log${filteredLogs.length > 1 ? 's' : ''}",
+                              style: theme.texts.body1),
+                        ),
+                        ListView.builder(
+                            itemCount: filteredLogs.length,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final Log log = filteredLogs[index];
+                              return ListTile(
+                                  title: Text(_generateTitle(log),
+                                      style: theme.texts.body1.copyWith(color: theme.colors.foregroundColor)),
+                                  subtitle: Text(
+                                    log.comment,
+                                    style: theme.texts.body2,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  trailing: Icon(Icons.copy_rounded, color: theme.colors.foregroundLightColor),
+                                  onTap: () {
+                                    if (log.stacktrace == null) {
+                                      Clipboard.setData(ClipboardData(text: jsonEncode(log)));
+                                      YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                    } else {
+                                      YModalBottomSheets.show(
+                                          context: context,
+                                          child: Column(
+                                            children: [
+                                              if (kDebugMode)
+                                                ListTile(
+                                                  title: Text("Print le JSON", style: theme.texts.body1),
+                                                  leading: Icon(Icons.code_rounded,
+                                                      color: theme.colors.foregroundLightColor),
+                                                  onTap: () {
+                                                    Logger.logWrapped("JSON", "", jsonEncode(log));
+                                                  },
+                                                ),
+                                              ListTile(
+                                                title: Text("Copier en tant que JSON", style: theme.texts.body1),
+                                                leading:
+                                                    Icon(Icons.code_rounded, color: theme.colors.foregroundLightColor),
+                                                onTap: () {
+                                                  Clipboard.setData(ClipboardData(text: jsonEncode(log)));
+                                                  Navigator.pop(context);
+                                                  YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                                },
+                                              ),
+                                              ListTile(
+                                                title: Text("Copier la stack-trace", style: theme.texts.body1),
+                                                leading: Icon(Icons.bug_report_rounded,
+                                                    color: theme.colors.foregroundLightColor),
+                                                onTap: () {
+                                                  Clipboard.setData(ClipboardData(text: jsonEncode(log.stacktrace)));
+                                                  Navigator.pop(context);
+                                                  YSnackbars.success(context, message: "Copié !", hasIcon: false);
+                                                },
+                                              )
+                                            ],
+                                          ));
+                                    }
+                                  });
+                            }),
+                      ],
+                    );
+                  }),
                 ),
               ],
             );

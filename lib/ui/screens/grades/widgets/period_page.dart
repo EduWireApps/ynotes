@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
-import 'package:ynotes/ui/screens/grades_new/widgets/widgets.dart';
+import 'package:ynotes/ui/screens/grades/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';

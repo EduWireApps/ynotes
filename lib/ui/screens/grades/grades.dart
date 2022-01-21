@@ -4,7 +4,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/ui/components/components.dart';
-import 'package:ynotes/ui/screens/grades_new/widgets/widgets.dart';
+import 'package:ynotes/ui/screens/grades/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -61,7 +61,7 @@ class _GradesPageState extends State<GradesPage> {
                               color: theme.colors.foregroundColor, size: YScale.s32),
                           YVerticalSpacer(YScale.s4),
                           Text(
-                            "Aucun ticket, rien à déclarer !",
+                            "Pas de notes !",
                             style: theme.texts.body1,
                             textAlign: TextAlign.center,
                           ),

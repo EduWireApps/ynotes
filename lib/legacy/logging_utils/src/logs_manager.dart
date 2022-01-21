@@ -1,162 +1,78 @@
 part of logging_utils;
 
 String? _encryptionKey;
-bool _editingFile = false;
-bool _busy = false;
-
-// TODO: can't be stored in secure storage because object is too large
-// but we should save it to a file instead: /logs.txt
+File? _file;
+Queue _queue = Queue();
 
 /// Manages logs storage and encryption
 class LogsManager {
   /// Manages logs storage and encryption
   const LogsManager._();
 
-  static const String _logKey = "logs";
-
+  /// All the logs of the app. There are kept for only 2 weeks.
   static final List<Log> logs = [];
 
-  static Future<void> load() async {
-    if (_busy) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      load();
-      return;
+  static Future<File> _getFile() async {
+    if (_file == null) {
+      final directory = await FileStorage.getAppDirectory();
+      _file = File("${directory.path}/logs.txt");
     }
-    _busy = true;
-    final String? data = await KVS.read(key: _logKey);
-    if (data == null) {
+    if (!_file!.existsSync()) {
+      await _file!.create(recursive: true);
       final String encrypted = await _encrypt(json.encode([]));
-      await KVS.write(key: _logKey, value: encrypted);
-    } else {
-      final String decrypted = await _decrypt(data);
-      final List<Log> loadedLogs = json.decode(decrypted).map((dynamic log) => Log.fromJson(log)).toList();
+      await _file!.writeAsString(encrypted);
+    }
+    return _file!;
+  }
+
+  /// Initializes the logs manager.
+  static Future<void> init() async {
+    final File file = await _getFile();
+    final String data = await file.readAsString();
+    final String decrypted = await _decrypt(data);
+    try {
+      final List<Log> loadedLogs = json.decode(decrypted).map<Log>((dynamic log) => Log.fromJson(log)).toList();
+      // We only keep logs for 2 weeks.
+      final DateTime limitDate = DateTime.now().subtract(const Duration(days: 14));
       logs.clear();
-      logs.addAll(loadedLogs);
+      logs.addAll(loadedLogs.where((log) => log.date.isAfter(limitDate)));
+    } catch (e) {
+      debugPrint("Error loading logs: $e");
+      await reset();
+      return;
     }
-    _busy = false;
   }
 
+  /// Resets the logs manager.
   static Future<void> reset() async {
-    if (_busy) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      reset();
-      return;
-    }
-    // Don't set [_busy] there since [load] already does it
-    await KVS.delete(key: _logKey);
-    await load();
+    _queue.dispose();
+    _queue = Queue();
+    logs.clear();
+    final File file = await _getFile();
+    await file.delete(recursive: true);
+    await init();
   }
 
+  /// Adds logs to the logs manager.
   static Future<void> add(List<Log> _logs) async {
-    if (_busy) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      add(_logs);
-      return;
+    for (final l in _logs) {
+      await _queue.add(() async => await _add(l));
     }
-    _busy = true;
-    logs.addAll(_logs);
-    final String encrypted = await _encrypt(json.encode(logs));
-    await KVS.write(key: _logKey, value: encrypted);
-    _busy = false;
   }
 
-  static Future<List<String>> categories() async {
+  static Future<void> _add(Log log) async {
+    logs.add(log);
+    final String encrypted = await _encrypt(json.encode(logs));
+    final File file = await _getFile();
+    await file.writeAsString(encrypted);
+  }
+
+  /// Get the categories.
+  static List<String> categories() {
     final List<String> categories = logs.map((Log log) => log.category).toSet().toList();
     categories.sort();
     return categories;
   }
-
-/*
-  /// Returns the log file for a given [category].
-  static Future<File> _readLogFile(String category) async {
-    final directory = await FileStorage.getAppDirectory();
-    final String fileName = await _encrypt(category);
-    return File("${directory.path}/logs/$fileName.txt");
-  }
-
-  /// Saves [logs] of a [category] to the right log file.
-  static Future<void> saveLogs({required List<Log> logs, required String category, bool? overwrite}) async {
-    if (_editingFile) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      saveLogs(logs: logs, category: category, overwrite: overwrite);
-      return;
-    }
-    _editingFile = true;
-    final File file = await _readLogFile(category);
-    if (!(await file.exists())) {
-      await file.create(recursive: true);
-    }
-    final String fileContent = await file.readAsString();
-    List<Log> existingLogs = [];
-    if (fileContent.isNotEmpty) {
-      final String content = await _decrypt(fileContent);
-      final List<dynamic> decoded = json.decode(content);
-      existingLogs = decoded.map((dynamic log) => Log.fromJson(log)).toList();
-    }
-    final String content = await _encrypt(jsonEncode(overwrite == true ? logs : <Log>[...existingLogs, ...logs]));
-    try {
-      await file.writeAsString(content, mode: FileMode.write);
-    } catch (e) {
-      Logger.error(e, stackHint: "NDk=");
-    }
-    _editingFile = false;
-  }
-
-  /// Deletes all logs or from one [category].
-  static Future<void> deleteLogs({String? category}) async {
-    if (category == null) {
-      final List<String> categories = await getCategories();
-      for (var category in categories) {
-        final log = await _readLogFile(category);
-        await log.delete();
-      }
-    } else {
-      final File log = await _readLogFile(category);
-      await log.delete();
-      final Directory appDir = await FileStorage.getAppDirectory();
-      final Directory dir = Directory("${appDir.path}/logs");
-      if (!dir.existsSync()) {
-        dir.createSync();
-      }
-    }
-  }
-
-  /// Returns all logs or from one [category].
-  static Future<List<Log>> getLogs({String? category}) async {
-    if (category == null) {
-      final List<String> categories = await getCategories();
-      final List<Log> logs = [];
-      for (var category in categories) {
-        final List<Log> logsFromCategory = await getLogs(category: category);
-        logs.addAll(logsFromCategory);
-      }
-      return logs..sort((Log a, Log b) => b.date.compareTo(a.date));
-    } else {
-      final File file = await _readLogFile(category);
-      if (!(await file.exists())) {
-        return [];
-      }
-      final String content = await file.readAsString();
-      final List<dynamic> decoded = jsonDecode(await _decrypt(content));
-      return decoded.map((dynamic log) => Log.fromJson(log)).toList()..sort((Log a, Log b) => b.date.compareTo(a.date));
-    }
-  }
-
-  /// Returns all categories.
-  static Future<List<String>> getCategories() async {
-    final directory = await FileStorage.getAppDirectory();
-    final List<FileInfo> files = await FileAppUtil.getFilesList("${directory.path}/logs");
-    final List<String> categories =
-        await Future.wait(files.where((file) => file.fileName?.endsWith(".txt") ?? false).map((file) async {
-      final String fileName = file.fileName!;
-      return await _decrypt(fileName.substring(
-        0,
-        fileName.length - 4,
-      ));
-    }));
-    return categories;
-  }
- */
 
   /// Retrieves the encryption key.
   static Future<String> _getEncryptionKey() async {
