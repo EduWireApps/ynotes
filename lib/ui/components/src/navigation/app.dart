@@ -18,7 +18,7 @@ class ZApp extends StatelessWidget {
             child: _ConnectionStatus(
               child: YPage(
                 key: page.key,
-                drawer: const _Drawer(),
+                drawer: Builder(builder: (context) => const _Drawer()),
                 appBar: Builder(builder: (context) {
                   if (_showDrawer && Scaffold.of(context).isDrawerOpen) {
                     Future.delayed(const Duration(seconds: 0), () {

@@ -43,9 +43,13 @@ class _Drawer extends StatelessWidget {
 
     return Drawer(
         child: Container(
-      color: theme.colors.backgroundColor,
-      child: SafeArea(
-          child: SingleChildScrollView(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      decoration: BoxDecoration(
+        color: theme.colors.backgroundColor,
+        border: r<Border?>(
+            def: null, md: Border(right: BorderSide(color: theme.colors.backgroundLightColor, width: YScale.spx))),
+      ),
+      child: SingleChildScrollView(
         child: Column(
           children: [
             ChangeNotifierConsumer<AuthModule>(
@@ -61,7 +65,7 @@ class _Drawer extends StatelessWidget {
             _SpecialRoutesList(specialRoutes: contactRoutes),
           ],
         ),
-      )),
+      ),
     ));
   }
 }
