@@ -57,7 +57,7 @@ class _SettingsPatchNotesPageState extends State<SettingsPatchNotesPage> {
                       a: TextStyle(color: theme.colors.primary.backgroundColor, fontWeight: YFontWeight.semibold),
                       pPadding: YPadding.pb(YScale.s4),
                       listBullet: theme.texts.body1.copyWith(color: theme.colors.foregroundColor),
-                      listBulletPadding: YPadding.pb(YScale.s12),
+                      listBulletPadding: YPadding.pb(YScale.s4),
                       listIndent: YScale.s4,
                       blockSpacing: YScale.s2)),
             ],
