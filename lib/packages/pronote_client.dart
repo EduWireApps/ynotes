@@ -16,7 +16,6 @@ import 'package:pointycastle/pointycastle.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utilities.dart';

@@ -1,4 +1,4 @@
-part of logging_utils;
+part of logger;
 
 /// A data model for logging.
 class Log {

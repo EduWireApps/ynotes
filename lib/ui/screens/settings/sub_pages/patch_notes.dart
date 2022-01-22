@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes_packages/components.dart';
@@ -44,17 +45,21 @@ class _SettingsPatchNotesPageState extends State<SettingsPatchNotesPage> {
                   selectable: true,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  // TODO: take care of styles
+                  onTapLink: (_, url, __) => url == null ? null : launch(url),
                   styleSheet: MarkdownStyleSheet(
-                    p: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                    listBullet: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                    h1: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                    h2: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                    h3: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                    h4: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                    h5: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                    h6: TextStyle(fontFamily: "Asap", color: theme.colors.foregroundColor),
-                  )),
+                      p: theme.texts.body1,
+                      h1: theme.texts.title.copyWith(fontSize: YFontSize.xl4),
+                      h2: theme.texts.title.copyWith(fontSize: YFontSize.xl2),
+                      h3: theme.texts.title.copyWith(fontSize: YFontSize.xl),
+                      h4: theme.texts.title.copyWith(fontSize: YFontSize.lg),
+                      h5: theme.texts.title.copyWith(fontSize: YFontSize.lg),
+                      h6: theme.texts.title.copyWith(fontSize: YFontSize.lg),
+                      a: TextStyle(color: theme.colors.primary.backgroundColor, fontWeight: YFontWeight.semibold),
+                      pPadding: YPadding.pb(YScale.s4),
+                      listBullet: theme.texts.body1.copyWith(color: theme.colors.foregroundColor),
+                      listBulletPadding: YPadding.pb(YScale.s4),
+                      listIndent: YScale.s4,
+                      blockSpacing: YScale.s2)),
             ],
           ),
         ));

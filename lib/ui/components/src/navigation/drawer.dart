@@ -43,25 +43,30 @@ class _Drawer extends StatelessWidget {
 
     return Drawer(
         child: Container(
-      color: theme.colors.backgroundColor,
-      child: SafeArea(
-          child: SingleChildScrollView(
+      decoration: BoxDecoration(
+        color: theme.colors.backgroundColor,
+        border: r<Border?>(
+            def: null, md: Border(right: BorderSide(color: theme.colors.backgroundLightColor, width: YScale.spx))),
+      ),
+      child: SingleChildScrollView(
         child: Column(
           children: [
             ChangeNotifierConsumer<AuthModule>(
                 controller: schoolApi.authModule,
                 builder: (context, module, _) {
                   final SchoolAccount? account = schoolApi.authModule.schoolAccount;
-                  return account != null ? _AccountHeader(account: account) : Container();
+                  return account != null
+                      ? _AccountHeader(account: account)
+                      : YVerticalSpacer(MediaQuery.of(context).padding.top);
                 }),
-            const _RoutesList(),
+            _RoutesList(AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList()),
             YVerticalSpacer(YScale.s6),
             _SpecialRoutesList(specialRoutes: specialRoutes),
             YVerticalSpacer(YScale.s6),
             _SpecialRoutesList(specialRoutes: contactRoutes),
           ],
         ),
-      )),
+      ),
     ));
   }
 }
@@ -80,6 +85,7 @@ class _SpecialRoutesList extends StatelessWidget {
         itemCount: specialRoutes.length,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        padding: YPadding.p(0),
         itemBuilder: (context, i) {
           final _SpecialRoute route = specialRoutes[i];
           return Material(
@@ -94,18 +100,19 @@ class _SpecialRoutesList extends StatelessWidget {
 }
 
 class _RoutesList extends StatelessWidget {
-  const _RoutesList({
+  final List<AppRoute> validRoutes;
+  const _RoutesList(
+    this.validRoutes, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final List<AppRoute> validRoutes =
-        AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList();
     return ListView.builder(
         itemCount: validRoutes.length,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        padding: YPadding.p(0),
         itemBuilder: (context, i) {
           final AppRoute route = validRoutes[i];
           final bool current = ModalRoute.of(context)!.settings.name == route.path;
@@ -139,7 +146,8 @@ class _AccountHeader extends StatelessWidget {
           child: Ink(
               color: theme.colors.backgroundLightColor,
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: YScale.s4, vertical: YScale.s6),
+              padding:
+                  EdgeInsets.fromLTRB(YScale.s4, YScale.s6 + MediaQuery.of(context).padding.top, YScale.s4, YScale.s6),
               child: Row(
                 children: [
                   CircleAvatar(

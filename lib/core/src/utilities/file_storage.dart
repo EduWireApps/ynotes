@@ -4,7 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+import 'package:ynotes/core/utilities.dart';
+
 import 'package:ynotes/packages/shared.dart';
 
 /// The class that handles storage related actions.

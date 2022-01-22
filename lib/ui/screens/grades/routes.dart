@@ -1,6 +1,6 @@
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/ui/screens/grades_new/grades.dart';
+import 'package:ynotes/ui/screens/grades/grades.dart';
 
 bool _guard() => schoolApi.gradesModule.isEnabled;
 const String _basePath = "/grades";

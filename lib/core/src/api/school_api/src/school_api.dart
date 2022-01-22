@@ -25,10 +25,15 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
     }
   }
 
-  Future<void> fetch({bool online = false}) async {
+  Future<List<String>?> fetch({bool online = false}) async {
+    final List<String> errors = [];
     for (final module in modules) {
-      await module.fetch(online: online);
+      final res = await module.fetch(online: online);
+      if (res.error != null) {
+        errors.add(res.error!);
+      }
     }
+    return errors.isEmpty ? null : errors;
   }
 
   Future<void> init() async {

@@ -16,7 +16,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<void> onRefresh() async {
-    await schoolApi.fetch(online: true);
+    final res = await schoolApi.fetch(online: true);
+    if (res != null) {
+      YSnackbars.error(context, message: res.join(". "));
+    }
   }
 
   @override

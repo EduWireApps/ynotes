@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
@@ -41,7 +42,7 @@ class GradesChart extends StatelessWidget {
         rightTitles: SideTitles(showTitles: false),
         bottomTitles: SideTitles(
             showTitles: true,
-            getTitles: (value) => els[value.toInt()].text,
+            getTitles: (value) => value.asFixed(1) == value.asFixed(1).roundToDouble() ? els[value.toInt()].text : "",
             getTextStyles: (context, _) =>
                 theme.texts.body2.copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold)),
         leftTitles: SideTitles(

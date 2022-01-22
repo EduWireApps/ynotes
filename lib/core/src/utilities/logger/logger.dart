@@ -1,4 +1,19 @@
-part of logging_utils;
+library logger;
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:convert/convert.dart' as conv;
+import 'package:encrypt/encrypt.dart' as crypto;
+import 'package:flutter/widgets.dart';
+import 'package:queue/queue.dart';
+import 'package:uuid/uuid_util.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/logs_stacklist.dart';
+
+part 'logs_manager.dart';
+part 'log.dart';
 
 /// A custom logger to make debugging much easier. Use this instead of `print()` in production.
 class Logger {

@@ -5,3 +5,4 @@ export 'src/utilities/file_storage.dart';
 export 'src/utilities/kvs.dart';
 export 'src/utilities/ui.dart';
 export 'src/utilities/apis.dart';
+export 'src/utilities/logger/logger.dart';

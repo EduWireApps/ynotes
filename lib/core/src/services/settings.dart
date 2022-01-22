@@ -1,12 +1,11 @@
 library settings_service;
 
-import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/utilities.dart';
-import 'package:ynotes/legacy/logging_utils/logging_utils.dart';
+
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes_packages/theme.dart';
 
