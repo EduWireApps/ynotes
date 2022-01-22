@@ -37,12 +37,10 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
-
-	<key>NSCameraUsageDescription</key>
-	<string>yNotes needs access to your camera to scan Pronote QR Codes.</string>
-	
 	<key>NSCalendarsUsageDescription</key>
 	<string>yNotes needs access to your calendar to schedule reminders or events notifications.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>yNotes needs access to your camera to scan Pronote QR Codes.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>yNotes needs access to your location in order to locate schools around you and to get their Pronote URL addresses.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

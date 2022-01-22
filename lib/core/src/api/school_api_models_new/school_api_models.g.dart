@@ -6,7 +6,7 @@ part of new_models;
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
 
 extension GetGradeCollection on Isar {
   IsarCollection<Grade> get grades {
@@ -52,7 +52,7 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
   const _GradeAdapter();
 
   @override
-  int serialize(IsarCollection<Grade> collection, RawObject rawObj,
+  int serialize(IsarCollection<Grade> collection, IsarRawObject rawObj,
       Grade object, List<int> offsets,
       [int? existingBufferSize]) {
     rawObj.id = object.isarId ?? Isar.autoIncrement;
@@ -91,24 +91,24 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
     dynamicSize += _type.length;
     final value14 = object.value;
     final _value = value14;
-    final size = dynamicSize + 116;
+    final size = dynamicSize + 108;
 
     late int bufferSize;
     if (existingBufferSize != null) {
       if (existingBufferSize < size) {
-        malloc.free(rawObj.buffer);
-        rawObj.buffer = malloc(size);
+        isarFree(rawObj.buffer);
+        rawObj.buffer = isarMalloc(size);
         bufferSize = size;
       } else {
         bufferSize = existingBufferSize;
       }
     } else {
-      rawObj.buffer = malloc(size);
+      rawObj.buffer = isarMalloc(size);
       bufferSize = size;
     }
     rawObj.buffer_length = size;
-    final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 116);
+    final buffer = bufAsBytes(rawObj.buffer, size);
+    final writer = BinaryWriter(buffer, 108);
     writer.writeDouble(offsets[0], _classAverage);
     writer.writeDouble(offsets[1], _classMax);
     writer.writeDouble(offsets[2], _classMin);
@@ -194,7 +194,7 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
 
 extension GradeQueryWhereSort on QueryBuilder<Grade, Grade, QWhere> {
   QueryBuilder<Grade, Grade, QAfterWhere> anyIsarId() {
-    return addWhereClause(WhereClause(indexName: null));
+    return addWhereClause(const WhereClause(indexName: null));
   }
 }
 
@@ -1462,7 +1462,7 @@ extension GradeQueryProperty on QueryBuilder<Grade, Grade, QQueryProperty> {
   }
 }
 
-// ignore_for_file: non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
 
 extension GetSubjectCollection on Isar {
   IsarCollection<Subject> get subjects {
@@ -1501,10 +1501,10 @@ final SubjectSchema = CollectionSchema(
 class _SubjectAdapter extends IsarTypeAdapter<Subject> {
   const _SubjectAdapter();
 
-  static const _YTColorConverter = YTColorConverter();
+  static const _yTColorConverter = YTColorConverter();
 
   @override
-  int serialize(IsarCollection<Subject> collection, RawObject rawObj,
+  int serialize(IsarCollection<Subject> collection, IsarRawObject rawObj,
       Subject object, List<int> offsets,
       [int? existingBufferSize]) {
     rawObj.id = object.isarId ?? Isar.autoIncrement;
@@ -1515,7 +1515,7 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
     final _classAverage = value1;
     final value2 = object.coefficient;
     final _coefficient = value2;
-    final value3 = _SubjectAdapter._YTColorConverter.toIsar(object.color);
+    final value3 = _SubjectAdapter._yTColorConverter.toIsar(object.color);
     final _color = BinaryWriter.utf8Encoder.convert(value3);
     dynamicSize += _color.length;
     final value4 = object.id;
@@ -1531,24 +1531,24 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
     final value8 = object.teachers;
     final _teachers = BinaryWriter.utf8Encoder.convert(value8);
     dynamicSize += _teachers.length;
-    final size = dynamicSize + 82;
+    final size = dynamicSize + 74;
 
     late int bufferSize;
     if (existingBufferSize != null) {
       if (existingBufferSize < size) {
-        malloc.free(rawObj.buffer);
-        rawObj.buffer = malloc(size);
+        isarFree(rawObj.buffer);
+        rawObj.buffer = isarMalloc(size);
         bufferSize = size;
       } else {
         bufferSize = existingBufferSize;
       }
     } else {
-      rawObj.buffer = malloc(size);
+      rawObj.buffer = isarMalloc(size);
       bufferSize = size;
     }
     rawObj.buffer_length = size;
-    final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 82);
+    final buffer = bufAsBytes(rawObj.buffer, size);
+    final writer = BinaryWriter(buffer, 74);
     writer.writeDouble(offsets[0], _average);
     writer.writeDouble(offsets[1], _classAverage);
     writer.writeDouble(offsets[2], _coefficient);
@@ -1568,8 +1568,8 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
       average: reader.readDouble(offsets[0]),
       classAverage: reader.readDouble(offsets[1]),
       coefficient: reader.readDouble(offsets[2]),
-      color: _SubjectAdapter._YTColorConverter.fromIsar(
-          reader.readString(offsets[3])),
+      color: _SubjectAdapter._yTColorConverter
+          .fromIsar(reader.readString(offsets[3])),
       id: reader.readString(offsets[4]),
       maxAverage: reader.readDouble(offsets[5]),
       minAverage: reader.readDouble(offsets[6]),
@@ -1593,8 +1593,8 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
       case 2:
         return (reader.readDouble(offset)) as P;
       case 3:
-        return (_SubjectAdapter._YTColorConverter.fromIsar(
-            reader.readString(offset))) as P;
+        return (_SubjectAdapter._yTColorConverter
+            .fromIsar(reader.readString(offset))) as P;
       case 4:
         return (reader.readString(offset)) as P;
       case 5:
@@ -1613,7 +1613,7 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
 
 extension SubjectQueryWhereSort on QueryBuilder<Subject, Subject, QWhere> {
   QueryBuilder<Subject, Subject, QAfterWhere> anyIsarId() {
-    return addWhereClause(WhereClause(indexName: null));
+    return addWhereClause(const WhereClause(indexName: null));
   }
 }
 
@@ -1793,7 +1793,7 @@ extension SubjectQueryFilter
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'color',
-      value: _SubjectAdapter._YTColorConverter.toIsar(value),
+      value: _SubjectAdapter._yTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -1807,7 +1807,7 @@ extension SubjectQueryFilter
       type: ConditionType.gt,
       include: include,
       property: 'color',
-      value: _SubjectAdapter._YTColorConverter.toIsar(value),
+      value: _SubjectAdapter._yTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -1821,7 +1821,7 @@ extension SubjectQueryFilter
       type: ConditionType.lt,
       include: include,
       property: 'color',
-      value: _SubjectAdapter._YTColorConverter.toIsar(value),
+      value: _SubjectAdapter._yTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -1835,9 +1835,9 @@ extension SubjectQueryFilter
   }) {
     return addFilterCondition(FilterCondition.between(
       property: 'color',
-      lower: _SubjectAdapter._YTColorConverter.toIsar(lower),
+      lower: _SubjectAdapter._yTColorConverter.toIsar(lower),
       includeLower: includeLower,
-      upper: _SubjectAdapter._YTColorConverter.toIsar(upper),
+      upper: _SubjectAdapter._yTColorConverter.toIsar(upper),
       includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
@@ -1850,7 +1850,7 @@ extension SubjectQueryFilter
     return addFilterCondition(FilterCondition(
       type: ConditionType.startsWith,
       property: 'color',
-      value: _SubjectAdapter._YTColorConverter.toIsar(value),
+      value: _SubjectAdapter._yTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -1862,7 +1862,7 @@ extension SubjectQueryFilter
     return addFilterCondition(FilterCondition(
       type: ConditionType.endsWith,
       property: 'color',
-      value: _SubjectAdapter._YTColorConverter.toIsar(value),
+      value: _SubjectAdapter._yTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -1873,7 +1873,7 @@ extension SubjectQueryFilter
     return addFilterCondition(FilterCondition(
       type: ConditionType.contains,
       property: 'color',
-      value: _SubjectAdapter._YTColorConverter.toIsar(value),
+      value: _SubjectAdapter._yTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2571,7 +2571,7 @@ extension SubjectQueryProperty
   }
 }
 
-// ignore_for_file: non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
 
 extension GetSubjectsFilterCollection on Isar {
   IsarCollection<SubjectsFilter> get subjectsFilters {
@@ -2601,13 +2601,13 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
   const _SubjectsFilterAdapter();
 
   @override
-  int serialize(IsarCollection<SubjectsFilter> collection, RawObject rawObj,
+  int serialize(IsarCollection<SubjectsFilter> collection, IsarRawObject rawObj,
       SubjectsFilter object, List<int> offsets,
       [int? existingBufferSize]) {
     rawObj.id = object.isarId ?? Isar.autoIncrement;
     var dynamicSize = 0;
     final value0 = object.id;
-    Uint8List? _id;
+    IsarUint8List? _id;
     if (value0 != null) {
       _id = BinaryWriter.utf8Encoder.convert(value0);
     }
@@ -2617,7 +2617,7 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
     dynamicSize += _name.length;
     final value2 = object.subjectsIds;
     dynamicSize += (value2?.length ?? 0) * 8;
-    List<Uint8List?>? bytesList2;
+    List<IsarUint8List?>? bytesList2;
     if (value2 != null) {
       bytesList2 = [];
       for (var str in value2) {
@@ -2627,24 +2627,24 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
       }
     }
     final _subjectsIds = bytesList2;
-    final size = dynamicSize + 34;
+    final size = dynamicSize + 26;
 
     late int bufferSize;
     if (existingBufferSize != null) {
       if (existingBufferSize < size) {
-        malloc.free(rawObj.buffer);
-        rawObj.buffer = malloc(size);
+        isarFree(rawObj.buffer);
+        rawObj.buffer = isarMalloc(size);
         bufferSize = size;
       } else {
         bufferSize = existingBufferSize;
       }
     } else {
-      rawObj.buffer = malloc(size);
+      rawObj.buffer = isarMalloc(size);
       bufferSize = size;
     }
     rawObj.buffer_length = size;
-    final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 34);
+    final buffer = bufAsBytes(rawObj.buffer, size);
+    final writer = BinaryWriter(buffer, 26);
     writer.writeBytes(offsets[0], _id);
     writer.writeBytes(offsets[1], _name);
     writer.writeStringList(offsets[2], _subjectsIds);
@@ -2684,7 +2684,7 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
 extension SubjectsFilterQueryWhereSort
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QWhere> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhere> anyIsarId() {
-    return addWhereClause(WhereClause(indexName: null));
+    return addWhereClause(const WhereClause(indexName: null));
   }
 }
 
