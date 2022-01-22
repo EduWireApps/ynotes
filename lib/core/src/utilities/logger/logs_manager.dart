@@ -28,7 +28,7 @@ class LogsManager {
   /// Initializes the logs manager.
   static Future<void> init() async {
     final File file = await _getFile();
-    final String data = await file.readAsString();
+    final String data = file.readAsStringSync();
     final String decrypted = await _decrypt(data);
     try {
       final List<Log> loadedLogs = json.decode(decrypted).map<Log>((dynamic log) => Log.fromJson(log)).toList();
@@ -49,7 +49,7 @@ class LogsManager {
     _queue = Queue();
     logs.clear();
     final File file = await _getFile();
-    await file.delete();
+    file.deleteSync();
     await init();
   }
 
@@ -68,7 +68,7 @@ class LogsManager {
     logs.add(log);
     final String encrypted = await _encrypt(json.encode(logs));
     final File file = await _getFile();
-    await file.writeAsString(encrypted);
+    file.writeAsStringSync(encrypted);
   }
 
   /// Get the categories.

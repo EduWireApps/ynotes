@@ -58,7 +58,7 @@ class _Drawer extends StatelessWidget {
                   final SchoolAccount? account = schoolApi.authModule.schoolAccount;
                   return account != null ? _AccountHeader(account: account) : Container();
                 }),
-            const _RoutesList(),
+            _RoutesList(AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList()),
             YVerticalSpacer(YScale.s6),
             _SpecialRoutesList(specialRoutes: specialRoutes),
             YVerticalSpacer(YScale.s6),
@@ -98,14 +98,14 @@ class _SpecialRoutesList extends StatelessWidget {
 }
 
 class _RoutesList extends StatelessWidget {
-  const _RoutesList({
+  final List<AppRoute> validRoutes;
+  const _RoutesList(
+    this.validRoutes, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final List<AppRoute> validRoutes =
-        AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList();
     return ListView.builder(
         itemCount: validRoutes.length,
         physics: const NeverScrollableScrollPhysics(),
