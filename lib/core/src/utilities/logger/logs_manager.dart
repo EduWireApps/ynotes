@@ -31,9 +31,13 @@ class LogsManager {
     final String data = file.readAsStringSync();
     final String decrypted = await _decrypt(data);
     try {
-      final List<Log> loadedLogs = json.decode(decrypted).map<Log>((dynamic log) => Log.fromJson(log)).toList();
+      final List<Log> loadedLogs = json
+          .decode(decrypted)
+          .map<Log>((dynamic log) => Log.fromJson(log))
+          .toList();
       // We only keep logs for 2 weeks.
-      final DateTime limitDate = DateTime.now().subtract(const Duration(days: 14));
+      final DateTime limitDate =
+          DateTime.now().subtract(const Duration(days: 14));
       logs.clear();
       logs.addAll(loadedLogs.where((log) => log.date.isAfter(limitDate)));
     } catch (e) {
@@ -73,7 +77,8 @@ class LogsManager {
 
   /// Get the categories.
   static List<String> categories() {
-    final List<String> categories = logs.map((Log log) => log.category).toSet().toList();
+    final List<String> categories =
+        logs.map((Log log) => log.category).toSet().toList();
     categories.sort();
     return categories;
   }
@@ -85,6 +90,10 @@ class LogsManager {
       // The key is stored in the shared preferences
       if (await KVS.containsKey(key: "loggingKey")) {
         _encryptionKey = await KVS.read(key: "loggingKey");
+        if (_encryptionKey == null) {
+          _encryptionKey = conv.hex.encode(UuidUtil.cryptoRNG());
+          await KVS.write(key: "loggingKey", value: _encryptionKey!);
+        }
         // The key doesn't exist yet
       } else {
         _encryptionKey = conv.hex.encode(UuidUtil.cryptoRNG());

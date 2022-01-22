@@ -56,7 +56,7 @@ class Offline {
     // Encryption part, following the [Hive] documentation.
     // If the [store.cipher] is null, we need to generate one.
     if (store.cipher == null) {
-      final bool containsEncryptionKey = await KVS.containsKey(key: _encryptionKeyName);
+      final bool containsEncryptionKey = await KVS.containsSSSKey(key: _encryptionKeyName);
       // Generate a new key if it doesn't exist
       if (!containsEncryptionKey) {
         final List<int> key = Hive.generateSecureKey();
