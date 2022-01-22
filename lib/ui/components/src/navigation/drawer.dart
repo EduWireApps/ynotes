@@ -43,7 +43,6 @@ class _Drawer extends StatelessWidget {
 
     return Drawer(
         child: Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       decoration: BoxDecoration(
         color: theme.colors.backgroundColor,
         border: r<Border?>(
@@ -56,7 +55,9 @@ class _Drawer extends StatelessWidget {
                 controller: schoolApi.authModule,
                 builder: (context, module, _) {
                   final SchoolAccount? account = schoolApi.authModule.schoolAccount;
-                  return account != null ? _AccountHeader(account: account) : Container();
+                  return account != null
+                      ? _AccountHeader(account: account)
+                      : YVerticalSpacer(MediaQuery.of(context).padding.top);
                 }),
             _RoutesList(AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList()),
             YVerticalSpacer(YScale.s6),
@@ -84,6 +85,7 @@ class _SpecialRoutesList extends StatelessWidget {
         itemCount: specialRoutes.length,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        padding: YPadding.p(0),
         itemBuilder: (context, i) {
           final _SpecialRoute route = specialRoutes[i];
           return Material(
@@ -110,6 +112,7 @@ class _RoutesList extends StatelessWidget {
         itemCount: validRoutes.length,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        padding: YPadding.p(0),
         itemBuilder: (context, i) {
           final AppRoute route = validRoutes[i];
           final bool current = ModalRoute.of(context)!.settings.name == route.path;
@@ -143,7 +146,8 @@ class _AccountHeader extends StatelessWidget {
           child: Ink(
               color: theme.colors.backgroundLightColor,
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: YScale.s4, vertical: YScale.s6),
+              padding:
+                  EdgeInsets.fromLTRB(YScale.s4, YScale.s6 + MediaQuery.of(context).padding.top, YScale.s4, YScale.s6),
               child: Row(
                 children: [
                   CircleAvatar(
