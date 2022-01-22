@@ -5,8 +5,7 @@ part of settings_service;
 final Map<String, dynamic> _defaultSettings = {
   "global": {
     "lastReadPatchNotes": "",
-    // TODO: set this to 0 when system theme is implemented
-    "themeId": 1,
+    "themeId": 0,
     "api": "ecoleDirecte",
     "batterySaver": false,
     "shakeToReport": false,
