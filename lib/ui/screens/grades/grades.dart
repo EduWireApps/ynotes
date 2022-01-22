@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/app/app.dart';
@@ -26,7 +28,13 @@ class _GradesPageState extends State<GradesPage> {
         controller: module,
         builder: (context, module, _) {
           final bool empty = module.grades.isEmpty && module.currentPeriod == null;
-          Future<void> refresh() async => await module.fetch(online: true);
+          Future<void> refresh() async {
+            final res = await module.fetch(online: true);
+            if (res.error != null) {
+              YSnackbars.error(context, message: res.error!);
+            }
+          }
+
           return ZApp(
               page: YPage(
             onRefresh: refresh,
@@ -35,7 +43,9 @@ class _GradesPageState extends State<GradesPage> {
               actions: [
                 if (simulate) const YBadge(text: "SIMULATEUR"),
                 YHorizontalSpacer(YScale.s2),
-                const YBadge(text: "ALPHA", color: YColor.danger)
+                const YBadge(text: "ALPHA", color: YColor.danger),
+                if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                  YIconButton(icon: Icons.refresh_rounded, onPressed: refresh),
               ],
               bottom: empty && module.isFetching ? const YLinearProgressBar() : null,
             ),

@@ -35,7 +35,34 @@ class _GradesRepository extends Repository {
           }
         }
       }
-      // TODO: check for all grades if subject code is not in disciplines and it to the list with something like: `Unknown`
+      for (final grade in res.data!["data"]["notes"]) {
+        final _subjects = disciplines.map<String>((e) => e["codeMatiere"] as String).toList();
+        if (!_subjects.contains(grade["codeMatiere"])) {
+          disciplines.add(
+            {
+              "id": grade["codeMatiere"] as String,
+              "codeMatiere": grade["codeMatiere"] as String,
+              "codeSousMatiere": "",
+              "discipline": grade["libelleMatiere"] as String,
+              "moyenne": "",
+              "moyenneClasse": "",
+              "moyenneMin": "",
+              "moyenneMax": "",
+              "coef": 1,
+              "effectif": 0,
+              "rang": 0,
+              "groupeMatiere": false,
+              "idGroupeMatiere": 0,
+              "option": 0,
+              "sousMatiere": false,
+              "saisieAppreciationSSMat": false,
+              "professeurs": [
+                {"id": 0, "nom": "Inconnu"}
+              ]
+            },
+          );
+        }
+      }
       final colors = AppColors.colors;
       final Random random = Random();
       final List<Subject> subjects = disciplines.map<Subject>((e) {
