@@ -46,7 +46,6 @@ part 'src/modules/grades/module.dart';
 
 // SCHOOL LIFE MDOULE
 part 'src/modules/school_life/module.dart';
-part 'src/modules/school_life/offline.dart';
 
 // EMAILS MODULE
 part 'src/modules/emails/module.dart';
@@ -54,7 +53,6 @@ part 'src/modules/emails/repository.dart';
 
 // HOMEWORK MODULE
 part 'src/modules/homework/module.dart';
-part 'src/modules/homework/offline.dart';
 part 'src/modules/homework/repository.dart';
 
 // DOCUMENTS MODULE
