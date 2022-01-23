@@ -8,7 +8,7 @@ part of models;
 @Collection()
 class AppAccount {
   @Id()
-  int? id;
+  int? isarId;
 
   /// The first name of the user.
   final String firstName;
@@ -25,5 +25,5 @@ class AppAccount {
   /// The sub accounts, usually the children of the parent.
   final IsarLinks<SchoolAccount> accounts = IsarLinks<SchoolAccount>();
 
-  AppAccount({required this.firstName, required this.lastName, this.id});
+  AppAccount({required this.firstName, required this.lastName});
 }

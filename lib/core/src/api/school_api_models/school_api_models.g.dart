@@ -3979,15 +3979,15 @@ final AppAccountSchema = CollectionSchema(
   schema:
       '{"name":"AppAccount","properties":[{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"isParent","type":"Byte"},{"name":"lastName","type":"String"}],"indexes":[],"links":[{"name":"accounts","target":"SchoolAccount"}]}',
   adapter: const _AppAccountAdapter(),
-  idName: 'id',
+  idName: 'isarId',
   propertyIds: {'firstName': 0, 'fullName': 1, 'isParent': 2, 'lastName': 3},
   indexIds: {},
   indexTypes: {},
   linkIds: {'accounts': 0},
   backlinkIds: {},
   linkedCollections: ['SchoolAccount'],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
+  getId: (obj) => obj.isarId,
+  setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [obj.accounts],
   version: 0,
 );
@@ -3999,7 +3999,7 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
   int serialize(IsarCollection<AppAccount> collection, IsarRawObject rawObj,
       AppAccount object, List<int> offsets,
       [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+    rawObj.id = object.isarId ?? Isar.autoIncrement;
     var dynamicSize = 0;
     final value0 = object.firstName;
     final _firstName = BinaryWriter.utf8Encoder.convert(value0);
@@ -4043,9 +4043,9 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
       BinaryReader reader, List<int> offsets) {
     final object = AppAccount(
       firstName: reader.readString(offsets[0]),
-      id: id,
       lastName: reader.readString(offsets[3]),
     );
+    object.isarId = id;
     attachLinks(collection.isar, object);
     return object;
   }
@@ -4082,81 +4082,82 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
 
 extension AppAccountQueryWhereSort
     on QueryBuilder<AppAccount, AppAccount, QWhere> {
-  QueryBuilder<AppAccount, AppAccount, QAfterWhere> anyId() {
+  QueryBuilder<AppAccount, AppAccount, QAfterWhere> anyIsarId() {
     return addWhereClause(const WhereClause(indexName: null));
   }
 }
 
 extension AppAccountQueryWhere
     on QueryBuilder<AppAccount, AppAccount, QWhereClause> {
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idEqualTo(int? id) {
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> isarIdEqualTo(
+      int? isarId) {
     return addWhereClause(WhereClause(
       indexName: null,
-      lower: [id],
+      lower: [isarId],
       includeLower: true,
-      upper: [id],
+      upper: [isarId],
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idNotEqualTo(
-      int? id) {
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> isarIdNotEqualTo(
+      int? isarId) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: null,
-        upper: [id],
+        upper: [isarId],
         includeUpper: false,
       )).addWhereClause(WhereClause(
         indexName: null,
-        lower: [id],
+        lower: [isarId],
         includeLower: false,
       ));
     } else {
       return addWhereClause(WhereClause(
         indexName: null,
-        lower: [id],
+        lower: [isarId],
         includeLower: false,
       )).addWhereClause(WhereClause(
         indexName: null,
-        upper: [id],
+        upper: [isarId],
         includeUpper: false,
       ));
     }
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idGreaterThan(
-    int? id, {
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> isarIdGreaterThan(
+    int? isarId, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
       indexName: null,
-      lower: [id],
+      lower: [isarId],
       includeLower: include,
     ));
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idLessThan(
-    int? id, {
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> isarIdLessThan(
+    int? isarId, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
       indexName: null,
-      upper: [id],
+      upper: [isarId],
       includeUpper: include,
     ));
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> isarIdBetween(
+    int? lowerIsarId,
+    int? upperIsarId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addWhereClause(WhereClause(
       indexName: null,
-      lower: [lowerId],
+      lower: [lowerIsarId],
       includeLower: includeLower,
-      upper: [upperId],
+      upper: [upperIsarId],
       includeUpper: includeUpper,
     ));
   }
@@ -4374,68 +4375,68 @@ extension AppAccountQueryFilter
     ));
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'id',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idEqualTo(
-      int? value) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterCondition(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
-  }
-
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isParentEqualTo(
       bool value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'isParent',
       value: value,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isarIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'isarId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isarIdEqualTo(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.eq,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isarIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isarIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isarIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'isarId',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
@@ -4563,20 +4564,20 @@ extension AppAccountQueryWhereSortBy
     return addSortByInternal('fullName', Sort.desc);
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByIsParent() {
     return addSortByInternal('isParent', Sort.asc);
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByIsParentDesc() {
     return addSortByInternal('isParent', Sort.desc);
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByIsarId() {
+    return addSortByInternal('isarId', Sort.asc);
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.desc);
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByLastName() {
@@ -4606,20 +4607,20 @@ extension AppAccountQueryWhereSortThenBy
     return addSortByInternal('fullName', Sort.desc);
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByIsParent() {
     return addSortByInternal('isParent', Sort.asc);
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByIsParentDesc() {
     return addSortByInternal('isParent', Sort.desc);
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByIsarId() {
+    return addSortByInternal('isarId', Sort.asc);
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.desc);
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByLastName() {
@@ -4643,12 +4644,12 @@ extension AppAccountQueryWhereDistinct
     return addDistinctByInternal('fullName', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<AppAccount, AppAccount, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
-  }
-
   QueryBuilder<AppAccount, AppAccount, QDistinct> distinctByIsParent() {
     return addDistinctByInternal('isParent');
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QDistinct> distinctByIsarId() {
+    return addDistinctByInternal('isarId');
   }
 
   QueryBuilder<AppAccount, AppAccount, QDistinct> distinctByLastName(
@@ -4667,12 +4668,12 @@ extension AppAccountQueryProperty
     return addPropertyName('fullName');
   }
 
-  QueryBuilder<AppAccount, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
-  }
-
   QueryBuilder<AppAccount, bool, QQueryOperations> isParentProperty() {
     return addPropertyName('isParent');
+  }
+
+  QueryBuilder<AppAccount, int?, QQueryOperations> isarIdProperty() {
+    return addPropertyName('isarId');
   }
 
   QueryBuilder<AppAccount, String, QQueryOperations> lastNameProperty() {

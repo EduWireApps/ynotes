@@ -4,10 +4,14 @@ part of school_api;
 class _S {
   String? currentPeriodId;
   String? currentFilterId;
+  int? appAccountId;
+  String? schoolAccountId;
 
   _S({
     required this.currentPeriodId,
     required this.currentFilterId,
+    required this.appAccountId,
+    required this.schoolAccountId,
   });
 
   factory _S.fromJson(Map<String, dynamic> json) => _$SFromJson(json);
@@ -79,4 +83,7 @@ class _Storage {
 
 final Map<String, dynamic> _defaultStorage = {
   "currentPeriodId": null,
+  "currentFilterId": null,
+  "appAccountId": null,
+  "schoolAccountId": null,
 };

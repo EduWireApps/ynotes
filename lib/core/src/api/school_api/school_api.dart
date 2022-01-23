@@ -39,7 +39,6 @@ part 'src/storage.dart';
 
 // AUTH MODULE
 part 'src/modules/auth/module.dart';
-part 'src/modules/auth/offline.dart';
 part 'src/modules/auth/repository.dart';
 
 // GRADES MODULE

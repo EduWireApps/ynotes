@@ -9,9 +9,13 @@ part of school_api;
 _S _$SFromJson(Map<String, dynamic> json) => _S(
       currentPeriodId: json['currentPeriodId'] as String?,
       currentFilterId: json['currentFilterId'] as String?,
+      appAccountId: json['appAccountId'] as int?,
+      schoolAccountId: json['schoolAccountId'] as String?,
     );
 
 Map<String, dynamic> _$SToJson(_S instance) => <String, dynamic>{
       'currentPeriodId': instance.currentPeriodId,
       'currentFilterId': instance.currentFilterId,
+      'appAccountId': instance.appAccountId,
+      'schoolAccountId': instance.schoolAccountId,
     };
