@@ -23,9 +23,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   List<SubjectsFilter> _customFilters = [];
 
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
-  late final List<SubjectsFilter> _defaultFilters = [
-    SubjectsFilter(name: "Toutes matières", subjectsIds: null, id: "all")
-  ];
+  late final List<SubjectsFilter> _defaultFilters = [SubjectsFilter(name: "Toutes matières", id: "all")];
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
@@ -52,18 +50,21 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         // TODO: trigger notification
       }
       // Saving data.
-      await offline.setPeriods(__periods);
-      await offline.subjects.clear();
-      await offline.subjects.putAll(__subjects);
-      await offline.grades.clear();
-      await offline.grades.putAll([...__grades, ...grades.where((grade) => grade.custom)]);
+      await offline.writeTxn((isar) async {
+        await isar.periods.clear();
+        await isar.periods.putAll(__periods);
+        await isar.subjects.clear();
+        await isar.subjects.putAll(__subjects);
+        await isar.grades.clear();
+        await isar.grades.putAll([...__grades, ...grades.where((grade) => grade.custom)]);
+      });
     }
-    _periods = await offline.getPeriods();
-    _subjects = await offline.subjects.where().build().findAll();
-    _grades = await offline.grades.where().build().findAll();
+    _periods = await offline.periods.where().findAll();
+    _subjects = await offline.subjects.where().findAll();
+    _grades = await offline.grades.where().findAll();
 
     await setCurrentPeriod();
-    _customFilters = await offline.getCustomFilters();
+    _customFilters = await offline.subjectsFilters.where().findAll();
     await setCurrentFilter();
     fetching = false;
     notifyListeners();

@@ -1,9 +1,8 @@
 library offline;
 
-import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
-import 'package:ynotes/core/src/api/school_api_models_new/school_api_models.dart';
-import 'package:ynotes/core/src/utilities/file_storage.dart';
+import 'package:ynotes/core/api.dart';
+import 'package:ynotes/core/utilities.dart';
 
 /// The class that handles any offline operations using [Isar]. It can only be used as a static class.
 ///
@@ -43,7 +42,20 @@ abstract class Offline {
     final dir = await FileStorage.getAppDirectory();
 
     isar = await Isar.open(
-      schemas: [GradeSchema, SubjectSchema, SubjectsFilterSchema],
+      schemas: [
+        AppAccountSchema,
+        DocumentSchema,
+        EmailSchema,
+        GradeSchema,
+        HomeworkSchema,
+        PeriodSchema,
+        RecipientSchema,
+        SchoolAccountSchema,
+        SchoolLifeSanctionSchema,
+        SchoolLifeTicketSchema,
+        SubjectSchema,
+        SubjectsFilterSchema
+      ],
       directory: '${dir.path}/offline',
     );
     store.initialized = true;

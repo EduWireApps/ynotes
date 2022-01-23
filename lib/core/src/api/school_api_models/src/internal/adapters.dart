@@ -8,13 +8,13 @@ class ListMapConverter extends TypeConverter<List<Map?>?, String?> {
   const ListMapConverter(); // Converters need to have an empty const constructor
 
   @override
-  List<Map?> fromIsar(String? listMap) {
-    return jsonDecode(listMap ?? "").cast<Map?>();
+  List<Map?> fromIsar(String? object) {
+    return jsonDecode(object ?? "").cast<Map?>();
   }
 
   @override
-  String toIsar(List<Map?>? map) {
-    return jsonEncode(map);
+  String toIsar(List<Map?>? object) {
+    return jsonEncode(object);
   }
 }
 
@@ -22,13 +22,13 @@ class MapConverter extends TypeConverter<Map?, String?> {
   const MapConverter(); // Converters need to have an empty const constructor
 
   @override
-  Map fromIsar(String? mapValue) {
-    return jsonDecode(mapValue ?? "");
+  Map fromIsar(String? object) {
+    return jsonDecode(object ?? "");
   }
 
   @override
-  String toIsar(Map? map) {
-    return jsonEncode(map);
+  String toIsar(Map? object) {
+    return jsonEncode(object);
   }
 }
 
@@ -36,8 +36,8 @@ class YTColorConverter extends TypeConverter<YTColor, String?> {
   const YTColorConverter();
 
   @override
-  YTColor fromIsar(String? stringMap) {
-    var map = jsonDecode(stringMap ??"");
+  YTColor fromIsar(String? object) {
+    var map = jsonDecode(object ?? "");
     return YTColor(
         backgroundColor: Color(map?["backgroundColor"]),
         foregroundColor: Color(map?["backgroundColor"]),
@@ -45,11 +45,11 @@ class YTColorConverter extends TypeConverter<YTColor, String?> {
   }
 
   @override
-  String toIsar(YTColor? color) {
+  String toIsar(YTColor? object) {
     return jsonEncode({
-      "backgroundColor": color?.backgroundColor.value,
-      "foregroundColor": color?.foregroundColor.value,
-      "lightColor": color?.lightColor.value
+      "backgroundColor": object?.backgroundColor.value,
+      "foregroundColor": object?.foregroundColor.value,
+      "lightColor": object?.lightColor.value
     });
   }
 }
