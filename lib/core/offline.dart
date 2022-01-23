@@ -20,12 +20,13 @@ abstract class Offline {
   /// The class' state.
   static final store = _OfflineStore();
 
-  static Isar? isar;
+  static late Isar isar;
 
   Offline._();
 
   /// Close offline boxes.
   static Future<void> close() async {
+    await isar.close();
     store.initialized = false;
   }
 
@@ -50,6 +51,7 @@ abstract class Offline {
 
   /// Close offline boxes.
   static Future<void> reset() async {
+    await isar.clear();
     store.initialized = false;
   }
 }
@@ -63,5 +65,3 @@ class _OfflineStore {
   ///  Has [Offline] been initialized, to avoid multiple initializations.
   bool initialized = false;
 }
-
-

@@ -1,4 +1,4 @@
-part of new_models;
+part of models;
 
 /// The model for a grade.
 ///
@@ -6,11 +6,8 @@ part of new_models;
 
 //TODO Remove all the isar prefixes
 
-
-
 @Collection()
 class Grade {
-  
   @Id()
   int? isarId;
 
@@ -58,14 +55,6 @@ class Grade {
 
   final double classMin;
 
-  /// The subject's id.
-
-  final String subjectId;
-
-  /// The period's id.
-
-  final String periodId;
-
   /// If the grade is custom.
 
   final bool custom;
@@ -82,8 +71,6 @@ class Grade {
       required this.classAverage,
       required this.classMax,
       required this.classMin,
-      required this.subjectId,
-      required this.periodId,
       this.custom = false});
 
   /// A grade that can be added by the user.
@@ -93,8 +80,6 @@ class Grade {
     required this.coefficient,
     required this.outOf,
     required this.value,
-    required this.subjectId,
-    required this.periodId,
   })  : name = "Simulée",
         type = "Simulation",
         significant = true,
@@ -110,7 +95,7 @@ class Grade {
   /// The value out of 20. Use this to calculate averages.
   double get realValue => 20 * value / outOf;
 
-  Subject? subject(List<Subject> subjects) => subjects.firstWhereOrNull(
-        (subject) => subject.id == subjectId,
-      );
+  final IsarLink<Subject> subject = IsarLink<Subject>();
+
+  final IsarLink<Period> period = IsarLink<Period>();
 }

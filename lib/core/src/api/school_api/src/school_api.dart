@@ -50,10 +50,10 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
     }
     for (final module in modules) {
       if (auth) {
-        await module.reset(offline: true);
+        await module.reset(offlineData: true);
       } else {
         if (module is! AuthModule) {
-          await module.reset(offline: true);
+          await module.reset(offlineData: true);
         }
       }
     }

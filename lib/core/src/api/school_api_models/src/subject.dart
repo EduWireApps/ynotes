@@ -1,4 +1,4 @@
-part of new_models;
+part of models;
 
 /// The model for a custom [Subject].
 ///
@@ -83,7 +83,5 @@ class Subject {
     required this.average,
   });
 
-  /// The grades of the subject.
-  List<Grade> grades(List<Grade> grades, [Period? period]) =>
-      grades.where((g) => g.subjectId == id && (period == null ? true : g.periodId == period.id)).toList();
+  final IsarLinks<Grade> grades = IsarLinks<Grade>();
 }

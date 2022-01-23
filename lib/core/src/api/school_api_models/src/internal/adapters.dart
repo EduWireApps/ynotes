@@ -1,31 +1,55 @@
-part of models;
+import 'dart:convert';
 
-class YTColorAdapter extends TypeAdapter<YTColor> {
-  @override
-  int get typeId => _HiveTypeIds.ytcolor;
+import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
+import 'package:ynotes_packages/theme.dart';
+
+class ListMapConverter extends TypeConverter<List<Map?>?, String?> {
+  const ListMapConverter(); // Converters need to have an empty const constructor
 
   @override
-  YTColor read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return YTColor(
-      backgroundColor: fields[0] as Color,
-      foregroundColor: fields[1] as Color,
-      lightColor: fields[2] as Color,
-    );
+  List<Map?> fromIsar(String? listMap) {
+    return jsonDecode(listMap ?? "").cast<Map?>();
   }
 
   @override
-  void write(BinaryWriter writer, YTColor obj) {
-    writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.backgroundColor)
-      ..writeByte(1)
-      ..write(obj.foregroundColor)
-      ..writeByte(2)
-      ..write(obj.lightColor);
+  String toIsar(List<Map?>? map) {
+    return jsonEncode(map);
+  }
+}
+
+class MapConverter extends TypeConverter<Map?, String?> {
+  const MapConverter(); // Converters need to have an empty const constructor
+
+  @override
+  Map fromIsar(String? mapValue) {
+    return jsonDecode(mapValue ?? "");
+  }
+
+  @override
+  String toIsar(Map? map) {
+    return jsonEncode(map);
+  }
+}
+
+class YTColorConverter extends TypeConverter<YTColor, String?> {
+  const YTColorConverter();
+
+  @override
+  YTColor fromIsar(String? stringMap) {
+    var map = jsonDecode(stringMap ??"");
+    return YTColor(
+        backgroundColor: Color(map?["backgroundColor"]),
+        foregroundColor: Color(map?["backgroundColor"]),
+        lightColor: Color(map?["backgroundColor"]));
+  }
+
+  @override
+  String toIsar(YTColor? color) {
+    return jsonEncode({
+      "backgroundColor": color?.backgroundColor.value,
+      "foregroundColor": color?.foregroundColor.value,
+      "lightColor": color?.lightColor.value
+    });
   }
 }

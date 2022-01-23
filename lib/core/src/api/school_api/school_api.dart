@@ -8,6 +8,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
+import 'package:isar/isar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/core/extensions.dart';
@@ -37,7 +38,6 @@ part 'src/modules/auth/repository.dart';
 
 // GRADES MODULE
 part 'src/modules/grades/module.dart';
-part 'src/modules/grades/offline.dart';
 
 // SCHOOL LIFE MDOULE
 part 'src/modules/school_life/module.dart';

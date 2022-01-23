@@ -1,13 +1,13 @@
 part of school_api;
 
-abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrades> {
+abstract class GradesModule<R extends Repository> extends Module<R> {
   GradesModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: api.modulesSupport.grades,
-            isAvailable: api.modulesAvailability.grades,
-            repository: repository,
-            api: api,
-            offline: OfflineGrades());
+          isSupported: api.modulesSupport.grades,
+          isAvailable: api.modulesAvailability.grades,
+          repository: repository,
+          api: api,
+        );
 
   List<Grade> get grades => _grades;
   List<Period> get periods => _periods;
@@ -35,7 +35,7 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
       final res = await repository.get();
       if (res.error != null) return res;
       // Handling periods.
-      _periods = res.data!["periods"] ?? [];
+      final List<Period> __periods = res.data!["periods"] ?? [];
       // Handling subjects.
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
       for (final __subject in __subjects) {
@@ -44,7 +44,6 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
           __subject.color = _subject.color;
         }
       }
-      _subjects = __subjects;
       // Handling grades.
       final List<Grade> __grades = res.data!["grades"] ?? [];
       if (__grades.length > _grades.length) {
@@ -52,16 +51,17 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
         final List<Grade> newGrades = __grades.sublist(_grades.length);
         // TODO: trigger notification
       }
-      _grades = [...__grades, ...grades.where((grade) => grade.custom)];
       // Saving data.
-      await offline.setPeriods(_periods);
-      await offline.setSubjects(_subjects);
-      await offline.setGrades(_grades);
-    } else {
-      _periods = await offline.getPeriods();
-      _subjects = await offline.getSubjects();
-      _grades = await offline.getGrades();
+      await offline.setPeriods(__periods);
+      await offline.subjects.clear();
+      await offline.subjects.putAll(__subjects);
+      await offline.grades.clear();
+      await offline.grades.putAll([...__grades, ...grades.where((grade) => grade.custom)]);
     }
+    _periods = await offline.getPeriods();
+    _subjects = await offline.subjects.where().build().findAll();
+    _grades = await offline.grades.where().build().findAll();
+
     await setCurrentPeriod();
     _customFilters = await offline.getCustomFilters();
     await setCurrentFilter();
@@ -204,12 +204,19 @@ abstract class GradesModule<R extends Repository> extends Module<R, OfflineGrade
   }
 
   @override
-  Future<void> reset({bool offline = false}) async {
+  Future<void> reset({bool offlineData = false}) async {
     _grades = [];
     _periods = [];
     _subjects = [];
     _customFilters = [];
     _currentPeriod = null;
-    await super.reset(offline: offline);
+    if (offlineData) {
+      await offline.grades.clear();
+      await offline.periods.clear();
+      await offline.subjects.clear();
+      await offline.setCurrentPeriodId(null);
+      await offline.setCurrentFilterId(null);
+    }
+    notifyListeners();
   }
 }
