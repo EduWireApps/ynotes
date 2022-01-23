@@ -50,7 +50,8 @@ class _AuthRepository extends AuthRepository {
                   school: e["nomEtablissement"]))
               .toList();
       final AppAccount appAccount =
-          AppAccount(id: account["uid"], firstName: account["prenom"], lastName: account["nom"], accounts: accounts);
+          AppAccount(id: account["uid"], firstName: account["prenom"], lastName: account["nom"]);
+      appAccount.accounts.addAll(accounts);
       final Map<String, dynamic> map = {
         "appAccount": appAccount,
         "schoolAccount": accounts.isEmpty

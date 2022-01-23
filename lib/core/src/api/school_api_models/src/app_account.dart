@@ -10,6 +10,8 @@ class AppAccount {
   @Id()
   int? isarId;
 
+  final String id;
+
   /// The first name of the user.
   final String firstName;
 
@@ -25,5 +27,5 @@ class AppAccount {
   /// The sub accounts, usually the children of the parent.
   final IsarLinks<SchoolAccount> accounts = IsarLinks<SchoolAccount>();
 
-  AppAccount({required this.firstName, required this.lastName});
+  AppAccount({required this.id, required this.firstName, required this.lastName});
 }

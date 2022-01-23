@@ -84,24 +84,32 @@ class _GradesRepository extends Repository {
       final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
       final List<Grade> grades = res.data!["data"]["notes"]
           .map<Grade>((e) => Grade(
-              name: e["devoir"],
-              type: e["typeDevoir"],
-              coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
-              outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
-              value: (e["valeur"] as String).toDouble() ?? double.nan,
-              significant: !(e["nonSignificatif"] as bool),
-              date: DateTime.parse(e["date"]),
-              entryDate: DateTime.parse(e["dateSaisie"]),
-              classAverage: (e["moyenneClasse"] as String).toDouble() ?? double.nan,
-              classMax: (e["maxClasse"] as String).toDouble() ?? double.nan,
-              classMin: (e["minClasse"] as String).toDouble() ?? double.nan,
-              subjectId: e["codeMatiere"],
-              periodId: e["codePeriode"]))
+                name: e["devoir"],
+                type: e["typeDevoir"],
+                coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
+                outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
+                value: (e["valeur"] as String).toDouble() ?? double.nan,
+                significant: !(e["nonSignificatif"] as bool),
+                date: DateTime.parse(e["date"]),
+                entryDate: DateTime.parse(e["dateSaisie"]),
+                classAverage: (e["moyenneClasse"] as String).toDouble() ?? double.nan,
+                classMax: (e["maxClasse"] as String).toDouble() ?? double.nan,
+                classMin: (e["minClasse"] as String).toDouble() ?? double.nan,
+              )
+                ..subject.value = subjects.firstWhere((s) => s.id == e["codeMatiere"])
+                ..period.value = periods.firstWhere((p) => p.id == e["codePeriode"]))
           .toList();
+
+      for (final subject in subjects) {
+        subject.grades.addAll(grades.where((g) => g.subject.value == subject));
+      }
+      for (final period in periods) {
+        period.grades.addAll(grades.where((g) => g.period.value == period));
+      }
       return Response(data: {
         "periods": periods,
-        "subjects": subjects..sort((a, b) => a.name.compareTo(b.name)),
-        "grades": grades..sort((a, b) => a.entryDate.compareTo(b.entryDate)),
+        "subjects": subjects,
+        "grades": grades,
       });
     } catch (e) {
       return Response(error: "$e");

@@ -42,19 +42,19 @@ class _EmailsRepository extends EmailsRepository {
         final int i = entry.key;
         final dynamic e = entry.value;
         return Email(
-            id: (e["id"] as int).toString(),
-            read: e["read"],
-            from: Recipient(
-                id: (e["from"]["id"] as int).toString(),
-                firstName: e["from"]["prenom"],
-                lastName: e["from"]["nom"],
-                civility: e["from"]["civilite"],
-                headTeacher: false,
-                subjects: []),
-            to: [],
-            subject: e["subject"],
-            date: DateTime.parse(e["date"]),
-            documentsIds: documentsReceived[i].map((e) => e.id).toList());
+          id: (e["id"] as int).toString(),
+          read: e["read"],
+          subject: e["subject"],
+          date: DateTime.parse(e["date"]),
+        )
+          ..from.value = Recipient(
+              id: (e["from"]["id"] as int).toString(),
+              firstName: e["from"]["prenom"],
+              lastName: e["from"]["nom"],
+              civility: e["from"]["civilite"],
+              headTeacher: false,
+              subjects: [])
+          ..documents.addAll(documentsReceived[i]);
       }).toList();
 
       // We prepare an empty list before looping through the emails.
@@ -75,27 +75,28 @@ class _EmailsRepository extends EmailsRepository {
         final int i = entry.key;
         final dynamic e = entry.value;
         return Email(
-            id: (e["id"] as int).toString(),
-            read: e["read"],
-            from: Recipient(
-                id: (e["from"]["id"] as int).toString(),
-                firstName: e["from"]["prenom"],
-                lastName: e["from"]["nom"],
-                civility: e["from"]["civilite"],
-                headTeacher: false,
-                subjects: []),
-            to: (e["to"] as List<dynamic>)
-                .map<Recipient>((e) => Recipient(
-                    id: (e["id"] as int).toString(),
-                    firstName: e["prenom"],
-                    lastName: e["nom"],
-                    civility: e["civilite"],
-                    headTeacher: false,
-                    subjects: []))
-                .toList(),
-            subject: e["subject"],
-            date: DateTime.parse(e["date"]),
-            documentsIds: documentsReceived[i].map((e) => e.id).toList());
+          id: (e["id"] as int).toString(),
+          read: e["read"],
+          subject: e["subject"],
+          date: DateTime.parse(e["date"]),
+        )
+          ..from.value = Recipient(
+              id: (e["from"]["id"] as int).toString(),
+              firstName: e["from"]["prenom"],
+              lastName: e["from"]["nom"],
+              civility: e["from"]["civilite"],
+              headTeacher: false,
+              subjects: [])
+          ..to.addAll((e["to"] as List<dynamic>)
+              .map<Recipient>((e) => Recipient(
+                  id: (e["id"] as int).toString(),
+                  firstName: e["prenom"],
+                  lastName: e["nom"],
+                  civility: e["civilite"],
+                  headTeacher: false,
+                  subjects: []))
+              .toList())
+          ..documents.addAll(documentsSent[i]);
       }).toList();
 
       // We then convert the raw data to a list of recipients.
@@ -109,12 +110,8 @@ class _EmailsRepository extends EmailsRepository {
               subjects: (e["classes"] as List<dynamic>).map<String>((s) => e["matiere"]).toList()))
           .toList();
 
-      // We return the data, sorted.
-      return Response(data: {
-        "emailsReceived": emailsReceived..sort((a, b) => a.date.compareTo(b.date)),
-        "emailsSent": emailsSent..sort((a, b) => a.date.compareTo(b.date)),
-        "recipients": recipients..sort((a, b) => a.lastName.compareTo(b.lastName))
-      });
+      // We return the data.
+      return Response(data: {"emailsReceived": emailsReceived, "emailsSent": emailsSent, "recipients": recipients});
     } catch (e) {
       return Response(error: "$e");
     }

@@ -3977,10 +3977,16 @@ extension GetAppAccountCollection on Isar {
 final AppAccountSchema = CollectionSchema(
   name: 'AppAccount',
   schema:
-      '{"name":"AppAccount","properties":[{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"isParent","type":"Byte"},{"name":"lastName","type":"String"}],"indexes":[],"links":[{"name":"accounts","target":"SchoolAccount"}]}',
+      '{"name":"AppAccount","properties":[{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"id","type":"String"},{"name":"isParent","type":"Byte"},{"name":"lastName","type":"String"}],"indexes":[],"links":[{"name":"accounts","target":"SchoolAccount"}]}',
   adapter: const _AppAccountAdapter(),
   idName: 'isarId',
-  propertyIds: {'firstName': 0, 'fullName': 1, 'isParent': 2, 'lastName': 3},
+  propertyIds: {
+    'firstName': 0,
+    'fullName': 1,
+    'id': 2,
+    'isParent': 3,
+    'lastName': 4
+  },
   indexIds: {},
   indexTypes: {},
   linkIds: {'accounts': 0},
@@ -4007,12 +4013,15 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
     final value1 = object.fullName;
     final _fullName = BinaryWriter.utf8Encoder.convert(value1);
     dynamicSize += _fullName.length;
-    final value2 = object.isParent;
-    final _isParent = value2;
-    final value3 = object.lastName;
-    final _lastName = BinaryWriter.utf8Encoder.convert(value3);
+    final value2 = object.id;
+    final _id = BinaryWriter.utf8Encoder.convert(value2);
+    dynamicSize += _id.length;
+    final value3 = object.isParent;
+    final _isParent = value3;
+    final value4 = object.lastName;
+    final _lastName = BinaryWriter.utf8Encoder.convert(value4);
     dynamicSize += _lastName.length;
-    final size = dynamicSize + 27;
+    final size = dynamicSize + 35;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -4029,11 +4038,12 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
     }
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 27);
+    final writer = BinaryWriter(buffer, 35);
     writer.writeBytes(offsets[0], _firstName);
     writer.writeBytes(offsets[1], _fullName);
-    writer.writeBool(offsets[2], _isParent);
-    writer.writeBytes(offsets[3], _lastName);
+    writer.writeBytes(offsets[2], _id);
+    writer.writeBool(offsets[3], _isParent);
+    writer.writeBytes(offsets[4], _lastName);
     attachLinks(collection.isar, object);
     return bufferSize;
   }
@@ -4043,7 +4053,8 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
       BinaryReader reader, List<int> offsets) {
     final object = AppAccount(
       firstName: reader.readString(offsets[0]),
-      lastName: reader.readString(offsets[3]),
+      id: reader.readString(offsets[2]),
+      lastName: reader.readString(offsets[4]),
     );
     object.isarId = id;
     attachLinks(collection.isar, object);
@@ -4061,8 +4072,10 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
       case 1:
         return (reader.readString(offset)) as P;
       case 2:
-        return (reader.readBool(offset)) as P;
+        return (reader.readString(offset)) as P;
       case 3:
+        return (reader.readBool(offset)) as P;
+      case 4:
         return (reader.readString(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -4375,6 +4388,109 @@ extension AppAccountQueryFilter
     ));
   }
 
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.eq,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'id',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.contains,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.matches,
+      property: 'id',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isParentEqualTo(
       bool value) {
     return addFilterCondition(FilterCondition(
@@ -4564,6 +4680,14 @@ extension AppAccountQueryWhereSortBy
     return addSortByInternal('fullName', Sort.desc);
   }
 
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> sortByIsParent() {
     return addSortByInternal('isParent', Sort.asc);
   }
@@ -4607,6 +4731,14 @@ extension AppAccountQueryWhereSortThenBy
     return addSortByInternal('fullName', Sort.desc);
   }
 
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
   QueryBuilder<AppAccount, AppAccount, QAfterSortBy> thenByIsParent() {
     return addSortByInternal('isParent', Sort.asc);
   }
@@ -4644,6 +4776,11 @@ extension AppAccountQueryWhereDistinct
     return addDistinctByInternal('fullName', caseSensitive: caseSensitive);
   }
 
+  QueryBuilder<AppAccount, AppAccount, QDistinct> distinctById(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('id', caseSensitive: caseSensitive);
+  }
+
   QueryBuilder<AppAccount, AppAccount, QDistinct> distinctByIsParent() {
     return addDistinctByInternal('isParent');
   }
@@ -4666,6 +4803,10 @@ extension AppAccountQueryProperty
 
   QueryBuilder<AppAccount, String, QQueryOperations> fullNameProperty() {
     return addPropertyName('fullName');
+  }
+
+  QueryBuilder<AppAccount, String, QQueryOperations> idProperty() {
+    return addPropertyName('id');
   }
 
   QueryBuilder<AppAccount, bool, QQueryOperations> isParentProperty() {

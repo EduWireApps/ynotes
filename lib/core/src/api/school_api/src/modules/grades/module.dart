@@ -9,9 +9,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           api: api,
         );
 
-  List<Grade> get grades => offline.grades.where().findAllSync();
+  List<Grade> get grades => offline.grades.where().sortByEntryDate().findAllSync();
   List<Period> get periods => offline.periods.where().findAllSync();
-  List<Subject> get subjects => offline.subjects.where().findAllSync();
+  List<Subject> get subjects => offline.subjects.where().sortByName().findAllSync();
   Period? get currentPeriod => _Storage.values.currentPeriodId == null
       ? null
       : offline.periods.filter().idEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
