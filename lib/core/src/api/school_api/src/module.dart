@@ -17,7 +17,6 @@ abstract class Module<R extends Repository> extends ChangeNotifier {
 
   Future<void> _init() async {
     await Offline.init();
-    await fetch(online: false);
   }
 
   @protected
@@ -34,7 +33,7 @@ abstract class Module<R extends Repository> extends ChangeNotifier {
   @protected
   Isar get offline => Offline.isar;
 
-  Future<Response<void>> fetch({bool online = false});
+  Future<Response<void>> fetch();
 
-  Future<void> reset({bool offlineData = false});
+  Future<void> reset();
 }
