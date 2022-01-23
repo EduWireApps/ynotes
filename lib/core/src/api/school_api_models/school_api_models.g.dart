@@ -5523,10 +5523,17 @@ extension GetEmailCollection on Isar {
 final EmailSchema = CollectionSchema(
   name: 'Email',
   schema:
-      '{"name":"Email","properties":[{"name":"content","type":"String"},{"name":"date","type":"Long"},{"name":"id","type":"String"},{"name":"read","type":"Byte"},{"name":"subject","type":"String"}],"indexes":[],"links":[{"name":"documents","target":"Document"},{"name":"from","target":"Recipient"},{"name":"to","target":"Recipient"}]}',
+      '{"name":"Email","properties":[{"name":"content","type":"String"},{"name":"date","type":"Long"},{"name":"favorite","type":"Byte"},{"name":"id","type":"String"},{"name":"read","type":"Byte"},{"name":"subject","type":"String"}],"indexes":[],"links":[{"name":"documents","target":"Document"},{"name":"from","target":"Recipient"},{"name":"to","target":"Recipient"}]}',
   adapter: const _EmailAdapter(),
   idName: 'isarId',
-  propertyIds: {'content': 0, 'date': 1, 'id': 2, 'read': 3, 'subject': 4},
+  propertyIds: {
+    'content': 0,
+    'date': 1,
+    'favorite': 2,
+    'id': 3,
+    'read': 4,
+    'subject': 5
+  },
   indexIds: {},
   indexTypes: {},
   linkIds: {'documents': 0, 'from': 1, 'to': 2},
@@ -5555,15 +5562,17 @@ class _EmailAdapter extends IsarTypeAdapter<Email> {
     dynamicSize += _content?.length ?? 0;
     final value1 = object.date;
     final _date = value1;
-    final value2 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value2);
+    final value2 = object.favorite;
+    final _favorite = value2;
+    final value3 = object.id;
+    final _id = BinaryWriter.utf8Encoder.convert(value3);
     dynamicSize += _id.length;
-    final value3 = object.read;
-    final _read = value3;
-    final value4 = object.subject;
-    final _subject = BinaryWriter.utf8Encoder.convert(value4);
+    final value4 = object.read;
+    final _read = value4;
+    final value5 = object.subject;
+    final _subject = BinaryWriter.utf8Encoder.convert(value5);
     dynamicSize += _subject.length;
-    final size = dynamicSize + 35;
+    final size = dynamicSize + 36;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -5580,12 +5589,13 @@ class _EmailAdapter extends IsarTypeAdapter<Email> {
     }
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 35);
+    final writer = BinaryWriter(buffer, 36);
     writer.writeBytes(offsets[0], _content);
     writer.writeDateTime(offsets[1], _date);
-    writer.writeBytes(offsets[2], _id);
-    writer.writeBool(offsets[3], _read);
-    writer.writeBytes(offsets[4], _subject);
+    writer.writeBool(offsets[2], _favorite);
+    writer.writeBytes(offsets[3], _id);
+    writer.writeBool(offsets[4], _read);
+    writer.writeBytes(offsets[5], _subject);
     attachLinks(collection.isar, object);
     return bufferSize;
   }
@@ -5596,10 +5606,11 @@ class _EmailAdapter extends IsarTypeAdapter<Email> {
     final object = Email(
       content: reader.readStringOrNull(offsets[0]),
       date: reader.readDateTime(offsets[1]),
-      id: reader.readString(offsets[2]),
-      read: reader.readBool(offsets[3]),
-      subject: reader.readString(offsets[4]),
+      id: reader.readString(offsets[3]),
+      read: reader.readBool(offsets[4]),
+      subject: reader.readString(offsets[5]),
     );
+    object.favorite = reader.readBool(offsets[2]);
     object.isarId = id;
     attachLinks(collection.isar, object);
     return object;
@@ -5616,10 +5627,12 @@ class _EmailAdapter extends IsarTypeAdapter<Email> {
       case 1:
         return (reader.readDateTime(offset)) as P;
       case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
         return (reader.readBool(offset)) as P;
+      case 3:
+        return (reader.readString(offset)) as P;
       case 4:
+        return (reader.readBool(offset)) as P;
+      case 5:
         return (reader.readString(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -5887,6 +5900,15 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
       includeLower: includeLower,
       upper: upper,
       includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<Email, Email, QAfterFilterCondition> favoriteEqualTo(
+      bool value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.eq,
+      property: 'favorite',
+      value: value,
     ));
   }
 
@@ -6175,6 +6197,14 @@ extension EmailQueryWhereSortBy on QueryBuilder<Email, Email, QSortBy> {
     return addSortByInternal('date', Sort.desc);
   }
 
+  QueryBuilder<Email, Email, QAfterSortBy> sortByFavorite() {
+    return addSortByInternal('favorite', Sort.asc);
+  }
+
+  QueryBuilder<Email, Email, QAfterSortBy> sortByFavoriteDesc() {
+    return addSortByInternal('favorite', Sort.desc);
+  }
+
   QueryBuilder<Email, Email, QAfterSortBy> sortById() {
     return addSortByInternal('id', Sort.asc);
   }
@@ -6225,6 +6255,14 @@ extension EmailQueryWhereSortThenBy on QueryBuilder<Email, Email, QSortThenBy> {
     return addSortByInternal('date', Sort.desc);
   }
 
+  QueryBuilder<Email, Email, QAfterSortBy> thenByFavorite() {
+    return addSortByInternal('favorite', Sort.asc);
+  }
+
+  QueryBuilder<Email, Email, QAfterSortBy> thenByFavoriteDesc() {
+    return addSortByInternal('favorite', Sort.desc);
+  }
+
   QueryBuilder<Email, Email, QAfterSortBy> thenById() {
     return addSortByInternal('id', Sort.asc);
   }
@@ -6268,6 +6306,10 @@ extension EmailQueryWhereDistinct on QueryBuilder<Email, Email, QDistinct> {
     return addDistinctByInternal('date');
   }
 
+  QueryBuilder<Email, Email, QDistinct> distinctByFavorite() {
+    return addDistinctByInternal('favorite');
+  }
+
   QueryBuilder<Email, Email, QDistinct> distinctById(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('id', caseSensitive: caseSensitive);
@@ -6294,6 +6336,10 @@ extension EmailQueryProperty on QueryBuilder<Email, Email, QQueryProperty> {
 
   QueryBuilder<Email, DateTime, QQueryOperations> dateProperty() {
     return addPropertyName('date');
+  }
+
+  QueryBuilder<Email, bool, QQueryOperations> favoriteProperty() {
+    return addPropertyName('favorite');
   }
 
   QueryBuilder<Email, String, QQueryOperations> idProperty() {

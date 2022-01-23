@@ -34,6 +34,8 @@ class Email {
   /// The email's recipients.
   final IsarLinks<Recipient> to = IsarLinks<Recipient>();
 
+  bool favorite = false;
+
   Email({
     required this.id,
     required this.read,
