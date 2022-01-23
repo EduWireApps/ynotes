@@ -13,7 +13,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:pointycastle/pointycastle.dart';
-import 'package:requests/requests.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
