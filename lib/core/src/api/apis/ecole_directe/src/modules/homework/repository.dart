@@ -23,7 +23,8 @@ class _HomeworkRepository extends HomeworkRepository {
                 done: e["effectue"],
                 due: e["rendreEnLigne"],
                 assessment: e["interrogation"],
-              )..subject.value = api.gradesModule.subjects.firstWhere((subject) => subject.id == e["codeMatiere"]),
+              )..subject.value =
+                  api.gradesModule.subjects.firstWhere((subject) => subject.entityId == e["codeMatiere"]),
             )
             .toList());
       });
@@ -65,7 +66,7 @@ class _HomeworkRepository extends HomeworkRepository {
           due: e["aFaire"]["rendreEnLigne"],
           assessment: e["interrogation"],
         )
-          ..subject.value = api.gradesModule.subjects.firstWhere((subject) => subject.id == e["codeMatiere"])
+          ..subject.value = api.gradesModule.subjects.firstWhere((subject) => subject.entityId == e["codeMatiere"])
           ..documents.addAll(documents[i]);
       }).toList();
       return Response(data: homework);

@@ -12,12 +12,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   List<Grade> get grades => offline.grades.where().sortByEntryDate().findAllSync();
   List<Period> get periods => offline.periods.where().findAllSync();
   List<Subject> get subjects => offline.subjects.where().sortByName().findAllSync();
-  Period? get currentPeriod => _Storage.values.currentPeriodId == null
-      ? null
-      : offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
-  SubjectsFilter? get currentFilter => _Storage.values.currentFilterId == null
-      ? null
-      : offline.subjectsFilters.filter().entityIdEqualTo(_Storage.values.currentFilterId!).findFirstSync();
+  Period? get currentPeriod =>
+      offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId ?? "").findFirstSync();
+  SubjectsFilter? get currentFilter =>
+      offline.subjectsFilters.filter().entityIdEqualTo(_Storage.values.currentFilterId ?? "").findFirstSync();
   List<SubjectsFilter> get customFilters => offline.subjectsFilters.where().findAllSync();
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
   late final List<SubjectsFilter> _defaultFilters = [SubjectsFilter(name: "Toutes matières", entityId: "all")];
@@ -52,7 +50,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       await isar.subjects.clear();
       await isar.subjects.putAll(__subjects);
       await isar.grades.clear();
-      await isar.grades.putAll([...__grades, ...grades.where((grade) => grade.custom)]);
+      await isar.grades.putAll([...__grades, ...(await offline.grades.filter().customEqualTo(true).findAll())]);
     });
 
     await setCurrentPeriod();
@@ -93,7 +91,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     } else {
       id = filter.entityId;
     }
-    _Storage.values.currentPeriodId = id;
+    _Storage.values.currentFilterId = id;
     await _Storage.update();
     notifyListeners();
   }
@@ -198,9 +196,11 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   @override
   Future<void> reset() async {
-    await offline.grades.clear();
-    await offline.periods.clear();
-    await offline.subjects.clear();
+    await offline.writeTxn((isar) async {
+      await isar.grades.clear();
+      await isar.periods.clear();
+      await isar.subjects.clear();
+    });
     _Storage.values.currentPeriodId = null;
     _Storage.values.currentFilterId = null;
     await _Storage.update();

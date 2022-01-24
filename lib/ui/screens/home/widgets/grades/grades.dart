@@ -53,7 +53,6 @@ class _GradesSectionState extends State<GradesSection> {
         grades = [...grades, ...gradesByWeekList[index]];
         index -= 1;
       }
-      // final double avg = module.calculateAverageFromGrades(grades);
       final double avg = module.calculateAverageFromGrades(grades, bySubject: true);
       return ChartElement(
           value: avg,

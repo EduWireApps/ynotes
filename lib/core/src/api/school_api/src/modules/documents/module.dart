@@ -122,7 +122,9 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
 
   @override
   Future<void> reset() async {
-    await offline.documents.clear();
+    await offline.writeTxn((isar) async {
+      await isar.documents.clear();
+    });
     notifyListeners();
   }
 }

@@ -70,8 +70,10 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
 
   @override
   Future<void> reset() async {
-    await offline.emails.clear();
-    await offline.recipients.clear();
+    await offline.writeTxn((isar) async {
+      await isar.emails.clear();
+      await isar.recipients.clear();
+    });
     notifyListeners();
   }
 }

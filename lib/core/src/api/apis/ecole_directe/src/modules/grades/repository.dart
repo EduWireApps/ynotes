@@ -63,7 +63,7 @@ class _GradesRepository extends Repository {
           );
         }
       }
-      final colors = AppColors.colors;
+      final colors = List.from(AppColors.colors);
       final Random random = Random();
       final List<Subject> subjects = disciplines.map<Subject>((e) {
         final color = colors[random.nextInt(colors.length)];
@@ -96,8 +96,8 @@ class _GradesRepository extends Repository {
                 classMax: (e["maxClasse"] as String).toDouble() ?? double.nan,
                 classMin: (e["minClasse"] as String).toDouble() ?? double.nan,
               )
-                ..subject.value = subjects.firstWhere((s) => s.id == e["codeMatiere"])
-                ..period.value = periods.firstWhere((p) => p.id == e["codePeriode"]))
+                ..subject.value = subjects.firstWhere((s) => s.entityId == e["codeMatiere"])
+                ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"]))
           .toList();
 
       for (final subject in subjects) {
