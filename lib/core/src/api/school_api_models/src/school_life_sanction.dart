@@ -6,7 +6,7 @@ part of models;
 @Collection()
 class SchoolLifeSanction {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The type of sanction. Depends of the API.
   final String type;

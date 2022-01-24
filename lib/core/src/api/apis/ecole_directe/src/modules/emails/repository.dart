@@ -30,7 +30,7 @@ class _EmailsRepository extends EmailsRepository {
       for (final h in (res0.data!["data"]["messages"]["received"] as List<dynamic>)) {
         final List<Document> d = [];
         for (final e in (h["files"] as List<dynamic>)) {
-          d.add(Document(id: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
+          d.add(Document(entityId: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
         }
         documentsReceived.add(d);
       }
@@ -42,13 +42,13 @@ class _EmailsRepository extends EmailsRepository {
         final int i = entry.key;
         final dynamic e = entry.value;
         return Email(
-          id: (e["id"] as int).toString(),
+          entityId: (e["id"] as int).toString(),
           read: e["read"],
           subject: e["subject"],
           date: DateTime.parse(e["date"]),
         )
           ..from.value = Recipient(
-              id: (e["from"]["id"] as int).toString(),
+              entityId: (e["from"]["id"] as int).toString(),
               firstName: e["from"]["prenom"],
               lastName: e["from"]["nom"],
               civility: e["from"]["civilite"],
@@ -63,7 +63,7 @@ class _EmailsRepository extends EmailsRepository {
       for (final h in (res0.data!["data"]["messages"]["received"] as List<dynamic>)) {
         final List<Document> d = [];
         for (final e in (h["files"] as List<dynamic>)) {
-          d.add(Document(id: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
+          d.add(Document(entityId: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
         }
         documentsSent.add(d);
       }
@@ -75,13 +75,13 @@ class _EmailsRepository extends EmailsRepository {
         final int i = entry.key;
         final dynamic e = entry.value;
         return Email(
-          id: (e["id"] as int).toString(),
+          entityId: (e["id"] as int).toString(),
           read: e["read"],
           subject: e["subject"],
           date: DateTime.parse(e["date"]),
         )
           ..from.value = Recipient(
-              id: (e["from"]["id"] as int).toString(),
+              entityId: (e["from"]["id"] as int).toString(),
               firstName: e["from"]["prenom"],
               lastName: e["from"]["nom"],
               civility: e["from"]["civilite"],
@@ -89,7 +89,7 @@ class _EmailsRepository extends EmailsRepository {
               subjects: [])
           ..to.addAll((e["to"] as List<dynamic>)
               .map<Recipient>((e) => Recipient(
-                  id: (e["id"] as int).toString(),
+                  entityId: (e["id"] as int).toString(),
                   firstName: e["prenom"],
                   lastName: e["nom"],
                   civility: e["civilite"],
@@ -102,7 +102,7 @@ class _EmailsRepository extends EmailsRepository {
       // We then convert the raw data to a list of recipients.
       final List<Recipient> recipients = res1.data!["data"]["contacts"]
           .map<Recipient>((e) => Recipient(
-              id: (e["id"] as int).toString(),
+              entityId: (e["id"] as int).toString(),
               firstName: e["prenom"],
               lastName: e["nom"],
               civility: e["civilite"],
@@ -119,7 +119,7 @@ class _EmailsRepository extends EmailsRepository {
 
   @override
   Future<Response<String>> getEmailContent(Email email, bool received) async {
-    final res = await emailsProvider.getEmailContent(email.id, received);
+    final res = await emailsProvider.getEmailContent(email.entityId, received);
     if (res.error != null) {
       return Response(error: res.error);
     }
@@ -147,7 +147,7 @@ class _EmailsRepository extends EmailsRepository {
                 .map((e) => {
                       "to_cc_cci": "to",
                       "type": "P",
-                      "id": int.parse(e.id),
+                      "id": int.parse(e.entityId),
                       "isSelected": true,
                       "nom": e.lastName,
                       "prenom": e.firstName,

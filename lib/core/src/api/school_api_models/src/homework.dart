@@ -6,10 +6,10 @@ part of models;
 @Collection()
 class Homework {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The id of the homework.
-  final String id;
+  final String entityId;
 
   final IsarLink<Subject> subject = IsarLink<Subject>();
 
@@ -40,7 +40,7 @@ class Homework {
   final IsarLinks<Document> documents = IsarLinks<Document>();
 
   Homework({
-    required this.id,
+    required this.entityId,
     required this.content,
     required this.date,
     required this.entryDate,

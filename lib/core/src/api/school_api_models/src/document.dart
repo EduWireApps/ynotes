@@ -7,10 +7,10 @@ part of models;
 @Collection()
 class Document {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The id of the document.
-  final String id;
+  final String entityId;
 
   /// The name of the document. Contains the file extension.
   final String name;
@@ -33,5 +33,5 @@ class Document {
   /// it can be forced.
   bool saved;
 
-  Document({required this.id, required this.name, required this.type, required this.saved});
+  Document({required this.entityId, required this.name, required this.type, required this.saved});
 }

@@ -45,7 +45,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
 
   Future<Response<void>> removeDocuments(List<Document> documents) async {
     await offline.writeTxn((isar) async {
-      await isar.documents.deleteAll(documents.map((e) => e.isarId!).toList());
+      await isar.documents.deleteAll(documents.map((e) => e.id!).toList());
     });
     notifyListeners();
     return const Response();

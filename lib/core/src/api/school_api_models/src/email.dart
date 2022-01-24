@@ -6,10 +6,10 @@ part of models;
 @Collection()
 class Email {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The id of the email.
-  final String id;
+  final String entityId;
 
   /// Is the email read. Don't forget to update the [Email]
   /// in the [EmailsModule] if you change it.
@@ -37,7 +37,7 @@ class Email {
   bool favorite = false;
 
   Email({
-    required this.id,
+    required this.entityId,
     required this.read,
     required this.subject,
     required this.date,
@@ -52,7 +52,7 @@ class Email {
     required String content,
   }) =>
       Email(
-        id: "",
+        entityId: "",
         read: false,
         subject: subject,
         content: content,

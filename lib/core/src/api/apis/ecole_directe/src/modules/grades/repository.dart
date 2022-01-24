@@ -13,7 +13,7 @@ class _GradesRepository extends Repository {
     try {
       final List<Period> periods = res.data!["data"]["periodes"]
           .map<Period>((e) => Period(
-              id: e["idPeriode"],
+              entityId: e["idPeriode"],
               name: e["periode"],
               startDate: DateTime.parse(e["dateDebut"]),
               endDate: DateTime.parse(e["dateFin"]),
@@ -24,7 +24,7 @@ class _GradesRepository extends Repository {
               minAverage: (e["ensembleMatieres"]["moyenneMin"] as String).toDouble() ?? double.nan))
           .toList();
       periods.sort((a, b) => a.startDate.compareTo(b.startDate));
-      final Period yearPeriod = periods.firstWhere((e) => e.id == "A999Z");
+      final Period yearPeriod = periods.firstWhere((e) => e.entityId == "A999Z");
       periods.remove(yearPeriod);
       periods.add(yearPeriod);
       List<Map<String, dynamic>> disciplines = [];
@@ -69,7 +69,7 @@ class _GradesRepository extends Repository {
         final color = colors[random.nextInt(colors.length)];
         colors.remove(color);
         return Subject(
-            id: e["codeMatiere"],
+            entityId: e["codeMatiere"],
             name: e["discipline"],
             classAverage: (e["moyenneClasse"] as String).toDouble() ?? double.nan,
             maxAverage: (e["moyenneMax"] as String).toDouble() ?? double.nan,

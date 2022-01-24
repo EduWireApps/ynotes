@@ -6,10 +6,10 @@ part of models;
 @Collection()
 class Period {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The id of the period.
-  final String id;
+  final String entityId;
 
   /// The name of the period.
   final String name;
@@ -38,7 +38,7 @@ class Period {
   final IsarLinks<Grade> grades = IsarLinks<Grade>();
 
   Period({
-    required this.id,
+    required this.entityId,
     required this.name,
     required this.startDate,
     required this.endDate,

@@ -6,7 +6,7 @@ part of models;
 @Collection()
 class SchoolLifeTicket {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The duration of the ticket.
   final String duration;

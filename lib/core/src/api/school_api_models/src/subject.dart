@@ -16,7 +16,7 @@ class CustomSubject extends Subject {
       required SchoolApi api,
       required YTColor color})
       : super(
-            id: md5.convert(utf8.encode(name)).toString(),
+            entityId: md5.convert(utf8.encode(name)).toString(),
             name: name,
             classAverage: double.nan,
             maxAverage: double.nan,
@@ -35,9 +35,9 @@ class Subject {
   /// The id of the subject.
 
   @Id()
-  int? isarId;
+  int? id;
 
-  final String id;
+  final String entityId;
 
   /// The name of the subject.
 
@@ -73,7 +73,7 @@ class Subject {
 
   Subject({
     required this.color,
-    required this.id,
+    required this.entityId,
     required this.name,
     required this.classAverage,
     required this.maxAverage,

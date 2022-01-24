@@ -14,13 +14,13 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   List<Subject> get subjects => offline.subjects.where().sortByName().findAllSync();
   Period? get currentPeriod => _Storage.values.currentPeriodId == null
       ? null
-      : offline.periods.filter().idEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
+      : offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
   SubjectsFilter? get currentFilter => _Storage.values.currentFilterId == null
       ? null
-      : offline.subjectsFilters.filter().idEqualTo(_Storage.values.currentFilterId!).findFirstSync();
+      : offline.subjectsFilters.filter().entityIdEqualTo(_Storage.values.currentFilterId!).findFirstSync();
   List<SubjectsFilter> get customFilters => offline.subjectsFilters.where().findAllSync();
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
-  late final List<SubjectsFilter> _defaultFilters = [SubjectsFilter(name: "Toutes matières", id: "all")];
+  late final List<SubjectsFilter> _defaultFilters = [SubjectsFilter(name: "Toutes matières", entityId: "all")];
 
   @override
   Future<Response<void>> fetch() async {
@@ -74,10 +74,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
                     (now.year == period.endDate.year &&
                         now.month == period.endDate.month &&
                         now.day == period.endDate.day)))
-            ?.id;
+            ?.entityId;
       }
     } else {
-      id = period.id;
+      id = period.entityId;
     }
     _Storage.values.currentPeriodId = id;
     await _Storage.update();
@@ -88,10 +88,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     String? id;
     if (filter == null) {
       if (currentFilter == null) {
-        id = filters.first.id;
+        id = filters.first.entityId;
       }
     } else {
-      id = filter.id;
+      id = filter.entityId;
     }
     _Storage.values.currentPeriodId = id;
     await _Storage.update();
@@ -166,7 +166,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   Future<Response<void>> removeFilter(SubjectsFilter filter) async {
     await offline.writeTxn((isar) async {
-      await isar.subjectsFilters.delete(filter.isarId!);
+      await isar.subjectsFilters.delete(filter.id!);
     });
     notifyListeners();
     return const Response();
@@ -190,7 +190,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   Future<Response<void>> removeCustomGrade(Grade grade) async {
     if (!grade.custom) return const Response(error: "Grade is not custom");
     await offline.writeTxn((isar) async {
-      await isar.grades.delete(grade.isarId!);
+      await isar.grades.delete(grade.id!);
     });
     notifyListeners();
     return const Response();

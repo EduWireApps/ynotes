@@ -6,10 +6,10 @@ part of models;
 @Collection()
 class Recipient {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The id of the recipient.
-  final String id;
+  final String entityId;
 
   /// The first name of the recipient.
   final String firstName;
@@ -30,7 +30,7 @@ class Recipient {
   final List<String> subjects;
 
   Recipient({
-    required this.id,
+    required this.entityId,
     required this.firstName,
     required this.lastName,
     required this.civility,

@@ -31,7 +31,7 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R> {
       final res = await repository.get();
       if (res.error != null) return res;
       final List<Homework> __homework = res.data!["homework"] ?? [];
-      final List<String> ids = homework.map((h) => h.id).toList();
+      final List<String> ids = homework.map((h) => h.entityId).toList();
       // TODO: check if homework added or removed
       for (final h in __homework) {
         // TODO: check if homework property has changed, except id, content and pinned
@@ -49,7 +49,7 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R> {
       final res = await repository.getDay(date);
       if (res.error != null) return res;
       final List<Homework> __homework = res.data!;
-      final List<String> ids = homework.map((h) => h.id).toList();
+      final List<String> ids = homework.map((h) => h.entityId).toList();
       for (final _h in __homework) {
         if (ids.contains(_h.id)) {
           Homework h = homework.firstWhere((e) => e.id == _h.id);

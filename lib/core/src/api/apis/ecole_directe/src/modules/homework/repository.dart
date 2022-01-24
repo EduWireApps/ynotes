@@ -16,7 +16,7 @@ class _HomeworkRepository extends HomeworkRepository {
         homework.addAll(v
             .map<Homework>(
               (e) => Homework(
-                id: (e["idDevoir"] as int).toString(),
+                entityId: (e["idDevoir"] as int).toString(),
                 content: null,
                 date: DateTime.parse(k),
                 entryDate: DateTime.parse(e["donneLe"]),
@@ -43,7 +43,7 @@ class _HomeworkRepository extends HomeworkRepository {
       for (final h in (res.data!["data"]["matieres"] as List<dynamic>).where((e) => e["aFaire"] != null)) {
         final List<Document> d = [];
         for (final e in (h["aFaire"]["documents"] as List<dynamic>)) {
-          d.add(Document(id: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
+          d.add(Document(entityId: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
         }
         documents.add(d);
       }
@@ -57,7 +57,7 @@ class _HomeworkRepository extends HomeworkRepository {
         final int i = entry.key;
         final dynamic e = entry.value;
         return Homework(
-          id: (e["id"] as int).toString(),
+          entityId: (e["id"] as int).toString(),
           content: decodeContent(e["aFaire"]["contenu"]),
           date: date,
           entryDate: DateTime.parse(e["aFaire"]["donneLe"]),

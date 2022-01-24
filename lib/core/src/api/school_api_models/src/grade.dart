@@ -3,13 +3,10 @@ part of models;
 /// The model for a grade.
 ///
 /// Can be stored in [Hive] storage.
-
-//TODO Remove all the isar prefixes
-
 @Collection()
 class Grade {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The name of the assessment associated with this grade.
 

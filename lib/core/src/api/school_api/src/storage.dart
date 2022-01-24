@@ -4,7 +4,7 @@ part of school_api;
 class _S {
   String? currentPeriodId;
   String? currentFilterId;
-  int? appAccountId;
+  String? appAccountId;
   String? schoolAccountId;
 
   _S({

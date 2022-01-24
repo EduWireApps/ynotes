@@ -9,7 +9,7 @@ part of school_api;
 _S _$SFromJson(Map<String, dynamic> json) => _S(
       currentPeriodId: json['currentPeriodId'] as String?,
       currentFilterId: json['currentFilterId'] as String?,
-      appAccountId: json['appAccountId'] as int?,
+      appAccountId: json['appAccountId'] as String?,
       schoolAccountId: json['schoolAccountId'] as String?,
     );
 

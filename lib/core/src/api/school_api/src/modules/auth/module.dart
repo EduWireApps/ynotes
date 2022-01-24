@@ -12,10 +12,10 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
 
   AppAccount? get account => _Storage.values.appAccountId == null
       ? null
-      : offline.appAccounts.filter().isarIdEqualTo(_Storage.values.appAccountId).findFirstSync();
+      : offline.appAccounts.filter().entityIdEqualTo(_Storage.values.appAccountId!).findFirstSync();
   SchoolAccount? get schoolAccount => _Storage.values.schoolAccountId == null
       ? null
-      : offline.schoolAccounts.filter().idEqualTo(_Storage.values.schoolAccountId!).findFirstSync();
+      : offline.schoolAccounts.filter().entityIdEqualTo(_Storage.values.schoolAccountId!).findFirstSync();
 
   AuthStatus status = AuthStatus.unauthenticated;
 
@@ -71,7 +71,7 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
   }
 
   Future<void> update(SchoolAccount account) async {
-    _Storage.values.schoolAccountId = account.id;
+    _Storage.values.schoolAccountId = account.entityId;
     await _Storage.update();
   }
 
@@ -109,8 +109,8 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
       await account.accounts.save();
       await isar.schoolAccounts.put(schoolAccount);
     });
-    _Storage.values.appAccountId = account.isarId;
-    _Storage.values.schoolAccountId = schoolAccount.id;
+    _Storage.values.appAccountId = account.entityId;
+    _Storage.values.schoolAccountId = schoolAccount.entityId;
     await _Storage.update();
     notifyListeners();
     return Response(data: "Bienvenue ${account.fullName}");

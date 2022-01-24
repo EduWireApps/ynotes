@@ -45,12 +45,12 @@ class _AuthRepository extends AuthRepository {
                   firstName: e["prenom"],
                   lastName: e["nom"],
                   className: e["classe"]["libelle"],
-                  id: e["id"].toString(),
+                  entityId: e["id"].toString(),
                   profilePicture: e["photo"],
                   school: e["nomEtablissement"]))
               .toList();
       final AppAccount appAccount =
-          AppAccount(id: account["uid"], firstName: account["prenom"], lastName: account["nom"]);
+          AppAccount(entityId: account["uid"], firstName: account["prenom"], lastName: account["nom"]);
       appAccount.accounts.addAll(accounts);
       final Map<String, dynamic> map = {
         "appAccount": appAccount,
@@ -59,7 +59,7 @@ class _AuthRepository extends AuthRepository {
                 firstName: appAccount.firstName,
                 lastName: appAccount.lastName,
                 className: account["profile"]["classe"]["libelle"],
-                id: account["id"].toString(),
+                entityId: account["id"].toString(),
                 profilePicture: "https:" + account["profile"]["photo"],
                 school: account["nomEtablissement"])
             : accounts[0]

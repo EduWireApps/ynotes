@@ -9,8 +9,8 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
           api: api,
         );
 
-  List<Email> get emailsSent => offline.emails.filter().idEqualTo("").sortByDate().findAllSync();
-  List<Email> get emailsReceived => offline.emails.filter().not().idEqualTo("").sortByDate().findAllSync();
+  List<Email> get emailsSent => offline.emails.filter().entityIdEqualTo("").sortByDate().findAllSync();
+  List<Email> get emailsReceived => offline.emails.filter().not().entityIdEqualTo("").sortByDate().findAllSync();
   List<Email> get favoriteEmails => offline.emails.filter().favoriteEqualTo(true).sortByDate().findAllSync();
   List<Recipient> get recipients => offline.recipients.where().sortByLastName().findAllSync();
 

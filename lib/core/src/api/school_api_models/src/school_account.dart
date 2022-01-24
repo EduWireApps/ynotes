@@ -7,10 +7,10 @@ part of models;
 @Collection()
 class SchoolAccount {
   @Id()
-  int? isarId;
+  int? id;
 
   /// The account's id.
-  final String id;
+  final String entityId;
 
   /// The first name of the user.
   final String firstName;
@@ -34,7 +34,7 @@ class SchoolAccount {
       {required this.firstName,
       required this.lastName,
       required this.className,
-      required this.id,
+      required this.entityId,
       required this.profilePicture,
       required this.school});
 }
