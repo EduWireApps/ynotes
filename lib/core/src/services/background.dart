@@ -62,7 +62,7 @@ class BackgroundService {
       if (headless) {
         await SystemService.init();
       }
-      await schoolApi.fetch(online: true);
+      await schoolApi.fetch();
     } catch (e) {
       // TODO: cancel notification
       // await AppNotification.cancelNotification(a.hashCode);

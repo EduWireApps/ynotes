@@ -59,7 +59,7 @@ Future<void> main() async {
   api.documentsModule.addListener(() {
     print("${api.documentsModule.progress}%");
   });
-  final res6 = await api.homeworkModule.fetch(online: true);
+  final res6 = await api.homeworkModule.fetch();
   print("Error: ${res6.error}");
   // print(api.homeworkModule.homework.length);
   // for (var h in api.homeworkModule.homework) {

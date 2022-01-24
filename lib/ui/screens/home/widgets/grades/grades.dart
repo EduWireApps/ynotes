@@ -28,10 +28,7 @@ class _GradesSectionState extends State<GradesSection> {
 
   // We get all grades and sort them by entryDate
   List<Grade> get grades =>
-      module.currentPeriod
-          ?.grades(module.grades.where((grade) => grade.significant && !grade.custom).toList())
-          .toList() ??
-      [];
+      module.currentPeriod?.grades.where((grade) => grade.significant && !grade.custom).toList() ?? [];
 
   List<ChartElement> get chartElements {
     final List<Grade> fetchedGrades = grades;
@@ -116,8 +113,7 @@ class _GradesSectionState extends State<GradesSection> {
                               child: Row(
                                 children: [
                                   YHorizontalSpacer(YScale.s4),
-                                  ...module.currentPeriod!
-                                      .grades(module.grades)
+                                  ...module.currentPeriod!.grades
                                       .where((grade) => !grade.custom)
                                       .map((grade) => Row(
                                             children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
@@ -134,7 +130,7 @@ class _GradesSectionState extends State<GradesSection> {
                 )
               : EmptyState(
                   iconRoutePath: "/grades",
-                  onPressed: () async => await module.fetch(online: true),
+                  onPressed: () async => await module.fetch(),
                   text: "Pas de notes... Et bah alors ça bosse pas ? ;)",
                   loading: module.isFetching);
         });

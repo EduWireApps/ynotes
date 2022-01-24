@@ -71,7 +71,7 @@ class _SheetState extends State<_Sheet> {
 
   void submit(bool value) {
     _formKey.currentState!.save();
-    final SubjectsFilter filter = SubjectsFilter(name: name, subjectsIds: _subjects.map((s) => s.id).toList());
+    final SubjectsFilter filter = SubjectsFilter(name: name)..subjects.addAll(_subjects);
     Navigator.pop(context, filter);
   }
 

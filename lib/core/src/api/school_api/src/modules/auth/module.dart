@@ -70,6 +70,11 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
     await login(username: creds["username"], password: creds["password"], parameters: creds["parameters"]);
   }
 
+  Future<void> update(SchoolAccount account) async {
+    _Storage.values.schoolAccountId = account.id;
+    await _Storage.update();
+  }
+
   @override
   Future<void> _init() async {
     await super._init();

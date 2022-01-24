@@ -29,7 +29,7 @@ class _GradesPageState extends State<GradesPage> {
         builder: (context, module, _) {
           final bool empty = module.grades.isEmpty && module.currentPeriod == null;
           Future<void> refresh() async {
-            final res = await module.fetch(online: true);
+            final res = await module.fetch();
             if (res.error != null) {
               YSnackbars.error(context, message: res.error!);
             }
@@ -141,11 +141,12 @@ class __AddCustomGradeSheetState extends State<_AddCustomGradeSheet> {
   void submit(bool value) {
     _formKey.currentState!.save();
     final Grade grade = Grade.custom(
-        coefficient: coefficient,
-        outOf: outOf,
-        value: this.value,
-        subjectId: subject!.id,
-        periodId: widget.module.currentPeriod!.id);
+      coefficient: coefficient,
+      outOf: outOf,
+      value: this.value,
+    )
+      ..subject.value = subject
+      ..period.value = widget.module.currentPeriod!;
     Navigator.pop(context, grade);
   }
 

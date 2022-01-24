@@ -78,7 +78,7 @@ class _IntroConfigPageState extends State<IntroConfigPage> {
                     schoolApi.authModule.loginFromOffline();
                     // controller.loginController.login();
                     for (final module in schoolApi.modules) {
-                      module.fetch(online: true);
+                      module.fetch();
                     }
                     // controller.api!.getEvents(DateTime.now(), forceReload: false);
                     // controller.gradesController.refresh(force: true);
