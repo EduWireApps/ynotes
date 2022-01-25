@@ -35,6 +35,12 @@ class _HomePageState extends State<HomePage> {
             appBar: YAppBar(
               title: "Accueil",
               actions: [
+                YIconButton(
+                    icon: Icons.bug_report_rounded,
+                    onPressed: () {
+                      print(schoolApi.gradesModule.grades[0].subject.value);
+                    }),
+
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   YIconButton(icon: Icons.refresh_rounded, onPressed: onRefresh),
                 // if (schoolApi.emailsModule.isEnabled)

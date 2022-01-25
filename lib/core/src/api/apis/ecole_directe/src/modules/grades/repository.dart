@@ -99,13 +99,13 @@ class _GradesRepository extends Repository {
                 ..subject.value = subjects.firstWhere((s) => s.entityId == e["codeMatiere"])
                 ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"]))
           .toList();
-
-      for (final subject in subjects) {
-        subject.grades.addAll(grades.where((g) => g.subject.value == subject));
-      }
-      for (final period in periods) {
-        period.grades.addAll(grades.where((g) => g.period.value == period));
-      }
+      // for (final subject in subjects) {
+      //   subject.grades.addAll(grades.where((g) => g.subject.value == subject));
+      // }
+      // for (final period in periods) {
+      //   await period.grades.load();
+      //   period.grades.addAll(grades.where((g) => g.period.value == period));
+      // }
       return Response(data: {
         "periods": periods,
         "subjects": subjects,

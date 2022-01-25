@@ -52,6 +52,32 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       await isar.grades.clear();
       await isar.grades.putAll([...__grades, ...(await offline.grades.filter().customEqualTo(true).findAll())]);
     });
+    await offline.writeTxn((isar) async {
+      for (final grade in __grades) {
+        print(grade.subject.value);
+        await grade.subject.save();
+      }
+    });
+    for (final grade in offline.grades.where().findAllSync()) {
+      await grade.subject.load();
+    }
+    print(offline.grades.where().findAllSync().map((e) => e.subject.value).toList());
+    await offline.writeTxn((isar) async {
+      for (final subject in await isar.subjects.where().findAll()) {
+        final List<Grade> _grades =
+            (await isar.grades.where().findAll()).where((grade) => grade.subject.value == subject).toList();
+        subject.grades.addAll(_grades);
+        await subject.grades.save();
+      }
+      for (final period in await isar.periods.where().findAll()) {
+        final List<Grade> _grades =
+            (await isar.grades.where().findAll()).where((grade) => grade.period.value == period).toList();
+        period.grades.addAll(_grades);
+        await period.grades.save();
+      }
+    });
+    // print(subjects[0].grades);
+    // print(periods[0].grades);
 
     await setCurrentPeriod();
     await setCurrentFilter();
