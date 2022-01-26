@@ -9,9 +9,37 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           api: api,
         );
 
-  List<Grade> get grades => offline.grades.where().sortByEntryDate().findAllSync();
-  List<Period> get periods => offline.periods.where().findAllSync();
-  List<Subject> get subjects => offline.subjects.where().sortByName().findAllSync();
+  List<Grade> get grades {
+    final _grades = offline.grades.where().sortByEntryDate().build().findAllSync();
+    offline.writeTxnSync((isar) {
+      for (final grade in _grades) {
+        grade.subject.loadSync();
+        grade.period.loadSync();
+      }
+    });
+    return _grades;
+  }
+
+  List<Period> get periods {
+    final _periods = offline.periods.where().findAllSync();
+    offline.writeTxnSync((isar) {
+      for (final period in _periods) {
+        period.grades.loadSync();
+      }
+    });
+    return _periods;
+  }
+
+  List<Subject> get subjects {
+    final _subjects = offline.subjects.where().sortByName().findAllSync();
+    offline.writeTxnSync((isar) {
+      for (final subject in _subjects) {
+        subject.grades.loadSync();
+      }
+    });
+    return _subjects;
+  }
+
   Period? get currentPeriod =>
       offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId ?? "").findFirstSync();
   SubjectsFilter? get currentFilter =>
@@ -46,39 +74,17 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     // Saving data.
     await offline.writeTxn((isar) async {
       await isar.periods.clear();
-      await isar.periods.putAll(__periods);
       await isar.subjects.clear();
-      await isar.subjects.putAll(__subjects);
+      final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
       await isar.grades.clear();
-      await isar.grades.putAll([...__grades, ...(await offline.grades.filter().customEqualTo(true).findAll())]);
-    });
-    await offline.writeTxn((isar) async {
+      await isar.grades.putAll(__grades);
+      await isar.grades.putAll(customGrades);
       for (final grade in __grades) {
-        print(grade.subject.value);
         await grade.subject.save();
+        await grade.period.save();
       }
     });
-    for (final grade in offline.grades.where().findAllSync()) {
-      await grade.subject.load();
-    }
-    print(offline.grades.where().findAllSync().map((e) => e.subject.value).toList());
-    await offline.writeTxn((isar) async {
-      for (final subject in await isar.subjects.where().findAll()) {
-        final List<Grade> _grades =
-            (await isar.grades.where().findAll()).where((grade) => grade.subject.value == subject).toList();
-        subject.grades.addAll(_grades);
-        await subject.grades.save();
-      }
-      for (final period in await isar.periods.where().findAll()) {
-        final List<Grade> _grades =
-            (await isar.grades.where().findAll()).where((grade) => grade.period.value == period).toList();
-        period.grades.addAll(_grades);
-        await period.grades.save();
-      }
-    });
-    // print(subjects[0].grades);
-    // print(periods[0].grades);
-
+    print(await offline.periods.where().findAll());
     await setCurrentPeriod();
     await setCurrentFilter();
     fetching = false;

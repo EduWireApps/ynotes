@@ -83,5 +83,6 @@ class Subject {
     required this.average,
   });
 
+  @Backlink(to: "subject")
   final IsarLinks<Grade> grades = IsarLinks<Grade>();
 }

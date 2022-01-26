@@ -35,6 +35,7 @@ class Period {
   /// The minimum average of the class for this period.
   final double minAverage;
 
+  @Backlink(to: "period")
   final IsarLinks<Grade> grades = IsarLinks<Grade>();
 
   Period({

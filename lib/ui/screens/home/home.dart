@@ -37,8 +37,11 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 YIconButton(
                     icon: Icons.bug_report_rounded,
-                    onPressed: () {
-                      print(schoolApi.gradesModule.grades[0].subject.value);
+                    onPressed: () async {
+                      final x = schoolApi.gradesModule.periods[0];
+                      print(x.name);
+                      await x.grades.load();
+                      print(x.grades.toList());
                     }),
 
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)

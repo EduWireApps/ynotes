@@ -1220,7 +1220,7 @@ extension GetSubjectCollection on Isar {
 final SubjectSchema = CollectionSchema(
   name: 'Subject',
   schema:
-      '{"name":"Subject","properties":[{"name":"average","type":"Double"},{"name":"classAverage","type":"Double"},{"name":"coefficient","type":"Double"},{"name":"color","type":"String"},{"name":"entityId","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"teachers","type":"String"}],"indexes":[],"links":[{"name":"grades","target":"Grade"}]}',
+      '{"name":"Subject","properties":[{"name":"average","type":"Double"},{"name":"classAverage","type":"Double"},{"name":"coefficient","type":"Double"},{"name":"color","type":"String"},{"name":"entityId","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"teachers","type":"String"}],"indexes":[],"links":[]}',
   adapter: const _SubjectAdapter(),
   idName: 'id',
   propertyIds: {
@@ -1236,8 +1236,8 @@ final SubjectSchema = CollectionSchema(
   },
   indexIds: {},
   indexTypes: {},
-  linkIds: {'grades': 0},
-  backlinkIds: {},
+  linkIds: {},
+  backlinkIds: {'grades': 0},
   linkedCollections: ['Grade'],
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
@@ -1365,7 +1365,7 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
       isar.getCollection<Grade>("Grade"),
       object,
       "grades",
-      false,
+      true,
     );
   }
 }
@@ -2902,7 +2902,7 @@ extension GetPeriodCollection on Isar {
 final PeriodSchema = CollectionSchema(
   name: 'Period',
   schema:
-      '{"name":"Period","properties":[{"name":"classAverage","type":"Double"},{"name":"endDate","type":"Long"},{"name":"entityId","type":"String"},{"name":"headTeacher","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"overallAverage","type":"Double"},{"name":"startDate","type":"Long"}],"indexes":[],"links":[{"name":"grades","target":"Grade"}]}',
+      '{"name":"Period","properties":[{"name":"classAverage","type":"Double"},{"name":"endDate","type":"Long"},{"name":"entityId","type":"String"},{"name":"headTeacher","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"overallAverage","type":"Double"},{"name":"startDate","type":"Long"}],"indexes":[],"links":[]}',
   adapter: const _PeriodAdapter(),
   idName: 'id',
   propertyIds: {
@@ -2918,8 +2918,8 @@ final PeriodSchema = CollectionSchema(
   },
   indexIds: {},
   indexTypes: {},
-  linkIds: {'grades': 0},
-  backlinkIds: {},
+  linkIds: {},
+  backlinkIds: {'grades': 0},
   linkedCollections: ['Grade'],
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
@@ -3042,7 +3042,7 @@ class _PeriodAdapter extends IsarTypeAdapter<Period> {
       isar.getCollection<Grade>("Grade"),
       object,
       "grades",
-      false,
+      true,
     );
   }
 }
