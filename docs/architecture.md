@@ -85,7 +85,29 @@ Pour accéder à l'API du service scolaire sélectionner, il faut utiliser la va
 
 ## `/core`
 
-TBD
+Ce dossier contient le code qui n'a pas de lien avec l'interface. Il est divisé en plusieurs catégories:
+
+- **api:** Contient le code en relation avec les apis des services scolaires. [En savoir plus](apis.md)
+- **controllers:** Contient des classes globales et/ou spécifiques à un service scolaire (Ex: Pronote)
+- **services:**
+- **utilities:** Contient des classes utilitaires.
+
+Lors de leur utilisation, il faut utiliser le fichier qui exporte les différents fichiers plutôt que le fichier lui-même.
+
+Exemple:
+
+```dart
+import 'package:ynotes/core/utilities.dart';
+```
+au lieu de
+
+```dart
+import 'package:ynotes/core/src/utilities/kvs.dart';
+```
+
+offline
+
+extensions
 
 ## `/ui`
 
