@@ -94,5 +94,5 @@ class Grade {
 
   final IsarLink<Subject> subject = IsarLink<Subject>();
 
-  final IsarLink<Period> period = IsarLink<Period>();
+  IsarLink<Period> period = IsarLink<Period>();
 }

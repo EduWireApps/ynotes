@@ -21,13 +21,24 @@ class GradesPage extends StatefulWidget {
 class _GradesPageState extends State<GradesPage> {
   final GradesModule module = schoolApi.gradesModule;
   bool simulate = false;
+  int getInitialIndex() {
+    if (module.currentPeriod != null) {
+      ///Note : asserts the current period EXISTS ! The currentPeriod could eventually be an old period removed but persisted anyway
+      ///TO DO : move it to backend ? (we shouldn't have to test it here)
+      if (module.periods.contains(module.currentPeriod!)) {
+        return module.periods.indexOf(module.currentPeriod!);
+      }
+    }
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierConsumer<GradesModule>(
         controller: module,
         builder: (context, module, _) {
-          final bool empty = module.grades.isEmpty && module.currentPeriod == null;
+          final bool empty =
+              module.grades.isEmpty && module.currentPeriod == null;
           Future<void> refresh() async {
             final res = await module.fetch();
             if (res.error != null) {
@@ -47,16 +58,19 @@ class _GradesPageState extends State<GradesPage> {
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   YIconButton(icon: Icons.refresh_rounded, onPressed: refresh),
               ],
-              bottom: empty && module.isFetching ? const YLinearProgressBar() : null,
+              bottom: empty && module.isFetching
+                  ? const YLinearProgressBar()
+                  : null,
             ),
             useBottomNavigation: false,
             scrollable: !empty,
-            navigationInitialIndex: module.currentPeriod == null ? 0 : module.periods.indexOf(module.currentPeriod!),
+            navigationInitialIndex: getInitialIndex(),
             navigationElements: empty
                 ? null
                 : module.periods
-                    .map((period) =>
-                        YNavigationElement(label: period.name, widget: PeriodPage(module, period, simulate)))
+                    .map((period) => YNavigationElement(
+                        label: period.name,
+                        widget: PeriodPage(module, period, simulate)))
                     .toList(),
             body: !empty
                 ? null
@@ -67,8 +81,13 @@ class _GradesPageState extends State<GradesPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(AppRouter.routes.where((element) => element.path == "/grades").first.icon,
-                              color: theme.colors.foregroundColor, size: YScale.s32),
+                          Icon(
+                              AppRouter.routes
+                                  .where((element) => element.path == "/grades")
+                                  .first
+                                  .icon,
+                              color: theme.colors.foregroundColor,
+                              size: YScale.s32),
                           YVerticalSpacer(YScale.s4),
                           Text(
                             "Pas de notes !",
@@ -96,7 +115,9 @@ class _GradesPageState extends State<GradesPage> {
                             icon: Icons.add_rounded,
                             onPressed: () async {
                               final Grade? grade =
-                                  await YModalBottomSheets.show(context: context, child: _AddCustomGradeSheet(module));
+                                  await YModalBottomSheets.show(
+                                      context: context,
+                                      child: _AddCustomGradeSheet(module));
                               if (grade != null) {
                                 await module.addCustomGrade(grade);
                               }
@@ -150,7 +171,8 @@ class __AddCustomGradeSheetState extends State<_AddCustomGradeSheet> {
     Navigator.pop(context, grade);
   }
 
-  double? parseValue(String value) => double.tryParse(value.replaceAll(",", "."));
+  double? parseValue(String value) =>
+      double.tryParse(value.replaceAll(",", "."));
 
   @override
   Widget build(BuildContext context) {
@@ -244,9 +266,11 @@ class __AddCustomGradeSheetState extends State<_AddCustomGradeSheet> {
             YVerticalSpacer(YScale.s4),
             YButton(
                 onPressed: () async {
-                  final List<YConfirmationDialogOption<Subject>> options = widget.module.subjects
-                      .map((subject) => YConfirmationDialogOption(value: subject, label: subject.name))
-                      .toList();
+                  final List<YConfirmationDialogOption<Subject>> options =
+                      widget.module.subjects
+                          .map((subject) => YConfirmationDialogOption(
+                              value: subject, label: subject.name))
+                          .toList();
                   final res = await YDialogs.getConfirmation(
                       context,
                       YConfirmationDialog(
@@ -275,7 +299,8 @@ class __AddCustomGradeSheetState extends State<_AddCustomGradeSheet> {
               block: true,
               isDisabled: value.isNaN || subject == null,
               onPressedDisabled: () {
-                YSnackbars.error(context, message: "La note et la matière doivent être renseignées");
+                YSnackbars.error(context,
+                    message: "La note et la matière doivent être renseignées");
               },
             )
           ],

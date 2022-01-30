@@ -43,17 +43,15 @@ final GradeSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [obj.period, obj.subject],
-  version: 0,
+  version: 1,
 );
 
 class _GradeAdapter extends IsarTypeAdapter<Grade> {
   const _GradeAdapter();
 
   @override
-  int serialize(IsarCollection<Grade> collection, IsarRawObject rawObj,
-      Grade object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Grade> collection, IsarRawObject rawObj,
+      Grade object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.classAverage;
     final _classAverage = value0;
@@ -85,19 +83,7 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
     final _value = value12;
     final size = dynamicSize + 92;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 92);
@@ -115,7 +101,6 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
     writer.writeBytes(offsets[11], _type);
     writer.writeDouble(offsets[12], _value);
     attachLinks(collection.isar, object);
-    return bufferSize;
   }
 
   @override
@@ -197,13 +182,13 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
 
 extension GradeQueryWhereSort on QueryBuilder<Grade, Grade, QWhere> {
   QueryBuilder<Grade, Grade, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension GradeQueryWhere on QueryBuilder<Grade, Grade, QWhereClause> {
   QueryBuilder<Grade, Grade, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -214,21 +199,21 @@ extension GradeQueryWhere on QueryBuilder<Grade, Grade, QWhereClause> {
 
   QueryBuilder<Grade, Grade, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -240,7 +225,7 @@ extension GradeQueryWhere on QueryBuilder<Grade, Grade, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -251,7 +236,7 @@ extension GradeQueryWhere on QueryBuilder<Grade, Grade, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -264,7 +249,7 @@ extension GradeQueryWhere on QueryBuilder<Grade, Grade, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -277,7 +262,7 @@ extension GradeQueryWhere on QueryBuilder<Grade, Grade, QWhereClause> {
 extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'classAverage',
@@ -287,7 +272,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'classAverage',
@@ -297,7 +282,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'classAverage',
       lower: lower,
       includeLower: false,
@@ -308,7 +293,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classMaxGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'classMax',
@@ -318,7 +303,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classMaxLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'classMax',
@@ -328,7 +313,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classMaxBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'classMax',
       lower: lower,
       includeLower: false,
@@ -339,7 +324,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classMinGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'classMin',
@@ -349,7 +334,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classMinLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'classMin',
@@ -359,7 +344,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> classMinBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'classMin',
       lower: lower,
       includeLower: false,
@@ -370,7 +355,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> coefficientGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'coefficient',
@@ -380,7 +365,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> coefficientLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'coefficient',
@@ -390,7 +375,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> coefficientBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'coefficient',
       lower: lower,
       includeLower: false,
@@ -400,7 +385,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
   }
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> customEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'custom',
       value: value,
@@ -409,7 +394,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> dateEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'date',
       value: value,
@@ -420,7 +405,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'date',
@@ -432,7 +417,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'date',
@@ -446,7 +431,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'date',
       lower: lower,
       includeLower: includeLower,
@@ -457,7 +442,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> entryDateEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entryDate',
       value: value,
@@ -468,7 +453,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entryDate',
@@ -480,7 +465,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entryDate',
@@ -494,7 +479,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entryDate',
       lower: lower,
       includeLower: includeLower,
@@ -504,7 +489,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
   }
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -512,7 +497,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
   }
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> idEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -523,7 +508,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -535,7 +520,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -549,7 +534,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -562,7 +547,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -575,7 +560,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -589,7 +574,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -605,7 +590,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -619,7 +604,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -631,7 +616,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -641,7 +626,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> nameContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -651,7 +636,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> nameMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -661,7 +646,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> outOfGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'outOf',
@@ -671,7 +656,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> outOfLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'outOf',
@@ -681,7 +666,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> outOfBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'outOf',
       lower: lower,
       includeLower: false,
@@ -692,7 +677,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> realValueGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'realValue',
@@ -702,7 +687,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> realValueLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'realValue',
@@ -712,7 +697,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> realValueBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'realValue',
       lower: lower,
       includeLower: false,
@@ -723,7 +708,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> significantEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'significant',
       value: value,
@@ -734,7 +719,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'type',
       value: value,
@@ -747,7 +732,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'type',
@@ -761,7 +746,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'type',
@@ -777,7 +762,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'type',
       lower: lower,
       includeLower: includeLower,
@@ -791,7 +776,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'type',
       value: value,
@@ -803,7 +788,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'type',
       value: value,
@@ -813,7 +798,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> typeContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'type',
       value: value,
@@ -823,7 +808,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> typeMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'type',
       value: pattern,
@@ -833,7 +818,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> valueGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'value',
@@ -843,7 +828,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> valueLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'value',
@@ -853,7 +838,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> valueBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'value',
       lower: lower,
       includeLower: false,
@@ -1153,59 +1138,59 @@ extension GradeQueryWhereDistinct on QueryBuilder<Grade, Grade, QDistinct> {
 
 extension GradeQueryProperty on QueryBuilder<Grade, Grade, QQueryProperty> {
   QueryBuilder<Grade, double, QQueryOperations> classAverageProperty() {
-    return addPropertyName('classAverage');
+    return addPropertyNameInternal('classAverage');
   }
 
   QueryBuilder<Grade, double, QQueryOperations> classMaxProperty() {
-    return addPropertyName('classMax');
+    return addPropertyNameInternal('classMax');
   }
 
   QueryBuilder<Grade, double, QQueryOperations> classMinProperty() {
-    return addPropertyName('classMin');
+    return addPropertyNameInternal('classMin');
   }
 
   QueryBuilder<Grade, double, QQueryOperations> coefficientProperty() {
-    return addPropertyName('coefficient');
+    return addPropertyNameInternal('coefficient');
   }
 
   QueryBuilder<Grade, bool, QQueryOperations> customProperty() {
-    return addPropertyName('custom');
+    return addPropertyNameInternal('custom');
   }
 
   QueryBuilder<Grade, DateTime, QQueryOperations> dateProperty() {
-    return addPropertyName('date');
+    return addPropertyNameInternal('date');
   }
 
   QueryBuilder<Grade, DateTime, QQueryOperations> entryDateProperty() {
-    return addPropertyName('entryDate');
+    return addPropertyNameInternal('entryDate');
   }
 
   QueryBuilder<Grade, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Grade, String, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<Grade, double, QQueryOperations> outOfProperty() {
-    return addPropertyName('outOf');
+    return addPropertyNameInternal('outOf');
   }
 
   QueryBuilder<Grade, double, QQueryOperations> realValueProperty() {
-    return addPropertyName('realValue');
+    return addPropertyNameInternal('realValue');
   }
 
   QueryBuilder<Grade, bool, QQueryOperations> significantProperty() {
-    return addPropertyName('significant');
+    return addPropertyNameInternal('significant');
   }
 
   QueryBuilder<Grade, String, QQueryOperations> typeProperty() {
-    return addPropertyName('type');
+    return addPropertyNameInternal('type');
   }
 
   QueryBuilder<Grade, double, QQueryOperations> valueProperty() {
-    return addPropertyName('value');
+    return addPropertyNameInternal('value');
   }
 }
 
@@ -1242,7 +1227,7 @@ final SubjectSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [obj.grades],
-  version: 0,
+  version: 1,
 );
 
 class _SubjectAdapter extends IsarTypeAdapter<Subject> {
@@ -1251,10 +1236,8 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
   static const _yTColorConverter = YTColorConverter();
 
   @override
-  int serialize(IsarCollection<Subject> collection, IsarRawObject rawObj,
-      Subject object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Subject> collection, IsarRawObject rawObj,
+      Subject object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.average;
     final _average = value0;
@@ -1280,19 +1263,7 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
     dynamicSize += _teachers.length;
     final size = dynamicSize + 74;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 74);
@@ -1306,7 +1277,6 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
     writer.writeBytes(offsets[7], _name);
     writer.writeBytes(offsets[8], _teachers);
     attachLinks(collection.isar, object);
-    return bufferSize;
   }
 
   @override
@@ -1372,13 +1342,13 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
 
 extension SubjectQueryWhereSort on QueryBuilder<Subject, Subject, QWhere> {
   QueryBuilder<Subject, Subject, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension SubjectQueryWhere on QueryBuilder<Subject, Subject, QWhereClause> {
   QueryBuilder<Subject, Subject, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -1389,21 +1359,21 @@ extension SubjectQueryWhere on QueryBuilder<Subject, Subject, QWhereClause> {
 
   QueryBuilder<Subject, Subject, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -1415,7 +1385,7 @@ extension SubjectQueryWhere on QueryBuilder<Subject, Subject, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -1426,7 +1396,7 @@ extension SubjectQueryWhere on QueryBuilder<Subject, Subject, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -1439,7 +1409,7 @@ extension SubjectQueryWhere on QueryBuilder<Subject, Subject, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -1453,7 +1423,7 @@ extension SubjectQueryFilter
     on QueryBuilder<Subject, Subject, QFilterCondition> {
   QueryBuilder<Subject, Subject, QAfterFilterCondition> averageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'average',
@@ -1463,7 +1433,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> averageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'average',
@@ -1473,7 +1443,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> averageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'average',
       lower: lower,
       includeLower: false,
@@ -1484,7 +1454,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> classAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'classAverage',
@@ -1494,7 +1464,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> classAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'classAverage',
@@ -1504,7 +1474,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> classAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'classAverage',
       lower: lower,
       includeLower: false,
@@ -1515,7 +1485,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> coefficientGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'coefficient',
@@ -1525,7 +1495,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> coefficientLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'coefficient',
@@ -1535,7 +1505,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> coefficientBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'coefficient',
       lower: lower,
       includeLower: false,
@@ -1548,7 +1518,7 @@ extension SubjectQueryFilter
     YTColor value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'color',
       value: _SubjectAdapter._yTColorConverter.toIsar(value),
@@ -1561,7 +1531,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'color',
@@ -1575,7 +1545,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'color',
@@ -1591,7 +1561,7 @@ extension SubjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'color',
       lower: _SubjectAdapter._yTColorConverter.toIsar(lower),
       includeLower: includeLower,
@@ -1605,7 +1575,7 @@ extension SubjectQueryFilter
     YTColor value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'color',
       value: _SubjectAdapter._yTColorConverter.toIsar(value),
@@ -1617,7 +1587,7 @@ extension SubjectQueryFilter
     YTColor value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'color',
       value: _SubjectAdapter._yTColorConverter.toIsar(value),
@@ -1628,7 +1598,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> colorContains(
       YTColor value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'color',
       value: _SubjectAdapter._yTColorConverter.toIsar(value),
@@ -1639,7 +1609,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> colorMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'color',
       value: pattern,
@@ -1651,7 +1621,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -1664,7 +1634,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -1678,7 +1648,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -1694,7 +1664,7 @@ extension SubjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -1708,7 +1678,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -1720,7 +1690,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -1731,7 +1701,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> entityIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -1742,7 +1712,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> entityIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -1751,7 +1721,7 @@ extension SubjectQueryFilter
   }
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -1759,7 +1729,7 @@ extension SubjectQueryFilter
   }
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> idEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -1770,7 +1740,7 @@ extension SubjectQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -1782,7 +1752,7 @@ extension SubjectQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -1796,7 +1766,7 @@ extension SubjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -1807,7 +1777,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> maxAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'maxAverage',
@@ -1817,7 +1787,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> maxAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'maxAverage',
@@ -1827,7 +1797,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> maxAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'maxAverage',
       lower: lower,
       includeLower: false,
@@ -1838,7 +1808,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> minAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'minAverage',
@@ -1848,7 +1818,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> minAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'minAverage',
@@ -1858,7 +1828,7 @@ extension SubjectQueryFilter
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> minAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'minAverage',
       lower: lower,
       includeLower: false,
@@ -1871,7 +1841,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -1884,7 +1854,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -1898,7 +1868,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -1914,7 +1884,7 @@ extension SubjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -1928,7 +1898,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -1940,7 +1910,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -1951,7 +1921,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -1962,7 +1932,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -1974,7 +1944,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'teachers',
       value: value,
@@ -1987,7 +1957,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'teachers',
@@ -2001,7 +1971,7 @@ extension SubjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'teachers',
@@ -2017,7 +1987,7 @@ extension SubjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'teachers',
       lower: lower,
       includeLower: includeLower,
@@ -2031,7 +2001,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'teachers',
       value: value,
@@ -2043,7 +2013,7 @@ extension SubjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'teachers',
       value: value,
@@ -2054,7 +2024,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> teachersContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'teachers',
       value: value,
@@ -2065,7 +2035,7 @@ extension SubjectQueryFilter
   QueryBuilder<Subject, Subject, QAfterFilterCondition> teachersMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'teachers',
       value: pattern,
@@ -2289,43 +2259,43 @@ extension SubjectQueryWhereDistinct
 extension SubjectQueryProperty
     on QueryBuilder<Subject, Subject, QQueryProperty> {
   QueryBuilder<Subject, double, QQueryOperations> averageProperty() {
-    return addPropertyName('average');
+    return addPropertyNameInternal('average');
   }
 
   QueryBuilder<Subject, double, QQueryOperations> classAverageProperty() {
-    return addPropertyName('classAverage');
+    return addPropertyNameInternal('classAverage');
   }
 
   QueryBuilder<Subject, double, QQueryOperations> coefficientProperty() {
-    return addPropertyName('coefficient');
+    return addPropertyNameInternal('coefficient');
   }
 
   QueryBuilder<Subject, YTColor, QQueryOperations> colorProperty() {
-    return addPropertyName('color');
+    return addPropertyNameInternal('color');
   }
 
   QueryBuilder<Subject, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<Subject, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Subject, double, QQueryOperations> maxAverageProperty() {
-    return addPropertyName('maxAverage');
+    return addPropertyNameInternal('maxAverage');
   }
 
   QueryBuilder<Subject, double, QQueryOperations> minAverageProperty() {
-    return addPropertyName('minAverage');
+    return addPropertyNameInternal('minAverage');
   }
 
   QueryBuilder<Subject, String, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<Subject, String, QQueryOperations> teachersProperty() {
-    return addPropertyName('teachers');
+    return addPropertyNameInternal('teachers');
   }
 }
 
@@ -2352,17 +2322,19 @@ final SubjectsFilterSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [obj.subjects],
-  version: 0,
+  version: 1,
 );
 
 class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
   const _SubjectsFilterAdapter();
 
   @override
-  int serialize(IsarCollection<SubjectsFilter> collection, IsarRawObject rawObj,
-      SubjectsFilter object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(
+      IsarCollection<SubjectsFilter> collection,
+      IsarRawObject rawObj,
+      SubjectsFilter object,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.entityId;
     IsarUint8List? _entityId;
@@ -2375,26 +2347,13 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
     dynamicSize += _name.length;
     final size = dynamicSize + 18;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 18);
     writer.writeBytes(offsets[0], _entityId);
     writer.writeBytes(offsets[1], _name);
     attachLinks(collection.isar, object);
-    return bufferSize;
   }
 
   @override
@@ -2438,7 +2397,7 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
 extension SubjectsFilterQueryWhereSort
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QWhere> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
@@ -2446,7 +2405,7 @@ extension SubjectsFilterQueryWhere
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QWhereClause> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhereClause> idEqualTo(
       int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -2458,21 +2417,21 @@ extension SubjectsFilterQueryWhere
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhereClause> idNotEqualTo(
       int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -2484,7 +2443,7 @@ extension SubjectsFilterQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -2495,7 +2454,7 @@ extension SubjectsFilterQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -2508,7 +2467,7 @@ extension SubjectsFilterQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -2522,7 +2481,7 @@ extension SubjectsFilterQueryFilter
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QFilterCondition> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       entityIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'entityId',
       value: null,
@@ -2534,7 +2493,7 @@ extension SubjectsFilterQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -2548,7 +2507,7 @@ extension SubjectsFilterQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -2563,7 +2522,7 @@ extension SubjectsFilterQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -2580,7 +2539,7 @@ extension SubjectsFilterQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -2595,7 +2554,7 @@ extension SubjectsFilterQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -2608,7 +2567,7 @@ extension SubjectsFilterQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -2618,7 +2577,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       entityIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -2628,7 +2587,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       entityIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -2638,7 +2597,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -2647,7 +2606,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition> idEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -2659,7 +2618,7 @@ extension SubjectsFilterQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -2672,7 +2631,7 @@ extension SubjectsFilterQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -2686,7 +2645,7 @@ extension SubjectsFilterQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -2700,7 +2659,7 @@ extension SubjectsFilterQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -2714,7 +2673,7 @@ extension SubjectsFilterQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -2729,7 +2688,7 @@ extension SubjectsFilterQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -2746,7 +2705,7 @@ extension SubjectsFilterQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -2761,7 +2720,7 @@ extension SubjectsFilterQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -2774,7 +2733,7 @@ extension SubjectsFilterQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -2784,7 +2743,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       nameContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -2794,7 +2753,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       nameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -2879,15 +2838,15 @@ extension SubjectsFilterQueryWhereDistinct
 extension SubjectsFilterQueryProperty
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QQueryProperty> {
   QueryBuilder<SubjectsFilter, String?, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<SubjectsFilter, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<SubjectsFilter, String, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 }
 
@@ -2924,17 +2883,15 @@ final PeriodSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [obj.grades],
-  version: 0,
+  version: 1,
 );
 
 class _PeriodAdapter extends IsarTypeAdapter<Period> {
   const _PeriodAdapter();
 
   @override
-  int serialize(IsarCollection<Period> collection, IsarRawObject rawObj,
-      Period object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Period> collection, IsarRawObject rawObj,
+      Period object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.classAverage;
     final _classAverage = value0;
@@ -2959,19 +2916,7 @@ class _PeriodAdapter extends IsarTypeAdapter<Period> {
     final _startDate = value8;
     final size = dynamicSize + 74;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 74);
@@ -2985,7 +2930,6 @@ class _PeriodAdapter extends IsarTypeAdapter<Period> {
     writer.writeDouble(offsets[7], _overallAverage);
     writer.writeDateTime(offsets[8], _startDate);
     attachLinks(collection.isar, object);
-    return bufferSize;
   }
 
   @override
@@ -3049,13 +2993,13 @@ class _PeriodAdapter extends IsarTypeAdapter<Period> {
 
 extension PeriodQueryWhereSort on QueryBuilder<Period, Period, QWhere> {
   QueryBuilder<Period, Period, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension PeriodQueryWhere on QueryBuilder<Period, Period, QWhereClause> {
   QueryBuilder<Period, Period, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -3066,21 +3010,21 @@ extension PeriodQueryWhere on QueryBuilder<Period, Period, QWhereClause> {
 
   QueryBuilder<Period, Period, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -3092,7 +3036,7 @@ extension PeriodQueryWhere on QueryBuilder<Period, Period, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -3103,7 +3047,7 @@ extension PeriodQueryWhere on QueryBuilder<Period, Period, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -3116,7 +3060,7 @@ extension PeriodQueryWhere on QueryBuilder<Period, Period, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -3129,7 +3073,7 @@ extension PeriodQueryWhere on QueryBuilder<Period, Period, QWhereClause> {
 extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   QueryBuilder<Period, Period, QAfterFilterCondition> classAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'classAverage',
@@ -3139,7 +3083,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> classAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'classAverage',
@@ -3149,7 +3093,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> classAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'classAverage',
       lower: lower,
       includeLower: false,
@@ -3160,7 +3104,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> endDateEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'endDate',
       value: value,
@@ -3171,7 +3115,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'endDate',
@@ -3183,7 +3127,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'endDate',
@@ -3197,7 +3141,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'endDate',
       lower: lower,
       includeLower: includeLower,
@@ -3210,7 +3154,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -3223,7 +3167,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -3237,7 +3181,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -3253,7 +3197,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -3267,7 +3211,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -3279,7 +3223,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -3290,7 +3234,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   QueryBuilder<Period, Period, QAfterFilterCondition> entityIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -3301,7 +3245,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   QueryBuilder<Period, Period, QAfterFilterCondition> entityIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -3313,7 +3257,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'headTeacher',
       value: value,
@@ -3326,7 +3270,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'headTeacher',
@@ -3340,7 +3284,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'headTeacher',
@@ -3356,7 +3300,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'headTeacher',
       lower: lower,
       includeLower: includeLower,
@@ -3370,7 +3314,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'headTeacher',
       value: value,
@@ -3382,7 +3326,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'headTeacher',
       value: value,
@@ -3393,7 +3337,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   QueryBuilder<Period, Period, QAfterFilterCondition> headTeacherContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'headTeacher',
       value: value,
@@ -3404,7 +3348,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   QueryBuilder<Period, Period, QAfterFilterCondition> headTeacherMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'headTeacher',
       value: pattern,
@@ -3413,7 +3357,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   }
 
   QueryBuilder<Period, Period, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -3421,7 +3365,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   }
 
   QueryBuilder<Period, Period, QAfterFilterCondition> idEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -3432,7 +3376,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -3444,7 +3388,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -3458,7 +3402,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -3469,7 +3413,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> maxAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'maxAverage',
@@ -3479,7 +3423,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> maxAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'maxAverage',
@@ -3489,7 +3433,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> maxAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'maxAverage',
       lower: lower,
       includeLower: false,
@@ -3500,7 +3444,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> minAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'minAverage',
@@ -3510,7 +3454,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> minAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'minAverage',
@@ -3520,7 +3464,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> minAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'minAverage',
       lower: lower,
       includeLower: false,
@@ -3533,7 +3477,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -3546,7 +3490,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -3560,7 +3504,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -3576,7 +3520,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -3590,7 +3534,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -3602,7 +3546,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -3612,7 +3556,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> nameContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -3623,7 +3567,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   QueryBuilder<Period, Period, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -3633,7 +3577,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> overallAverageGreaterThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'overallAverage',
@@ -3643,7 +3587,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> overallAverageLessThan(
       double value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'overallAverage',
@@ -3653,7 +3597,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> overallAverageBetween(
       double lower, double upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'overallAverage',
       lower: lower,
       includeLower: false,
@@ -3664,7 +3608,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
 
   QueryBuilder<Period, Period, QAfterFilterCondition> startDateEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'startDate',
       value: value,
@@ -3675,7 +3619,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'startDate',
@@ -3687,7 +3631,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'startDate',
@@ -3701,7 +3645,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'startDate',
       lower: lower,
       includeLower: includeLower,
@@ -3923,43 +3867,43 @@ extension PeriodQueryWhereDistinct on QueryBuilder<Period, Period, QDistinct> {
 
 extension PeriodQueryProperty on QueryBuilder<Period, Period, QQueryProperty> {
   QueryBuilder<Period, double, QQueryOperations> classAverageProperty() {
-    return addPropertyName('classAverage');
+    return addPropertyNameInternal('classAverage');
   }
 
   QueryBuilder<Period, DateTime, QQueryOperations> endDateProperty() {
-    return addPropertyName('endDate');
+    return addPropertyNameInternal('endDate');
   }
 
   QueryBuilder<Period, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<Period, String, QQueryOperations> headTeacherProperty() {
-    return addPropertyName('headTeacher');
+    return addPropertyNameInternal('headTeacher');
   }
 
   QueryBuilder<Period, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Period, double, QQueryOperations> maxAverageProperty() {
-    return addPropertyName('maxAverage');
+    return addPropertyNameInternal('maxAverage');
   }
 
   QueryBuilder<Period, double, QQueryOperations> minAverageProperty() {
-    return addPropertyName('minAverage');
+    return addPropertyNameInternal('minAverage');
   }
 
   QueryBuilder<Period, String, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<Period, double, QQueryOperations> overallAverageProperty() {
-    return addPropertyName('overallAverage');
+    return addPropertyNameInternal('overallAverage');
   }
 
   QueryBuilder<Period, DateTime, QQueryOperations> startDateProperty() {
-    return addPropertyName('startDate');
+    return addPropertyNameInternal('startDate');
   }
 }
 
@@ -3992,17 +3936,15 @@ final AppAccountSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [obj.accounts],
-  version: 0,
+  version: 1,
 );
 
 class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
   const _AppAccountAdapter();
 
   @override
-  int serialize(IsarCollection<AppAccount> collection, IsarRawObject rawObj,
-      AppAccount object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<AppAccount> collection, IsarRawObject rawObj,
+      AppAccount object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.entityId;
     final _entityId = BinaryWriter.utf8Encoder.convert(value0);
@@ -4020,19 +3962,7 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
     dynamicSize += _lastName.length;
     final size = dynamicSize + 35;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 35);
@@ -4042,7 +3972,6 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
     writer.writeBool(offsets[3], _isParent);
     writer.writeBytes(offsets[4], _lastName);
     attachLinks(collection.isar, object);
-    return bufferSize;
   }
 
   @override
@@ -4093,14 +4022,14 @@ class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
 extension AppAccountQueryWhereSort
     on QueryBuilder<AppAccount, AppAccount, QWhere> {
   QueryBuilder<AppAccount, AppAccount, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension AppAccountQueryWhere
     on QueryBuilder<AppAccount, AppAccount, QWhereClause> {
   QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -4112,21 +4041,21 @@ extension AppAccountQueryWhere
   QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idNotEqualTo(
       int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -4138,7 +4067,7 @@ extension AppAccountQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -4149,7 +4078,7 @@ extension AppAccountQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -4162,7 +4091,7 @@ extension AppAccountQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -4178,7 +4107,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -4192,7 +4121,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -4206,7 +4135,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -4222,7 +4151,7 @@ extension AppAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -4237,7 +4166,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -4249,7 +4178,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -4260,7 +4189,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> entityIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -4271,7 +4200,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> entityIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -4283,7 +4212,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'firstName',
       value: value,
@@ -4297,7 +4226,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'firstName',
@@ -4311,7 +4240,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'firstName',
@@ -4327,7 +4256,7 @@ extension AppAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'firstName',
       lower: lower,
       includeLower: includeLower,
@@ -4342,7 +4271,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'firstName',
       value: value,
@@ -4354,7 +4283,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'firstName',
       value: value,
@@ -4365,7 +4294,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> firstNameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'firstName',
       value: value,
@@ -4376,7 +4305,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> firstNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'firstName',
       value: pattern,
@@ -4388,7 +4317,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'fullName',
       value: value,
@@ -4402,7 +4331,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'fullName',
@@ -4416,7 +4345,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'fullName',
@@ -4432,7 +4361,7 @@ extension AppAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'fullName',
       lower: lower,
       includeLower: includeLower,
@@ -4447,7 +4376,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'fullName',
       value: value,
@@ -4459,7 +4388,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'fullName',
       value: value,
@@ -4470,7 +4399,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> fullNameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'fullName',
       value: value,
@@ -4481,7 +4410,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> fullNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'fullName',
       value: pattern,
@@ -4490,7 +4419,7 @@ extension AppAccountQueryFilter
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -4499,7 +4428,7 @@ extension AppAccountQueryFilter
 
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -4510,7 +4439,7 @@ extension AppAccountQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -4522,7 +4451,7 @@ extension AppAccountQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -4536,7 +4465,7 @@ extension AppAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -4547,7 +4476,7 @@ extension AppAccountQueryFilter
 
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> isParentEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isParent',
       value: value,
@@ -4558,7 +4487,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'lastName',
       value: value,
@@ -4572,7 +4501,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'lastName',
@@ -4586,7 +4515,7 @@ extension AppAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'lastName',
@@ -4602,7 +4531,7 @@ extension AppAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'lastName',
       lower: lower,
       includeLower: includeLower,
@@ -4617,7 +4546,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'lastName',
       value: value,
@@ -4629,7 +4558,7 @@ extension AppAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'lastName',
       value: value,
@@ -4640,7 +4569,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> lastNameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'lastName',
       value: value,
@@ -4651,7 +4580,7 @@ extension AppAccountQueryFilter
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> lastNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'lastName',
       value: pattern,
@@ -4796,27 +4725,27 @@ extension AppAccountQueryWhereDistinct
 extension AppAccountQueryProperty
     on QueryBuilder<AppAccount, AppAccount, QQueryProperty> {
   QueryBuilder<AppAccount, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<AppAccount, String, QQueryOperations> firstNameProperty() {
-    return addPropertyName('firstName');
+    return addPropertyNameInternal('firstName');
   }
 
   QueryBuilder<AppAccount, String, QQueryOperations> fullNameProperty() {
-    return addPropertyName('fullName');
+    return addPropertyNameInternal('fullName');
   }
 
   QueryBuilder<AppAccount, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<AppAccount, bool, QQueryOperations> isParentProperty() {
-    return addPropertyName('isParent');
+    return addPropertyNameInternal('isParent');
   }
 
   QueryBuilder<AppAccount, String, QQueryOperations> lastNameProperty() {
-    return addPropertyName('lastName');
+    return addPropertyNameInternal('lastName');
   }
 }
 
@@ -4843,17 +4772,15 @@ final DocumentSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _DocumentAdapter extends IsarTypeAdapter<Document> {
   const _DocumentAdapter();
 
   @override
-  int serialize(IsarCollection<Document> collection, IsarRawObject rawObj,
-      Document object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Document> collection, IsarRawObject rawObj,
+      Document object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.entityId;
     final _entityId = BinaryWriter.utf8Encoder.convert(value0);
@@ -4871,19 +4798,7 @@ class _DocumentAdapter extends IsarTypeAdapter<Document> {
     dynamicSize += _type.length;
     final size = dynamicSize + 35;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 35);
@@ -4892,7 +4807,6 @@ class _DocumentAdapter extends IsarTypeAdapter<Document> {
     writer.writeBytes(offsets[2], _name);
     writer.writeBool(offsets[3], _saved);
     writer.writeBytes(offsets[4], _type);
-    return bufferSize;
   }
 
   @override
@@ -4932,13 +4846,13 @@ class _DocumentAdapter extends IsarTypeAdapter<Document> {
 
 extension DocumentQueryWhereSort on QueryBuilder<Document, Document, QWhere> {
   QueryBuilder<Document, Document, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension DocumentQueryWhere on QueryBuilder<Document, Document, QWhereClause> {
   QueryBuilder<Document, Document, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -4949,21 +4863,21 @@ extension DocumentQueryWhere on QueryBuilder<Document, Document, QWhereClause> {
 
   QueryBuilder<Document, Document, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -4975,7 +4889,7 @@ extension DocumentQueryWhere on QueryBuilder<Document, Document, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -4986,7 +4900,7 @@ extension DocumentQueryWhere on QueryBuilder<Document, Document, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -4999,7 +4913,7 @@ extension DocumentQueryWhere on QueryBuilder<Document, Document, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -5015,7 +4929,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -5028,7 +4942,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -5042,7 +4956,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -5058,7 +4972,7 @@ extension DocumentQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -5072,7 +4986,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -5084,7 +4998,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -5095,7 +5009,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> entityIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -5106,7 +5020,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> entityIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -5118,7 +5032,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'fileName',
       value: value,
@@ -5131,7 +5045,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'fileName',
@@ -5145,7 +5059,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'fileName',
@@ -5161,7 +5075,7 @@ extension DocumentQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'fileName',
       lower: lower,
       includeLower: includeLower,
@@ -5175,7 +5089,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'fileName',
       value: value,
@@ -5187,7 +5101,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'fileName',
       value: value,
@@ -5198,7 +5112,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> fileNameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'fileName',
       value: value,
@@ -5209,7 +5123,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> fileNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'fileName',
       value: pattern,
@@ -5218,7 +5132,7 @@ extension DocumentQueryFilter
   }
 
   QueryBuilder<Document, Document, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -5227,7 +5141,7 @@ extension DocumentQueryFilter
 
   QueryBuilder<Document, Document, QAfterFilterCondition> idEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -5238,7 +5152,7 @@ extension DocumentQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -5250,7 +5164,7 @@ extension DocumentQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -5264,7 +5178,7 @@ extension DocumentQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -5277,7 +5191,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -5290,7 +5204,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -5304,7 +5218,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -5320,7 +5234,7 @@ extension DocumentQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -5334,7 +5248,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -5346,7 +5260,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -5357,7 +5271,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -5368,7 +5282,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -5378,7 +5292,7 @@ extension DocumentQueryFilter
 
   QueryBuilder<Document, Document, QAfterFilterCondition> savedEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'saved',
       value: value,
@@ -5389,7 +5303,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'type',
       value: value,
@@ -5402,7 +5316,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'type',
@@ -5416,7 +5330,7 @@ extension DocumentQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'type',
@@ -5432,7 +5346,7 @@ extension DocumentQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'type',
       lower: lower,
       includeLower: includeLower,
@@ -5446,7 +5360,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'type',
       value: value,
@@ -5458,7 +5372,7 @@ extension DocumentQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'type',
       value: value,
@@ -5469,7 +5383,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> typeContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'type',
       value: value,
@@ -5480,7 +5394,7 @@ extension DocumentQueryFilter
   QueryBuilder<Document, Document, QAfterFilterCondition> typeMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'type',
       value: pattern,
@@ -5625,27 +5539,27 @@ extension DocumentQueryWhereDistinct
 extension DocumentQueryProperty
     on QueryBuilder<Document, Document, QQueryProperty> {
   QueryBuilder<Document, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<Document, String, QQueryOperations> fileNameProperty() {
-    return addPropertyName('fileName');
+    return addPropertyNameInternal('fileName');
   }
 
   QueryBuilder<Document, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Document, String, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<Document, bool, QQueryOperations> savedProperty() {
-    return addPropertyName('saved');
+    return addPropertyNameInternal('saved');
   }
 
   QueryBuilder<Document, String, QQueryOperations> typeProperty() {
-    return addPropertyName('type');
+    return addPropertyNameInternal('type');
   }
 }
 
@@ -5679,17 +5593,15 @@ final EmailSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [obj.documents, obj.from, obj.to],
-  version: 0,
+  version: 1,
 );
 
 class _EmailAdapter extends IsarTypeAdapter<Email> {
   const _EmailAdapter();
 
   @override
-  int serialize(IsarCollection<Email> collection, IsarRawObject rawObj,
-      Email object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Email> collection, IsarRawObject rawObj,
+      Email object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.content;
     IsarUint8List? _content;
@@ -5711,19 +5623,7 @@ class _EmailAdapter extends IsarTypeAdapter<Email> {
     dynamicSize += _subject.length;
     final size = dynamicSize + 36;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 36);
@@ -5734,7 +5634,6 @@ class _EmailAdapter extends IsarTypeAdapter<Email> {
     writer.writeBool(offsets[4], _read);
     writer.writeBytes(offsets[5], _subject);
     attachLinks(collection.isar, object);
-    return bufferSize;
   }
 
   @override
@@ -5803,13 +5702,13 @@ class _EmailAdapter extends IsarTypeAdapter<Email> {
 
 extension EmailQueryWhereSort on QueryBuilder<Email, Email, QWhere> {
   QueryBuilder<Email, Email, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension EmailQueryWhere on QueryBuilder<Email, Email, QWhereClause> {
   QueryBuilder<Email, Email, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -5820,21 +5719,21 @@ extension EmailQueryWhere on QueryBuilder<Email, Email, QWhereClause> {
 
   QueryBuilder<Email, Email, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -5846,7 +5745,7 @@ extension EmailQueryWhere on QueryBuilder<Email, Email, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -5857,7 +5756,7 @@ extension EmailQueryWhere on QueryBuilder<Email, Email, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -5870,7 +5769,7 @@ extension EmailQueryWhere on QueryBuilder<Email, Email, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -5882,7 +5781,7 @@ extension EmailQueryWhere on QueryBuilder<Email, Email, QWhereClause> {
 
 extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   QueryBuilder<Email, Email, QAfterFilterCondition> contentIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'content',
       value: null,
@@ -5893,7 +5792,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'content',
       value: value,
@@ -5906,7 +5805,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'content',
@@ -5920,7 +5819,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'content',
@@ -5936,7 +5835,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'content',
       lower: lower,
       includeLower: includeLower,
@@ -5950,7 +5849,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'content',
       value: value,
@@ -5962,7 +5861,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'content',
       value: value,
@@ -5973,7 +5872,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   QueryBuilder<Email, Email, QAfterFilterCondition> contentContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'content',
       value: value,
@@ -5984,7 +5883,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   QueryBuilder<Email, Email, QAfterFilterCondition> contentMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'content',
       value: pattern,
@@ -5994,7 +5893,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
 
   QueryBuilder<Email, Email, QAfterFilterCondition> dateEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'date',
       value: value,
@@ -6005,7 +5904,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'date',
@@ -6017,7 +5916,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'date',
@@ -6031,7 +5930,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'date',
       lower: lower,
       includeLower: includeLower,
@@ -6044,7 +5943,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -6057,7 +5956,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -6071,7 +5970,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -6087,7 +5986,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -6101,7 +6000,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -6113,7 +6012,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -6124,7 +6023,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   QueryBuilder<Email, Email, QAfterFilterCondition> entityIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -6135,7 +6034,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   QueryBuilder<Email, Email, QAfterFilterCondition> entityIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -6145,7 +6044,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
 
   QueryBuilder<Email, Email, QAfterFilterCondition> favoriteEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'favorite',
       value: value,
@@ -6153,7 +6052,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   }
 
   QueryBuilder<Email, Email, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -6161,7 +6060,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   }
 
   QueryBuilder<Email, Email, QAfterFilterCondition> idEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -6172,7 +6071,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -6184,7 +6083,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -6198,7 +6097,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -6208,7 +6107,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   }
 
   QueryBuilder<Email, Email, QAfterFilterCondition> readEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'read',
       value: value,
@@ -6219,7 +6118,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'subject',
       value: value,
@@ -6232,7 +6131,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'subject',
@@ -6246,7 +6145,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'subject',
@@ -6262,7 +6161,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'subject',
       lower: lower,
       includeLower: includeLower,
@@ -6276,7 +6175,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'subject',
       value: value,
@@ -6288,7 +6187,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'subject',
       value: value,
@@ -6299,7 +6198,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   QueryBuilder<Email, Email, QAfterFilterCondition> subjectContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'subject',
       value: value,
@@ -6310,7 +6209,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   QueryBuilder<Email, Email, QAfterFilterCondition> subjectMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'subject',
       value: pattern,
@@ -6470,31 +6369,31 @@ extension EmailQueryWhereDistinct on QueryBuilder<Email, Email, QDistinct> {
 
 extension EmailQueryProperty on QueryBuilder<Email, Email, QQueryProperty> {
   QueryBuilder<Email, String?, QQueryOperations> contentProperty() {
-    return addPropertyName('content');
+    return addPropertyNameInternal('content');
   }
 
   QueryBuilder<Email, DateTime, QQueryOperations> dateProperty() {
-    return addPropertyName('date');
+    return addPropertyNameInternal('date');
   }
 
   QueryBuilder<Email, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<Email, bool, QQueryOperations> favoriteProperty() {
-    return addPropertyName('favorite');
+    return addPropertyNameInternal('favorite');
   }
 
   QueryBuilder<Email, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Email, bool, QQueryOperations> readProperty() {
-    return addPropertyName('read');
+    return addPropertyNameInternal('read');
   }
 
   QueryBuilder<Email, String, QQueryOperations> subjectProperty() {
-    return addPropertyName('subject');
+    return addPropertyNameInternal('subject');
   }
 }
 
@@ -6530,17 +6429,15 @@ final HomeworkSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [obj.documents, obj.subject],
-  version: 0,
+  version: 1,
 );
 
 class _HomeworkAdapter extends IsarTypeAdapter<Homework> {
   const _HomeworkAdapter();
 
   @override
-  int serialize(IsarCollection<Homework> collection, IsarRawObject rawObj,
-      Homework object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Homework> collection, IsarRawObject rawObj,
+      Homework object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.assessment;
     final _assessment = value0;
@@ -6565,19 +6462,7 @@ class _HomeworkAdapter extends IsarTypeAdapter<Homework> {
     final _pinned = value7;
     final size = dynamicSize + 38;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 38);
@@ -6590,7 +6475,6 @@ class _HomeworkAdapter extends IsarTypeAdapter<Homework> {
     writer.writeDateTime(offsets[6], _entryDate);
     writer.writeBool(offsets[7], _pinned);
     attachLinks(collection.isar, object);
-    return bufferSize;
   }
 
   @override
@@ -6658,13 +6542,13 @@ class _HomeworkAdapter extends IsarTypeAdapter<Homework> {
 
 extension HomeworkQueryWhereSort on QueryBuilder<Homework, Homework, QWhere> {
   QueryBuilder<Homework, Homework, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension HomeworkQueryWhere on QueryBuilder<Homework, Homework, QWhereClause> {
   QueryBuilder<Homework, Homework, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -6675,21 +6559,21 @@ extension HomeworkQueryWhere on QueryBuilder<Homework, Homework, QWhereClause> {
 
   QueryBuilder<Homework, Homework, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -6701,7 +6585,7 @@ extension HomeworkQueryWhere on QueryBuilder<Homework, Homework, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -6712,7 +6596,7 @@ extension HomeworkQueryWhere on QueryBuilder<Homework, Homework, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -6725,7 +6609,7 @@ extension HomeworkQueryWhere on QueryBuilder<Homework, Homework, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -6739,7 +6623,7 @@ extension HomeworkQueryFilter
     on QueryBuilder<Homework, Homework, QFilterCondition> {
   QueryBuilder<Homework, Homework, QAfterFilterCondition> assessmentEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'assessment',
       value: value,
@@ -6747,7 +6631,7 @@ extension HomeworkQueryFilter
   }
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> contentIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'content',
       value: null,
@@ -6758,7 +6642,7 @@ extension HomeworkQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'content',
       value: value,
@@ -6771,7 +6655,7 @@ extension HomeworkQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'content',
@@ -6785,7 +6669,7 @@ extension HomeworkQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'content',
@@ -6801,7 +6685,7 @@ extension HomeworkQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'content',
       lower: lower,
       includeLower: includeLower,
@@ -6815,7 +6699,7 @@ extension HomeworkQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'content',
       value: value,
@@ -6827,7 +6711,7 @@ extension HomeworkQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'content',
       value: value,
@@ -6838,7 +6722,7 @@ extension HomeworkQueryFilter
   QueryBuilder<Homework, Homework, QAfterFilterCondition> contentContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'content',
       value: value,
@@ -6849,7 +6733,7 @@ extension HomeworkQueryFilter
   QueryBuilder<Homework, Homework, QAfterFilterCondition> contentMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'content',
       value: pattern,
@@ -6859,7 +6743,7 @@ extension HomeworkQueryFilter
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> dateEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'date',
       value: value,
@@ -6870,7 +6754,7 @@ extension HomeworkQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'date',
@@ -6882,7 +6766,7 @@ extension HomeworkQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'date',
@@ -6896,7 +6780,7 @@ extension HomeworkQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'date',
       lower: lower,
       includeLower: includeLower,
@@ -6907,7 +6791,7 @@ extension HomeworkQueryFilter
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> doneEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'done',
       value: value,
@@ -6916,7 +6800,7 @@ extension HomeworkQueryFilter
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> dueEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'due',
       value: value,
@@ -6927,7 +6811,7 @@ extension HomeworkQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -6940,7 +6824,7 @@ extension HomeworkQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -6954,7 +6838,7 @@ extension HomeworkQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -6970,7 +6854,7 @@ extension HomeworkQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -6984,7 +6868,7 @@ extension HomeworkQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -6996,7 +6880,7 @@ extension HomeworkQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -7007,7 +6891,7 @@ extension HomeworkQueryFilter
   QueryBuilder<Homework, Homework, QAfterFilterCondition> entityIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -7018,7 +6902,7 @@ extension HomeworkQueryFilter
   QueryBuilder<Homework, Homework, QAfterFilterCondition> entityIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -7028,7 +6912,7 @@ extension HomeworkQueryFilter
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> entryDateEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entryDate',
       value: value,
@@ -7039,7 +6923,7 @@ extension HomeworkQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entryDate',
@@ -7051,7 +6935,7 @@ extension HomeworkQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entryDate',
@@ -7065,7 +6949,7 @@ extension HomeworkQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entryDate',
       lower: lower,
       includeLower: includeLower,
@@ -7075,7 +6959,7 @@ extension HomeworkQueryFilter
   }
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -7084,7 +6968,7 @@ extension HomeworkQueryFilter
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> idEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -7095,7 +6979,7 @@ extension HomeworkQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -7107,7 +6991,7 @@ extension HomeworkQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -7121,7 +7005,7 @@ extension HomeworkQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -7132,7 +7016,7 @@ extension HomeworkQueryFilter
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> pinnedEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'pinned',
       value: value,
@@ -7334,39 +7218,39 @@ extension HomeworkQueryWhereDistinct
 extension HomeworkQueryProperty
     on QueryBuilder<Homework, Homework, QQueryProperty> {
   QueryBuilder<Homework, bool, QQueryOperations> assessmentProperty() {
-    return addPropertyName('assessment');
+    return addPropertyNameInternal('assessment');
   }
 
   QueryBuilder<Homework, String?, QQueryOperations> contentProperty() {
-    return addPropertyName('content');
+    return addPropertyNameInternal('content');
   }
 
   QueryBuilder<Homework, DateTime, QQueryOperations> dateProperty() {
-    return addPropertyName('date');
+    return addPropertyNameInternal('date');
   }
 
   QueryBuilder<Homework, bool, QQueryOperations> doneProperty() {
-    return addPropertyName('done');
+    return addPropertyNameInternal('done');
   }
 
   QueryBuilder<Homework, bool, QQueryOperations> dueProperty() {
-    return addPropertyName('due');
+    return addPropertyNameInternal('due');
   }
 
   QueryBuilder<Homework, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<Homework, DateTime, QQueryOperations> entryDateProperty() {
-    return addPropertyName('entryDate');
+    return addPropertyNameInternal('entryDate');
   }
 
   QueryBuilder<Homework, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Homework, bool, QQueryOperations> pinnedProperty() {
-    return addPropertyName('pinned');
+    return addPropertyNameInternal('pinned');
   }
 }
 
@@ -7401,17 +7285,15 @@ final RecipientSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _RecipientAdapter extends IsarTypeAdapter<Recipient> {
   const _RecipientAdapter();
 
   @override
-  int serialize(IsarCollection<Recipient> collection, IsarRawObject rawObj,
-      Recipient object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Recipient> collection, IsarRawObject rawObj,
+      Recipient object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.civility;
     final _civility = BinaryWriter.utf8Encoder.convert(value0);
@@ -7441,19 +7323,7 @@ class _RecipientAdapter extends IsarTypeAdapter<Recipient> {
     final _subjects = bytesList6;
     final size = dynamicSize + 51;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 51);
@@ -7464,7 +7334,6 @@ class _RecipientAdapter extends IsarTypeAdapter<Recipient> {
     writer.writeBool(offsets[4], _headTeacher);
     writer.writeBytes(offsets[5], _lastName);
     writer.writeStringList(offsets[6], _subjects);
-    return bufferSize;
   }
 
   @override
@@ -7511,14 +7380,14 @@ class _RecipientAdapter extends IsarTypeAdapter<Recipient> {
 extension RecipientQueryWhereSort
     on QueryBuilder<Recipient, Recipient, QWhere> {
   QueryBuilder<Recipient, Recipient, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension RecipientQueryWhere
     on QueryBuilder<Recipient, Recipient, QWhereClause> {
   QueryBuilder<Recipient, Recipient, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -7529,21 +7398,21 @@ extension RecipientQueryWhere
 
   QueryBuilder<Recipient, Recipient, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -7555,7 +7424,7 @@ extension RecipientQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -7566,7 +7435,7 @@ extension RecipientQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -7579,7 +7448,7 @@ extension RecipientQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -7595,7 +7464,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'civility',
       value: value,
@@ -7608,7 +7477,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'civility',
@@ -7622,7 +7491,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'civility',
@@ -7638,7 +7507,7 @@ extension RecipientQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'civility',
       lower: lower,
       includeLower: includeLower,
@@ -7652,7 +7521,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'civility',
       value: value,
@@ -7664,7 +7533,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'civility',
       value: value,
@@ -7675,7 +7544,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> civilityContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'civility',
       value: value,
@@ -7686,7 +7555,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> civilityMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'civility',
       value: pattern,
@@ -7698,7 +7567,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -7711,7 +7580,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -7725,7 +7594,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -7741,7 +7610,7 @@ extension RecipientQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -7755,7 +7624,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -7767,7 +7636,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -7778,7 +7647,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> entityIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -7789,7 +7658,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> entityIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -7801,7 +7670,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'firstName',
       value: value,
@@ -7815,7 +7684,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'firstName',
@@ -7829,7 +7698,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'firstName',
@@ -7845,7 +7714,7 @@ extension RecipientQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'firstName',
       lower: lower,
       includeLower: includeLower,
@@ -7859,7 +7728,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'firstName',
       value: value,
@@ -7871,7 +7740,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'firstName',
       value: value,
@@ -7882,7 +7751,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> firstNameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'firstName',
       value: value,
@@ -7893,7 +7762,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> firstNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'firstName',
       value: pattern,
@@ -7905,7 +7774,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'fullName',
       value: value,
@@ -7918,7 +7787,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'fullName',
@@ -7932,7 +7801,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'fullName',
@@ -7948,7 +7817,7 @@ extension RecipientQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'fullName',
       lower: lower,
       includeLower: includeLower,
@@ -7962,7 +7831,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'fullName',
       value: value,
@@ -7974,7 +7843,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'fullName',
       value: value,
@@ -7985,7 +7854,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> fullNameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'fullName',
       value: value,
@@ -7996,7 +7865,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> fullNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'fullName',
       value: pattern,
@@ -8006,7 +7875,7 @@ extension RecipientQueryFilter
 
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> headTeacherEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'headTeacher',
       value: value,
@@ -8014,7 +7883,7 @@ extension RecipientQueryFilter
   }
 
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -8023,7 +7892,7 @@ extension RecipientQueryFilter
 
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> idEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -8034,7 +7903,7 @@ extension RecipientQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -8046,7 +7915,7 @@ extension RecipientQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -8060,7 +7929,7 @@ extension RecipientQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -8073,7 +7942,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'lastName',
       value: value,
@@ -8086,7 +7955,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'lastName',
@@ -8100,7 +7969,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'lastName',
@@ -8116,7 +7985,7 @@ extension RecipientQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'lastName',
       lower: lower,
       includeLower: includeLower,
@@ -8130,7 +7999,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'lastName',
       value: value,
@@ -8142,7 +8011,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'lastName',
       value: value,
@@ -8153,7 +8022,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> lastNameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'lastName',
       value: value,
@@ -8164,7 +8033,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> lastNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'lastName',
       value: pattern,
@@ -8176,7 +8045,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'subjects',
       value: value,
@@ -8190,7 +8059,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'subjects',
@@ -8204,7 +8073,7 @@ extension RecipientQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'subjects',
@@ -8220,7 +8089,7 @@ extension RecipientQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'subjects',
       lower: lower,
       includeLower: includeLower,
@@ -8235,7 +8104,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'subjects',
       value: value,
@@ -8247,7 +8116,7 @@ extension RecipientQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'subjects',
       value: value,
@@ -8258,7 +8127,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> subjectsAnyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'subjects',
       value: value,
@@ -8269,7 +8138,7 @@ extension RecipientQueryFilter
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> subjectsAnyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'subjects',
       value: pattern,
@@ -8435,35 +8304,35 @@ extension RecipientQueryWhereDistinct
 extension RecipientQueryProperty
     on QueryBuilder<Recipient, Recipient, QQueryProperty> {
   QueryBuilder<Recipient, String, QQueryOperations> civilityProperty() {
-    return addPropertyName('civility');
+    return addPropertyNameInternal('civility');
   }
 
   QueryBuilder<Recipient, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<Recipient, String, QQueryOperations> firstNameProperty() {
-    return addPropertyName('firstName');
+    return addPropertyNameInternal('firstName');
   }
 
   QueryBuilder<Recipient, String, QQueryOperations> fullNameProperty() {
-    return addPropertyName('fullName');
+    return addPropertyNameInternal('fullName');
   }
 
   QueryBuilder<Recipient, bool, QQueryOperations> headTeacherProperty() {
-    return addPropertyName('headTeacher');
+    return addPropertyNameInternal('headTeacher');
   }
 
   QueryBuilder<Recipient, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Recipient, String, QQueryOperations> lastNameProperty() {
-    return addPropertyName('lastName');
+    return addPropertyNameInternal('lastName');
   }
 
   QueryBuilder<Recipient, List<String>, QQueryOperations> subjectsProperty() {
-    return addPropertyName('subjects');
+    return addPropertyNameInternal('subjects');
   }
 }
 
@@ -8498,17 +8367,15 @@ final SchoolAccountSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _SchoolAccountAdapter extends IsarTypeAdapter<SchoolAccount> {
   const _SchoolAccountAdapter();
 
   @override
-  int serialize(IsarCollection<SchoolAccount> collection, IsarRawObject rawObj,
-      SchoolAccount object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<SchoolAccount> collection, IsarRawObject rawObj,
+      SchoolAccount object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.className;
     final _className = BinaryWriter.utf8Encoder.convert(value0);
@@ -8533,19 +8400,7 @@ class _SchoolAccountAdapter extends IsarTypeAdapter<SchoolAccount> {
     dynamicSize += _school.length;
     final size = dynamicSize + 58;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 58);
@@ -8556,7 +8411,6 @@ class _SchoolAccountAdapter extends IsarTypeAdapter<SchoolAccount> {
     writer.writeBytes(offsets[4], _lastName);
     writer.writeBytes(offsets[5], _profilePicture);
     writer.writeBytes(offsets[6], _school);
-    return bufferSize;
   }
 
   @override
@@ -8603,7 +8457,7 @@ class _SchoolAccountAdapter extends IsarTypeAdapter<SchoolAccount> {
 extension SchoolAccountQueryWhereSort
     on QueryBuilder<SchoolAccount, SchoolAccount, QWhere> {
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
@@ -8611,7 +8465,7 @@ extension SchoolAccountQueryWhere
     on QueryBuilder<SchoolAccount, SchoolAccount, QWhereClause> {
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhereClause> idEqualTo(
       int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -8623,21 +8477,21 @@ extension SchoolAccountQueryWhere
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhereClause> idNotEqualTo(
       int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -8649,7 +8503,7 @@ extension SchoolAccountQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -8660,7 +8514,7 @@ extension SchoolAccountQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -8673,7 +8527,7 @@ extension SchoolAccountQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -8690,7 +8544,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'className',
       value: value,
@@ -8704,7 +8558,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'className',
@@ -8719,7 +8573,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'className',
@@ -8736,7 +8590,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'className',
       lower: lower,
       includeLower: includeLower,
@@ -8751,7 +8605,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'className',
       value: value,
@@ -8764,7 +8618,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'className',
       value: value,
@@ -8774,7 +8628,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       classNameContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'className',
       value: value,
@@ -8784,7 +8638,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       classNameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'className',
       value: pattern,
@@ -8797,7 +8651,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'entityId',
       value: value,
@@ -8811,7 +8665,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'entityId',
@@ -8826,7 +8680,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'entityId',
@@ -8843,7 +8697,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'entityId',
       lower: lower,
       includeLower: includeLower,
@@ -8858,7 +8712,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'entityId',
       value: value,
@@ -8871,7 +8725,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'entityId',
       value: value,
@@ -8881,7 +8735,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       entityIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'entityId',
       value: value,
@@ -8891,7 +8745,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       entityIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'entityId',
       value: pattern,
@@ -8904,7 +8758,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'firstName',
       value: value,
@@ -8918,7 +8772,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'firstName',
@@ -8933,7 +8787,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'firstName',
@@ -8950,7 +8804,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'firstName',
       lower: lower,
       includeLower: includeLower,
@@ -8965,7 +8819,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'firstName',
       value: value,
@@ -8978,7 +8832,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'firstName',
       value: value,
@@ -8988,7 +8842,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       firstNameContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'firstName',
       value: value,
@@ -8998,7 +8852,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       firstNameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'firstName',
       value: pattern,
@@ -9011,7 +8865,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'fullName',
       value: value,
@@ -9025,7 +8879,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'fullName',
@@ -9040,7 +8894,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'fullName',
@@ -9057,7 +8911,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'fullName',
       lower: lower,
       includeLower: includeLower,
@@ -9072,7 +8926,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'fullName',
       value: value,
@@ -9085,7 +8939,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'fullName',
       value: value,
@@ -9095,7 +8949,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       fullNameContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'fullName',
       value: value,
@@ -9105,7 +8959,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       fullNameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'fullName',
       value: pattern,
@@ -9114,7 +8968,7 @@ extension SchoolAccountQueryFilter
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -9123,7 +8977,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition> idEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -9135,7 +8989,7 @@ extension SchoolAccountQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -9147,7 +9001,7 @@ extension SchoolAccountQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -9161,7 +9015,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -9175,7 +9029,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'lastName',
       value: value,
@@ -9189,7 +9043,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'lastName',
@@ -9204,7 +9058,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'lastName',
@@ -9221,7 +9075,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'lastName',
       lower: lower,
       includeLower: includeLower,
@@ -9236,7 +9090,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'lastName',
       value: value,
@@ -9249,7 +9103,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'lastName',
       value: value,
@@ -9259,7 +9113,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       lastNameContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'lastName',
       value: value,
@@ -9269,7 +9123,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       lastNameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'lastName',
       value: pattern,
@@ -9282,7 +9136,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'profilePicture',
       value: value,
@@ -9296,7 +9150,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'profilePicture',
@@ -9311,7 +9165,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'profilePicture',
@@ -9328,7 +9182,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'profilePicture',
       lower: lower,
       includeLower: includeLower,
@@ -9343,7 +9197,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'profilePicture',
       value: value,
@@ -9356,7 +9210,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'profilePicture',
       value: value,
@@ -9366,7 +9220,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       profilePictureContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'profilePicture',
       value: value,
@@ -9376,7 +9230,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       profilePictureMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'profilePicture',
       value: pattern,
@@ -9389,7 +9243,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'school',
       value: value,
@@ -9403,7 +9257,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'school',
@@ -9418,7 +9272,7 @@ extension SchoolAccountQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'school',
@@ -9435,7 +9289,7 @@ extension SchoolAccountQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'school',
       lower: lower,
       includeLower: includeLower,
@@ -9450,7 +9304,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'school',
       value: value,
@@ -9463,7 +9317,7 @@ extension SchoolAccountQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'school',
       value: value,
@@ -9473,7 +9327,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       schoolContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'school',
       value: value,
@@ -9483,7 +9337,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       schoolMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'school',
       value: pattern,
@@ -9686,36 +9540,36 @@ extension SchoolAccountQueryWhereDistinct
 extension SchoolAccountQueryProperty
     on QueryBuilder<SchoolAccount, SchoolAccount, QQueryProperty> {
   QueryBuilder<SchoolAccount, String, QQueryOperations> classNameProperty() {
-    return addPropertyName('className');
+    return addPropertyNameInternal('className');
   }
 
   QueryBuilder<SchoolAccount, String, QQueryOperations> entityIdProperty() {
-    return addPropertyName('entityId');
+    return addPropertyNameInternal('entityId');
   }
 
   QueryBuilder<SchoolAccount, String, QQueryOperations> firstNameProperty() {
-    return addPropertyName('firstName');
+    return addPropertyNameInternal('firstName');
   }
 
   QueryBuilder<SchoolAccount, String, QQueryOperations> fullNameProperty() {
-    return addPropertyName('fullName');
+    return addPropertyNameInternal('fullName');
   }
 
   QueryBuilder<SchoolAccount, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<SchoolAccount, String, QQueryOperations> lastNameProperty() {
-    return addPropertyName('lastName');
+    return addPropertyNameInternal('lastName');
   }
 
   QueryBuilder<SchoolAccount, String, QQueryOperations>
       profilePictureProperty() {
-    return addPropertyName('profilePicture');
+    return addPropertyNameInternal('profilePicture');
   }
 
   QueryBuilder<SchoolAccount, String, QQueryOperations> schoolProperty() {
-    return addPropertyName('school');
+    return addPropertyNameInternal('school');
   }
 }
 
@@ -9750,17 +9604,19 @@ final SchoolLifeSanctionSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _SchoolLifeSanctionAdapter extends IsarTypeAdapter<SchoolLifeSanction> {
   const _SchoolLifeSanctionAdapter();
 
   @override
-  int serialize(IsarCollection<SchoolLifeSanction> collection,
-      IsarRawObject rawObj, SchoolLifeSanction object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(
+      IsarCollection<SchoolLifeSanction> collection,
+      IsarRawObject rawObj,
+      SchoolLifeSanction object,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.by;
     final _by = BinaryWriter.utf8Encoder.convert(value0);
@@ -9784,19 +9640,7 @@ class _SchoolLifeSanctionAdapter extends IsarTypeAdapter<SchoolLifeSanction> {
     dynamicSize += _work.length;
     final size = dynamicSize + 58;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 58);
@@ -9807,7 +9651,6 @@ class _SchoolLifeSanctionAdapter extends IsarTypeAdapter<SchoolLifeSanction> {
     writer.writeBytes(offsets[4], _sanction);
     writer.writeBytes(offsets[5], _type);
     writer.writeBytes(offsets[6], _work);
-    return bufferSize;
   }
 
   @override
@@ -9855,7 +9698,7 @@ class _SchoolLifeSanctionAdapter extends IsarTypeAdapter<SchoolLifeSanction> {
 extension SchoolLifeSanctionQueryWhereSort
     on QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QWhere> {
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
@@ -9863,7 +9706,7 @@ extension SchoolLifeSanctionQueryWhere
     on QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QWhereClause> {
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhereClause>
       idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -9875,21 +9718,21 @@ extension SchoolLifeSanctionQueryWhere
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhereClause>
       idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -9902,7 +9745,7 @@ extension SchoolLifeSanctionQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -9914,7 +9757,7 @@ extension SchoolLifeSanctionQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -9928,7 +9771,7 @@ extension SchoolLifeSanctionQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -9945,7 +9788,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'by',
       value: value,
@@ -9959,7 +9802,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'by',
@@ -9974,7 +9817,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'by',
@@ -9991,7 +9834,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'by',
       lower: lower,
       includeLower: includeLower,
@@ -10006,7 +9849,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'by',
       value: value,
@@ -10019,7 +9862,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'by',
       value: value,
@@ -10029,7 +9872,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       byContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'by',
       value: value,
@@ -10039,7 +9882,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       byMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'by',
       value: pattern,
@@ -10049,7 +9892,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       dateEqualTo(DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'date',
       value: value,
@@ -10061,7 +9904,7 @@ extension SchoolLifeSanctionQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'date',
@@ -10074,7 +9917,7 @@ extension SchoolLifeSanctionQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'date',
@@ -10089,7 +9932,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'date',
       lower: lower,
       includeLower: includeLower,
@@ -10100,7 +9943,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -10109,7 +9952,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       idEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -10121,7 +9964,7 @@ extension SchoolLifeSanctionQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -10134,7 +9977,7 @@ extension SchoolLifeSanctionQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -10149,7 +9992,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -10163,7 +10006,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'reason',
       value: value,
@@ -10177,7 +10020,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'reason',
@@ -10192,7 +10035,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'reason',
@@ -10209,7 +10052,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'reason',
       lower: lower,
       includeLower: includeLower,
@@ -10224,7 +10067,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'reason',
       value: value,
@@ -10237,7 +10080,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'reason',
       value: value,
@@ -10247,7 +10090,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       reasonContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'reason',
       value: value,
@@ -10257,7 +10100,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       reasonMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'reason',
       value: pattern,
@@ -10270,7 +10113,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'registrationDate',
       value: value,
@@ -10284,7 +10127,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'registrationDate',
@@ -10299,7 +10142,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'registrationDate',
@@ -10316,7 +10159,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'registrationDate',
       lower: lower,
       includeLower: includeLower,
@@ -10331,7 +10174,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'registrationDate',
       value: value,
@@ -10344,7 +10187,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'registrationDate',
       value: value,
@@ -10354,7 +10197,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       registrationDateContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'registrationDate',
       value: value,
@@ -10364,7 +10207,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       registrationDateMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'registrationDate',
       value: pattern,
@@ -10377,7 +10220,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'sanction',
       value: value,
@@ -10391,7 +10234,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'sanction',
@@ -10406,7 +10249,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'sanction',
@@ -10423,7 +10266,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'sanction',
       lower: lower,
       includeLower: includeLower,
@@ -10438,7 +10281,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'sanction',
       value: value,
@@ -10451,7 +10294,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'sanction',
       value: value,
@@ -10461,7 +10304,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       sanctionContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'sanction',
       value: value,
@@ -10471,7 +10314,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       sanctionMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'sanction',
       value: pattern,
@@ -10484,7 +10327,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'type',
       value: value,
@@ -10498,7 +10341,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'type',
@@ -10513,7 +10356,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'type',
@@ -10530,7 +10373,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'type',
       lower: lower,
       includeLower: includeLower,
@@ -10545,7 +10388,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'type',
       value: value,
@@ -10558,7 +10401,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'type',
       value: value,
@@ -10568,7 +10411,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       typeContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'type',
       value: value,
@@ -10578,7 +10421,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       typeMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'type',
       value: pattern,
@@ -10591,7 +10434,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'work',
       value: value,
@@ -10605,7 +10448,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'work',
@@ -10620,7 +10463,7 @@ extension SchoolLifeSanctionQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'work',
@@ -10637,7 +10480,7 @@ extension SchoolLifeSanctionQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'work',
       lower: lower,
       includeLower: includeLower,
@@ -10652,7 +10495,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'work',
       value: value,
@@ -10665,7 +10508,7 @@ extension SchoolLifeSanctionQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'work',
       value: value,
@@ -10675,7 +10518,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       workContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'work',
       value: value,
@@ -10685,7 +10528,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       workMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'work',
       value: pattern,
@@ -10907,37 +10750,37 @@ extension SchoolLifeSanctionQueryWhereDistinct
 extension SchoolLifeSanctionQueryProperty
     on QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QQueryProperty> {
   QueryBuilder<SchoolLifeSanction, String, QQueryOperations> byProperty() {
-    return addPropertyName('by');
+    return addPropertyNameInternal('by');
   }
 
   QueryBuilder<SchoolLifeSanction, DateTime, QQueryOperations> dateProperty() {
-    return addPropertyName('date');
+    return addPropertyNameInternal('date');
   }
 
   QueryBuilder<SchoolLifeSanction, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<SchoolLifeSanction, String, QQueryOperations> reasonProperty() {
-    return addPropertyName('reason');
+    return addPropertyNameInternal('reason');
   }
 
   QueryBuilder<SchoolLifeSanction, String, QQueryOperations>
       registrationDateProperty() {
-    return addPropertyName('registrationDate');
+    return addPropertyNameInternal('registrationDate');
   }
 
   QueryBuilder<SchoolLifeSanction, String, QQueryOperations>
       sanctionProperty() {
-    return addPropertyName('sanction');
+    return addPropertyNameInternal('sanction');
   }
 
   QueryBuilder<SchoolLifeSanction, String, QQueryOperations> typeProperty() {
-    return addPropertyName('type');
+    return addPropertyNameInternal('type');
   }
 
   QueryBuilder<SchoolLifeSanction, String, QQueryOperations> workProperty() {
-    return addPropertyName('work');
+    return addPropertyNameInternal('work');
   }
 }
 
@@ -10971,17 +10814,19 @@ final SchoolLifeTicketSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _SchoolLifeTicketAdapter extends IsarTypeAdapter<SchoolLifeTicket> {
   const _SchoolLifeTicketAdapter();
 
   @override
-  int serialize(IsarCollection<SchoolLifeTicket> collection,
-      IsarRawObject rawObj, SchoolLifeTicket object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(
+      IsarCollection<SchoolLifeTicket> collection,
+      IsarRawObject rawObj,
+      SchoolLifeTicket object,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.date;
     final _date = value0;
@@ -11001,19 +10846,7 @@ class _SchoolLifeTicketAdapter extends IsarTypeAdapter<SchoolLifeTicket> {
     dynamicSize += _type.length;
     final size = dynamicSize + 43;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 43);
@@ -11023,7 +10856,6 @@ class _SchoolLifeTicketAdapter extends IsarTypeAdapter<SchoolLifeTicket> {
     writer.writeBool(offsets[3], _isJustified);
     writer.writeBytes(offsets[4], _reason);
     writer.writeBytes(offsets[5], _type);
-    return bufferSize;
   }
 
   @override
@@ -11068,7 +10900,7 @@ class _SchoolLifeTicketAdapter extends IsarTypeAdapter<SchoolLifeTicket> {
 extension SchoolLifeTicketQueryWhereSort
     on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QWhere> {
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
@@ -11076,7 +10908,7 @@ extension SchoolLifeTicketQueryWhere
     on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QWhereClause> {
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhereClause> idEqualTo(
       int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -11088,21 +10920,21 @@ extension SchoolLifeTicketQueryWhere
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhereClause>
       idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -11115,7 +10947,7 @@ extension SchoolLifeTicketQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -11127,7 +10959,7 @@ extension SchoolLifeTicketQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -11140,7 +10972,7 @@ extension SchoolLifeTicketQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -11154,7 +10986,7 @@ extension SchoolLifeTicketQueryFilter
     on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QFilterCondition> {
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       dateEqualTo(DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'date',
       value: value,
@@ -11166,7 +10998,7 @@ extension SchoolLifeTicketQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'date',
@@ -11179,7 +11011,7 @@ extension SchoolLifeTicketQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'date',
@@ -11194,7 +11026,7 @@ extension SchoolLifeTicketQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'date',
       lower: lower,
       includeLower: includeLower,
@@ -11208,7 +11040,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'displayDate',
       value: value,
@@ -11222,7 +11054,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'displayDate',
@@ -11237,7 +11069,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'displayDate',
@@ -11254,7 +11086,7 @@ extension SchoolLifeTicketQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'displayDate',
       lower: lower,
       includeLower: includeLower,
@@ -11269,7 +11101,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'displayDate',
       value: value,
@@ -11282,7 +11114,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'displayDate',
       value: value,
@@ -11292,7 +11124,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       displayDateContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'displayDate',
       value: value,
@@ -11302,7 +11134,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       displayDateMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'displayDate',
       value: pattern,
@@ -11315,7 +11147,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'duration',
       value: value,
@@ -11329,7 +11161,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'duration',
@@ -11344,7 +11176,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'duration',
@@ -11361,7 +11193,7 @@ extension SchoolLifeTicketQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'duration',
       lower: lower,
       includeLower: includeLower,
@@ -11376,7 +11208,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'duration',
       value: value,
@@ -11389,7 +11221,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'duration',
       value: value,
@@ -11399,7 +11231,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       durationContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'duration',
       value: value,
@@ -11409,7 +11241,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       durationMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'duration',
       value: pattern,
@@ -11419,7 +11251,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -11428,7 +11260,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       idEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -11440,7 +11272,7 @@ extension SchoolLifeTicketQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -11453,7 +11285,7 @@ extension SchoolLifeTicketQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -11468,7 +11300,7 @@ extension SchoolLifeTicketQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -11479,7 +11311,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       isJustifiedEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isJustified',
       value: value,
@@ -11491,7 +11323,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'reason',
       value: value,
@@ -11505,7 +11337,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'reason',
@@ -11520,7 +11352,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'reason',
@@ -11537,7 +11369,7 @@ extension SchoolLifeTicketQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'reason',
       lower: lower,
       includeLower: includeLower,
@@ -11552,7 +11384,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'reason',
       value: value,
@@ -11565,7 +11397,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'reason',
       value: value,
@@ -11575,7 +11407,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       reasonContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'reason',
       value: value,
@@ -11585,7 +11417,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       reasonMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'reason',
       value: pattern,
@@ -11598,7 +11430,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'type',
       value: value,
@@ -11612,7 +11444,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'type',
@@ -11627,7 +11459,7 @@ extension SchoolLifeTicketQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'type',
@@ -11644,7 +11476,7 @@ extension SchoolLifeTicketQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'type',
       lower: lower,
       includeLower: includeLower,
@@ -11659,7 +11491,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'type',
       value: value,
@@ -11672,7 +11504,7 @@ extension SchoolLifeTicketQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'type',
       value: value,
@@ -11682,7 +11514,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       typeContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'type',
       value: value,
@@ -11692,7 +11524,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       typeMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'type',
       value: pattern,
@@ -11880,31 +11712,31 @@ extension SchoolLifeTicketQueryWhereDistinct
 extension SchoolLifeTicketQueryProperty
     on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QQueryProperty> {
   QueryBuilder<SchoolLifeTicket, DateTime, QQueryOperations> dateProperty() {
-    return addPropertyName('date');
+    return addPropertyNameInternal('date');
   }
 
   QueryBuilder<SchoolLifeTicket, String, QQueryOperations>
       displayDateProperty() {
-    return addPropertyName('displayDate');
+    return addPropertyNameInternal('displayDate');
   }
 
   QueryBuilder<SchoolLifeTicket, String, QQueryOperations> durationProperty() {
-    return addPropertyName('duration');
+    return addPropertyNameInternal('duration');
   }
 
   QueryBuilder<SchoolLifeTicket, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<SchoolLifeTicket, bool, QQueryOperations> isJustifiedProperty() {
-    return addPropertyName('isJustified');
+    return addPropertyNameInternal('isJustified');
   }
 
   QueryBuilder<SchoolLifeTicket, String, QQueryOperations> reasonProperty() {
-    return addPropertyName('reason');
+    return addPropertyNameInternal('reason');
   }
 
   QueryBuilder<SchoolLifeTicket, String, QQueryOperations> typeProperty() {
-    return addPropertyName('type');
+    return addPropertyNameInternal('type');
   }
 }

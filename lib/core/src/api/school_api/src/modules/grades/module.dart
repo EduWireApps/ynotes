@@ -10,7 +10,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         );
 
   List<Grade> get grades {
-    final _grades = offline.grades.where().sortByEntryDate().build().findAllSync();
+    final _grades =
+        offline.grades.where().sortByEntryDate().build().findAllSync();
     offline.writeTxnSync((isar) {
       for (final grade in _grades) {
         grade.subject.loadSync();
@@ -22,11 +23,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   List<Period> get periods {
     final _periods = offline.periods.where().findAllSync();
-    offline.writeTxnSync((isar) {
-      for (final period in _periods) {
-        period.grades.loadSync();
-      }
-    });
+    for (final period in _periods) {
+      period.grades.loadSync();
+    }
     return _periods;
   }
 
@@ -40,13 +39,29 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     return _subjects;
   }
 
-  Period? get currentPeriod =>
-      offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId ?? "").findFirstSync();
-  SubjectsFilter? get currentFilter =>
-      offline.subjectsFilters.filter().entityIdEqualTo(_Storage.values.currentFilterId ?? "").findFirstSync();
-  List<SubjectsFilter> get customFilters => offline.subjectsFilters.where().findAllSync();
+  Period? get currentPeriod => offline.periods
+      .filter()
+      .entityIdEqualTo(_Storage.values.currentPeriodId ?? "")
+      .findFirstSync();
+  SubjectsFilter? get currentFilter {
+    final _subjects =
+        offline.subjectsFilters.where().sortByName().findAllSync();
+    offline.writeTxnSync((isar) {
+      for (final subject in _subjects) {
+        subject.subjects.loadSync();
+      }
+    });
+    return _subjects.firstWhereOrNull(
+            (element) => element.entityId == _Storage.values.currentFilterId) ??
+        filters[0];
+  }
+
+  List<SubjectsFilter> get customFilters =>
+      offline.subjectsFilters.where().findAllSync();
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
-  late final List<SubjectsFilter> _defaultFilters = [SubjectsFilter(name: "Toutes matières", entityId: "all")];
+  late final List<SubjectsFilter> _defaultFilters = [
+    SubjectsFilter(name: "Toutes matières", entityId: "all")
+  ];
 
   @override
   Future<Response<void>> fetch() async {
@@ -59,7 +74,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     // Handling subjects.
     final List<Subject> __subjects = res.data!["subjects"] ?? [];
     for (final __subject in __subjects) {
-      final Subject? _subject = subjects.firstWhereOrNull((subject) => subject.id == __subject.id);
+      final Subject? _subject =
+          subjects.firstWhereOrNull((subject) => subject.id == __subject.id);
       if (_subject != null) {
         __subject.color = _subject.color;
       }
@@ -75,16 +91,18 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     await offline.writeTxn((isar) async {
       await isar.periods.clear();
       await isar.subjects.clear();
-      final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
+      final customGrades =
+          await isar.grades.filter().customEqualTo(true).findAll();
       await isar.grades.clear();
+      await isar.periods.putAll(__periods);
+      await isar.subjects.putAll(__subjects);
       await isar.grades.putAll(__grades);
       await isar.grades.putAll(customGrades);
-      for (final grade in __grades) {
-        await grade.subject.save();
+      await Future.forEach(__grades, (Grade grade) async {
         await grade.period.save();
-      }
+        await grade.subject.save();
+      });
     });
-    print(await offline.periods.where().findAll());
     await setCurrentPeriod();
     await setCurrentFilter();
     fetching = false;
@@ -140,7 +158,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     return (n / d).asFixed(2);
   }
 
-  double calculateAverageFromGrades(List<Grade> grades, {bool bySubject = false}) {
+  double calculateAverageFromGrades(List<Grade> grades,
+      {bool bySubject = false}) {
     if (bySubject) {
       final List<double> avgs = [];
       for (final subject in subjects) {
@@ -164,12 +183,21 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     }
   }
 
-  double calculateAverageFromSubjects(List<Subject> subjects, {Period? period}) {
-    final List<List<Grade>> _grades = subjects
-        .map((e) => e.grades.where((grade) => period == null ? true : grade.period.value!.id == period.id).toList())
-        .toList();
-    final List<double> allValues = _grades.map((e) => calculateAverageFromGrades(e)).toList();
-    final List<double> allCoefficients = subjects.map((e) => e.coefficient).toList();
+  double calculateAverageFromSubjects(List<Subject> subjects,
+      {Period? period}) {
+    final List<List<Grade>> _grades = subjects.map((e) {
+      return e.grades.where((grade) {
+        offline.writeTxnSync((isar) {
+          grade.period.loadSync();
+        });
+
+        return period == null ? true : grade.period.value?.id == period.id;
+      }).toList();
+    }).toList();
+    final List<double> allValues =
+        _grades.map((e) => calculateAverageFromGrades(e)).toList();
+    final List<double> allCoefficients =
+        subjects.map((e) => e.coefficient).toList();
 
     final List<double> values = [];
     final List<double> coefficients = [];
@@ -184,11 +212,14 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     return calculateAverage(values, coefficients);
   }
 
-  double calculateAverageFromPeriod(Period period) => calculateAverageFromSubjects(subjects, period: period);
+  double calculateAverageFromPeriod(Period period) =>
+      calculateAverageFromSubjects(subjects, period: period);
 
   Future<Response<void>> addFilter(SubjectsFilter filter) async {
     await offline.writeTxn((isar) async {
+      await isar.subjects.putAll(filter.subjects.toList());
       await isar.subjectsFilters.put(filter);
+      await filter.subjects.save();
     });
     notifyListeners();
     return const Response();
