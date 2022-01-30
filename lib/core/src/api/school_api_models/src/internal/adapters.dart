@@ -40,8 +40,8 @@ class YTColorConverter extends TypeConverter<YTColor, String?> {
     var map = jsonDecode(object ?? "");
     return YTColor(
         backgroundColor: Color(map?["backgroundColor"]),
-        foregroundColor: Color(map?["backgroundColor"]),
-        lightColor: Color(map?["backgroundColor"]));
+        foregroundColor: Color(map?["foregroundColor"]),
+        lightColor: Color(map?["lightColor"]));
   }
 
   @override
