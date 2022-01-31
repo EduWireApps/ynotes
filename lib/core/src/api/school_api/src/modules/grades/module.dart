@@ -11,12 +11,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   List<Grade> get grades {
     final _grades = offline.grades.where().sortByEntryDate().build().findAllSync();
-    offline.writeTxnSync((isar) {
-      for (final grade in _grades) {
-        grade.subject.loadSync();
-        grade.period.loadSync();
-      }
-    });
+    for (final grade in _grades) {
+      grade.load();
+    }
     return _grades;
   }
 
@@ -38,8 +35,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     return _subjects;
   }
 
-  Period? get currentPeriod =>
-      offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId ?? "").findFirstSync();
+  Period? get currentPeriod => _Storage.values.currentPeriodId == null
+      ? null
+      : offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
   SubjectsFilter? get currentFilter {
     final _subjects = offline.subjectsFilters.where().sortByName().findAllSync();
     offline.writeTxnSync((isar) {
@@ -102,17 +100,15 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   Future<void> setCurrentPeriod([Period? period]) async {
     String? id;
     if (period == null) {
-      if (currentPeriod == null) {
-        final DateTime now = DateTime.now();
-        id = periods
-            .firstWhereOrNull((period) =>
-                now.isAfter(period.startDate) &&
-                (now.isBefore(period.endDate) ||
-                    (now.year == period.endDate.year &&
-                        now.month == period.endDate.month &&
-                        now.day == period.endDate.day)))
-            ?.entityId;
-      }
+      final DateTime now = DateTime.now();
+      id = periods
+          .firstWhereOrNull((period) =>
+              now.isAfter(period.startDate) &&
+              (now.isBefore(period.endDate) ||
+                  (now.year == period.endDate.year &&
+                      now.month == period.endDate.month &&
+                      now.day == period.endDate.day)))
+          ?.entityId;
     } else {
       id = period.entityId;
     }
@@ -150,11 +146,25 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   double calculateAverageFromGrades(List<Grade> grades, {bool bySubject = false}) {
     if (bySubject) {
       final List<double> avgs = [];
-      for (final subject in subjects) {
-        if (subject.grades.isNotEmpty) {
-          avgs.add(calculateAverageFromGrades(subject.grades.toList()));
+      final Map<Subject, List<Grade>> map = {};
+      for (final grade in grades) {
+        grade.load();
+        if (map.containsKey(grade.subject.value)) {
+          map[grade.subject.value]!.add(grade);
+        } else {
+          map[grade.subject.value!] = [grade];
         }
       }
+      for (final entry in map.entries) {
+        final List<Grade> grades = entry.value;
+        avgs.add(calculateAverageFromGrades(grades));
+      }
+      // TODO: wtf is happening here
+      // for (final subject in subjects) {
+      //   if (subject.grades.isNotEmpty) {
+      //     avgs.add(calculateAverageFromGrades(subject.grades.toList()));
+      //   }
+      // }
       double sum = 0.0;
       for (final avg in avgs) {
         sum += avg;

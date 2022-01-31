@@ -1270,10 +1270,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: e642d78cb9b14fccf3154c953cdbb9e14ecac35c
+      resolved-ref: dfb5ee9e8f0fed06fe7193a4025d9c6851a139f9
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
-    version: "0.6.4"
+    version: "0.6.5"
 sdks:
   dart: ">=2.15.0 <3.0.0"
   flutter: ">=2.5.0"

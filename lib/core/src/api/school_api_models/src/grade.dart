@@ -95,4 +95,11 @@ class Grade {
   final IsarLink<Subject> subject = IsarLink<Subject>();
 
   final IsarLink<Period> period = IsarLink<Period>();
+
+  void load() {
+    Offline.isar.writeTxnSync((isar) {
+      subject.loadSync();
+      period.loadSync();
+    });
+  }
 }

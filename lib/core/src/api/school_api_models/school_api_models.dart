@@ -8,6 +8,7 @@ import 'package:ynotes/core/api.dart';
 
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
+import 'package:ynotes/core/offline.dart';
 import 'package:ynotes/core/src/api/school_api/school_api.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes_packages/theme.dart';
