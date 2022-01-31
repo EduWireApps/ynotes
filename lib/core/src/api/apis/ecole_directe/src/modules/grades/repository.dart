@@ -18,18 +18,10 @@ class _GradesRepository extends Repository {
             startDate: DateTime.parse(e["dateDebut"]),
             endDate: DateTime.parse(e["dateFin"]),
             headTeacher: e["ensembleMatieres"]["nomPP"],
-            overallAverage: (e["ensembleMatieres"]["moyenneGenerale"] as String)
-                    .toDouble() ??
-                double.nan,
-            classAverage:
-                (e["ensembleMatieres"]["moyenneClasse"] as String).toDouble() ??
-                    double.nan,
-            maxAverage:
-                (e["ensembleMatieres"]["moyenneMax"] as String).toDouble() ??
-                    double.nan,
-            minAverage:
-                (e["ensembleMatieres"]["moyenneMin"] as String).toDouble() ??
-                    double.nan))
+            overallAverage: (e["ensembleMatieres"]["moyenneGenerale"] as String).toDouble() ?? double.nan,
+            classAverage: (e["ensembleMatieres"]["moyenneClasse"] as String).toDouble() ?? double.nan,
+            maxAverage: (e["ensembleMatieres"]["moyenneMax"] as String).toDouble() ?? double.nan,
+            minAverage: (e["ensembleMatieres"]["moyenneMin"] as String).toDouble() ?? double.nan))
         .toList();
     periods.sort((a, b) => a.startDate.compareTo(b.startDate));
     final Period yearPeriod = periods.firstWhere((e) => e.entityId == "A999Z");
@@ -38,16 +30,13 @@ class _GradesRepository extends Repository {
     List<Map<String, dynamic>> disciplines = [];
     for (var period in res.data!["data"]["periodes"]) {
       for (var d in period["ensembleMatieres"]["disciplines"]) {
-        if (disciplines.firstWhereOrNull(
-                (e) => e["codeMatiere"] == d["codeMatiere"]) ==
-            null) {
+        if (disciplines.firstWhereOrNull((e) => e["codeMatiere"] == d["codeMatiere"]) == null) {
           disciplines.add(d);
         }
       }
     }
     for (final grade in res.data!["data"]["notes"]) {
-      final _subjects =
-          disciplines.map<String>((e) => e["codeMatiere"] as String).toList();
+      final _subjects = disciplines.map<String>((e) => e["codeMatiere"] as String).toList();
       if (!_subjects.contains(grade["codeMatiere"])) {
         disciplines.add(
           {
@@ -86,24 +75,18 @@ class _GradesRepository extends Repository {
           maxAverage: (e["moyenneMax"] as String).toDouble() ?? double.nan,
           minAverage: (e["moyenneMin"] as String).toDouble() ?? double.nan,
           coefficient: (e["coef"] as int).toDouble(),
-          teachers: (e["professeurs"] as List<dynamic>)
-              .map<String>((e) => e["nom"])
-              .toList()
-              .join(", "),
+          teachers: (e["professeurs"] as List<dynamic>).map<String>((e) => e["nom"]).toList().join(", "),
           average: (e["moyenne"] as String).toDouble() ?? double.nan,
           color: color);
     }).toList();
     // When this setting is set to [false], all grades' coefficient are set to 0. To counter this,
     // we set the coefficient to 1 for all grades.
-    final bool gradesCoefficientsEnabled =
-        res.data!["data"]["parametrage"]["coefficientNote"] as bool;
+    final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
     final List<Grade> grades = res.data!["data"]["notes"].map<Grade>((e) {
       Grade g = Grade(
         name: e["devoir"],
         type: e["typeDevoir"],
-        coefficient: gradesCoefficientsEnabled
-            ? (e["coef"] as String).toDouble() ?? double.nan
-            : 1,
+        coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
         outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
         value: (e["valeur"] as String).toDouble() ?? double.nan,
         significant: !(e["nonSignificatif"] as bool),
@@ -113,19 +96,10 @@ class _GradesRepository extends Repository {
         classMax: (e["maxClasse"] as String).toDouble() ?? double.nan,
         classMin: (e["minClasse"] as String).toDouble() ?? double.nan,
       )
-        ..subject.value =
-            subjects.firstWhere((s) => s.entityId == e["codeMatiere"])
-        ..period.value =
-            periods.firstWhere((p) => p.entityId == e["codePeriode"]);
+        ..subject.value = subjects.firstWhere((s) => s.entityId == e["codeMatiere"])
+        ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"]);
       return g;
     }).toList();
-    // for (final subject in subjects) {
-    //   subject.grades.addAll(grades.where((g) => g.subject.value == subject));
-    // }
-    // for (final period in periods) {
-    //   await period.grades.load();
-    //   period.grades.addAll(grades.where((g) => g.period.value == period));
-    // }
     return Response(data: {
       "periods": periods,
       "subjects": subjects,
