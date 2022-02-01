@@ -121,7 +121,7 @@ class _SubjectContainer extends StatelessWidget {
   }
 }
 
-class _GradeContainer extends StatelessWidget {
+class _GradeContainer extends StatefulWidget {
   final Grade grade;
   final Subject subject;
   const _GradeContainer(
@@ -130,7 +130,12 @@ class _GradeContainer extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  YTColor get color => subject.color;
+  @override
+  State<_GradeContainer> createState() => _GradeContainerState();
+}
+
+class _GradeContainerState extends State<_GradeContainer> {
+  YTColor get color => widget.subject.color;
 
   Widget bubble(String text, [bool danger = false]) {
     final Color backgroundColor = danger ? theme.colors.danger.backgroundColor : theme.colors.foregroundColor;
@@ -150,7 +155,10 @@ class _GradeContainer extends StatelessWidget {
     );
   }
 
-  bool get simulate => grade.custom;
+  bool get simulate => widget.grade.custom;
+  bool highlight = false;
+
+  Color get textColor => highlight ? color.foregroundColor : theme.colors.foregroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -163,15 +171,20 @@ class _GradeContainer extends StatelessWidget {
       borderType: BorderType.RRect,
       dashPattern: [YScale.s1, YScale.s0p5],
       child: Material(
-        color: simulate ? color.backgroundColor : theme.colors.backgroundLightColor,
+        color: simulate ? color.backgroundColor : theme.colors.backgroundColor,
         borderRadius: _borderRadius,
         child: InkWell(
           onTap: () {
             YModalBottomSheets.show(
-                context: context, child: Text("grade bottom sheet: <${grade.name}>", style: theme.texts.body1));
+                context: context, child: Text("grade bottom sheet: <${widget.grade.name}>", style: theme.texts.body1));
           },
           borderRadius: _borderRadius,
           highlightColor: simulate ? color.lightColor.withOpacity(.5) : color.backgroundColor,
+          onHighlightChanged: (bool value) {
+            setState(() {
+              highlight = value;
+            });
+          },
           hoverColor: color.lightColor,
           child: Ink(
               padding: YPadding.p(YScale.s1),
@@ -185,19 +198,22 @@ class _GradeContainer extends StatelessWidget {
                   clipBehavior: Clip.none,
                   children: [
                     AutoSizeText(
-                      grade.value.display(),
+                      widget.grade.value.display(),
                       style: TextStyle(
                         fontWeight: YFontWeight.semibold,
-                        color: theme.colors.foregroundColor,
+                        color: simulate ? color.foregroundColor : textColor,
                         fontSize: YFontSize.base,
                       ),
                       softWrap: false,
                     ),
-                    if (grade.coefficient != 1)
+                    if (widget.grade.coefficient != 1)
                       Positioned(
-                          top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.coefficient.display(), true)),
-                    if (grade.outOf != 20)
-                      Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.outOf.display()}"))
+                          top: -YScale.s2p5,
+                          right: -YScale.s2p5,
+                          child: bubble(widget.grade.coefficient.display(), true)),
+                    if (widget.grade.outOf != 20)
+                      Positioned(
+                          bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${widget.grade.outOf.display()}"))
                   ],
                 ),
               )),
