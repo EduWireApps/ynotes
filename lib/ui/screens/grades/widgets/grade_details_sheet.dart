@@ -58,42 +58,48 @@ class _GradeDetailsSheetState extends State<GradeDetailsSheet> {
           YVerticalSpacer(YScale.s6),
           _ClassData(grade: grade),
           YVerticalSpacer(YScale.s8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: YPadding.p(YScale.s2),
-                width: YScale.s28,
-                child: Column(
-                  children: [
-                    _DiffText(impactOnOverallAverage),
-                    YVerticalSpacer(YScale.s1),
-                    Text(
-                      "dans la moyenne générale",
-                      style: theme.texts.body2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-              YHorizontalSpacer(YScale.s4),
-              Container(
-                padding: YPadding.p(YScale.s2),
-                width: YScale.s28,
-                child: Column(
-                  children: [
-                    _DiffText(impactOnSubjectAverage),
-                    YVerticalSpacer(YScale.s1),
-                    Text(
-                      "dans la moyenne de la matière",
-                      style: theme.texts.body2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
+          _Stats(impactOnOverallAverage: impactOnOverallAverage, impactOnSubjectAverage: impactOnSubjectAverage)
+        ],
+      ),
+    );
+  }
+}
+
+class _Stats extends StatelessWidget {
+  const _Stats({
+    Key? key,
+    required this.impactOnOverallAverage,
+    required this.impactOnSubjectAverage,
+  }) : super(key: key);
+
+  final double impactOnOverallAverage;
+  final double impactOnSubjectAverage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        container("dans la moyenne générale", impactOnOverallAverage),
+        YHorizontalSpacer(YScale.s4),
+        container("dans la moyenne de la matière", impactOnSubjectAverage),
+      ],
+    );
+  }
+
+  Widget container(String label, double value) {
+    return Container(
+      padding: YPadding.p(YScale.s2),
+      width: YScale.s28,
+      child: Column(
+        children: [
+          _DiffText(value),
+          YVerticalSpacer(YScale.s1),
+          Text(
+            label,
+            style: theme.texts.body2,
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );

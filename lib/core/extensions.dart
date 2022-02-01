@@ -64,6 +64,9 @@ extension DoubleToFixed on double {
 
 extension DoubleDisplay on double {
   String display() {
+    if (isNaN) {
+      return "-";
+    }
     String str = toString().replaceAll(".", ",");
     if (str.endsWith(",0")) {
       str = str.substring(0, str.length - 2);
