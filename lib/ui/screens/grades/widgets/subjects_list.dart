@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
-import 'package:ynotes/core/offline.dart';
 import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -28,7 +27,7 @@ class SubjectsList extends StatelessWidget {
         YVerticalSpacer(YScale.s2),
         ...module.subjects
             .where((e) {
-              return (module.currentFilter?.entityId == "all" || module.currentFilter!.subjects.contains(e));
+              return (module.currentFilter.entityId == "all" || module.currentFilter.subjects.contains(e));
             })
             .map((subject) => _SubjectContainer(subject, period, simulate))
             .toList()

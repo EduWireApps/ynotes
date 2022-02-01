@@ -2337,11 +2337,8 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
       AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.entityId;
-    IsarUint8List? _entityId;
-    if (value0 != null) {
-      _entityId = BinaryWriter.utf8Encoder.convert(value0);
-    }
-    dynamicSize += _entityId?.length ?? 0;
+    final _entityId = BinaryWriter.utf8Encoder.convert(value0);
+    dynamicSize += _entityId.length;
     final value1 = object.name;
     final _name = BinaryWriter.utf8Encoder.convert(value1);
     dynamicSize += _name.length;
@@ -2360,7 +2357,7 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
   SubjectsFilter deserialize(IsarCollection<SubjectsFilter> collection, int id,
       BinaryReader reader, List<int> offsets) {
     final object = SubjectsFilter(
-      entityId: reader.readStringOrNull(offsets[0]),
+      entityId: reader.readString(offsets[0]),
       name: reader.readString(offsets[1]),
     );
     object.id = id;
@@ -2375,7 +2372,7 @@ class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
       case -1:
         return id as P;
       case 0:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readString(offset)) as P;
       case 1:
         return (reader.readString(offset)) as P;
       default:
@@ -2480,17 +2477,8 @@ extension SubjectsFilterQueryWhere
 extension SubjectsFilterQueryFilter
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QFilterCondition> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
-      entityIdIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'entityId',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       entityIdEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -2503,7 +2491,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       entityIdGreaterThan(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -2518,7 +2506,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       entityIdLessThan(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -2533,8 +2521,8 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       entityIdBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
@@ -2837,7 +2825,7 @@ extension SubjectsFilterQueryWhereDistinct
 
 extension SubjectsFilterQueryProperty
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QQueryProperty> {
-  QueryBuilder<SubjectsFilter, String?, QQueryOperations> entityIdProperty() {
+  QueryBuilder<SubjectsFilter, String, QQueryOperations> entityIdProperty() {
     return addPropertyNameInternal('entityId');
   }
 

@@ -16,8 +16,10 @@ class SubjectsFilter extends _LinkedModel {
 
   SubjectsFilter({
     required this.name,
-    String? entityId,
-  }) : entityId = entityId ?? const Uuid().v4();
+    required this.entityId,
+  });
+
+  SubjectsFilter.fromName({required this.name}) : entityId = const Uuid().v4();
 
   final IsarLinks<Subject> subjects = IsarLinks<Subject>();
 
