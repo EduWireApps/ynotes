@@ -58,7 +58,19 @@ class _GradeDetailsSheetState extends State<GradeDetailsSheet> {
           YVerticalSpacer(YScale.s6),
           _ClassData(grade: grade),
           YVerticalSpacer(YScale.s8),
-          _Stats(impactOnOverallAverage: impactOnOverallAverage, impactOnSubjectAverage: impactOnSubjectAverage)
+          _Stats(impactOnOverallAverage: impactOnOverallAverage, impactOnSubjectAverage: impactOnSubjectAverage),
+          if (grade.custom)
+            Padding(
+                padding: YPadding.pt(YScale.s4),
+                child: YButton(
+                  onPressed: () async {
+                    await schoolApi.gradesModule.removeCustomGrade(grade);
+                    Navigator.pop(context);
+                  },
+                  text: "SUPPRIMER",
+                  color: YColor.danger,
+                  variant: YButtonVariant.outlined,
+                ))
         ],
       ),
     );
