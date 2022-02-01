@@ -3,49 +3,55 @@ part of models;
 /// The model for a period.
 ///
 /// Can be stored in [Hive] storage.
-@HiveType(typeId: _HiveTypeIds.period)
-class Period {
+@Collection()
+class Period extends _LinkedModel {
+  @Id()
+  int? id;
+
   /// The id of the period.
-  @HiveField(0)
-  final String id;
+  final String entityId;
 
   /// The name of the period.
-  @HiveField(1)
   final String name;
 
   /// The start date of the period.
-  @HiveField(2)
   final DateTime startDate;
 
   /// The end date of the period.
-  @HiveField(3)
   final DateTime endDate;
 
   /// The class head teacher.
-  @HiveField(4)
   final String headTeacher;
 
   /// The user average for this period.
-  @HiveField(5)
   final double overallAverage;
 
   /// The class average for this period.
-  @HiveField(6)
   final double classAverage;
 
   /// The maximum average of the class for this period.
-  @HiveField(7)
   final double maxAverage;
 
   /// The minimum average of the class for this period.
-  @HiveField(8)
   final double minAverage;
 
-  /// Get the grades related to this period from a list of [Grade]s.
-  List<Grade> grades(List<Grade> grades) => grades.where((g) => g.periodId == id).toList();
+  @Backlink(to: "period")
+  final IsarLinks<Grade> grades = IsarLinks<Grade>();
+
+  List<Grade> get sortedGrades => grades.toList()..sort((a, b) => a.entryDate.compareTo(b.entryDate));
+
+  @override
+  void load() {
+    Offline.isar.writeTxnSync((isar) {
+      grades.loadSync();
+    });
+    for (final grade in grades) {
+      grade.load();
+    }
+  }
 
   Period({
-    required this.id,
+    required this.entityId,
     required this.name,
     required this.startDate,
     required this.endDate,

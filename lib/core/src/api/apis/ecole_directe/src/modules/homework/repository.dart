@@ -14,16 +14,18 @@ class _HomeworkRepository extends HomeworkRepository {
       final List<Homework> homework = [];
       (res.data!["data"].cast<String, List<dynamic>>() as Map<String, List<dynamic>>).forEach((k, v) {
         homework.addAll(v
-            .map<Homework>((e) => Homework(
-                  id: (e["idDevoir"] as int).toString(),
-                  subjectId: e["codeMatiere"],
-                  content: null,
-                  date: DateTime.parse(k),
-                  entryDate: DateTime.parse(e["donneLe"]),
-                  done: e["effectue"],
-                  due: e["rendreEnLigne"],
-                  assessment: e["interrogation"],
-                ))
+            .map<Homework>(
+              (e) => Homework(
+                entityId: (e["idDevoir"] as int).toString(),
+                content: null,
+                date: DateTime.parse(k),
+                entryDate: DateTime.parse(e["donneLe"]),
+                done: e["effectue"],
+                due: e["rendreEnLigne"],
+                assessment: e["interrogation"],
+              )..subject.value =
+                  api.gradesModule.subjects.firstWhere((subject) => subject.entityId == e["codeMatiere"]),
+            )
             .toList());
       });
       final Map<String, dynamic> map = {"homework": homework};
@@ -42,7 +44,7 @@ class _HomeworkRepository extends HomeworkRepository {
       for (final h in (res.data!["data"]["matieres"] as List<dynamic>).where((e) => e["aFaire"] != null)) {
         final List<Document> d = [];
         for (final e in (h["aFaire"]["documents"] as List<dynamic>)) {
-          d.add(Document(id: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
+          d.add(Document(entityId: (e["id"] as int).toString(), name: e["libelle"], type: e["type"], saved: false));
         }
         documents.add(d);
       }
@@ -56,15 +58,16 @@ class _HomeworkRepository extends HomeworkRepository {
         final int i = entry.key;
         final dynamic e = entry.value;
         return Homework(
-            id: (e["id"] as int).toString(),
-            subjectId: e["codeMatiere"],
-            content: decodeContent(e["aFaire"]["contenu"]),
-            date: date,
-            entryDate: DateTime.parse(e["aFaire"]["donneLe"]),
-            done: e["aFaire"]["effectue"],
-            due: e["aFaire"]["rendreEnLigne"],
-            assessment: e["interrogation"],
-            documentsIds: documents[i].map((e) => e.id).toList());
+          entityId: (e["id"] as int).toString(),
+          content: decodeContent(e["aFaire"]["contenu"]),
+          date: date,
+          entryDate: DateTime.parse(e["aFaire"]["donneLe"]),
+          done: e["aFaire"]["effectue"],
+          due: e["aFaire"]["rendreEnLigne"],
+          assessment: e["interrogation"],
+        )
+          ..subject.value = api.gradesModule.subjects.firstWhere((subject) => subject.entityId == e["codeMatiere"])
+          ..documents.addAll(documents[i]);
       }).toList();
       return Response(data: homework);
     } catch (e) {

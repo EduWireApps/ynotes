@@ -3,75 +3,59 @@ part of models;
 /// The model for an email.
 ///
 /// Can be stored in [Hive] storage.
-@HiveType(typeId: _HiveTypeIds.email)
+@Collection()
 class Email {
+  @Id()
+  int? id;
+
   /// The id of the email.
-  @HiveField(0)
-  final String id;
+  final String entityId;
 
   /// Is the email read. Don't forget to update the [Email]
   /// in the [EmailsModule] if you change it.
-  @HiveField(1)
   bool read;
 
   /// The email's sender.
-  @HiveField(2)
-  final Recipient from;
+  final IsarLink<Recipient> from = IsarLink<Recipient>();
 
   /// The email's subject.
-  @HiveField(3)
   final String subject;
 
   /// The date the e-mail was sent.
-  @HiveField(4)
   final DateTime date;
 
   /// The email's content. By default when querying the emails' list
   /// from the api, it's likely to be null. You have to call the api
   /// again to get all emails' data. Don't forget to update the [Email]
   /// in the [EmailsModule].
-  @HiveField(5)
   String? content;
-
-  /// The email's documents ids, used to retrieve linked documents
-  /// in [documents] from [DocumentsModule].
-  @HiveField(6)
-  final List<String> documentsIds;
-
-  /// Get the email's documents from a list of [Document]s.
-  List<Document> documents(List<Document> d) => d.where((document) => documentsIds.contains(document.id)).toList();
+  final IsarLinks<Document> documents = IsarLinks<Document>();
 
   /// The email's recipients.
-  @HiveField(7)
-  final List<Recipient> to;
+  final IsarLinks<Recipient> to = IsarLinks<Recipient>();
+
+  bool favorite = false;
 
   Email({
-    required this.id,
+    required this.entityId,
     required this.read,
-    required this.from,
     required this.subject,
     required this.date,
     this.content,
-    this.documentsIds = const [],
-    required this.to,
   });
 
   /// When sending an [Email], some fields are useless and so
   /// this factory let's you create an [Email] with only the
   /// required data.
-  factory Email.toSend(
-          {required String subject,
-          required String content,
-          required List<Recipient> to,
-          List<String> documentsIds = const []}) =>
+  factory Email.toSend({
+    required String subject,
+    required String content,
+  }) =>
       Email(
-        id: "",
+        entityId: "",
         read: false,
-        from: Recipient(id: "", firstName: "", lastName: "", civility: "", headTeacher: false, subjects: []),
         subject: subject,
         content: content,
         date: DateTime.now(),
-        to: to,
-        documentsIds: documentsIds,
       );
 }

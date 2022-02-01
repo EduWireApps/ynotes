@@ -1,43 +1,42 @@
 part of school_api;
 
-abstract class SchoolLifeModule<R extends Repository> extends Module<R, OfflineSchoolLife> {
+abstract class SchoolLifeModule<R extends Repository> extends Module<R> {
   SchoolLifeModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: api.modulesSupport.schoolLife,
-            isAvailable: api.modulesAvailability.schoolLife,
-            repository: repository,
-            api: api,
-            offline: OfflineSchoolLife());
+          isSupported: api.modulesSupport.schoolLife,
+          isAvailable: api.modulesAvailability.schoolLife,
+          repository: repository,
+          api: api,
+        );
 
-  List<SchoolLifeTicket> get tickets => _tickets;
-  List<SchoolLifeSanction> get sanctions => _sanctions;
-  List<SchoolLifeTicket> _tickets = [];
-  List<SchoolLifeSanction> _sanctions = [];
+  List<SchoolLifeTicket> get tickets => offline.schoolLifeTickets.where().findAllSync();
+  List<SchoolLifeSanction> get sanctions => offline.schoolLifeSanctions.where().findAllSync();
 
   @override
-  Future<Response<void>> fetch({bool online = false}) async {
+  Future<Response<void>> fetch() async {
     fetching = true;
     notifyListeners();
-    if (online) {
-      final res = await repository.get();
-      if (res.error != null) return res;
-      _tickets = res.data!["tickets"] ?? [];
-      _sanctions = res.data!["sanctions"] ?? [];
-      await offline.setTickets(_tickets);
-      await offline.setSanctions(_sanctions);
-    } else {
-      _tickets = await offline.getTickets();
-      _sanctions = await offline.getSanctions();
-    }
+    final res = await repository.get();
+    if (res.error != null) return res;
+    final List<SchoolLifeTicket> _tickets = res.data!["tickets"] ?? [];
+    final List<SchoolLifeSanction> _sanctions = res.data!["sanctions"] ?? [];
+    await offline.writeTxn((isar) async {
+      await offline.schoolLifeTickets.clear();
+      await offline.schoolLifeSanctions.clear();
+      await offline.schoolLifeTickets.putAll(_tickets);
+      await offline.schoolLifeSanctions.putAll(_sanctions);
+    });
     fetching = false;
     notifyListeners();
     return const Response();
   }
 
   @override
-  Future<void> reset({bool offline = false}) async {
-    _tickets = [];
-    _sanctions = [];
-    await super.reset(offline: offline);
+  Future<void> reset() async {
+    await offline.writeTxn((isar) async {
+      await isar.schoolLifeTickets.clear();
+      await isar.schoolLifeSanctions.clear();
+    });
+    notifyListeners();
   }
 }

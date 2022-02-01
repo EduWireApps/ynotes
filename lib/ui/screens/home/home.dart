@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<void> onRefresh() async {
-    final res = await schoolApi.fetch(online: true);
+    final res = await schoolApi.fetch();
     if (res != null) {
       YSnackbars.error(context, message: res.join(". "));
     }
@@ -35,6 +35,22 @@ class _HomePageState extends State<HomePage> {
             appBar: YAppBar(
               title: "Accueil",
               actions: [
+                YIconButton(
+                    icon: Icons.bug_report,
+                    onPressed: () {
+                      final grades = schoolApi.gradesModule.grades;
+                      // for (final g in grades) {
+                      //   g.load();
+                      // }
+                      final mathGrades = grades
+                          .where((e) => e.subject.value!.entityId == "MATHS" && e.period.value!.entityId == "A002")
+                          .toList();
+                      print(mathGrades);
+                      final v = mathGrades.map((e) => e.realValue).toList();
+                      final c = mathGrades.map((e) => e.coefficient).toList();
+                      final a = schoolApi.gradesModule.calculateAverage(v, c);
+                      print(a);
+                    }),
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   YIconButton(icon: Icons.refresh_rounded, onPressed: onRefresh),
                 // if (schoolApi.emailsModule.isEnabled)

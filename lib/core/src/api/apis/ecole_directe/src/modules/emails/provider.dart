@@ -3,7 +3,7 @@ part of ecole_directe;
 class _EmailsProvider extends Provider {
   _EmailsProvider(SchoolApi api) : super(api);
 
-  String? get _studentId => api.authModule.schoolAccount?.id;
+  String? get _studentId => api.authModule.schoolAccount?.entityId;
 
   Future<Response<Map<String, dynamic>>> getEmails() async =>
       await _request(api, url: "eleves/$_studentId/messages.awp?verbe=getall&typeRecuperation=all");

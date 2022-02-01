@@ -5,18 +5,17 @@ part of models;
 /// will be generated from it instead.
 ///
 /// Can be stored in [Hive] storage.
-@HiveType(typeId: _HiveTypeIds.appAccount)
+@Collection()
 class AppAccount {
-  /// The account's id. If not provided, defaults to [Uuid.v4]
-  @HiveField(0)
-  final String id;
+  @Id()
+  int? id;
+
+  final String entityId;
 
   /// The first name of the user.
-  @HiveField(1)
   final String firstName;
 
   /// The last name of the user.
-  @HiveField(2)
   final String lastName;
 
   /// The full name of the user, computed from [firstName] and [lastName].
@@ -26,9 +25,7 @@ class AppAccount {
   bool get isParent => accounts.isNotEmpty;
 
   /// The sub accounts, usually the children of the parent.
-  @HiveField(3)
-  final List<SchoolAccount> accounts;
+  final IsarLinks<SchoolAccount> accounts = IsarLinks<SchoolAccount>();
 
-  AppAccount({required this.firstName, required this.lastName, String? id, this.accounts = const []})
-      : id = id ?? const Uuid().v4();
+  AppAccount({required this.entityId, required this.firstName, required this.lastName});
 }

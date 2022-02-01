@@ -15,7 +15,7 @@ class PeriodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return period.grades(module.grades).isEmpty
+    return period.grades.isEmpty
         ? Text(
             "no grades",
             style: theme.texts.body1,
@@ -67,16 +67,14 @@ class _Stats extends StatelessWidget {
     // TODO: open stats page
   }
 
-  List<Grade> get grades => period
-      .grades(module.grades.where((grade) {
+  List<Grade> get grades => period.sortedGrades.where((grade) {
         final bool s = grade.significant;
         if (simulate) {
           return s;
         } else {
           return s && !grade.custom;
         }
-      }).toList())
-      .toList();
+      }).toList();
 
   double get average => module.calculateAverageFromGrades(grades, bySubject: true);
 
@@ -112,7 +110,7 @@ class _Stats extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Évolution", style: theme.texts.body2),
-                  _DiffText(module.calculateAverageFromPeriod(period) -
+                  _DiffText(module.calculateAverageFromGrades(grades, bySubject: true) -
                       module.calculateAverageFromGrades(grades.sublist(0, grades.length - 1), bySubject: true))
                 ],
               ),

@@ -18,7 +18,7 @@ class BackgroundService {
   /// Starts the background service.
   static Future<void> init() async {
     Logger.log(_logKey, "Intializing...");
-    if (!(Platform.isAndroid || Platform.isIOS)) {
+    if (!(Platform.isAndroid)) {
       Logger.log(_logKey, "Unsupported platform");
       return;
     }
@@ -37,14 +37,14 @@ class BackgroundService {
             requiresStorageNotLow: false,
             requiresDeviceIdle: false,
             requiredNetworkType: NetworkType.ANY),
-        (String taskId) async => await _onfetch(taskId, headless: false),
+        (String taskId) async => await _onfetch(taskId, headless: true),
         (String taskId) async => await _onTimeout(taskId));
     Logger.log(_logKey, "Status: $status");
   }
 
   /// Registers the headless task in [BackgroundFetch].
   static Future<void> _registerHeadlessTask() async {
-    BackgroundFetch.registerHeadlessTask((HeadlessTask task) async {
+    await BackgroundFetch.registerHeadlessTask((HeadlessTask task) async {
       String taskId = task.taskId;
       bool isTimeout = task.timeout;
       if (isTimeout) {
@@ -62,7 +62,7 @@ class BackgroundService {
       if (headless) {
         await SystemService.init();
       }
-      await schoolApi.fetch(online: true);
+      await schoolApi.fetch();
     } catch (e) {
       // TODO: cancel notification
       // await AppNotification.cancelNotification(a.hashCode);

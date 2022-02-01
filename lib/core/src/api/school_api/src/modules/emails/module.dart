@@ -1,86 +1,60 @@
 part of school_api;
 
-abstract class EmailsModule<R extends EmailsRepository> extends Module<R, OfflineEmails> {
+abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
   EmailsModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: api.modulesSupport.emails,
-            isAvailable: api.modulesAvailability.emails,
-            repository: repository,
-            api: api,
-            offline: OfflineEmails());
+          isSupported: api.modulesSupport.emails,
+          isAvailable: api.modulesAvailability.emails,
+          repository: repository,
+          api: api,
+        );
 
-  List<Email> get emailsSent => _emailsSent;
-  List<Email> get emailsReceived => _emailsReceived;
-  List<Email> get favoriteEmails => _favoriteEmails;
-  List<Recipient> get recipients => _recipients;
-  List<Email> _emailsSent = [];
-  List<Email> _emailsReceived = [];
-  List<Email> _favoriteEmails = [];
-  List<Recipient> _recipients = [];
+  List<Email> get emailsSent => offline.emails.filter().entityIdEqualTo("").sortByDate().findAllSync();
+  List<Email> get emailsReceived => offline.emails.filter().not().entityIdEqualTo("").sortByDate().findAllSync();
+  List<Email> get favoriteEmails => offline.emails.filter().favoriteEqualTo(true).sortByDate().findAllSync();
+  List<Recipient> get recipients => offline.recipients.where().sortByLastName().findAllSync();
 
   @override
-  Future<Response<void>> fetch({bool online = false}) async {
+  Future<Response<void>> fetch() async {
     fetching = true;
     notifyListeners();
-    if (online) {
-      final res = await repository.get();
-      if (res.error != null) return res;
-      final List<Email> __emailsReceived = res.data!["emailsReceived"] ?? [];
-      if (__emailsReceived.length > _emailsReceived.length) {
-        final List<Email> newEmails = __emailsReceived.sublist(_emailsReceived.length);
-        // TODO: foreach: trigger notifications
-        _emailsReceived.addAll(newEmails);
-        await offline.setEmailsReceived(_emailsReceived);
-      }
-      final List<Email> __emailsSent = res.data!["emailsSent"] ?? [];
-      if (__emailsSent.length > _emailsSent.length) {
-        final List<Email> newEmails = __emailsSent.sublist(_emailsSent.length);
-        _emailsSent.addAll(newEmails);
-        await offline.setEmailsSent(_emailsSent);
-      }
-      final List<Recipient> __recipients = res.data!["recipients"] ?? [];
-      if (__recipients.length > _recipients.length) {
-        final List<Recipient> newRecipients = __recipients.toSet().difference(_recipients.toSet()).toList();
-        _recipients.addAll(newRecipients);
-        await offline.setRecipients(_recipients);
-      }
-    } else {
-      _emailsReceived = await offline.getEmailsReceived();
-      _emailsSent = await offline.getEmailsSent();
-      _recipients = await offline.getRecipients();
+    final res = await repository.get();
+    if (res.error != null) return res;
+    final List<Email> __emailsReceived = res.data!["emailsReceived"] ?? [];
+    if (__emailsReceived.length > emailsReceived.length) {
+      final List<Email> newEmails = __emailsReceived.sublist(emailsReceived.length);
+      // TODO: foreach: trigger notifications
+      await offline.writeTxn((isar) async {
+        await isar.emails.putAll(newEmails);
+      });
     }
-    final List<String> favoriteEmailsIds = await offline.getFavoriteEmailsIds();
-    _favoriteEmails =
-        [..._emailsReceived, ..._emailsSent].where((email) => favoriteEmailsIds.contains(email.id)).toList();
+    final List<Email> __emailsSent = res.data!["emailsSent"] ?? [];
+    if (__emailsSent.length > emailsSent.length) {
+      final List<Email> newEmails = __emailsSent.sublist(emailsSent.length);
+      await offline.writeTxn((isar) async {
+        await isar.emails.putAll(newEmails);
+      });
+    }
+    final List<Recipient> __recipients = res.data!["recipients"] ?? [];
+    await offline.writeTxn((isar) async {
+      await isar.recipients.clear();
+      await isar.recipients.putAll(__recipients);
+    });
     fetching = false;
     notifyListeners();
     return const Response();
   }
 
-  Future<void> addFavoriteEmail(Email email) async {
-    _favoriteEmails.add(email);
-    await offline.setFavoriteEmailsIds(_favoriteEmails.map((e) => e.id).toList());
-  }
-
-  Future<void> removeFavoriteEmail(Email email) async {
-    _favoriteEmails.remove(email);
-    await offline.setFavoriteEmailsIds(_favoriteEmails.map((e) => e.id).toList());
-  }
-
   Future<Response<void>> read(Email email) async {
     if (email.content != null) return const Response();
-    final bool received = _emailsReceived.contains(email);
+    final bool received = emailsReceived.contains(email);
     final res = await repository.getEmailContent(email, received);
     if (res.error != null) return res;
-    if (received) {
-      _emailsReceived.firstWhere((e) => e.id == email.id).read = true;
-      _emailsReceived.firstWhere((e) => e.id == email.id).content = res.data!;
-      offline.setEmailsReceived(_emailsReceived);
-    } else {
-      _emailsSent.firstWhere((e) => e.id == email.id).read = true;
-      _emailsSent.firstWhere((e) => e.id == email.id).content = res.data!;
-      offline.setEmailsSent(_emailsSent);
-    }
+    email.read = true;
+    email.content = res.data!;
+    await offline.writeTxn((isar) async {
+      await isar.emails.put(email);
+    });
     notifyListeners();
     return const Response();
   }
@@ -90,16 +64,16 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R, Offlin
     if (res.error != null) {
       return Response(error: res.error);
     }
-    await fetch(online: true);
+    await fetch();
     return const Response();
   }
 
   @override
-  Future<void> reset({bool offline = false}) async {
-    _emailsSent = [];
-    _recipients = [];
-    _emailsReceived = [];
-    _favoriteEmails = [];
-    await super.reset(offline: offline);
+  Future<void> reset() async {
+    await offline.writeTxn((isar) async {
+      await isar.emails.clear();
+      await isar.recipients.clear();
+    });
+    notifyListeners();
   }
 }

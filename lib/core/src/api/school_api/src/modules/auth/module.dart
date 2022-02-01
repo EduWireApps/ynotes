@@ -2,16 +2,20 @@ part of school_api;
 
 enum AuthStatus { authenticated, unauthenticated, offline, error }
 
-abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAuth> {
+abstract class AuthModule<R extends AuthRepository> extends Module<R> {
   AuthModule({required R repository, required SchoolApi api})
-      : super(isSupported: true, isAvailable: true, repository: repository, api: api, offline: OfflineAuth()) {
+      : super(isSupported: true, isAvailable: true, repository: repository, api: api) {
     _connectivity.onConnectivityChanged.listen(_checkConnectivity);
   }
 
   static const String _credentialsKey = "credentials";
 
-  AppAccount? account;
-  SchoolAccount? schoolAccount;
+  AppAccount? get account => _Storage.values.appAccountId == null
+      ? null
+      : offline.appAccounts.filter().entityIdEqualTo(_Storage.values.appAccountId!).findFirstSync();
+  SchoolAccount? get schoolAccount => _Storage.values.schoolAccountId == null
+      ? null
+      : offline.schoolAccounts.filter().entityIdEqualTo(_Storage.values.schoolAccountId!).findFirstSync();
 
   AuthStatus status = AuthStatus.unauthenticated;
 
@@ -66,6 +70,11 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAut
     await login(username: creds["username"], password: creds["password"], parameters: creds["parameters"]);
   }
 
+  Future<void> update(SchoolAccount account) async {
+    _Storage.values.schoolAccountId = account.entityId;
+    await _Storage.update();
+  }
+
   @override
   Future<void> _init() async {
     await super._init();
@@ -75,14 +84,7 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAut
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    account = await offline.getAccount();
-    schoolAccount = await offline.getSchoolAccount();
-    return const Response();
-  }
-
-  Future<void> save() async {
-    await offline.setAccount(account);
-    await offline.setSchoolAccount(schoolAccount);
+    return const Response(error: "Not implemented");
   }
 
   Future<Response<String>> login(
@@ -96,23 +98,30 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R, OfflineAut
       return Response(error: res.error);
     }
     await setCredentials({"username": username, "password": password, "parameters": parameters});
-    await save();
     status = AuthStatus.authenticated;
     details = "Connecté";
     logs = null;
     notifyListeners();
-    account = res.data!["appAccount"];
-    schoolAccount = res.data!["schoolAccount"];
+    final AppAccount account = res.data!["appAccount"];
+    final SchoolAccount schoolAccount = res.data!["schoolAccount"];
+    await offline.writeTxn((isar) async {
+      await isar.appAccounts.put(account);
+      await account.accounts.save();
+      await isar.schoolAccounts.put(schoolAccount);
+    });
+    _Storage.values.appAccountId = account.entityId;
+    _Storage.values.schoolAccountId = schoolAccount.entityId;
+    await _Storage.update();
     notifyListeners();
-    // return const Response();
-    return Response(data: "Bienvenue ${account!.fullName}");
+    return Response(data: "Bienvenue ${account.fullName}");
   }
 
   @override
-  Future<void> reset({bool offline = false}) async {
-    account = null;
-    schoolAccount = null;
-    await super.reset(offline: offline);
+  Future<void> reset() async {
+    _Storage.values.appAccountId = null;
+    _Storage.values.schoolAccountId = null;
+    await _Storage.update();
+    notifyListeners();
   }
 
   YTColor get color {

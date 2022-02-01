@@ -1,62 +1,5 @@
 part of models;
 
-/// The model for a subject.
-///
-/// Can be stored in [Hive] storage.
-@HiveType(typeId: _HiveTypeIds.subject)
-class Subject {
-  /// The id of the subject.
-  @HiveField(0)
-  final String id;
-
-  /// The name of the subject.
-  @HiveField(1)
-  final String name;
-
-  /// The average of the class for this subject.
-  @HiveField(2)
-  final double classAverage;
-
-  /// The maximum average of the class for this subject.
-  @HiveField(3)
-  final double maxAverage;
-
-  /// The minimum average of the class for this subject.
-  @HiveField(4)
-  final double minAverage;
-
-  /// The coefficient of the subject.
-  @HiveField(5)
-  final double coefficient;
-
-  /// The teachers of the subject.
-  @HiveField(6)
-  final String teachers;
-
-  /// The grades of the subject.
-  List<Grade> grades(List<Grade> grades, [Period? period]) =>
-      grades.where((g) => g.subjectId == id && (period == null ? true : g.periodId == period.id)).toList();
-
-  /// The average of the subject.
-  @HiveField(7)
-  final double average;
-
-  /// The color of the subject.
-  @HiveField(8)
-  YTColor color;
-
-  Subject(
-      {required this.id,
-      required this.name,
-      required this.classAverage,
-      required this.maxAverage,
-      required this.minAverage,
-      required this.coefficient,
-      required this.teachers,
-      required this.average,
-      required this.color});
-}
-
 /// The model for a custom [Subject].
 ///
 /// It only requires required data and can be used to
@@ -73,7 +16,7 @@ class CustomSubject extends Subject {
       required SchoolApi api,
       required YTColor color})
       : super(
-            id: md5.convert(utf8.encode(name)).toString(),
+            entityId: md5.convert(utf8.encode(name)).toString(),
             name: name,
             classAverage: double.nan,
             maxAverage: double.nan,
@@ -82,4 +25,76 @@ class CustomSubject extends Subject {
             teachers: teachers,
             average: double.nan,
             color: color);
+}
+
+/// The model for a subject.
+///
+/// Can be stored in [Hive] storage.
+@Collection()
+class Subject extends _LinkedModel {
+  /// The id of the subject.
+
+  @Id()
+  int? id;
+
+  final String entityId;
+
+  /// The name of the subject.
+
+  final String name;
+
+  /// The average of the class for this subject.
+
+  final double classAverage;
+
+  /// The maximum average of the class for this subject.
+
+  final double maxAverage;
+
+  /// The minimum average of the class for this subject.
+
+  final double minAverage;
+
+  /// The coefficient of the subject.
+
+  final double coefficient;
+
+  /// The teachers of the subject.
+
+  final String teachers;
+
+  /// The average of the subject.
+
+  final double average;
+
+  /// The color of the subject.
+  @YTColorConverter()
+  YTColor color;
+
+  Subject({
+    required this.color,
+    required this.entityId,
+    required this.name,
+    required this.classAverage,
+    required this.maxAverage,
+    required this.minAverage,
+    required this.coefficient,
+    required this.teachers,
+    required this.average,
+  });
+
+  @Backlink(to: "subject")
+  final IsarLinks<Grade> grades = IsarLinks<Grade>();
+
+  List<Grade> get sortedGrades => grades.toList()..sort((a, b) => a.entryDate.compareTo(b.entryDate));
+
+  @override
+  void load() {
+    Offline.isar.writeTxnSync((isar) {
+      grades.loadSync();
+    });
+    for (final grade in grades) {
+      grade.load();
+    }
+  }
 }

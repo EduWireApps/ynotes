@@ -25,10 +25,10 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
     }
   }
 
-  Future<List<String>?> fetch({bool online = false}) async {
+  Future<List<String>?> fetch() async {
     final List<String> errors = [];
     for (final module in modules) {
-      final res = await module.fetch(online: online);
+      final res = await module.fetch();
       if (res.error != null) {
         errors.add(res.error!);
       }
@@ -37,6 +37,7 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
   }
 
   Future<void> init() async {
+    await _Storage.init();
     await Offline.init();
     await modulesAvailability.load();
     for (final module in modules) {
@@ -48,12 +49,13 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
     if (!Offline.store.initialized) {
       await init();
     }
+    await _Storage.reset();
     for (final module in modules) {
       if (auth) {
-        await module.reset(offline: true);
+        await module.reset();
       } else {
         if (module is! AuthModule) {
-          await module.reset(offline: true);
+          await module.reset();
         }
       }
     }

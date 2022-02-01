@@ -26,7 +26,9 @@ class SubjectsList extends StatelessWidget {
         ),
         YVerticalSpacer(YScale.s2),
         ...module.subjects
-            .where((e) => module.currentFilter!.subjectsIds?.contains(e.id) ?? true)
+            .where((e) {
+              return (module.currentFilter.entityId == "all" || module.currentFilter.subjects.contains(e));
+            })
             .map((subject) => _SubjectContainer(subject, period, simulate))
             .toList()
       ],
@@ -40,10 +42,15 @@ class _SubjectContainer extends StatelessWidget {
   final bool simulate;
   const _SubjectContainer(this.subject, this.period, this.simulate, {Key? key}) : super(key: key);
 
-  List<Grade> get grades => subject
-      .grades(period.grades(schoolApi.gradesModule.grades))
-      .where((grade) => simulate ? true : !grade.custom)
-      .toList();
+  List<Grade> get grades {
+    final List<Grade> _grades = subject.grades.toList()..sort((a, b) => a.entryDate.compareTo(b.entryDate));
+    for (final g in _grades) {
+      g.load();
+    }
+    return _grades
+        .where((grade) => (simulate ? true : !grade.custom) && grade.period.value?.entityId == period.entityId)
+        .toList();
+  }
 
   double get _average => schoolApi.gradesModule.calculateAverageFromGrades(grades, bySubject: true);
 

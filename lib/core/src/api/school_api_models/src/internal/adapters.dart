@@ -1,31 +1,51 @@
 part of models;
 
-class YTColorAdapter extends TypeAdapter<YTColor> {
-  @override
-  int get typeId => _HiveTypeIds.ytcolor;
+class ListMapConverter extends TypeConverter<List<Map?>?, String?> {
+  const ListMapConverter(); // Converters need to have an empty const constructor
 
   @override
-  YTColor read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return YTColor(
-      backgroundColor: fields[0] as Color,
-      foregroundColor: fields[1] as Color,
-      lightColor: fields[2] as Color,
-    );
+  List<Map?> fromIsar(String? object) {
+    return jsonDecode(object ?? "").cast<Map?>();
   }
 
   @override
-  void write(BinaryWriter writer, YTColor obj) {
-    writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.backgroundColor)
-      ..writeByte(1)
-      ..write(obj.foregroundColor)
-      ..writeByte(2)
-      ..write(obj.lightColor);
+  String toIsar(List<Map?>? object) {
+    return jsonEncode(object);
+  }
+}
+
+class MapConverter extends TypeConverter<Map?, String?> {
+  const MapConverter(); // Converters need to have an empty const constructor
+
+  @override
+  Map fromIsar(String? object) {
+    return jsonDecode(object ?? "");
+  }
+
+  @override
+  String toIsar(Map? object) {
+    return jsonEncode(object);
+  }
+}
+
+class YTColorConverter extends TypeConverter<YTColor, String?> {
+  const YTColorConverter();
+
+  @override
+  YTColor fromIsar(String? object) {
+    var map = jsonDecode(object ?? "");
+    return YTColor(
+        backgroundColor: Color(map?["backgroundColor"]),
+        foregroundColor: Color(map?["foregroundColor"]),
+        lightColor: Color(map?["lightColor"]));
+  }
+
+  @override
+  String toIsar(YTColor? object) {
+    return jsonEncode({
+      "backgroundColor": object?.backgroundColor.value,
+      "foregroundColor": object?.foregroundColor.value,
+      "lightColor": object?.lightColor.value
+    });
   }
 }
