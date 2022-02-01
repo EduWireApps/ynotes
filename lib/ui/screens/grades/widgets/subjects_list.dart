@@ -75,7 +75,7 @@ class _SubjectContainer extends StatelessWidget {
               hoverColor: subject.color.lightColor,
               highlightColor: subject.color.lightColor,
               child: Ink(
-                padding: EdgeInsets.symmetric(vertical: YScale.s2, horizontal: YScale.s3),
+                padding: EdgeInsets.symmetric(vertical: YScale.s2, horizontal: YScale.s4),
                 decoration: BoxDecoration(
                   color: subject.color.backgroundColor,
                   borderRadius: _borderRadius,

@@ -42,7 +42,7 @@ class AppColors {
   static final lime = YTColor(
       backgroundColor: Colors.lime[600]!, foregroundColor: Colors.white, lightColor: Colors.lime[300]!.withOpacity(.5));
   static final yellow = YTColor(
-      backgroundColor: Colors.yellow[600]!,
+      backgroundColor: Colors.yellow[700]!,
       foregroundColor: Colors.white,
       lightColor: Colors.yellow[300]!.withOpacity(.5));
   static final amber = YTColor(
