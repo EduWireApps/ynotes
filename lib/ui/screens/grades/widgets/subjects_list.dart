@@ -49,7 +49,7 @@ class _SubjectContainer extends StatelessWidget {
       g.load();
     }
     return _grades
-        .where((grade) => simulate ? true : !grade.custom && grade.period.value?.entityId == period.entityId)
+        .where((grade) => (simulate ? true : !grade.custom) && grade.period.value?.entityId == period.entityId)
         .toList();
   }
 

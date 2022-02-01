@@ -92,7 +92,7 @@ class _GradesSectionState extends State<GradesSection> {
                                   Text("Moyenne", style: theme.texts.body2),
                                   YVerticalSpacer(YScale.s4),
                                   if (module.currentPeriod != null)
-                                    _DiffText(module.calculateAverageFromPeriod(module.currentPeriod!) -
+                                    _DiffText(module.calculateAverageFromGrades(grades, bySubject: true) -
                                         module.calculateAverageFromGrades(grades.sublist(0, grades.length - 1),
                                             bySubject: true)),
                                   Text("Dernière note", style: theme.texts.body2),

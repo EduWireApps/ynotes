@@ -110,7 +110,7 @@ class _Stats extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Évolution", style: theme.texts.body2),
-                  _DiffText(module.calculateAverageFromPeriod(period) -
+                  _DiffText(module.calculateAverageFromGrades(grades, bySubject: true) -
                       module.calculateAverageFromGrades(grades.sublist(0, grades.length - 1), bySubject: true))
                 ],
               ),

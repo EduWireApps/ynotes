@@ -82,17 +82,47 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       final List<Grade> newGrades = __grades.sublist(grades.length);
       // TODO: trigger notification
     }
-    // Saving data.
+    // We save all the data. Here is an overview of the process:
+    // 1. We retrieve the custom grades
+    // 2. For each custom grade, we update its subject and period to a new one, not
+    //    saved in Isar yet. If the subject or period is not found, we delete the grade.
+    // 3. We clear all the data
+    // 4. We store all the data that comes from the API
+    // 5. We save the custom grades
+    // 6. We save the links of all grades
     await offline.writeTxn((isar) async {
+      // STEP 1
+      final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
+      // STEP 2
+      for (final grade in customGrades) {
+        await grade.subject.load();
+        await grade.period.load();
+        final Subject? subject =
+            __subjects.firstWhereOrNull((subject) => subject.entityId == grade.subject.value!.entityId);
+        final Period? period = __periods.firstWhereOrNull((period) => period.entityId == grade.period.value!.entityId);
+        if (subject == null || period == null) {
+          await isar.grades.delete(grade.id!);
+        } else {
+          grade.subject.value = subject;
+          grade.period.value = period;
+        }
+      }
+      // STEP 3
       await isar.periods.clear();
       await isar.subjects.clear();
-      final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
       await isar.grades.clear();
+      // STEP 4
       await isar.periods.putAll(__periods);
       await isar.subjects.putAll(__subjects);
       await isar.grades.putAll(__grades);
+      // STEP 5
       await isar.grades.putAll(customGrades);
+      // STEP 6
       await Future.forEach(__grades, (Grade grade) async {
+        await grade.period.save();
+        await grade.subject.save();
+      });
+      await Future.forEach(customGrades, (Grade grade) async {
         await grade.period.save();
         await grade.subject.save();
       });
@@ -182,34 +212,6 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       return calculateAverage(values, coefficients);
     }
   }
-
-  double calculateAverageFromSubjects(List<Subject> subjects, {Period? period}) {
-    final List<List<Grade>> _grades = subjects.map((e) {
-      return e.grades.where((grade) {
-        offline.writeTxnSync((isar) {
-          grade.period.loadSync();
-        });
-
-        return period == null ? true : grade.period.value?.id == period.id;
-      }).toList();
-    }).toList();
-    final List<double> allValues = _grades.map((e) => calculateAverageFromGrades(e)).toList();
-    final List<double> allCoefficients = subjects.map((e) => e.coefficient).toList();
-
-    final List<double> values = [];
-    final List<double> coefficients = [];
-    for (int i = 0; i < allValues.length; i++) {
-      final double value = allValues[i];
-      final double coefficient = allCoefficients[i];
-      if (!value.isNaN) {
-        values.add(value);
-        coefficients.add(coefficient);
-      }
-    }
-    return calculateAverage(values, coefficients);
-  }
-
-  double calculateAverageFromPeriod(Period period) => calculateAverageFromSubjects(subjects, period: period);
 
   Future<Response<void>> addFilter(SubjectsFilter filter) async {
     await offline.writeTxn((isar) async {
