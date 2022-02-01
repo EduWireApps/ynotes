@@ -23,7 +23,7 @@ packages:
     source: hosted
     version: "1.10.28"
   args:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: args
       url: "https://pub.dartlang.org"
@@ -65,7 +65,7 @@ packages:
     source: hosted
     version: "2.1.0"
   build:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: build
       url: "https://pub.dartlang.org"
@@ -666,7 +666,7 @@ packages:
     source: hosted
     version: "1.0.2"
   markdown:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: markdown
       url: "https://pub.dartlang.org"
@@ -701,7 +701,7 @@ packages:
     source: hosted
     version: "2.0.0"
   mime:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: mime
       url: "https://pub.dartlang.org"
@@ -1189,7 +1189,7 @@ packages:
     source: hosted
     version: "2.1.1"
   visibility_detector:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: visibility_detector
       url: "https://pub.dartlang.org"

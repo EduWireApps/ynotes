@@ -65,13 +65,7 @@ dependencies:
   path: ^1.8.0
   queue: ^3.1.0+1
 
-dependency_overrides:
-  visibility_detector: ^0.2.2
-  args: ^2.1.1
-  build: ^2.0.0
-  intl: ^0.17.0-nullsafety.2
-  markdown: ^4.0.0
-  mime: ^1.0.0
+# dependency_overrides:
 
 dev_dependencies:
   isar_generator: ^2.1.0
@@ -81,6 +75,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.1.4
+
 flutter_icons:
   ios: true
   android: true
