@@ -4,6 +4,7 @@ library models;
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:ynotes/core/api.dart';
 
 import 'package:isar/isar.dart';
@@ -12,12 +13,16 @@ import 'package:ynotes/core/offline.dart';
 import 'package:ynotes/core/src/api/school_api/school_api.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes_packages/theme.dart';
-import 'src/internal/adapters.dart';
 import 'package:crypto/crypto.dart';
 
 // ISAR GENERATED FILE
 part 'school_api_models.g.dart';
 
+// INTERNAL
+part 'src/internal/adapters.dart';
+part 'src/internal/linked_model.dart';
+
+// MODELS
 part 'src/grade.dart';
 part 'src/subject.dart';
 part 'src/subjects_filter.dart';

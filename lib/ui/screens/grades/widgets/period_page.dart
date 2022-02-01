@@ -67,7 +67,7 @@ class _Stats extends StatelessWidget {
     // TODO: open stats page
   }
 
-  List<Grade> get grades => period.grades.where((grade) {
+  List<Grade> get grades => period.sortedGrades.where((grade) {
         final bool s = grade.significant;
         if (simulate) {
           return s;

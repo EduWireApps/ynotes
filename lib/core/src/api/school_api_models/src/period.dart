@@ -4,7 +4,7 @@ part of models;
 ///
 /// Can be stored in [Hive] storage.
 @Collection()
-class Period {
+class Period extends _LinkedModel {
   @Id()
   int? id;
 
@@ -37,6 +37,18 @@ class Period {
 
   @Backlink(to: "period")
   final IsarLinks<Grade> grades = IsarLinks<Grade>();
+
+  List<Grade> get sortedGrades => grades.toList()..sort((a, b) => a.entryDate.compareTo(b.entryDate));
+
+  @override
+  void load() {
+    Offline.isar.writeTxnSync((isar) {
+      grades.loadSync();
+    });
+    for (final grade in grades) {
+      grade.load();
+    }
+  }
 
   Period({
     required this.entityId,

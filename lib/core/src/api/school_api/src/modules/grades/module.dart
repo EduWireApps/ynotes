@@ -20,35 +20,42 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   List<Period> get periods {
     final _periods = offline.periods.where().findAllSync();
     for (final period in _periods) {
-      period.grades.loadSync();
+      period.load();
     }
     return _periods;
   }
 
   List<Subject> get subjects {
     final _subjects = offline.subjects.where().sortByName().findAllSync();
-    offline.writeTxnSync((isar) {
-      for (final subject in _subjects) {
-        subject.grades.loadSync();
-      }
-    });
+    for (final subject in _subjects) {
+      subject.load();
+    }
     return _subjects;
   }
 
-  Period? get currentPeriod => _Storage.values.currentPeriodId == null
-      ? null
-      : offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
-  SubjectsFilter? get currentFilter {
-    final _subjects = offline.subjectsFilters.where().sortByName().findAllSync();
-    offline.writeTxnSync((isar) {
-      for (final subject in _subjects) {
-        subject.subjects.loadSync();
-      }
-    });
-    return _subjects.firstWhereOrNull((element) => element.entityId == _Storage.values.currentFilterId) ?? filters[0];
+  Period? get currentPeriod {
+    if (_Storage.values.currentPeriodId == null) {
+      return null;
+    }
+    final Period? _period = offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
+    if (_period == null) {
+      return null;
+    }
+    _period.grades.loadSync();
+    return _period;
   }
 
-  List<SubjectsFilter> get customFilters => offline.subjectsFilters.where().findAllSync();
+  SubjectsFilter? get currentFilter =>
+      customFilters.firstWhereOrNull((element) => element.entityId == _Storage.values.currentFilterId) ?? filters[0];
+
+  List<SubjectsFilter> get customFilters {
+    final _subjects = offline.subjectsFilters.where().sortByName().findAllSync();
+    for (final subject in _subjects) {
+      subject.load();
+    }
+    return _subjects;
+  }
+
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
   late final List<SubjectsFilter> _defaultFilters = [SubjectsFilter(name: "Toutes matières", entityId: "all")];
 
@@ -132,7 +139,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   }
 
   double calculateAverage(List<double> values, List<double> coefficients) {
-    if (values.isEmpty) return double.nan;
+    if (values.isEmpty || (values.length != coefficients.length)) return double.nan;
     double n = 0;
     double d = 0;
     for (int i = 0; i < values.length; i++) {
@@ -146,25 +153,20 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   double calculateAverageFromGrades(List<Grade> grades, {bool bySubject = false}) {
     if (bySubject) {
       final List<double> avgs = [];
-      final Map<Subject, List<Grade>> map = {};
+      final Map<String, List<Grade>> map = {};
       for (final grade in grades) {
         grade.load();
-        if (map.containsKey(grade.subject.value)) {
-          map[grade.subject.value]!.add(grade);
+        final String subjectName = grade.subject.value!.entityId;
+        if (map.containsKey(subjectName)) {
+          map[subjectName]!.add(grade);
         } else {
-          map[grade.subject.value!] = [grade];
+          map[subjectName] = [grade];
         }
       }
       for (final entry in map.entries) {
         final List<Grade> grades = entry.value;
         avgs.add(calculateAverageFromGrades(grades));
       }
-      // TODO: wtf is happening here
-      // for (final subject in subjects) {
-      //   if (subject.grades.isNotEmpty) {
-      //     avgs.add(calculateAverageFromGrades(subject.grades.toList()));
-      //   }
-      // }
       double sum = 0.0;
       for (final avg in avgs) {
         sum += avg;

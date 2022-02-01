@@ -1,8 +1,4 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
-import 'package:ynotes_packages/theme.dart';
+part of models;
 
 class ListMapConverter extends TypeConverter<List<Map?>?, String?> {
   const ListMapConverter(); // Converters need to have an empty const constructor

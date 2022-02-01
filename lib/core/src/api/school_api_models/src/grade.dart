@@ -4,7 +4,7 @@ part of models;
 ///
 /// Can be stored in [Hive] storage.
 @Collection()
-class Grade {
+class Grade extends _LinkedModel {
   @Id()
   int? id;
 
@@ -96,6 +96,7 @@ class Grade {
 
   final IsarLink<Period> period = IsarLink<Period>();
 
+  @override
   void load() {
     Offline.isar.writeTxnSync((isar) {
       subject.loadSync();

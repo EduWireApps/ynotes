@@ -31,7 +31,7 @@ class CustomSubject extends Subject {
 ///
 /// Can be stored in [Hive] storage.
 @Collection()
-class Subject {
+class Subject extends _LinkedModel {
   /// The id of the subject.
 
   @Id()
@@ -85,4 +85,16 @@ class Subject {
 
   @Backlink(to: "subject")
   final IsarLinks<Grade> grades = IsarLinks<Grade>();
+
+  List<Grade> get sortedGrades => grades.toList()..sort((a, b) => a.entryDate.compareTo(b.entryDate));
+
+  @override
+  void load() {
+    Offline.isar.writeTxnSync((isar) {
+      grades.loadSync();
+    });
+    for (final grade in grades) {
+      grade.load();
+    }
+  }
 }

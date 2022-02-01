@@ -46,7 +46,10 @@ class GradeContainer extends StatelessWidget {
     );
   }
 
-  Subject get subject => grade.subject.value!;
+  Subject get subject {
+    grade.load();
+    return grade.subject.value!;
+  }
 
   YTColor get color => subject.color;
 

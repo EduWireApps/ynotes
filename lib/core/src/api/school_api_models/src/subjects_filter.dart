@@ -4,7 +4,7 @@ part of models;
 ///
 /// Can be stored in [Hive] storage.
 @Collection()
-class SubjectsFilter {
+class SubjectsFilter extends _LinkedModel {
   @Id()
   int? id;
 
@@ -20,4 +20,14 @@ class SubjectsFilter {
   }) : entityId = entityId ?? const Uuid().v4();
 
   final IsarLinks<Subject> subjects = IsarLinks<Subject>();
+
+  @override
+  void load() {
+    Offline.isar.writeTxnSync((isar) {
+      subjects.loadSync();
+    });
+    for (final subject in subjects) {
+      subject.load();
+    }
+  }
 }
