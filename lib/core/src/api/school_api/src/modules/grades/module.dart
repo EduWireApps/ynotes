@@ -182,7 +182,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// Calculates a a weighted average from a list of values and coefficients.
   double calculateAverage(List<double> values, List<double> coefficients) {
-    if (values.isEmpty || (values.length != coefficients.length)) return double.nan;
+    if (values.length != coefficients.length) return double.nan;
     double n = 0;
     double d = 0;
     for (int i = 0; i < values.length; i++) {

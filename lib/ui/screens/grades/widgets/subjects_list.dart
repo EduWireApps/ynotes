@@ -5,6 +5,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/ui/components/components.dart';
+import 'package:ynotes/ui/screens/grades/widgets/grade_details_sheet.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -175,8 +176,7 @@ class _GradeContainerState extends State<_GradeContainer> {
         borderRadius: _borderRadius,
         child: InkWell(
           onTap: () {
-            YModalBottomSheets.show(
-                context: context, child: Text("grade bottom sheet: <${widget.grade.name}>", style: theme.texts.body1));
+            YModalBottomSheets.show(context: context, child: GradeDetailsSheet(widget.grade, simulate));
           },
           borderRadius: _borderRadius,
           highlightColor: simulate ? color.lightColor.withOpacity(.5) : color.backgroundColor,
