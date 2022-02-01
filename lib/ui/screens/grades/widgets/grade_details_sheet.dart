@@ -52,9 +52,17 @@ class _GradeDetailsSheetState extends State<GradeDetailsSheet> {
         children: [
           _GradeContainer(grade),
           YVerticalSpacer(YScale.s2),
-          Text(grade.name, style: theme.texts.title),
+          Text(
+            grade.name,
+            style: theme.texts.title,
+            textAlign: TextAlign.center,
+          ),
           YVerticalSpacer(YScale.s1),
-          Text(subject.name, style: theme.texts.body1.copyWith(color: subject.color.backgroundColor)),
+          Text(
+            subject.name,
+            style: theme.texts.body1.copyWith(color: subject.color.backgroundColor),
+            textAlign: TextAlign.center,
+          ),
           YVerticalSpacer(YScale.s6),
           _ClassData(grade: grade),
           YVerticalSpacer(YScale.s8),

@@ -5,7 +5,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/ui/components/components.dart';
-import 'package:ynotes/ui/screens/grades/widgets/grade_details_sheet.dart';
+import 'package:ynotes/ui/screens/grades/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -70,7 +70,10 @@ class _SubjectContainer extends StatelessWidget {
           Material(
             borderRadius: _borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                YModalBottomSheets.show(
+                    context: context, child: SubjectDetailsSheet(subject: subject, average: _average, period: period));
+              },
               borderRadius: _borderRadius,
               hoverColor: subject.color.lightColor,
               highlightColor: subject.color.lightColor,
