@@ -12,7 +12,7 @@ class SubjectsFilter extends _LinkedModel {
   final String name;
 
   /// The id of the filter.
-  late final String? entityId;
+  late final String entityId;
 
   SubjectsFilter({
     required this.name,
