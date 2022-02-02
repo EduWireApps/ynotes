@@ -23,6 +23,7 @@ part 'src/dialogs/about_dialog.dart';
 part 'src/dialogs/dialogs.dart';
 part 'src/dialogs/legal_links_dialog.dart';
 part 'src/dialogs/report_loader_dialog.dart';
+part 'src/dialogs/color_picker_dialog.dart';
 
 // NAVIGATION
 part 'src/navigation/app.dart';

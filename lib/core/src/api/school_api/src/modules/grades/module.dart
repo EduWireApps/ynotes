@@ -274,6 +274,14 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     return const Response();
   }
 
+  /// Updates a subject.
+  Future<void> updateSubject(Subject subject) async {
+    await offline.writeTxn((isar) async {
+      await isar.subjects.put(subject);
+    });
+    notifyListeners();
+  }
+
   @override
   Future<void> reset() async {
     await offline.writeTxn((isar) async {

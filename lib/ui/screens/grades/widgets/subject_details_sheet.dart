@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
+import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -52,7 +54,21 @@ class _SubjectDetailsSheetState extends State<SubjectDetailsSheet> {
                 YVerticalSpacer(YScale.s10),
                 _Legend(subject: subject)
               ],
-            )
+            ),
+          YVerticalSpacer(YScale.s6),
+          YButton(
+            onPressed: () async {
+              final YTColor? color = await AppDialogs.showColorPickerDialog(context, color: subject.color);
+              if (color != null) {
+                subject.color = color;
+                setState(() {});
+                schoolApi.gradesModule.updateSubject(subject);
+              }
+            },
+            text: "COULEUR",
+            icon: Icons.color_lens_rounded,
+            color: YColor.secondary,
+          )
         ],
       ),
     );
