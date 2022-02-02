@@ -86,12 +86,15 @@ class Subject extends _LinkedModel {
   @Backlink(to: "subject")
   final IsarLinks<Grade> grades = IsarLinks<Grade>();
 
+  final IsarLink<Period> period = IsarLink<Period>();
+
   List<Grade> get sortedGrades => grades.toList()..sort((a, b) => a.entryDate.compareTo(b.entryDate));
 
   @override
   void load() {
     Offline.isar.writeTxnSync((isar) {
       grades.loadSync();
+      period.loadSync();
     });
     for (final grade in grades) {
       grade.load();

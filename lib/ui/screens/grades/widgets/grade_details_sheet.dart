@@ -32,11 +32,7 @@ class _GradeDetailsSheetState extends State<GradeDetailsSheet> {
 
   double get impactOnSubjectAverage {
     subject.load();
-    final grades = subject.sortedGrades
-        .where((grade) =>
-            (widget.simulate ? true : !grade.custom) &&
-            grade.period.value?.entityId == this.grade.period.value!.entityId)
-        .toList();
+    final grades = subject.sortedGrades.where((grade) => (widget.simulate ? true : !grade.custom)).toList();
 
     final List<int> ids = grades.map<int>((g) => g.id!).toList();
     final int index = ids.indexOf(grade.id!);

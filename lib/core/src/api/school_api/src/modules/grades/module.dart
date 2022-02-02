@@ -130,6 +130,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       // STEP 5
       await isar.grades.putAll(customGrades);
       // STEP 6
+      await Future.forEach(__subjects, (Subject subject) async {
+        await subject.period.save();
+      });
       await Future.forEach(__grades, (Grade grade) async {
         await grade.period.save();
         await grade.subject.save();

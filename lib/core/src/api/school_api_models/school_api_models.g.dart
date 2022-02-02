@@ -1205,7 +1205,7 @@ extension GetSubjectCollection on Isar {
 final SubjectSchema = CollectionSchema(
   name: 'Subject',
   schema:
-      '{"name":"Subject","properties":[{"name":"average","type":"Double"},{"name":"classAverage","type":"Double"},{"name":"coefficient","type":"Double"},{"name":"color","type":"String"},{"name":"entityId","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"teachers","type":"String"}],"indexes":[],"links":[]}',
+      '{"name":"Subject","properties":[{"name":"average","type":"Double"},{"name":"classAverage","type":"Double"},{"name":"coefficient","type":"Double"},{"name":"color","type":"String"},{"name":"entityId","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"teachers","type":"String"}],"indexes":[],"links":[{"name":"period","target":"Period"}]}',
   adapter: const _SubjectAdapter(),
   idName: 'id',
   propertyIds: {
@@ -1221,12 +1221,12 @@ final SubjectSchema = CollectionSchema(
   },
   indexIds: {},
   indexTypes: {},
-  linkIds: {},
+  linkIds: {'period': 0},
   backlinkIds: {'grades': 0},
-  linkedCollections: ['Grade'],
+  linkedCollections: ['Grade', 'Period'],
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.grades],
+  getLinks: (obj) => [obj.grades, obj.period],
   version: 1,
 );
 
@@ -1336,6 +1336,13 @@ class _SubjectAdapter extends IsarTypeAdapter<Subject> {
       object,
       "grades",
       true,
+    );
+    object.period.attach(
+      isar.subjects,
+      isar.getCollection<Period>("Period"),
+      object,
+      "period",
+      false,
     );
   }
 }
@@ -2866,11 +2873,11 @@ final PeriodSchema = CollectionSchema(
   indexIds: {},
   indexTypes: {},
   linkIds: {},
-  backlinkIds: {'grades': 0},
-  linkedCollections: ['Grade'],
+  backlinkIds: {'grades': 0, 'subjects': 1},
+  linkedCollections: ['Grade', 'Subject'],
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.grades],
+  getLinks: (obj) => [obj.grades, obj.subjects],
   version: 1,
 );
 
@@ -2974,6 +2981,13 @@ class _PeriodAdapter extends IsarTypeAdapter<Period> {
       isar.getCollection<Grade>("Grade"),
       object,
       "grades",
+      true,
+    );
+    object.subjects.attach(
+      isar.periods,
+      isar.getCollection<Subject>("Subject"),
+      object,
+      "subjects",
       true,
     );
   }

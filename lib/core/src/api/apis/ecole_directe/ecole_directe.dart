@@ -2,7 +2,6 @@ library ecole_directe;
 
 import 'dart:convert';
 import 'dart:math';
-import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:html_character_entities/html_character_entities.dart';
@@ -13,6 +12,7 @@ import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/packages/shared.dart';
 import 'package:html/parser.dart' as html_parser;
+import 'package:ynotes_packages/theme.dart';
 
 part 'src/api.dart';
 part 'src/utils.dart';

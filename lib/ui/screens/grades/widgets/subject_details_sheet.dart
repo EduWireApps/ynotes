@@ -7,6 +7,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/ui/components/components.dart';
+import 'package:ynotes/ui/screens/grades/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -15,7 +16,9 @@ class SubjectDetailsSheet extends StatefulWidget {
   final Subject subject;
   final double average;
   final Period period;
-  const SubjectDetailsSheet({Key? key, required this.subject, required this.average, required this.period})
+  final bool simulate;
+  const SubjectDetailsSheet(
+      {Key? key, required this.subject, required this.average, required this.period, required this.simulate})
       : super(key: key);
 
   @override
@@ -24,9 +27,7 @@ class SubjectDetailsSheet extends StatefulWidget {
 
 class _SubjectDetailsSheetState extends State<SubjectDetailsSheet> {
   Subject get subject => widget.subject;
-  List<Grade> get grades => subject.sortedGrades
-      .where((grade) => !grade.custom && grade.period.value?.entityId == widget.period.entityId)
-      .toList();
+  List<Grade> get grades => subject.sortedGrades.where((grade) => !grade.custom).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,11 @@ class _SubjectDetailsSheetState extends State<SubjectDetailsSheet> {
           Text(subject.teachers,
               style: theme.texts.body1.copyWith(color: subject.color.backgroundColor), textAlign: TextAlign.center),
           YVerticalSpacer(YScale.s6),
-          _ClassData(subject: subject),
+          _ClassData(
+            subject: subject,
+            average: widget.average,
+            simulate: widget.simulate,
+          ),
           if (grades.length > 1)
             Column(
               children: [
@@ -178,23 +183,23 @@ class _Chart extends StatelessWidget {
 }
 
 class _ClassData extends StatelessWidget {
-  const _ClassData({
-    Key? key,
-    required this.subject,
-  }) : super(key: key);
+  const _ClassData({Key? key, required this.subject, required this.average, required this.simulate}) : super(key: key);
 
   final Subject subject;
+  final double average;
+  final bool simulate;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-        spacing: YScale.s4,
-        runSpacing: YScale.s2,
-        children: [
-          ["CLASSE", subject.classAverage.display()],
-          ["MAX", subject.maxAverage.display()],
-          ["MIN", subject.minAverage.display()]
-        ].map((e) => _Data(label: e[0], value: e[1])).toList());
+    // TODO: add subjects to periods
+    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: YScale.s4, runSpacing: YScale.s2, children: [
+      ...[
+        ["CLASSE", subject.classAverage.display()],
+        ["MAX", subject.maxAverage.display()],
+        ["MIN", subject.minAverage.display()]
+      ].map((e) => _Data(label: e[0], value: e[1])).toList(),
+      if (!simulate && average != subject.average) const OutdatedDataWarning(),
+    ]);
   }
 }
 
