@@ -34,17 +34,26 @@ class _Color extends StatelessWidget {
     return InkWell(
         onTap: () => Navigator.of(context).pop(isSelected ? null : color),
         child: Ink(
-          color: isSelected ? color.lightColor.withOpacity(.2) : null,
           width: YScale.s24,
           height: YScale.s24,
           child: Center(
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: YBorderRadius.xl2,
-                color: color.backgroundColor,
-              ),
+                  borderRadius: YBorderRadius.xl2,
+                  color: color.backgroundColor,
+                  border: Border.all(
+                    color: color.lightColor,
+                    width: YScale.s1,
+                  )),
               width: YScale.s16,
               height: YScale.s16,
+              child: isSelected
+                  ? Icon(
+                      Icons.check_rounded,
+                      color: color.foregroundColor,
+                      size: YFontSize.xl3,
+                    )
+                  : null,
             ),
           ),
         ));
