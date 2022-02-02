@@ -1,68 +1,50 @@
-# 0.14.7
+# 0.15.0
 
-Toute l'équipe vous souhaite de très joyeuses fêtes !
+Après plus de 2 mois de développement, yNotes reçoit _enfin_ une mise à jour... et majeure qui plus est !
 
-# 0.14.6
+## Ce que tu ne vois pas
 
-_On voulait faire un tour de magie. Mais vous n'avez pas trop apprécié._
+Avant, la récupération et le stockage des données était instable. Cela se traduisait par exemple par des déconnexions récurrentes et des problèmes pour actualiser l'agenda.
+Nous avons (quasiment) **tout réécrit** ! Bien sûr, c'est une partie qui t'est invisible mais tu le ressentiras lors de l'utilisation qui devrait être plus agréable.
 
-- Correction du bug de disparition des notes:
-  - Les utilisateurs EcoleDirecte devraient à nouveau être en mesure de voir leurs notes
-  - Notez que les coefficients "0" ont été remplacés par des coefficients 1
-- Correctif temporaire pour les notifications de nouvelles notes
-  - Nous avons fait quelques modifications qui devraient améliorer les notifications de nouvelles notes
-    - Sur Android : n'hésitez pas à utiliser l'outil "Réparer" si vous ne voyez toujours pas ces notifications
-    - Sur iOS : rien de nouveau, les notifications s'afficheront si vous utilisez régulièrement l'application
-  - La dernière note devrait bien s'afficher
-- Diverses corrections d'affichage pour l'écran d'accueil
+## Des fonctionnalités en moins
 
-# 0.14.5
+C'est un parti pris mais nous pensons que c'est le meilleur moyen d'atteindre la 1.0.
+En effet, nous préférons offrir une application qui marche bien mais avec moins de fonctionnalités que l'inverse. C'est mieux pour toi car ça devrait marcher parfaitement (on espère ahah), c'est mieux pour nous car on peut corriger les bugs au fur et à mesure.
 
-- Le bug mentionné en 0.14.4 a vraiment été corrigé cette fois ;)
+C'est pourquoi seul le système de notes est inclus en 0.15 mais ne t'inquiète pas, le reste reviendra progressivement. (On t'en dit plus à ce propos plus bas)
 
-# 0.14.4
+## Nouvelle page de notes
 
-- Correction d'un bug rendant la page d'accueil inutilisable introduit en 0.14.3
+La page des notes a été entièrement refaite. Toutes ses fonctionnalités sont désormais accessibles facilement, à savoir :
 
-# 0.14.3
+- Le **simulateur** de notes
+- Les **filtres** de matière
 
-- Corrections mineures
-- Sur la page d'accueil, lorsque le compte à rebours n'est pas actif, des petits messages amusants (_on l'espère_) sont affichés à la place
+Nous avons rajouté un graphique par matière pour visualiser l'évolution de ta moyenne au fil du temps.
 
-# 0.14.2
+Si tu as d'autres suggestions concernant cette page, n'hésite pas à **faire un retour** !
 
-## Accueil
+Par ailleurs, nous allons prochainement intégrer les compétences qui sont de plus en plus répandues.
 
-- Sur le compte à rebours, le texte est adapté si la salle n'est pas renseignée
-- Le graphique ne devrait plus être remplacé par un rectangle gris moche
-- La bonne semaine est désormais affichée dans la section des devoirs
-- Une interface dédiée est affichée lorsqu'il n'y a pas de données (Aucun devoir pour la semaine en cours par exemple)
+## Nouveaux services scolaires
 
-## Divers
+Jusqu'à présent, seuls EcoleDirecte et Pronote étaient supportés mais grâce à de super contributions de la communauté, les services suivants sont désormais disponibles :
 
-- La notification de nouvelle note a été desactivée car dysfonctionnelle. Elle sera corrigée dans une mise à jour ultérieure (prévue pour la 0.16 début 2022 pour le moment)
-- Nous essayons de régler les problèmes liés aux logs corrompus
-- La page des notes devrait fonctionner correctement désormais (problèmes liés aux compétences)
+- X par Y
+- X par Y
 
-# 0.14.1
+N'hésite pas à nous contacter sur Github ou Discord si tu souhaites en ajouter un également.
 
-- Correction d'un bug sur la page d'accueil de Pronote qui la rendait complètement inutilisable
-- Correction (_fingers crossed_) des problèmes liés au logs corrompus
+## Le futur de yNotes
 
-# Mise à jour 0.14.0
+Comme dit plus haut, seul les notes sont disponibles pour le moment. Nous ajouterons au fil des mises à jour les fonctionnalités présentes précédemment (devoirs, agenda, messagerie etc...). Voici nos objectifs prioritaires :
 
-Enfin une nouvelle mise à jour avec plein de nouveautés !
+- Compétences pour les notes
+- Nouvelle page pour les devoirs
+- Nouvelle page pour l'agenda
+- Notifications
 
-## Pages refaites
+Ces ajouts seront faits sur plusieurs mises à jour.
 
-4 pages ont été retravaillées :
-
-- Le **résumé**, renommé en **accueil**, fait peau neuve ! Tu peux enfin voir d'un coup d'oeil dans **quelle salle** tu as cours et dans **combien de temps**. Les statistiques ont été revues afin de les rendre **plus pertinentes**. Tu peux toujours voir quelles sont les dernières notes et nous avons remis les devoirs, pour la semaine en cours cette fois-ci
-- La **vie scolaire** (Ecole Directe uniquement), sans ajout particulier
-- Tous les **paramètres** on été refaits afin de mieux s'y retrouver
-- La vilaine méchante page d'**erreur**. On espère que tu ne la croiseras jamais (brrr) mais si ça devait malheureusement arriver (horreur !) envoie nous un petit message pour nous dire que ça ne va pas du tout (on comprendra).
-
-## Divers
-
-- Plusieurs problèmes en rapport avec les paramètres de l'**agenda** et la **notification constante** ont été corrigés
-- On utilise un système différent pour les polices d'écriture. C'est possible que ce soit un peu bizarre par endroit mais ce sera corrigé au fil des prochaines mises à jour
+Profite bien de la 0.15 !
