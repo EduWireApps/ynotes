@@ -41,33 +41,38 @@ class _Drawer extends StatelessWidget {
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];
 
-    return Drawer(
-        child: Container(
-      decoration: BoxDecoration(
-        color: theme.colors.backgroundColor,
-        border: r<Border?>(
-            def: null, md: Border(right: BorderSide(color: theme.colors.backgroundLightColor, width: YScale.spx))),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            ChangeNotifierConsumer<AuthModule>(
-                controller: schoolApi.authModule,
-                builder: (context, module, _) {
-                  final SchoolAccount? account = schoolApi.authModule.schoolAccount;
-                  return account != null
-                      ? _AccountHeader(account: account)
-                      : YVerticalSpacer(MediaQuery.of(context).padding.top);
-                }),
-            _RoutesList(AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList()),
-            YVerticalSpacer(YScale.s6),
-            _SpecialRoutesList(specialRoutes: specialRoutes),
-            YVerticalSpacer(YScale.s6),
-            _SpecialRoutesList(specialRoutes: contactRoutes),
-          ],
-        ),
-      ),
-    ));
+    return ChangeNotifierConsumer(
+        controller: theme,
+        builder: (context, _, __) {
+          return Drawer(
+              child: Container(
+            decoration: BoxDecoration(
+              color: theme.colors.backgroundColor,
+              border: r<Border?>(
+                  def: null,
+                  md: Border(right: BorderSide(color: theme.colors.backgroundLightColor, width: YScale.spx))),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ChangeNotifierConsumer<AuthModule>(
+                      controller: schoolApi.authModule,
+                      builder: (context, module, _) {
+                        final SchoolAccount? account = schoolApi.authModule.schoolAccount;
+                        return account != null
+                            ? _AccountHeader(account: account)
+                            : YVerticalSpacer(MediaQuery.of(context).padding.top);
+                      }),
+                  _RoutesList(AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList()),
+                  YVerticalSpacer(YScale.s6),
+                  _SpecialRoutesList(specialRoutes: specialRoutes),
+                  YVerticalSpacer(YScale.s6),
+                  _SpecialRoutesList(specialRoutes: contactRoutes),
+                ],
+              ),
+            ),
+          ));
+        });
   }
 }
 
