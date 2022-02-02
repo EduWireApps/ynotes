@@ -110,7 +110,7 @@ class _SheetState extends State<_Sheet> {
           YVerticalSpacer(YScale.s4),
           YButton(
               onPressed: () async {
-                final List<YListDialogOption> options = widget.module.subjects
+                final List<YListDialogOption> options = widget.module.currentPeriod!.sortedSubjects
                     .map((subject) => YListDialogOption(
                         value: _subjects.map((e) => e.name).toList().contains(subject.name), label: subject.name))
                     .toList();

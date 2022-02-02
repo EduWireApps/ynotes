@@ -125,7 +125,7 @@ class _AddCustomGradeSheetState extends State<AddCustomGradeSheet> {
             YVerticalSpacer(YScale.s4),
             YButton(
                 onPressed: () async {
-                  final List<YConfirmationDialogOption<Subject>> options = widget.module.subjects
+                  final List<YConfirmationDialogOption<Subject>> options = widget.module.currentPeriod!.sortedSubjects
                       .map((subject) => YConfirmationDialogOption(value: subject, label: subject.name))
                       .toList();
                   final res = await YDialogs.getConfirmation(

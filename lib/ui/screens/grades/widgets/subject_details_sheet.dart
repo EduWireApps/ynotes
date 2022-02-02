@@ -189,16 +189,25 @@ class _ClassData extends StatelessWidget {
   final double average;
   final bool simulate;
 
+  bool sameAverages(double a, double b) {
+    if (a.isNaN && b.isNaN) {
+      return true;
+    } else if ((a.isNaN && !b.isNaN) || (!a.isNaN && b.isNaN)) {
+      return false;
+    } else {
+      return a == b;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: add subjects to periods
     return Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: YScale.s4, runSpacing: YScale.s2, children: [
       ...[
         ["CLASSE", subject.classAverage.display()],
         ["MAX", subject.maxAverage.display()],
         ["MIN", subject.minAverage.display()]
       ].map((e) => _Data(label: e[0], value: e[1])).toList(),
-      if (!simulate && average != subject.average) const OutdatedDataWarning(),
+      if (!simulate && !sameAverages(average, subject.average)) const OutdatedDataWarning(),
     ]);
   }
 }
