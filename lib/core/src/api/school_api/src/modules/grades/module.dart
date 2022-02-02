@@ -118,6 +118,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           grade.subject.value = subject;
           grade.period.value = period;
         }
+        // TODO: handle filters subjects
       }
       // STEP 3
       await isar.periods.clear();
@@ -153,15 +154,19 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   Future<void> setCurrentPeriod([Period? period]) async {
     String? id;
     if (period == null) {
-      final DateTime now = DateTime.now();
-      id = periods
-          .firstWhereOrNull((period) =>
-              now.isAfter(period.startDate) &&
-              (now.isBefore(period.endDate) ||
-                  (now.year == period.endDate.year &&
-                      now.month == period.endDate.month &&
-                      now.day == period.endDate.day)))
-          ?.entityId;
+      if (_Storage.values.currentPeriodId == null) {
+        final DateTime now = DateTime.now();
+        id = periods
+            .firstWhereOrNull((period) =>
+                now.isAfter(period.startDate) &&
+                (now.isBefore(period.endDate) ||
+                    (now.year == period.endDate.year &&
+                        now.month == period.endDate.month &&
+                        now.day == period.endDate.day)))
+            ?.entityId;
+      } else {
+        id = _Storage.values.currentPeriodId;
+      }
     } else {
       id = period.entityId;
     }
@@ -174,7 +179,11 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   Future<void> setCurrentFilter([SubjectsFilter? filter]) async {
     String id;
     if (filter == null) {
-      id = filters.first.entityId;
+      if (_Storage.values.currentFilterId == null) {
+        id = filters.first.entityId;
+      } else {
+        id = _Storage.values.currentFilterId!;
+      }
     } else {
       id = filter.entityId;
     }
@@ -233,7 +242,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   /// Adds a [filter] to [customFilters].
   Future<Response<void>> addFilter(SubjectsFilter filter) async {
     await offline.writeTxn((isar) async {
-      await isar.subjects.putAll(filter.subjects.toList());
+      // await isar.subjects.putAll(filter.subjects.toList());
       await isar.subjectsFilters.put(filter);
       await filter.subjects.save();
     });

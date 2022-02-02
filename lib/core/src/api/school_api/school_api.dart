@@ -23,7 +23,6 @@ import 'package:ynotes/core/offline.dart';
 part 'school_api.g.dart';
 
 // TODO: document all
-// TODO: use getters and private attributes
 
 // COMMON
 part 'src/apis.dart';

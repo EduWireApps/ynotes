@@ -14,18 +14,18 @@ class SubjectsFiltersManager extends StatelessWidget {
             children: [
               YButton(
                   onPressed: () async {
-                    final List<YConfirmationDialogOption<SubjectsFilter>> options = module.filters
-                        .map((filter) => YConfirmationDialogOption(value: filter, label: filter.name))
+                    final List<YConfirmationDialogOption<String>> options = module.filters
+                        .map((filter) => YConfirmationDialogOption(value: filter.entityId, label: filter.name))
                         .toList();
-                    final SubjectsFilter? res = await YDialogs.getConfirmation<SubjectsFilter>(
+                    final String? res = await YDialogs.getConfirmation<String>(
                         context,
                         YConfirmationDialog(
                           title: "Filtre",
                           options: options,
-                          initialValue: module.currentFilter,
+                          initialValue: module.currentFilter.entityId,
                         ));
                     if (res != null) {
-                      await module.setCurrentFilter(res);
+                      await module.setCurrentFilter(module.filters.firstWhere((filter) => filter.entityId == res));
                     }
                   },
                   text: module.currentFilter.name,
@@ -71,7 +71,12 @@ class _SheetState extends State<_Sheet> {
 
   void submit(bool value) {
     _formKey.currentState!.save();
-    final SubjectsFilter filter = SubjectsFilter.fromName(name: name)..subjects.addAll(_subjects);
+    final List<Subject> allSubjects = [];
+    for (final subject in _subjects) {
+      allSubjects.add(subject);
+      allSubjects.addAll(widget.module.subjects.where((s) => s.entityId == subject.entityId));
+    }
+    final SubjectsFilter filter = SubjectsFilter.fromName(name: name)..subjects.addAll(allSubjects);
     Navigator.pop(context, filter);
   }
 
