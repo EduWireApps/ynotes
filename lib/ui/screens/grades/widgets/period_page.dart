@@ -23,7 +23,7 @@ class PeriodPage extends StatelessWidget {
         : Column(
             children: [
               _Stats(module, period, simulate),
-              YVerticalSpacer(YScale.s8),
+              YVerticalSpacer(YScale.s4),
               SubjectsList(module, period, simulate),
               const _Footer()
             ],
@@ -63,10 +63,6 @@ class _Stats extends StatelessWidget {
 
   const _Stats(this.module, this.period, this.simulate, {Key? key}) : super(key: key);
 
-  Future<void> _open() async {
-    // TODO: open stats page
-  }
-
   List<Grade> get grades => period.sortedGrades.where((grade) {
         final bool s = grade.significant;
         if (simulate) {
@@ -80,14 +76,12 @@ class _Stats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: theme.colors.backgroundColor,
-      child: InkWell(
-        onTap: _open,
-        child: Ink(
-          padding: YPadding.p(YScale.s4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: YPadding.p(YScale.s4),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 decoration: BoxDecoration(color: theme.colors.backgroundLightColor, borderRadius: YBorderRadius.lg),
@@ -114,29 +108,45 @@ class _Stats extends StatelessWidget {
                       module.calculateAverageFromGrades(grades.sublist(0, grades.length - 1), bySubject: true))
                 ],
               ),
-              YHorizontalSpacer(YScale.s4),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Classe", style: theme.texts.body2),
-                  Text(
-                    period.classAverage.display(),
-                    style: theme.texts.body1.copyWith(
-                        fontSize: r<double>(def: YFontSize.lg, lg: YFontSize.xl, xl: YFontSize.xl2),
-                        color: theme.colors.foregroundColor),
-                  ),
-                ],
-              ),
-              Expanded(child: YHorizontalSpacer(YScale.s2)),
-              if (!simulate && average != period.overallAverage) const OutdatedDataWarning(),
-              YIconButton(
-                icon: Icons.bar_chart_rounded,
-                onPressed: _open,
-                backgroundColor: theme.colors.backgroundLightColor,
-              ),
             ],
           ),
-        ),
+          YVerticalSpacer(YScale.s2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...<List<dynamic>>[
+                ["Classe", period.classAverage],
+                ["Max", period.maxAverage],
+                ["Min", period.minAverage],
+              ]
+                  .map((e) => Row(
+                        children: [
+                          YHorizontalSpacer(YScale.s4),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(e[0] as String, style: theme.texts.body2),
+                              Text(
+                                (e[1] as double).display(),
+                                style: theme.texts.body1.copyWith(
+                                    fontSize: r<double>(def: YFontSize.lg, lg: YFontSize.xl, xl: YFontSize.xl2),
+                                    color: theme.colors.foregroundColor),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ))
+                  .toList(),
+              if (!simulate && average != period.overallAverage)
+                Row(
+                  children: [
+                    YHorizontalSpacer(YScale.s4),
+                    const OutdatedDataWarning(),
+                  ],
+                )
+            ],
+          )
+        ],
       ),
     );
   }
