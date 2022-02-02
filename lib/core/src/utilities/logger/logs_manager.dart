@@ -18,6 +18,9 @@ class LogsManager {
       schemas: Offline.schemas,
       directory: '${dir.path}/offline',
     );
+    final List<Log> oldLogs =
+        await _isar!.logs.filter().dateGreaterThan(DateTime.now().subtract(const Duration(days: 7))).findAll();
+    _isar!.logs.deleteAll(oldLogs.map((e) => e.id!).toList());
   }
 
   /// Resets the logs manager.
