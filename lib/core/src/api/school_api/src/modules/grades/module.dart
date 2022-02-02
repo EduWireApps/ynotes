@@ -279,8 +279,12 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// Updates a subject.
   Future<void> updateSubject(Subject subject) async {
+    final List<Subject> _subjects = subjects.where((e) => e.entityId == subject.entityId).map((e) {
+      e.color = subject.color;
+      return e;
+    }).toList();
     await offline.writeTxn((isar) async {
-      await isar.subjects.put(subject);
+      await isar.subjects.putAll([subject, ..._subjects]);
     });
     notifyListeners();
   }
