@@ -33,8 +33,8 @@ class SystemService {
   static final SystemServiceStore store = SystemServiceStore();
 
   static Future<void> init({bool all = true, bool essential = false, bool loading = false}) async {
-    await LogsManager.init();
     if (all) {
+      await LogsManager.init();
       await migrations();
       await SettingsService.init();
       BugReport.init();
@@ -43,6 +43,7 @@ class SystemService {
       await NotificationService.init();
     } else {
       if (essential) {
+        await LogsManager.init();
         await migrations();
         await SettingsService.init();
         BugReport.init();

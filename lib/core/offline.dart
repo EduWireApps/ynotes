@@ -29,6 +29,22 @@ abstract class Offline {
     store.initialized = false;
   }
 
+  static final List<CollectionSchema<dynamic>> schemas = [
+    AppAccountSchema,
+    DocumentSchema,
+    EmailSchema,
+    GradeSchema,
+    HomeworkSchema,
+    PeriodSchema,
+    RecipientSchema,
+    SchoolAccountSchema,
+    SchoolLifeSanctionSchema,
+    SchoolLifeTicketSchema,
+    SubjectSchema,
+    SubjectsFilterSchema,
+    LogSchema
+  ];
+
   /// This method must be called before using [Offline]. Please note that calling
   /// [OfflineModel.init] also calls [init] internally so it is not necessary to call it manually.
   ///
@@ -42,20 +58,8 @@ abstract class Offline {
     final dir = await FileStorage.getAppDirectory();
 
     isar = await Isar.open(
-      schemas: [
-        AppAccountSchema,
-        DocumentSchema,
-        EmailSchema,
-        GradeSchema,
-        HomeworkSchema,
-        PeriodSchema,
-        RecipientSchema,
-        SchoolAccountSchema,
-        SchoolLifeSanctionSchema,
-        SchoolLifeTicketSchema,
-        SubjectSchema,
-        SubjectsFilterSchema
-      ],
+      name: "data",
+      schemas: schemas,
       directory: '${dir.path}/offline',
     );
     store.initialized = true;

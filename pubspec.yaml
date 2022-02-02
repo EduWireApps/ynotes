@@ -33,8 +33,7 @@ dependencies:
   google_fonts: ^2.2.0
   html_character_entities: ^1.0.0+1
   html_unescape: ^2.0.0
-  isar: ^2.1.0
-  isar_flutter_libs: ^2.1.0 # contains the binaries
+  isar: ^2.1.4
   http: ^0.13.4
   intl: ^0.17.0
   json_annotation: ^4.4.0
@@ -62,13 +61,11 @@ dependencies:
   convert: ^3.0.1
   crypto: ^3.0.1
   html: ^0.15.0
-  path: ^1.8.0
-  queue: ^3.1.0+1
 
 # dependency_overrides:
 
 dev_dependencies:
-  isar_generator: ^2.1.0
+  isar_generator: ^2.1.4
   build_runner: ^2.0.4 # flutter packages pub run build_runner build --delete-conflicting-outputs
   dependency_validator: ^3.1.0 # flutter pub run dependency_validator
   flutter_lints: ^1.0.4

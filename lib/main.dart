@@ -17,6 +17,7 @@ Future<void> main() async {
     await KVS.deleteAll();
     final Directory dir = await FileStorage.getAppDirectory();
     dir.deleteSync(recursive: true);
+    await KVS.write(key: "fullReset0", value: "true");
     exit(0);
   }
   // Background service must be initialized before the app, it mustn't be put

@@ -1,7 +1,11 @@
 part of logger;
 
 /// A data model for logging.
+@Collection()
 class Log {
+  @Id()
+  int? id;
+
   /// The log category, for example notifications"
   final String category;
 
@@ -20,10 +24,10 @@ class Log {
   Log({
     required this.category,
     required this.comment,
-    DateTime? date,
+    DateTime? optionalDate,
     this.stacktrace,
   }) {
-    _date = date ?? DateTime.now();
+    _date = optionalDate ?? DateTime.now();
   }
 
   /// Creates a new [Log] from a json object.
@@ -31,7 +35,7 @@ class Log {
         category: (json['category'] as String?) ?? "",
         comment: (json['comment'] as String?) ?? "",
         stacktrace: (json['stacktrace'] as String?),
-        date: (DateTime.tryParse(json['date'])) ?? DateTime.now(),
+        optionalDate: (DateTime.tryParse(json['date'])) ?? DateTime.now(),
       );
 
   /// Creates a json object from a [Log].
