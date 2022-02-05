@@ -34,6 +34,7 @@ dependencies:
   html_character_entities: ^1.0.0+1
   html_unescape: ^2.0.0
   isar: ^2.1.4
+  isar_flutter_libs: ^2.1.4 # contains the binaries
   http: ^0.13.4
   intl: ^0.17.0
   json_annotation: ^4.4.0
