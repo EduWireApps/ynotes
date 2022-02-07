@@ -21,7 +21,7 @@ class PeriodPage extends StatelessWidget {
             child: Padding(
               padding: YPadding.p(YScale.s4),
               child: Text(
-                "Aucune notes disponibles pour cette période",
+                "Aucune note disponible pour cette période",
                 style: theme.texts.body1,
                 textAlign: TextAlign.center,
               ),
