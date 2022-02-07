@@ -39,7 +39,9 @@ class LogsManager {
 
   /// Resets the logs manager.
   static Future<void> reset() async {
-    await _isar?.clear();
+    await _isar?.writeTxn((isar) async {
+      await isar.clear();
+    });
     await _isar?.close();
     await init();
   }
