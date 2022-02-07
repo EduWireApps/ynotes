@@ -96,6 +96,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     }
     // We save all the data. Here is an overview of the process:
     // 1. We retrieve the custom grades
+    // 1.5 We retrieve the filters and assigned the new corresponding subjects
     // 2. For each custom grade, we update its subject and period to a new one, not
     //    saved in Isar yet. If the subject or period is not found, we delete the grade.
     // 3. We clear all the data
@@ -105,6 +106,15 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     await offline.writeTxn((isar) async {
       // STEP 1
       final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
+      // STEP 1.5
+      final filters = await isar.subjectsFilters.where().findAll();
+      for (final filter in filters) {
+        await filter.subjects.load();
+        final List<String> subjectsIds = filter.subjects.map((subject) => subject.entityId).toSet().toList();
+        final List<Subject> subjects = __subjects.where((subject) => subjectsIds.contains(subject.entityId)).toList();
+        filter.subjects.clear();
+        filter.subjects.addAll(subjects);
+      }
       // STEP 2
       for (final grade in customGrades) {
         await grade.subject.load();
@@ -118,18 +128,19 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           grade.subject.value = subject;
           grade.period.value = period;
         }
-        // TODO: handle filters subjects
       }
       // STEP 3
       await isar.periods.clear();
       await isar.subjects.clear();
       await isar.grades.clear();
+      await isar.subjectsFilters.clear();
       // STEP 4
       await isar.periods.putAll(__periods);
       await isar.subjects.putAll(__subjects);
       await isar.grades.putAll(__grades);
       // STEP 5
       await isar.grades.putAll(customGrades);
+      await isar.subjectsFilters.putAll(filters);
       // STEP 6
       await Future.forEach(__subjects, (Subject subject) async {
         await subject.period.save();
@@ -147,6 +158,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     await setCurrentFilter();
     fetching = false;
     notifyListeners();
+    Logger.log("GRADES MODULE", "Fetch successful");
     return const Response();
   }
 
