@@ -9,31 +9,22 @@ import 'package:ynotes_packages/utilities.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  // This is the list of the available school services
-  // This is only temporary and should be stored in the [API] class
-  // static final List<SchoolServiceBox> _services = [
-  //   SchoolServiceBox(
-  //       image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
-  //       imageColor: theme.colors.foregroundColor,
-  //       name: 'Ecole Directe',
-  //       route: '/login/ecoledirecte',
-  //       parser: 0),
-  //   const SchoolServiceBox(
-  //       image: AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
-  //       name: 'Pronote',
-  //       route: '/login/pronote',
-  //       parser: 1),
-  //   // LA VIE SCOLAIRE, beta = true
-  //   const SchoolServiceBox(name: "Démonstrations", route: "/login/demos")
-  // ];
-
   @override
   Widget build(BuildContext context) {
     return LoginPageStructure(
       backButton: false,
       subtitle: LoginContent.login.subtitle,
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // ...spacedChildren(_services),
+        Container(
+            width: double.infinity,
+            decoration: BoxDecoration(color: theme.colors.danger.lightColor, borderRadius: YBorderRadius.xl),
+            padding: EdgeInsets.symmetric(vertical: YScale.s4, horizontal: YScale.s6),
+            child: Text(
+              """Lors du téléchargement de la 0.15, toutes vos données locales ont été supprimées. Cette étape contraignante est nécessaire pour permettre à yNotes d'atteindre la 1.0.\n\nMerci de votre compréhension !""",
+              style: theme.texts.body1.copyWith(color: theme.colors.danger.foregroundColor),
+              textAlign: TextAlign.justify,
+            )),
+        YVerticalSpacer(YScale.s10),
         ...spacedChildren(schoolApis.map((e) => SchoolServiceBox(e.metadata)).toList()),
         Padding(
           padding: YPadding.pt(YScale.s1),
