@@ -52,7 +52,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   url_launcher: ^6.0.18
   uuid: ^3.0.5
-  ynotes_packages:
+  ynotes_packages: # flutter pub upgrade ynotes_packages
     git:
       ref: main
       url: "https://github.com/EduWireApps/ynotes-packages"

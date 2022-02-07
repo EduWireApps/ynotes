@@ -16,9 +16,16 @@ class PeriodPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return period.grades.isEmpty
-        ? Text(
-            "no grades",
-            style: theme.texts.body1,
+        ? SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: YPadding.p(YScale.s4),
+              child: Text(
+                "Aucune notes disponibles pour cette période",
+                style: theme.texts.body1,
+                textAlign: TextAlign.center,
+              ),
+            ),
           )
         : Column(
             children: [

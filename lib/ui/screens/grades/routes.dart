@@ -9,7 +9,7 @@ const List<AppRoute> gradesRoutes = [
   AppRoute(
       path: _basePath,
       widget: GradesPage(),
-      icon: MdiIcons.trophy,
+      icon: MdiIcons.abTesting,
       title: "Notes",
       guard: _guard,
       fallbackPath: "/loading")
