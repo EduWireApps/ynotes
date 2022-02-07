@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
+import 'package:ynotes/ui/screens/grades/routes.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -56,7 +57,10 @@ class GradeContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, "/grades"),
+      onTap: () {
+        grade.load();
+        Navigator.pushNamed(context, "/grades", arguments: GradesPageArguments(grade: grade));
+      },
       borderRadius: YBorderRadius.xl,
       child: Ink(
           width: min(75.vw, YScale.s72),

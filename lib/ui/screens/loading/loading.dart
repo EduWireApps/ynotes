@@ -66,6 +66,7 @@ class _LoadingPageState extends State<LoadingPage> {
       // The user has agreed to the terms and the app is configured
       if (completedLogin != null) {
         if (mounted) {
+          schoolApi.fetch();
           Navigator.pushReplacementNamed(context, "/home");
         }
       } else {

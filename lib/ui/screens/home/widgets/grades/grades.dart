@@ -18,14 +18,6 @@ class GradesSection extends StatefulWidget {
 class _GradesSectionState extends State<GradesSection> {
   final GradesModule module = schoolApi.gradesModule;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      module.fetch();
-    });
-  }
-
   // We get all grades and sort them by entryDate
   List<Grade> get grades =>
       module.currentPeriod?.sortedGrades.where((grade) => grade.significant && !grade.custom).toList() ?? [];

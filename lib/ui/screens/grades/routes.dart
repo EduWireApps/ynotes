@@ -1,5 +1,6 @@
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/app/app.dart';
+import 'package:ynotes/core/api.dart';
 import 'package:ynotes/ui/screens/grades/grades.dart';
 
 bool _guard() => schoolApi.gradesModule.isEnabled;
@@ -14,3 +15,9 @@ const List<AppRoute> gradesRoutes = [
       guard: _guard,
       fallbackPath: "/loading")
 ];
+
+class GradesPageArguments {
+  final Grade grade;
+
+  const GradesPageArguments({required this.grade});
+}

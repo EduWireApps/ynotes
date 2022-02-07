@@ -24,14 +24,6 @@ class HomeworkSection extends StatefulWidget {
 class _HomeworkSectionState extends State<HomeworkSection> {
   final controller = appSys.homeworkController;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      controller.refresh();
-    });
-  }
-
   List<Homework> get homework => controller.homework(showAll: true) ?? [];
   List<List<Homework>> get homeworkByWeek {
     final Map<int, List<Homework>> homeworkByWeekMap = {};
