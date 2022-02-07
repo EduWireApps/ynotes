@@ -34,3 +34,8 @@ part 'src/navigation/drawer.dart';
 part 'src/misc/theme_switcher_tile.dart';
 part 'src/misc/subjects_filter_manager.dart';
 part 'src/misc/account_switcher_tile.dart';
+
+// SHEETS
+part 'src/sheets/sheets.dart';
+part 'src/sheets/add_subject_filter_sheet.dart';
+part 'src/sheets/edit_subject_filter_sheet.dart';

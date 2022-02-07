@@ -30,7 +30,6 @@ class _GradesPageState extends State<GradesPage> {
       final GradesPageArguments? args = AppRouter.getArgs<GradesPageArguments?>(context);
       if (args != null) {
         module.setCurrentPeriod(args.grade.period.value!);
-        print(args.grade);
         Future.delayed(const Duration(milliseconds: 0), () {
           setState(() {
             init = true;

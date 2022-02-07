@@ -267,6 +267,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     await offline.writeTxn((isar) async {
       await isar.subjectsFilters.delete(filter.id!);
     });
+    if (filter.entityId == currentFilter.entityId) {
+      await setCurrentFilter(_defaultFilters.first);
+    }
     notifyListeners();
     return const Response();
   }

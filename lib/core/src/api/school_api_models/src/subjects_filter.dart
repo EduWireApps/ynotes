@@ -9,7 +9,7 @@ class SubjectsFilter extends _LinkedModel {
   int? id;
 
   /// The name of the filter.
-  final String name;
+  String name;
 
   /// The id of the filter.
   late final String entityId;
