@@ -62,7 +62,7 @@ class _GradesPageState extends State<GradesPage> {
               actions: [
                 if (simulate) const YBadge(text: "SIMULATEUR"),
                 YHorizontalSpacer(YScale.s2),
-                const YBadge(text: "ALPHA", color: YColor.danger),
+                const YBadge(text: "BETA", color: YColor.danger),
                 if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   YIconButton(icon: Icons.refresh_rounded, onPressed: refresh),
               ],
