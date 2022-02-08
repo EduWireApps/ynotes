@@ -58,7 +58,6 @@ class GradeContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        grade.load();
         Navigator.pushNamed(context, "/grades", arguments: GradesPageArguments(grade: grade));
       },
       borderRadius: YBorderRadius.xl,
