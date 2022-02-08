@@ -1,8 +1,11 @@
 library components;
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:new_version/new_version.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/api.dart';
