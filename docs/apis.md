@@ -2,6 +2,8 @@
 
 A venir
 
+Diagrammes
+
 ## Fonctionnement
 
 - modulaire

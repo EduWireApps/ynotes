@@ -141,20 +141,46 @@ Contient des extensions de classes Dart, par exemple `String.capitalize()`.
 
 ## `/ui`
 
-TBD
+Contient 4 catégories :
+
+### `animations`
+
+Le nom est plutôt transparent et le dossier plutôt vide XD.
+
+### `components`
+
+Contient des composants utilisés à plusieurs reprises dans l'application. Explorez le code pour voir les composants disponibles.
+
+### `screens`
+
+Contient les différentes page de l'application. La structure reflète la façon dont s'agence les pages, et notamment pour appeler les routes avec `Navigator.pushNamed(context, <NOM DE LA ROUTE>)`.
+
+Un dossier `/screens/ma_page` se constitue de la façon suivante :
+
+- `ma_page.dart`: Contient le code de la page
+- `routes.dart`: Contient les routes de la page et des sous-pages
+- `/widgets`: Contient des composants locaux dont la mise à disposition à l'échelle de l'application n'aurait pas de sens
+- `/widgets/widget.dart`: Exporte les widgets pour réduire les importations de fichiers
+- `/sub_pages`: Contient les sous-pages de la page
+- `/sub_pages/ma_sous_route.dart`: Une sous-page
+- `/content`: Peut contenir le contenu (en terme de textes) de l'ensemble des pages et sous-pages. Facultatif.
+
+### `themes`
+
+Contient les thèmes de l'application. Basé sur `ynotes_packages`.
 
 ## `/packages`
 
-TBD
+Contient des packages qui peuvent fonctionner de façon indépendante de yNotes. Ce dossier est à vocation temporaire et ce sera à terme déplacé dans un (ou plusieurs) repository.
 
 ## `/experiments`
 
-TBD
+Contient des fichiers temporaires qui ne seront pas exécutés avec l'application (à des fins de développement donc).
 
 ## `logs_stacklist.dart`
 
-TBD
+Lors de l'exécution de `/errors_stack_trace.py`, les erreurs détectées par le script sont stockées dans ce fichier sous forme de `Map`.
 
 ## `main.dart`
 
-TBD
+Contient le point d'entrée de l'application. La fonction `void main()` est exécutée par Dart lors du lancement de l'application.
