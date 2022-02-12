@@ -17,6 +17,8 @@ class BackgroundService {
 
   /// Starts the background service.
   static Future<void> init() async {
+    Logger.log(_logKey, "Skipping until proper implementation");
+    return;
     Logger.log(_logKey, "Intializing...");
     if (!(Platform.isAndroid)) {
       Logger.log(_logKey, "Unsupported platform");
