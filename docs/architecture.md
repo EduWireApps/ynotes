@@ -85,29 +85,59 @@ Pour accéder à l'API du service scolaire sélectionner, il faut utiliser la va
 
 ## `/core`
 
-Ce dossier contient le code qui n'a pas de lien avec l'interface. Il est divisé en plusieurs catégories:
+Ce dossier contient le code qui n'a pas de lien avec l'interface. Il est divisé en plusieurs catégories.
 
-- **api:** Contient le code en relation avec les apis des services scolaires. [En savoir plus](apis.md)
-- **controllers:** Contient des classes globales et/ou spécifiques à un service scolaire (Ex: Pronote)
-- **services:**
-- **utilities:** Contient des classes utilitaires.
+### `api`
 
-Lors de leur utilisation, il faut utiliser le fichier qui exporte les différents fichiers plutôt que le fichier lui-même.
+Contient le code en relation avec les apis des services scolaires. [En savoir plus](apis.md)
 
-Exemple:
+### `controllers`
 
-```dart
-import 'package:ynotes/core/utilities.dart';
-```
-au lieu de
+Contient des classes globales et/ou spécifiques à un service scolaire (Ex: Pronote).
 
-```dart
-import 'package:ynotes/core/src/utilities/kvs.dart';
-```
+N'a pas de grande utilité pour le moment mais l'architecture est déjà prête pour une éventuelle utilisation.
 
-offline
+### `services`
 
-extensions
+Contient des classes globales qui possède une fonction essentielle au sein de yNotes.
+
+Ainsi, voici les services actuellement disponibles :
+
+- `background`: Permet de gérer les tâches en arrière plan **(En cours de développement)**
+- `notification`: Permet de gérer les notifications **(En cours de développement)**
+- `platform`: Permet d'interagir avec des fonctionnalités spécifiques à une plateforme (OS). Par exemple, ouvrir les paramètres sur Android **(Non implémenté)**
+- `settings`: Permet de gérer les paramètres de l'application. Le système permet la migration automatique des données lors de changement de la structure des paramètres. Si le type change par exemple, la valeur est réinitialisée
+- `system`: Permet de gérer les fonctions système de l'application telles que l'initialisation ou bien la demande d'autorisations.
+
+### `utilities`
+
+Contient des classes utilitaires diverses. Il est recommandé d'aller explorer le code pour voir les fonctions disponibles.
+
+---
+
+> Lors de leur utilisation, il faut utiliser le fichier qui exporte les différents fichiers plutôt que le fichier lui-même.
+>
+> Exemple:
+>
+> ```dart
+> import 'package:ynotes/core/utilities.dart';
+> ```
+>
+> au lieu de
+>
+> ```dart
+> import 'package:ynotes/core/src/utilities/kvs.dart';
+> ```
+
+### `offline`
+
+Gère les relations avec la base de donnée hors ligne. Ce système est basé sur [Isar](https://isar.dev/), c'est pourquoi l'ouverture d'autres instances de la base de données nécessite comme paramètres `schema` la variable contenu dans cette classe `Offline.schemas`. (Voir système de logs)
+
+L'accès multi isolate est géré, les données ne sont donc pas corrompues en cas de modifications simultanées.
+
+### `extensions`
+
+Contient des extensions de classes Dart, par exemple `String.capitalize()`.
 
 ## `/ui`
 
