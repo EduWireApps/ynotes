@@ -104,7 +104,7 @@ class ApplicationSystem extends ChangeNotifier {
       updateTheme("clair");
     } catch (e) {
       CustomLogger.log("APPSYS", "Error occured when exiting the app");
-      CustomLogger.error(e, stackHint:"MzE=");
+      CustomLogger.error(e, stackHint: "MzE=");
     }
   }
 
@@ -132,11 +132,6 @@ class ApplicationSystem extends ChangeNotifier {
     //Set controllers
   }
 
-  Future<void> saveSettings() async {
-    await SettingsUtils.setSetting(settings);
-    notifyListeners();
-  }
-
   initOffline() async {
     hiveBoxProvider = HiveBoxProvider();
     //Initiate an unlocked offline controller
@@ -151,6 +146,11 @@ class ApplicationSystem extends ChangeNotifier {
     agendaController.api = api;
     schoolLifeController.api = api;
     mailsController.api = api;
+  }
+
+  Future<void> saveSettings() async {
+    await SettingsUtils.setSetting(settings);
+    notifyListeners();
   }
 
   /// Updates the theme. **WARNING:** will change.
@@ -172,27 +172,33 @@ class ApplicationSystem extends ChangeNotifier {
   _initBackgroundFetch() async {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       CustomLogger.log("APPSYS", "Configuring background fetch");
-      int i = await BackgroundFetch.configure(
-        BackgroundFetchConfig(
-            minimumFetchInterval: 15,
-            stopOnTerminate: false,
-            startOnBoot: true,
-            enableHeadless: true,
-            requiresBatteryNotLow: false,
-            requiresCharging: false,
-            requiresStorageNotLow: false,
-            requiresDeviceIdle: false,
-            requiredNetworkType: NetworkType.ANY),
-        (String taskId) async {
-          await BackgroundService.backgroundFetchHeadlessTask(taskId);
-          BackgroundFetch.finish(taskId);
-        },
-        (String taskId) async {
-          await AppNotification.cancelNotification(taskId.hashCode);
-          BackgroundFetch.finish(taskId);
-        },
-      );
-      CustomLogger.log("APPSYS", "Background fetch configured: $i");
+      if (await BackgroundFetch.status == BackgroundFetch.STATUS_AVAILABLE) {
+        try {
+          int i = await BackgroundFetch.configure(
+            BackgroundFetchConfig(
+                minimumFetchInterval: 15,
+                stopOnTerminate: false,
+                startOnBoot: true,
+                enableHeadless: true,
+                requiresBatteryNotLow: false,
+                requiresCharging: false,
+                requiresStorageNotLow: false,
+                requiresDeviceIdle: false,
+                requiredNetworkType: NetworkType.ANY),
+            (String taskId) async {
+              await BackgroundService.backgroundFetchHeadlessTask(taskId);
+              BackgroundFetch.finish(taskId);
+            },
+            (String taskId) async {
+              await AppNotification.cancelNotification(taskId.hashCode);
+              BackgroundFetch.finish(taskId);
+            },
+          );
+          CustomLogger.log("APPSYS", "Background fetch configured: $i");
+        } catch (e) {
+          CustomLogger.error(e);
+        }
+      }
     }
   }
 
