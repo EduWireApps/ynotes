@@ -44,7 +44,56 @@ Chaque module possède également une méthode `reset` pour supprimer les donné
 
 ## Ajouter un module
 
-A venir
+> Pour faciliter la compréhension, le module utilisé dans cet exemple aura pour nom `Cantine` et le modèle `Repas`.
+
+Voici un aperçu des étapes :
+
+1. Ajouter les fichiers du module dans `/lib/core/src/api/school_api/src/modules/cantine/`
+2. Créer les classes
+3. Ajouter le module dans `SchoolApiModules`
+4. Créer les modèles si nécessaire dans `/lib/core/src/api/school_api_models/src/repas.dart`
+5. Exécuter `build_runner`
+6. Ajouter une entrée à `ModulesSupport` et `ModulesAvailability`
+7. Ajouter le nouveau module à **tous** les services
+
+> **IMPORTANT**
+>
+> Avant l'ajout d'un module, entrez en contact avec les développeurs (Discord de préférence), il serait dommage que l'ajout du module soit refusé faute de convenir à la vision des maintainers.
+
+### 1. Création du module
+
+Un module est composé de 2 fichiers :
+
+- `module.dart`: le module en lui-même, c'est-à-dire une classe qui hérite de `Module`
+- `repository.dart` (Optionnel): si le module nécessite de récupérer/interagir avec les données de plusieurs façons, ajouter ce fichier est nécessaire
+
+Pour notre exemple, nous allons créer un module `Cantine` qui peut récupérer la liste de tous les repas de l'élève et qui peut également ajouter un repas. Nous aurons donc besoin de 2 fichiers.
+
+Commençons par créer le repository. Créons un fichier `/lib/core/src/api/school_api/src/modules/cantine/repository.dart` :
+
+```dart
+part of school_api;
+
+abstract class CantineRepository extends Repository {
+  CantineRepository(SchoolApi api) : super(api);
+
+  Future<Response<bool>> add(Meal meal);
+}
+```
+
+Lors de l'implémentation du repository dans un service, 2 méthodes seront disponibles: `fetch` et `add`.
+
+Il faut maintenant ajouter le fichier dans `/lib/core/src/api/school_api/school_api.dart` :
+
+```diff
+// DOCUMENTS MODULE
+part 'src/modules/documents/module.dart';
+part 'src/modules/documents/repository.dart';
+
++ // CANTINE MODULE
++ part 'src/modules/cantine/repository.dart';
+
+```
 
 ## Ajouter un service scolaire
 
