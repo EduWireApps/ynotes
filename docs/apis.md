@@ -59,10 +59,10 @@ Un module est en fait réparti en 3 fichiers :
 Voici un aperçu des étapes :
 
 1. Ajouter les fichiers du module dans `/lib/core/src/api/school_api/src/modules/cantine/`
-2. Créer la logique
-3. Ajouter le module dans `SchoolApiModules`
-4. Créer les modèles si nécessaire dans `/lib/core/src/api/school_api_models/src/repas.dart`
-5. Exécuter `build_runner`
+2. Créer les modèles si nécessaire dans `/lib/core/src/api/school_api_models/src/repas.dart`
+3. Exécuter `build_runner`
+4. Créer la logique
+5. Ajouter le module dans `SchoolApiModules`
 6. Ajouter une entrée à `ModulesSupport` et `ModulesAvailability`
 7. Ajouter le nouveau module à **tous** les services
 
@@ -87,7 +87,7 @@ part of school_api;
 abstract class CantineRepository extends Repository {
   CantineRepository(SchoolApi api) : super(api);
 
-  Future<Response<bool>> add(Meal meal);
+  Future<Response<void>> add(Meal meal);
 }
 ```
 
@@ -138,9 +138,133 @@ part 'src/modules/cantine/repository.dart';
 
 Des erreurs au niveau de `isSupported` et `isAvailable` sont détectées mais nous nous en occuperons un peu plus tard.
 
-### 2. Créer la logique
+### 2. Création du modèle
 
-TODO
+Nous avons donc besoin d'un modèle `Repas` aux caractéristiques suivantes:
+
+|      | Id     | UserId   | Date       | Content  |
+| ---- | ------ | -------- | ---------- | -------- |
+| Type | `int?` | `String` | `DateTime` | `String` |
+
+Dans notre situation, tous ces propriétés sont immuables.
+
+Nous allons donc ajouter le modèle dans `/lib/core/src/api/school_api_models/src/repas.dart` :
+
+```dart
+part of models;
+
+@Collection()
+class Repas {
+  @Id()
+  int? id;
+  final String userId;
+  final DateTime date;
+  final String content;
+
+  Repas({
+    required this.userId,
+    required this.date,
+    required this.content
+  });
+}
+```
+
+> Pour ne pas surcharger ce guide, ce modèle n'est pas documenté mais sachez que toute _Pull Request_ non documentée sera mise en attente en attendant que l'auteur documente son code.
+
+Et ici aussi il faut ajouter le fichier à la librairie dans `/lib/core/src/api/school_api_models/school_api_models.dart` :
+
+```diff
+part 'src/recipient.dart';
+part 'src/school_account.dart';
+part 'src/school_life_sanction.dart';
+part 'src/school_life_ticket.dart';
++ part 'src/repas.dart';
+```
+
+### 3. Exécuter `build_runner`
+
+Dans la section suivante, nous avons utilisé des _decorators_ qui permettent de générer du code et intégrer le modèle dans le système de base de données.
+
+Pour cela, il suffit d'exécuter la commande suivante à la racine du projet :
+
+```bash
+$ flutter packages pub run build_runner build --delete-conflicting-outputs
+```
+
+### 4. Créer la logique
+
+Nous voulons donc pour ce module est logique assez simple : récupérer tous les repas et pouvoir en ajouter un.
+
+Nous nous sommes déjà occupés du repository, nous allons donc créer la logique du module en lui-même.
+
+Le module doit permettre d'accéder à la liste de tous les repas, nous allons donc utiliser un _getter_ qui récupère les repas stockés hors ligne. La variable `offline` que nous utilisons pour ce faire est injectée automatiquement.
+
+Dans notre fichier `module.dart`, en dessous du constructeur on ajoute :
+
+```dart
+List<Repas> get repas {
+  final _repas = offline.repas.where().sortByDate().build().findAllSync();
+  return _repas;
+}
+```
+
+Tout repository dispose d'une méthode `get` qui doit renvoyer `Future<Response<Map<String, dynamic>>>`. Notre repository devra donc renvoyer une `Map` dans le format suivant :
+
+```dart
+final Map<String, dynamic> result = {
+  "repas": <Repas>[] // Vide pour l'explication
+};
+```
+
+On peut donc s'occuper de `fetch`.
+
+```dart
+@override
+Future<Response<void>> fetch() async {
+  if (fetching) {
+    return const Response(error: "Already fetching");
+  }
+  fetching = true;
+  notifyListeners();
+```
+
+Maintenant que nous annonçons la récupération des données, nous pouvons réellement les demander.
+
+```dart
+final res = await repository.get();
+if (res.error != null) return res;
+final List<Repas> _repas = res.data!["repas"] ?? [];
+```
+
+On stocke maintenant les repas dans la base de données.
+
+```dart
+await offline.writeTxn((isar) async {
+  await isar.repas.clear();
+  await isar.repas.putAll(_repas);
+});
+```
+
+```dart
+fetching = false;
+notifyListeners();
+Logger.log("CANTINE MODULE", "Fetch successful");
+return const Response();
+}
+```
+
+Il faut maintenant pouvoir ajouter un repas.
+
+```dart
+Future<Response<void>> add(Repas repas) async {
+  final res = await repository.add(repas);
+  if (res.error != null) return res;
+  await offline.writeTxn((isar) async {
+    await isar.repas.put(repas);
+  });
+  return const Response();
+}
+```
 
 ## Ajouter un service scolaire
 
