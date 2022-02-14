@@ -253,7 +253,7 @@ return const Response();
 }
 ```
 
-Il faut maintenant pouvoir ajouter un repas.
+Il faut maintenant pouvoir ajouter un repas :
 
 ```dart
 Future<Response<void>> add(Repas repas) async {
@@ -265,6 +265,109 @@ Future<Response<void>> add(Repas repas) async {
   return const Response();
 }
 ```
+
+### 5. Ajouter le module dans `SchoolApiModules`
+
+Dans `/lib/core/src/api/school_api/src/school_api_modules.dart` on ajoute la ligne suivante :
+
+```diff
+part of school_api;
+
+abstract class SchoolApiModules {
+  late AuthModule authModule;
+
+  late GradesModule gradesModule;
+
+  late SchoolLifeModule schoolLifeModule;
+
+  late EmailsModule emailsModule;
+
+  late HomeworkModule homeworkModule;
+
+  late DocumentsModule documentsModule;
+
++ late CantineModule cantineModule;
+}
+```
+
+### 6. Ajouter une entrée à `ModulesSupport` et `ModulesAvailability`
+
+Dans `/lib/core/src/api/school_api/src/modules_support.dart` on modifie le fichier de la façon suivante :
+
+```diff
+part of school_api;
+
+class ModulesSupport {
+  final bool grades;
+  final bool schoolLife;
+  final bool emails;
+  final bool homework;
+  final bool documents;
++ final bool cantine;
+
+  const ModulesSupport({
+    required this.grades,
+    required this.schoolLife,
+    required this.emails,
+    required this.homework,
+    required this.documents,
++   required this.cantine
+  });
+}
+```
+
+De la même façon dans `/lib/core/src/api/school_api/src/modules_availability.dart` :
+
+```diff
+part of school_api;
+
+class ModulesAvailability {
+  bool grades;
+  bool schoolLife;
+  bool emails;
+  bool homework;
+  bool get documents => emails || homework;
++ bool cantine;
+
+  ModulesAvailability({
+    this.grades = false,
+    this.schoolLife = false,
+    this.emails = false,
+    this.homework = false
++   this.cantine = false
+  });
+
+  static const String _offlineKey = "modulesAvailability";
+
+  Future<void> load() async {
+    final String? data = await KVS.read(key: _offlineKey);
+    if (data == null) {
+      await save();
+      return;
+    }
+    final Map<String, dynamic> decoded = json.decode(data);
+    grades = decoded["grades"] as bool;
+    schoolLife = decoded["schoolLife"] as bool;
+    emails = decoded["emails"] as bool;
+    homework = decoded["homework"] as bool;
++   cantine = decoded["cantine"] as bool;
+  }
+
+  Future<void> save() async {
+    await KVS.write(
+        key: _offlineKey,
+        value: json.encode({
+          "grades": grades,
+          "schoolLife": schoolLife,
+          "emails": emails,
+          "homework": homework,
++         "cantine": cantine
+        }));
+  }
+}
+```
+
+### 7. Ajouter le nouveau module à **tous** les services
 
 ## Ajouter un service scolaire
 
