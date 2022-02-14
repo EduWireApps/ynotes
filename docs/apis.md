@@ -50,6 +50,8 @@ Un module est en fait réparti en 3 fichiers :
 - `repository.dart` : c'est la classe qui formate les données
 - `provider.dart`: c'est la classe qui interagit avec le service scolaire, en ligne
 
+![Diagram](./assets/images/module_files.png)
+
 ## Ajouter un module
 
 > Pour faciliter la compréhension, le module utilisé dans cet exemple aura pour nom `Cantine` et le modèle `Repas`.
