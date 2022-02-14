@@ -24,6 +24,7 @@ Future<void> main() async {
   // in [SystemService.init].
   await BackgroundService.init();
   await SystemService.init(all: false, essential: true);
+  // TODO: check if `runZoned` is needed.
   runZoned<Future<void>>(() async {
     runApp(Phoenix(child: const App()));
   });

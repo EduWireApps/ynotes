@@ -1,5 +1,9 @@
 part of ecole_directe;
 
+class _DocumentsModule extends DocumentsModule<_DocumentsRepository> {
+  _DocumentsModule(SchoolApi api) : super(repository: _DocumentsRepository(api), api: api);
+}
+
 class _DocumentsRepository extends DocumentsRepository {
   _DocumentsRepository(SchoolApi api) : super(api);
 

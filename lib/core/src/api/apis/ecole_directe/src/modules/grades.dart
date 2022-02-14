@@ -1,5 +1,16 @@
 part of ecole_directe;
 
+class _GradesModule extends GradesModule<_GradesRepository> {
+  _GradesModule(SchoolApi api) : super(repository: _GradesRepository(api), api: api);
+}
+
+class _GradesProvider extends Provider {
+  _GradesProvider(SchoolApi api) : super(api);
+
+  Future<Response<Map<String, dynamic>>> get() async =>
+      await _request(api, url: "eleves/${api.authModule.schoolAccount?.entityId}/notes.awp?verbe=get");
+}
+
 class _GradesRepository extends Repository {
   @protected
   late final _GradesProvider gradesProvider = _GradesProvider(api);

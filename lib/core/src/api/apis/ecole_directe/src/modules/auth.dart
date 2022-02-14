@@ -1,5 +1,16 @@
 part of ecole_directe;
 
+class _AuthModule extends AuthModule<_AuthRepository> {
+  _AuthModule(SchoolApi api) : super(repository: _AuthRepository(api), api: api);
+}
+
+class _AuthProvider extends Provider {
+  _AuthProvider(SchoolApi api) : super(api);
+
+  Future<Response<Map<String, dynamic>>> get(Map<String, String> body) async =>
+      await _request(api, url: "login.awp", body: body, auth: false);
+}
+
 class _AuthRepository extends AuthRepository {
   @protected
   late final _AuthProvider authProvider = _AuthProvider(api);

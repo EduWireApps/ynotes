@@ -2,10 +2,6 @@
 
 La gestion des APIS (c'est-à-dire des différents services scolaires) est assez complexe et nécessite une section dédiée.
 
-A venir
-
-Diagrammes
-
 ## Fonctionnement
 
 ### Architecture modulaire
@@ -368,6 +364,10 @@ class ModulesAvailability {
 ```
 
 ### 7. Ajouter le nouveau module à **tous** les services
+
+Lors de l'ajout d'un module, l'implémentation concrète pour un service est normalement réalisé.
+
+**TODO: check if could be optimized.**
 
 ## Ajouter un service scolaire
 
