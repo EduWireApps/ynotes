@@ -42,6 +42,14 @@ Chaque module possède une méthode `fetch` qui permet de récupérer les donné
 
 Chaque module possède également une méthode `reset` pour supprimer les données stockées au besoin.
 
+### Rôle par fichier
+
+Un module est en fait réparti en 3 fichiers :
+
+- `module.dart` : c'est l'interface qui permet d'interagir avec la donnée
+- `repository.dart` : c'est la classe qui formate les données
+- `provider.dart`: c'est la classe qui interagit avec le service scolaire, en ligne
+
 ## Ajouter un module
 
 > Pour faciliter la compréhension, le module utilisé dans cet exemple aura pour nom `Cantine` et le modèle `Repas`.
@@ -49,7 +57,7 @@ Chaque module possède également une méthode `reset` pour supprimer les donné
 Voici un aperçu des étapes :
 
 1. Ajouter les fichiers du module dans `/lib/core/src/api/school_api/src/modules/cantine/`
-2. Créer les classes
+2. Créer la logique
 3. Ajouter le module dans `SchoolApiModules`
 4. Créer les modèles si nécessaire dans `/lib/core/src/api/school_api_models/src/repas.dart`
 5. Exécuter `build_runner`
@@ -92,8 +100,45 @@ part 'src/modules/documents/repository.dart';
 
 + // CANTINE MODULE
 + part 'src/modules/cantine/repository.dart';
-
 ```
+
+Et maintenant le fichier du module en lui-même (`/lib/core/src/api/school_api/src/modules/cantine/repository.dart`) :
+
+```dart
+part of school_api;
+
+abstract class CantineModule<R extends CantineRepository> extends Module<R> {
+  CantineModule({required R repository, required SchoolApi api})
+      : super(
+          isSupported: api.modulesSupport.cantine,
+          isAvailable: api.modulesAvailability.cantine,
+          repository: repository,
+          api: api,
+        );
+
+  @override
+  Future<Response<void>> fetch() async {
+    return const Response(error: "Not implemented");
+  }
+
+  @override
+  Future<void> reset() async {}
+}
+```
+
+Et encore une fois ajouter ce fichier dans `/lib/core/src/api/school_api/school_api.dart` :
+
+```diff
+// CANTINE MODULE
++ part 'src/modules/cantine/module.dart';
+part 'src/modules/cantine/repository.dart';
+```
+
+Des erreurs au niveau de `isSupported` et `isAvailable` sont détectées mais nous nous en occuperons un peu plus tard.
+
+### 2. Créer la logique
+
+TODO
 
 ## Ajouter un service scolaire
 
