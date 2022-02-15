@@ -64,7 +64,7 @@ Voici un aperçu des étapes :
 
 > **IMPORTANT**
 >
-> Avant l'ajout d'un module, entrez en contact avec les développeurs (Discord de préférence), il serait dommage que l'ajout du module soit refusé faute de convenir à la vision des maintainers.
+> Pour être sûr que votre module ne rompe pas avec la vision des développeurs, merci de faire part de votre idée en premier lieu sur Discord ou via une issue Github.
 
 ### 1. Création du module
 
