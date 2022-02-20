@@ -16,12 +16,21 @@ class AppDialogs {
   }
 
   /// Show a dialog that show a loader while waiting for a future complete.
-  static Future<void> showReportLoaderDialog<T>(BuildContext context, {required Future<T> future}) async {
+  static Future<void> showReportLoaderDialog(BuildContext context, {required Future future}) async {
     await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => _ReportLoaderDialog<T>(
+        builder: (_) => _ReportLoaderDialog(
               future: future,
+            ));
+  }
+
+  /// Shows a color picker dialog.
+  static Future<YTColor?> showColorPickerDialog(BuildContext context, {YTColor? color}) async {
+    return await showDialog(
+        context: context,
+        builder: (_) => _ColorPickerDialog(
+              color: color,
             ));
   }
 }

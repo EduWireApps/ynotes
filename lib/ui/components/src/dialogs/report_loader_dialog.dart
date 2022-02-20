@@ -1,14 +1,14 @@
 part of components;
 
-class _ReportLoaderDialog<T> extends StatefulWidget {
-  final Future<T> future;
+class _ReportLoaderDialog extends StatefulWidget {
+  final Future future;
   const _ReportLoaderDialog({Key? key, required this.future}) : super(key: key);
 
   @override
-  State<_ReportLoaderDialog<T>> createState() => __ReportLoaderDialogState<T>();
+  State<_ReportLoaderDialog> createState() => __ReportLoaderDialogState();
 }
 
-class __ReportLoaderDialogState<T> extends State<_ReportLoaderDialog<T>> {
+class __ReportLoaderDialogState extends State<_ReportLoaderDialog> {
   @override
   void initState() {
     super.initState();

@@ -18,20 +18,9 @@ class GradesSection extends StatefulWidget {
 class _GradesSectionState extends State<GradesSection> {
   final GradesModule module = schoolApi.gradesModule;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      module.fetch();
-    });
-  }
-
   // We get all grades and sort them by entryDate
   List<Grade> get grades =>
-      module.currentPeriod
-          ?.grades(module.grades.where((grade) => grade.significant && !grade.custom).toList())
-          .toList() ??
-      [];
+      module.currentPeriod?.sortedGrades.where((grade) => grade.significant && !grade.custom).toList() ?? [];
 
   List<ChartElement> get chartElements {
     final List<Grade> fetchedGrades = grades;
@@ -56,7 +45,6 @@ class _GradesSectionState extends State<GradesSection> {
         grades = [...grades, ...gradesByWeekList[index]];
         index -= 1;
       }
-      // final double avg = module.calculateAverageFromGrades(grades);
       final double avg = module.calculateAverageFromGrades(grades, bySubject: true);
       return ChartElement(
           value: avg,
@@ -96,7 +84,7 @@ class _GradesSectionState extends State<GradesSection> {
                                   Text("Moyenne", style: theme.texts.body2),
                                   YVerticalSpacer(YScale.s4),
                                   if (module.currentPeriod != null)
-                                    _DiffText(module.calculateAverageFromPeriod(module.currentPeriod!) -
+                                    _DiffText(module.calculateAverageFromGrades(grades, bySubject: true) -
                                         module.calculateAverageFromGrades(grades.sublist(0, grades.length - 1),
                                             bySubject: true)),
                                   Text("Dernière note", style: theme.texts.body2),
@@ -116,8 +104,7 @@ class _GradesSectionState extends State<GradesSection> {
                               child: Row(
                                 children: [
                                   YHorizontalSpacer(YScale.s4),
-                                  ...module.currentPeriod!
-                                      .grades(module.grades)
+                                  ...module.currentPeriod!.sortedGrades
                                       .where((grade) => !grade.custom)
                                       .map((grade) => Row(
                                             children: [GradeContainer(grade), YHorizontalSpacer(YScale.s4)],
@@ -134,7 +121,7 @@ class _GradesSectionState extends State<GradesSection> {
                 )
               : EmptyState(
                   iconRoutePath: "/grades",
-                  onPressed: () async => await module.fetch(online: true),
+                  onPressed: () async => await module.fetch(),
                   text: "Pas de notes... Et bah alors ça bosse pas ? ;)",
                   loading: module.isFetching);
         });

@@ -28,8 +28,7 @@ class AccountSwitcherTile extends StatelessWidget {
                           body:
                               Text("Changer de compte supprimera les données hors-ligne.", style: theme.texts.body1)));
                   if (res0) {
-                    module.schoolAccount = res;
-                    await module.save();
+                    await module.update(res);
                     await schoolApi.reset();
                   }
                 }

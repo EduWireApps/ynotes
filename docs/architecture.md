@@ -85,24 +85,102 @@ Pour accéder à l'API du service scolaire sélectionner, il faut utiliser la va
 
 ## `/core`
 
-TBD
+Ce dossier contient le code qui n'a pas de lien avec l'interface. Il est divisé en plusieurs catégories.
+
+### `api`
+
+Contient le code en relation avec les apis des services scolaires. [En savoir plus](apis.md)
+
+### `controllers`
+
+Contient des classes globales et/ou spécifiques à un service scolaire (Ex: Pronote).
+
+N'a pas de grande utilité pour le moment mais l'architecture est déjà prête pour une éventuelle utilisation.
+
+### `services`
+
+Contient des classes globales qui possède une fonction essentielle au sein de yNotes.
+
+Ainsi, voici les services actuellement disponibles :
+
+- `background`: Permet de gérer les tâches en arrière plan **(En cours de développement)**
+- `notification`: Permet de gérer les notifications **(En cours de développement)**
+- `platform`: Permet d'interagir avec des fonctionnalités spécifiques à une plateforme (OS). Par exemple, ouvrir les paramètres sur Android **(Non implémenté)**
+- `settings`: Permet de gérer les paramètres de l'application. Le système permet la migration automatique des données lors de changement de la structure des paramètres. Si le type change par exemple, la valeur est réinitialisée
+- `system`: Permet de gérer les fonctions système de l'application telles que l'initialisation ou bien la demande d'autorisations.
+
+### `utilities`
+
+Contient des classes utilitaires diverses. Il est recommandé d'aller explorer le code pour voir les fonctions disponibles.
+
+---
+
+> Lors de leur utilisation, il faut utiliser le fichier qui exporte les différents fichiers plutôt que le fichier lui-même.
+>
+> Exemple:
+>
+> ```dart
+> import 'package:ynotes/core/utilities.dart';
+> ```
+>
+> au lieu de
+>
+> ```dart
+> import 'package:ynotes/core/src/utilities/kvs.dart';
+> ```
+
+### `offline`
+
+Gère les relations avec la base de donnée hors ligne. Ce système est basé sur [Isar](https://isar.dev/), c'est pourquoi l'ouverture d'autres instances de la base de données nécessite comme paramètres `schema` la variable contenu dans cette classe `Offline.schemas`. (Voir système de logs)
+
+L'accès multi isolate est géré, les données ne sont donc pas corrompues en cas de modifications simultanées.
+
+### `extensions`
+
+Contient des extensions de classes Dart, par exemple `String.capitalize()`.
 
 ## `/ui`
 
-TBD
+Contient 4 catégories :
+
+### `animations`
+
+Le nom est plutôt transparent et le dossier plutôt vide XD.
+
+### `components`
+
+Contient des composants utilisés à plusieurs reprises dans l'application. Explorez le code pour voir les composants disponibles.
+
+### `screens`
+
+Contient les différentes page de l'application. La structure reflète la façon dont s'agence les pages, et notamment pour appeler les routes avec `Navigator.pushNamed(context, <NOM DE LA ROUTE>)`.
+
+Un dossier `/screens/ma_page` se constitue de la façon suivante :
+
+- `ma_page.dart`: Contient le code de la page
+- `routes.dart`: Contient les routes de la page et des sous-pages
+- `/widgets`: Contient des composants locaux dont la mise à disposition à l'échelle de l'application n'aurait pas de sens
+- `/widgets/widget.dart`: Exporte les widgets pour réduire les importations de fichiers
+- `/sub_pages`: Contient les sous-pages de la page
+- `/sub_pages/ma_sous_route.dart`: Une sous-page
+- `/content`: Peut contenir le contenu (en terme de textes) de l'ensemble des pages et sous-pages. Facultatif.
+
+### `themes`
+
+Contient les thèmes de l'application. Basé sur `ynotes_packages`.
 
 ## `/packages`
 
-TBD
+Contient des packages qui peuvent fonctionner de façon indépendante de yNotes. Ce dossier est à vocation temporaire et ce sera à terme déplacé dans un (ou plusieurs) repository.
 
 ## `/experiments`
 
-TBD
+Contient des fichiers temporaires qui ne seront pas exécutés avec l'application (à des fins de développement donc).
 
 ## `logs_stacklist.dart`
 
-TBD
+Lors de l'exécution de `/errors_stack_trace.py`, les erreurs détectées par le script sont stockées dans ce fichier sous forme de `Map`.
 
 ## `main.dart`
 
-TBD
+Contient le point d'entrée de l'application. La fonction `void main()` est exécutée par Dart lors du lancement de l'application.

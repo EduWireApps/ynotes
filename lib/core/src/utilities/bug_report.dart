@@ -82,7 +82,7 @@ class BugReport {
   static Future<void> report() async {
     if (AppConfig.shake.isSupported) {
       final Future<void> future = prepareReportData();
-      AppDialogs.showReportLoaderDialog<void>(AppConfig.navigatorKey.currentContext!, future: future);
+      AppDialogs.showReportLoaderDialog(AppConfig.navigatorKey.currentContext!, future: future);
       await future;
       Shake.show();
     } else {

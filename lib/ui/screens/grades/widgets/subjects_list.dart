@@ -5,6 +5,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/api.dart';
 import 'package:ynotes/core/extensions.dart';
 import 'package:ynotes/ui/components/components.dart';
+import 'package:ynotes/ui/screens/grades/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -25,8 +26,10 @@ class SubjectsList extends StatelessWidget {
           child: const SubjectsFiltersManager(),
         ),
         YVerticalSpacer(YScale.s2),
-        ...module.subjects
-            .where((e) => module.currentFilter!.subjectsIds?.contains(e.id) ?? true)
+        ...period.sortedSubjects
+            .where((e) {
+              return (module.currentFilter.entityId == "all" || module.currentFilter.subjects.contains(e));
+            })
             .map((subject) => _SubjectContainer(subject, period, simulate))
             .toList()
       ],
@@ -40,10 +43,13 @@ class _SubjectContainer extends StatelessWidget {
   final bool simulate;
   const _SubjectContainer(this.subject, this.period, this.simulate, {Key? key}) : super(key: key);
 
-  List<Grade> get grades => subject
-      .grades(period.grades(schoolApi.gradesModule.grades))
-      .where((grade) => simulate ? true : !grade.custom)
-      .toList();
+  List<Grade> get grades {
+    final List<Grade> _grades = subject.sortedGrades;
+    for (final g in _grades) {
+      g.load();
+    }
+    return _grades.where((grade) => (simulate ? true : !grade.custom)).toList();
+  }
 
   double get _average => schoolApi.gradesModule.calculateAverageFromGrades(grades, bySubject: true);
 
@@ -62,12 +68,17 @@ class _SubjectContainer extends StatelessWidget {
           Material(
             borderRadius: _borderRadius,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                YModalBottomSheets.show(
+                    context: context,
+                    child:
+                        SubjectDetailsSheet(subject: subject, average: _average, period: period, simulate: simulate));
+              },
               borderRadius: _borderRadius,
               hoverColor: subject.color.lightColor,
               highlightColor: subject.color.lightColor,
               child: Ink(
-                padding: EdgeInsets.symmetric(vertical: YScale.s2, horizontal: YScale.s3),
+                padding: EdgeInsets.symmetric(vertical: YScale.s2, horizontal: YScale.s4),
                 decoration: BoxDecoration(
                   color: subject.color.backgroundColor,
                   borderRadius: _borderRadius,
@@ -114,7 +125,7 @@ class _SubjectContainer extends StatelessWidget {
   }
 }
 
-class _GradeContainer extends StatelessWidget {
+class _GradeContainer extends StatefulWidget {
   final Grade grade;
   final Subject subject;
   const _GradeContainer(
@@ -123,7 +134,12 @@ class _GradeContainer extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  YTColor get color => subject.color;
+  @override
+  State<_GradeContainer> createState() => _GradeContainerState();
+}
+
+class _GradeContainerState extends State<_GradeContainer> {
+  YTColor get color => widget.subject.color;
 
   Widget bubble(String text, [bool danger = false]) {
     final Color backgroundColor = danger ? theme.colors.danger.backgroundColor : theme.colors.foregroundColor;
@@ -143,7 +159,10 @@ class _GradeContainer extends StatelessWidget {
     );
   }
 
-  bool get simulate => grade.custom;
+  bool get simulate => widget.grade.custom;
+  bool highlight = false;
+
+  Color get textColor => highlight ? color.foregroundColor : theme.colors.foregroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -156,15 +175,19 @@ class _GradeContainer extends StatelessWidget {
       borderType: BorderType.RRect,
       dashPattern: [YScale.s1, YScale.s0p5],
       child: Material(
-        color: simulate ? color.backgroundColor : theme.colors.backgroundLightColor,
+        color: simulate ? color.backgroundColor : theme.colors.backgroundColor,
         borderRadius: _borderRadius,
         child: InkWell(
           onTap: () {
-            YModalBottomSheets.show(
-                context: context, child: Text("grade bottom sheet: <${grade.name}>", style: theme.texts.body1));
+            YModalBottomSheets.show(context: context, child: GradeDetailsSheet(widget.grade, simulate));
           },
           borderRadius: _borderRadius,
           highlightColor: simulate ? color.lightColor.withOpacity(.5) : color.backgroundColor,
+          onHighlightChanged: (bool value) {
+            setState(() {
+              highlight = value;
+            });
+          },
           hoverColor: color.lightColor,
           child: Ink(
               padding: YPadding.p(YScale.s1),
@@ -178,19 +201,22 @@ class _GradeContainer extends StatelessWidget {
                   clipBehavior: Clip.none,
                   children: [
                     AutoSizeText(
-                      grade.value.display(),
+                      widget.grade.value.display(),
                       style: TextStyle(
                         fontWeight: YFontWeight.semibold,
-                        color: theme.colors.foregroundColor,
+                        color: simulate ? color.foregroundColor : textColor,
                         fontSize: YFontSize.base,
                       ),
                       softWrap: false,
                     ),
-                    if (grade.coefficient != 1)
+                    if (widget.grade.coefficient != 1)
                       Positioned(
-                          top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.coefficient.display(), true)),
-                    if (grade.outOf != 20)
-                      Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.outOf.display()}"))
+                          top: -YScale.s2p5,
+                          right: -YScale.s2p5,
+                          child: bubble(widget.grade.coefficient.display(), true)),
+                    if (widget.grade.outOf != 20)
+                      Positioned(
+                          bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${widget.grade.outOf.display()}"))
                   ],
                 ),
               )),

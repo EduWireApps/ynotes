@@ -23,14 +23,14 @@ class GradeNotification extends OSNotification {
       : super(
           id: grade.hashCode,
           title:
-              "${grade.value.display()}/${grade.outOf.display()} coefficient ${grade.coefficient.display()} en ${grade.subject(subjects)?.name ?? grade.subjectId}",
+              "${grade.value.display()}/${grade.outOf.display()} coefficient ${grade.coefficient.display()} en ${grade.subject.value!.name}",
           body: "Moyenne de la classe: ${grade.classAverage.display()}/${grade.outOf.display()}",
           details: NotificationDetails(
               android: AndroidNotificationDetails("yn", "ynotes_notifications",
                   importance: Importance.high, priority: Priority.high, color: _color, subText: "Nouvelle note")),
           payload: NotificationPayload(
             routePath: "/grades",
-            arguments: {"id:": grade.hashCode, "periodId": grade.periodId},
+            arguments: {"id:": grade.hashCode, "periodId": grade.period.value?.id},
           ),
         );
 }

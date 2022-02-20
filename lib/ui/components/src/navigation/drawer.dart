@@ -41,33 +41,69 @@ class _Drawer extends StatelessWidget {
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];
 
-    return Drawer(
-        child: Container(
-      decoration: BoxDecoration(
-        color: theme.colors.backgroundColor,
-        border: r<Border?>(
-            def: null, md: Border(right: BorderSide(color: theme.colors.backgroundLightColor, width: YScale.spx))),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            ChangeNotifierConsumer<AuthModule>(
-                controller: schoolApi.authModule,
-                builder: (context, module, _) {
-                  final SchoolAccount? account = schoolApi.authModule.schoolAccount;
-                  return account != null
-                      ? _AccountHeader(account: account)
-                      : YVerticalSpacer(MediaQuery.of(context).padding.top);
-                }),
-            _RoutesList(AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList()),
-            YVerticalSpacer(YScale.s6),
-            _SpecialRoutesList(specialRoutes: specialRoutes),
-            YVerticalSpacer(YScale.s6),
-            _SpecialRoutesList(specialRoutes: contactRoutes),
-          ],
-        ),
-      ),
-    ));
+    final NewVersion newVersion = NewVersion();
+
+    return ChangeNotifierConsumer(
+        controller: theme,
+        builder: (context, _, __) {
+          return Drawer(
+              child: Container(
+            decoration: BoxDecoration(
+              color: theme.colors.backgroundColor,
+              border: r<Border?>(
+                  def: null,
+                  md: Border(right: BorderSide(color: theme.colors.backgroundLightColor, width: YScale.spx))),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ChangeNotifierConsumer<AuthModule>(
+                      controller: schoolApi.authModule,
+                      builder: (context, module, _) {
+                        final SchoolAccount? account = schoolApi.authModule.schoolAccount;
+                        return account != null ? _AccountHeader(account: account) : Container();
+                      }),
+                  if (Platform.isAndroid || Platform.isIOS)
+                    FutureBuilder(
+                        future: newVersion.getVersionStatus(),
+                        builder: (context, AsyncSnapshot<VersionStatus?> snapshot) {
+                          if (snapshot.hasData) {
+                            final VersionStatus status = snapshot.data!;
+                            if (status.canUpdate) {
+                              return Material(
+                                color: theme.colors.backgroundColor,
+                                child: InkWell(
+                                  onTap: () => launch(status.appStoreLink),
+                                  child: Ink(
+                                    padding: YPadding.p(YScale.s4),
+                                    color: theme.colors.primary.backgroundColor,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Version ${status.storeVersion} disponible !",
+                                            style: theme.texts.body1
+                                                .copyWith(color: theme.colors.primary.foregroundColor)),
+                                        Icon(Icons.file_download_rounded, color: theme.colors.primary.foregroundColor)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                          return Container();
+                        }),
+                  YVerticalSpacer(YScale.s6),
+                  _RoutesList(AppRouter.routes.where((route) => route.show && (route.guard?.call() ?? true)).toList()),
+                  YVerticalSpacer(YScale.s6),
+                  _SpecialRoutesList(specialRoutes: specialRoutes),
+                  YVerticalSpacer(YScale.s6),
+                  _SpecialRoutesList(specialRoutes: contactRoutes),
+                ],
+              ),
+            ),
+          ));
+        });
   }
 }
 
@@ -138,35 +174,32 @@ class _AccountHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: YPadding.pb(YScale.s6),
-      child: Material(
-        child: InkWell(
-          onTap: () => Navigator.pushNamed(context, "/settings/account"),
-          child: Ink(
-              color: theme.colors.backgroundLightColor,
-              width: double.infinity,
-              padding:
-                  EdgeInsets.fromLTRB(YScale.s4, YScale.s6 + MediaQuery.of(context).padding.top, YScale.s4, YScale.s6),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                      backgroundColor: theme.colors.backgroundColor,
-                      child: Text("${account.firstName[0]}${account.lastName[0]}", style: theme.texts.title)),
-                  YHorizontalSpacer(YScale.s4),
-                  Flexible(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("${account.firstName} ${account.lastName}",
-                          style: theme.texts.body1
-                              .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.medium)),
-                      Text(account.school, style: theme.texts.body2)
-                    ],
-                  ))
-                ],
-              )),
-        ),
+    return Material(
+      child: InkWell(
+        onTap: () => Navigator.pushNamed(context, "/settings/account"),
+        child: Ink(
+            color: theme.colors.backgroundLightColor,
+            width: double.infinity,
+            padding:
+                EdgeInsets.fromLTRB(YScale.s4, YScale.s6 + MediaQuery.of(context).padding.top, YScale.s4, YScale.s6),
+            child: Row(
+              children: [
+                CircleAvatar(
+                    backgroundColor: theme.colors.backgroundColor,
+                    child: Text("${account.firstName[0]}${account.lastName[0]}", style: theme.texts.title)),
+                YHorizontalSpacer(YScale.s4),
+                Flexible(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("${account.firstName} ${account.lastName}",
+                        style: theme.texts.body1
+                            .copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.medium)),
+                    Text(account.school, style: theme.texts.body2)
+                  ],
+                ))
+              ],
+            )),
       ),
     );
   }

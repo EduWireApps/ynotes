@@ -17,46 +17,44 @@ enum DocumentsModuleStatus {
   complete
 }
 
-abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, OfflineDocuments> {
+abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> {
   DocumentsModule({required R repository, required SchoolApi api})
       : super(
-            isSupported: api.modulesSupport.documents,
-            isAvailable: api.modulesAvailability.documents,
-            repository: repository,
-            api: api,
-            offline: OfflineDocuments());
+          isSupported: api.modulesSupport.documents,
+          isAvailable: api.modulesAvailability.documents,
+          repository: repository,
+          api: api,
+        );
 
   double progress = 0.0;
   DocumentsModuleStatus status = DocumentsModuleStatus.idle;
-  List<Document> get documents => _documents;
-  List<Document> _documents = [];
+  List<Document> get documents => offline.documents.where().findAllSync();
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    _documents = await offline.getDocuments();
+    return const Response(error: "Not implemented");
+  }
+
+  Future<Response<void>> addDocuments(List<Document> documents) async {
+    await offline.writeTxn((isar) async {
+      await isar.documents.putAll(documents);
+    });
     notifyListeners();
     return const Response();
   }
 
-  Future<Response<void>> addDocuments(List<Document> d) async {
-    _documents.addAll(d);
-    await offline.setDocuments(_documents);
+  Future<Response<void>> removeDocuments(List<Document> documents) async {
+    await offline.writeTxn((isar) async {
+      await isar.documents.deleteAll(documents.map((e) => e.id!).toList());
+    });
     notifyListeners();
     return const Response();
   }
 
-  Future<Response<void>> removeDocuments(List<Document> d) async {
-    _documents.removeWhere((Document document) => d.contains(document));
-    await offline.setDocuments(_documents);
-    notifyListeners();
-    return const Response();
-  }
-
-  Future<Response<void>> updateDocuments(List<Document> d) async {
-    for (final document in d) {
-      _documents.removeWhere((e) => e.id == document.id);
-    }
-    await addDocuments(d);
+  Future<Response<void>> updateDocuments(List<Document> documents) async {
+    await offline.writeTxn((isar) async {
+      await isar.documents.putAll(documents);
+    });
     notifyListeners();
     return const Response();
   }
@@ -123,8 +121,10 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R, 
   }
 
   @override
-  Future<void> reset({bool offline = false}) async {
-    _documents = [];
-    await super.reset(offline: offline);
+  Future<void> reset() async {
+    await offline.writeTxn((isar) async {
+      await isar.documents.clear();
+    });
+    notifyListeners();
   }
 }

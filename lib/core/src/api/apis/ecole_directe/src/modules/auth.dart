@@ -1,5 +1,16 @@
 part of ecole_directe;
 
+class _AuthModule extends AuthModule<_AuthRepository> {
+  _AuthModule(SchoolApi api) : super(repository: _AuthRepository(api), api: api);
+}
+
+class _AuthProvider extends Provider {
+  _AuthProvider(SchoolApi api) : super(api);
+
+  Future<Response<Map<String, dynamic>>> get(Map<String, String> body) async =>
+      await _request(api, url: "login.awp", body: body, auth: false);
+}
+
 class _AuthRepository extends AuthRepository {
   @protected
   late final _AuthProvider authProvider = _AuthProvider(api);
@@ -45,12 +56,13 @@ class _AuthRepository extends AuthRepository {
                   firstName: e["prenom"],
                   lastName: e["nom"],
                   className: e["classe"]["libelle"],
-                  id: e["id"].toString(),
+                  entityId: e["id"].toString(),
                   profilePicture: e["photo"],
                   school: e["nomEtablissement"]))
               .toList();
       final AppAccount appAccount =
-          AppAccount(id: account["uid"], firstName: account["prenom"], lastName: account["nom"], accounts: accounts);
+          AppAccount(entityId: account["uid"], firstName: account["prenom"], lastName: account["nom"]);
+      appAccount.accounts.addAll(accounts);
       final Map<String, dynamic> map = {
         "appAccount": appAccount,
         "schoolAccount": accounts.isEmpty
@@ -58,7 +70,7 @@ class _AuthRepository extends AuthRepository {
                 firstName: appAccount.firstName,
                 lastName: appAccount.lastName,
                 className: account["profile"]["classe"]["libelle"],
-                id: account["id"].toString(),
+                entityId: account["id"].toString(),
                 profilePicture: "https:" + account["profile"]["photo"],
                 school: account["nomEtablissement"])
             : accounts[0]

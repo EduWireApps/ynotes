@@ -22,5 +22,5 @@ class _WStructure {
 }
 
 class _WSchoolService {
-  final beta = "En bêta";
+  final beta = "BETA";
 }

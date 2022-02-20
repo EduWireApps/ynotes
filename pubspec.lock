@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "33.0.0"
+    version: "34.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   another_flushbar:
     dependency: transitive
     description:
@@ -35,7 +35,7 @@ packages:
       name: asn1lib
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.0"
   async:
     dependency: transitive
     description:
@@ -239,6 +239,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
+  dartx:
+    dependency: transitive
+    description:
+      name: dartx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   dbus:
     dependency: transitive
     description:
@@ -462,6 +469,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.2.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -525,27 +539,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  hive:
-    dependency: "direct main"
-    description:
-      name: hive
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.5"
-  hive_flutter:
-    dependency: "direct main"
-    description:
-      name: hive_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
-  hive_generator:
-    dependency: "direct dev"
-    description:
-      name: hive_generator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.2"
   html:
     dependency: "direct main"
     description:
@@ -602,6 +595,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  isar:
+    dependency: "direct main"
+    description:
+      name: isar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.4"
+  isar_flutter_libs:
+    dependency: "direct main"
+    description:
+      name: isar_flutter_libs
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.4"
+  isar_generator:
+    dependency: "direct dev"
+    description:
+      name: isar_generator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.4"
   js:
     dependency: transitive
     description:
@@ -707,6 +721,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  new_version:
+    dependency: "direct main"
+    description:
+      name: new_version
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   nm:
     dependency: transitive
     description:
@@ -778,7 +799,7 @@ packages:
     source: hosted
     version: "1.0.4"
   path:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path
       url: "https://pub.dartlang.org"
@@ -945,13 +966,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.1"
-  queue:
-    dependency: "direct main"
-    description:
-      name: queue
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.0+1"
   quiver:
     dependency: transitive
     description:
@@ -1061,7 +1075,14 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.8"
+    version: "0.4.3"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   timezone:
     dependency: transitive
     description:
@@ -1138,7 +1159,7 @@ packages:
       name: url_launcher_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   url_launcher_platform_interface:
     dependency: transitive
     description:
@@ -1201,7 +1222,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.6"
+    version: "2.3.8"
   wkt_parser:
     dependency: transitive
     description:
@@ -1235,10 +1256,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: e642d78cb9b14fccf3154c953cdbb9e14ecac35c
+      resolved-ref: cbc526d92b926f75c7095e08fab61537f6bdeac3
       url: "https://github.com/EduWireApps/ynotes-packages"
     source: git
-    version: "0.6.4"
+    version: "0.6.6"
 sdks:
   dart: ">=2.15.0 <3.0.0"
   flutter: ">=2.5.0"

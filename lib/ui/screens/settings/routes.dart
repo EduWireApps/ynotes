@@ -2,6 +2,7 @@ import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/settings/settings.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/donors.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/filters.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/licenses.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 // import 'package:ynotes/ui/screens/settings/sub_pages/notifications.dart';
@@ -15,6 +16,8 @@ final List<AppRoute> settingsRoutes = [
   const AppRoute(path: _basePath, widget: SettingsPage(), show: false, transition: RouteTransition.slideHorizontal),
   const AppRoute(
       path: "$_basePath/account", widget: SettingsAccountPage(), show: false, transition: RouteTransition.scale),
+  const AppRoute(
+      path: "$_basePath/filters", widget: SettingsFiltersPage(), show: false, transition: RouteTransition.scale),
   // TODO: fix when notifications are done
   // const AppRoute(
   //     path: "$_basePath/notifications",

@@ -52,6 +52,12 @@ class _SettingsAccountPageState extends State<SettingsAccountPage> {
                       YSettingsSection(tiles: [
                         if (schoolApi.authModule.account?.isParent ?? false) const AccountSwitcherTile(),
                         YSettingsTile(
+                            title: "Gérer les filtres de matières",
+                            leading: Icons.sort_rounded,
+                            onTap: () => Navigator.pushNamed(context, "/settings/filters")),
+                      ]),
+                      YSettingsSection(tiles: [
+                        YSettingsTile(
                             title: "Se déconnecter",
                             color: YColor.danger,
                             onTap: () async {

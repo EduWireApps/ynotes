@@ -32,13 +32,6 @@ extension StringCapitalize on String {
   }
 }
 
-extension IndexedIterable<E> on Iterable<E> {
-  Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
-    var i = 0;
-    return map((e) => f(e, i++));
-  }
-}
-
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {
@@ -64,6 +57,9 @@ extension DoubleToFixed on double {
 
 extension DoubleDisplay on double {
   String display() {
+    if (isNaN) {
+      return "-";
+    }
     String str = toString().replaceAll(".", ",");
     if (str.endsWith(",0")) {
       str = str.substring(0, str.length - 2);

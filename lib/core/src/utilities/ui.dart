@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:ynotes/core/services.dart';
 import 'package:ynotes_packages/theme.dart';
 
@@ -20,8 +21,8 @@ class UIU {
 
   /// Show a dialog containing the patch notes.
   static Future<void> showPatchNotes(BuildContext context, {bool force = false}) async {
-    // TODO: automatically get the version
-    const String version = "0.14.7";
+    final info = await PackageInfo.fromPlatform();
+    final String version = info.version;
     if (force || (SettingsService.settings.global.lastReadPatchNotes != version)) {
       SettingsService.settings.global.lastReadPatchNotes = version;
       await SettingsService.update();

@@ -1,5 +1,16 @@
 part of ecole_directe;
 
+class _SchoolLifeModule extends SchoolLifeModule<_SchoolLifeRepository> {
+  _SchoolLifeModule(SchoolApi api) : super(repository: _SchoolLifeRepository(api), api: api);
+}
+
+class _SchoolLifeProvider extends Provider {
+  _SchoolLifeProvider(SchoolApi api) : super(api);
+
+  Future<Response<Map<String, dynamic>>> get() async =>
+      await _request(api, url: "eleves/${api.authModule.schoolAccount?.entityId}/viescolaire.awp?verbe=get");
+}
+
 class _SchoolLifeRepository extends Repository {
   @protected
   late final _SchoolLifeProvider schoolLifeProvider = _SchoolLifeProvider(api);

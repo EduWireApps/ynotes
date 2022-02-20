@@ -15,15 +15,22 @@ class PeriodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return period.grades(module.grades).isEmpty
-        ? Text(
-            "no grades",
-            style: theme.texts.body1,
+    return period.grades.isEmpty
+        ? SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: YPadding.p(YScale.s4),
+              child: Text(
+                "Aucune note disponible pour cette période",
+                style: theme.texts.body1,
+                textAlign: TextAlign.center,
+              ),
+            ),
           )
         : Column(
             children: [
               _Stats(module, period, simulate),
-              YVerticalSpacer(YScale.s8),
+              YVerticalSpacer(YScale.s4),
               SubjectsList(module, period, simulate),
               const _Footer()
             ],
@@ -63,33 +70,25 @@ class _Stats extends StatelessWidget {
 
   const _Stats(this.module, this.period, this.simulate, {Key? key}) : super(key: key);
 
-  Future<void> _open() async {
-    // TODO: open stats page
-  }
-
-  List<Grade> get grades => period
-      .grades(module.grades.where((grade) {
+  List<Grade> get grades => period.sortedGrades.where((grade) {
         final bool s = grade.significant;
         if (simulate) {
           return s;
         } else {
           return s && !grade.custom;
         }
-      }).toList())
-      .toList();
+      }).toList();
 
   double get average => module.calculateAverageFromGrades(grades, bySubject: true);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: theme.colors.backgroundColor,
-      child: InkWell(
-        onTap: _open,
-        child: Ink(
-          padding: YPadding.p(YScale.s4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: YPadding.p(YScale.s4),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 decoration: BoxDecoration(color: theme.colors.backgroundLightColor, borderRadius: YBorderRadius.lg),
@@ -112,47 +111,49 @@ class _Stats extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Évolution", style: theme.texts.body2),
-                  _DiffText(module.calculateAverageFromPeriod(period) -
+                  _DiffText(module.calculateAverageFromGrades(grades, bySubject: true) -
                       module.calculateAverageFromGrades(grades.sublist(0, grades.length - 1), bySubject: true))
                 ],
               ),
-              YHorizontalSpacer(YScale.s4),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Classe", style: theme.texts.body2),
-                  Text(
-                    period.classAverage.display(),
-                    style: theme.texts.body1.copyWith(
-                        fontSize: r<double>(def: YFontSize.lg, lg: YFontSize.xl, xl: YFontSize.xl2),
-                        color: theme.colors.foregroundColor),
-                  ),
-                ],
-              ),
-              Expanded(child: YHorizontalSpacer(YScale.s2)),
-              if (!simulate && average != period.overallAverage)
-                YIconButton(
-                  icon: Icons.info_rounded,
-                  onPressed: () async {
-                    await YDialogs.showInfo(
-                        context,
-                        YInfoDialog(
-                            title: "Données obsolètes",
-                            confirmLabel: "OK",
-                            body: Text(
-                                "Seule la moyenne générale est calculée en temps réel. Actuellement, les autres données (moyenne de classe, maximum et minimum) sont obsolètes, elles seront mises à jour dès que l'information sera disponible.",
-                                style: theme.texts.body1)));
-                  },
-                  foregroundColor: theme.colors.warning.backgroundColor,
-                ),
-              YIconButton(
-                icon: Icons.bar_chart_rounded,
-                onPressed: _open,
-                backgroundColor: theme.colors.backgroundLightColor,
-              ),
             ],
           ),
-        ),
+          YVerticalSpacer(YScale.s2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...<List<dynamic>>[
+                ["Classe", period.classAverage],
+                ["Max", period.maxAverage],
+                ["Min", period.minAverage],
+              ]
+                  .map((e) => Row(
+                        children: [
+                          YHorizontalSpacer(YScale.s4),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(e[0] as String, style: theme.texts.body2),
+                              Text(
+                                (e[1] as double).display(),
+                                style: theme.texts.body1.copyWith(
+                                    fontSize: r<double>(def: YFontSize.lg, lg: YFontSize.xl, xl: YFontSize.xl2),
+                                    color: theme.colors.foregroundColor),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ))
+                  .toList(),
+              if (!simulate && average != period.overallAverage)
+                Row(
+                  children: [
+                    YHorizontalSpacer(YScale.s4),
+                    const OutdatedDataWarning(),
+                  ],
+                )
+            ],
+          )
+        ],
       ),
     );
   }

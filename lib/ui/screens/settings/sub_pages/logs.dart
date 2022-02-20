@@ -52,7 +52,7 @@ class _SettingsLogsPageState extends State<SettingsLogsPage> {
                 Padding(
                   padding: YPadding.py(YScale.s4),
                   child: Builder(builder: (context) {
-                    final List<Log> logs = LogsManager.logs;
+                    final List<Log> logs = LogsManager.logs.reversed.toList();
                     final List<Log> filteredLogs = _categoryId == null
                         ? logs
                         : logs.where((log) => log.category == _categories![_categoryId!]).toList();

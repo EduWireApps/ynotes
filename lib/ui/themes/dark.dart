@@ -5,7 +5,7 @@ import 'package:ynotes_packages/theme.dart';
 
 final YTColor _primary = YTColor(
   foregroundColor: Colors.white,
-  lightColor: Colors.indigo[700]!.withOpacity(.5),
+  lightColor: Colors.indigo[600]!.withOpacity(.5),
   backgroundColor: Colors.indigo[500]!,
 );
 

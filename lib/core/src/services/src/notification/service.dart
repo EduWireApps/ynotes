@@ -15,8 +15,10 @@ class NotificationService {
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(onDidReceiveLocalNotification: (_, __, ___, ____) {});
     const MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings();
+        const LinuxInitializationSettings initializationSettingsLinux= LinuxInitializationSettings(defaultActionName: "");
+
     final InitializationSettings initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS, macOS: initializationSettingsMacOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
     await _plugin.initialize(initializationSettings, onSelectNotification: _onSelectNotification);
     // TODO: handle intents.
     // final NotificationAppLaunchDetails? appLaunchDetails = await _plugin.getNotificationAppLaunchDetails();
