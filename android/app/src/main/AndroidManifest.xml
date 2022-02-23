@@ -19,6 +19,10 @@
         <activity android:name=".MainActivity"
   android:theme="@style/LaunchTheme"
   >
+      <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
   <!-- Specify that the launch screen should continue being displayed -->
   <!-- until Flutter renders its first frame. -->
   <meta-data
