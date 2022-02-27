@@ -11,14 +11,14 @@
             "windows": {
                 "args": [
                     "--flavor",
-                    "dev"
-                ]
+                    "dev",
+                ],
             },
             "linux": {
                 "args": [
                     "--flavor",
-                    "dev"
-                ]
+                    "dev",
+                ],
             },
         }
     ]

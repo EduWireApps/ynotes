@@ -3,8 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  desktop_window
-  flutter_secure_storage
+  flutter_secure_storage_linux
+  isar_flutter_libs
   url_launcher_linux
 )
 
