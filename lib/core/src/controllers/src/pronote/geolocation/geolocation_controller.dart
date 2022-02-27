@@ -53,6 +53,10 @@ class PronoteGeolocationController extends ChangeNotifier {
     final List<PronoteSchool> _schools = [];
     for (dynamic school in decodedBody) {
       // The school is created
+      String schoolUrl = school['url'];
+      if (schoolUrl.endsWith("/")) {
+        schoolUrl = schoolUrl.substring(0, schoolUrl.length - 1);
+      }
       _schools.add(PronoteSchool(
         name: HtmlUnescape().convert(school["nomEtab"]),
         coordinates: [
@@ -62,7 +66,7 @@ class PronoteGeolocationController extends ChangeNotifier {
                   double.tryParse(school["lat"])!, double.tryParse(school["long"])!, latitude, longitude)
               .toString()
         ],
-        url: school["url"],
+        url: schoolUrl,
         postalCode: school["cp"].toString(),
       ));
     }
