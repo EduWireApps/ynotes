@@ -11,7 +11,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// ALl the grades stored offline, sorted by [Grade.entryDate].
   List<Grade> get grades {
-    final _grades = offline.grades.where().sortByEntryDate().build().findAllSync();
+    final _grades =
+        offline.grades.where().sortByEntryDate().build().findAllSync();
     for (final grade in _grades) {
       grade.load();
     }
@@ -41,7 +42,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     if (_Storage.values.currentPeriodId == null) {
       return null;
     }
-    final Period? _period = offline.periods.filter().entityIdEqualTo(_Storage.values.currentPeriodId!).findFirstSync();
+    final Period? _period = offline.periods
+        .filter()
+        .entityIdEqualTo(_Storage.values.currentPeriodId!)
+        .findFirstSync();
     if (_period == null) {
       return null;
     }
@@ -51,11 +55,14 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// The current [SubjectsFilter]. Defaults to all subjects.
   SubjectsFilter get currentFilter =>
-      filters.firstWhereOrNull((element) => element.entityId == _Storage.values.currentFilterId) ?? filters.first;
+      filters.firstWhereOrNull(
+          (element) => element.entityId == _Storage.values.currentFilterId) ??
+      filters.first;
 
   /// The user provided [SubjectsFilter]s.
   List<SubjectsFilter> get customFilters {
-    final _subjects = offline.subjectsFilters.where().sortByName().findAllSync();
+    final _subjects =
+        offline.subjectsFilters.where().sortByName().findAllSync();
     for (final subject in _subjects) {
       subject.load();
     }
@@ -64,7 +71,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// All the [SubjectsFilter]s.
   List<SubjectsFilter> get filters => [..._defaultFilters, ...customFilters];
-  late final List<SubjectsFilter> _defaultFilters = [SubjectsFilter(name: "Toutes matières", entityId: "all")];
+  late final List<SubjectsFilter> _defaultFilters = [
+    SubjectsFilter(name: "Toutes matières", entityId: "all")
+  ];
 
   /// Fetches data from the API. Retrieves all the grades, subjects, and periods.
   /// Any custom data (e.g. custom filters) is not affected.
@@ -82,7 +91,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     // If a subject already exists, we only keep its color so that it doesn't
     // get updated on each [fetch].
     for (final __subject in __subjects) {
-      final Subject? _subject = subjects.firstWhereOrNull((subject) => subject.entityId == __subject.entityId);
+      final Subject? _subject = subjects.firstWhereOrNull(
+          (subject) => subject.entityId == __subject.entityId);
       if (_subject != null) {
         __subject.color = _subject.color;
       }
@@ -105,13 +115,17 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     // 6. We save the links of all grades
     await offline.writeTxn((isar) async {
       // STEP 1
-      final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
+      final customGrades =
+          await isar.grades.filter().customEqualTo(true).findAll();
       // STEP 1.5
       final filters = await isar.subjectsFilters.where().findAll();
       for (final filter in filters) {
         await filter.subjects.load();
-        final List<String> subjectsIds = filter.subjects.map((subject) => subject.entityId).toSet().toList();
-        final List<Subject> subjects = __subjects.where((subject) => subjectsIds.contains(subject.entityId)).toList();
+        final List<String> subjectsIds =
+            filter.subjects.map((subject) => subject.entityId).toSet().toList();
+        final List<Subject> subjects = __subjects
+            .where((subject) => subjectsIds.contains(subject.entityId))
+            .toList();
         filter.subjects.clear();
         filter.subjects.addAll(subjects);
       }
@@ -119,9 +133,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       for (final grade in customGrades) {
         await grade.subject.load();
         await grade.period.load();
-        final Subject? subject =
-            __subjects.firstWhereOrNull((subject) => subject.entityId == grade.subject.value!.entityId);
-        final Period? period = __periods.firstWhereOrNull((period) => period.entityId == grade.period.value!.entityId);
+        final Subject? subject = __subjects.firstWhereOrNull(
+            (subject) => subject.entityId == grade.subject.value!.entityId);
+        final Period? period = __periods.firstWhereOrNull(
+            (period) => period.entityId == grade.period.value!.entityId);
         if (subject == null || period == null) {
           await isar.grades.delete(grade.id!);
         } else {
@@ -129,6 +144,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           grade.period.value = period;
         }
       }
+
       // STEP 3
       await isar.periods.clear();
       await isar.subjects.clear();
@@ -141,6 +157,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       // STEP 5
       await isar.grades.putAll(customGrades);
       await isar.subjectsFilters.putAll(filters);
+
       // STEP 6
       await Future.forEach(__subjects, (Subject subject) async {
         await subject.period.save();
@@ -176,6 +193,11 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
                         now.month == period.endDate.month &&
                         now.day == period.endDate.day)))
             ?.entityId;
+
+        //Covering the case no period is suitable (between two periods for instance)
+        if (id == null && periods.isNotEmpty) {
+          id = periods.first.entityId;
+        }
       } else {
         id = _Storage.values.currentPeriodId;
       }
@@ -218,7 +240,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   }
 
   /// Calculates the average of a list of grades. Can be by subject.
-  double calculateAverageFromGrades(List<Grade> grades, {bool bySubject = false}) {
+  double calculateAverageFromGrades(List<Grade> grades,
+      {bool bySubject = false}) {
     if (bySubject) {
       final List<double> avgs = [];
       final Map<String, List<Grade>> map = {};
@@ -303,7 +326,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// Updates a subject.
   Future<void> updateSubject(Subject subject) async {
-    final List<Subject> _subjects = subjects.where((e) => e.entityId == subject.entityId).map((e) {
+    final List<Subject> _subjects =
+        subjects.where((e) => e.entityId == subject.entityId).map((e) {
       e.color = subject.color;
       return e;
     }).toList();
