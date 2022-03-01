@@ -27,7 +27,7 @@ class ApisUtilities {
         return false;
       }
     } catch (e) {
-      Logger.error(e, stackHint: "MTE=");
+      Logger.error(e, stackHint:"Nw==");
       return false;
     }
   }

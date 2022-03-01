@@ -21,7 +21,7 @@ class FileStorage {
       await OpenFile.open(file.path);
       return const Response();
     } catch (e) {
-      Logger.error(e, stackHint: "NTA=");
+      Logger.error(e, stackHint:"OQ==");
       return Response(error: e.toString());
     }
   }
@@ -29,7 +29,7 @@ class FileStorage {
   /// Get the directory of the app storage.
   static Future<Directory> getAppDirectory({bool downloads = false}) async {
     if (!kIsWeb) {
-      final Directory appDirectory = await getApplicationDocumentsDirectory();
+      final Directory appDirectory = await getApplicationSupportDirectory();
       final Directory documentsDirectory =
           (Platform.isLinux || Platform.isWindows) ? Directory("${appDirectory.path}/yNotesApp/") : appDirectory;
       final Directory downloadsDirectory = Directory("${documentsDirectory.path}/downloads/");
