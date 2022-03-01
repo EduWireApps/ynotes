@@ -52,7 +52,7 @@ class PronoteClient {
       if (url != null) Logger.log("PRONOTE", url);
       return url;
     } catch (e) {
-      Logger.error(e, stackHint: "MTM=");
+      Logger.error(e, stackHint:"MQ==");
     }
   }
 
@@ -149,7 +149,7 @@ class PronoteClient {
         try {
           listToReturn.add(PronoteConverter.lesson(this, lesson));
         } catch (e) {
-          Logger.error(e, stackHint:"MA==");
+          Logger.error(e, stackHint:"Mg==");
         }
       });
       Logger.log("PRONOTE", "Agenda collecte succeeded");
@@ -262,7 +262,7 @@ class PronoteClient {
       var response = await communication!.post('SaisieActualites', data: data);
       Logger.log("PRONOTE", response);
     } catch (e) {
-      Logger.error(e, stackHint: "MTU=");
+      Logger.error(e, stackHint:"Mw==");
     }
   }
 
@@ -396,7 +396,7 @@ class PronoteClient {
               stepsLogger.add("❌ Failed to register UserInfos");
 
               Logger.log("PRONOTE", "Failed to register UserInfos");
-              Logger.error(e, stackHint: "MTY=");
+              Logger.error(e, stackHint:"NA==");
             }
           } catch (e) {
             stepsLogger.add("ⓘ Using old api ");

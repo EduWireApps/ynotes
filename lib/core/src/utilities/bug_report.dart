@@ -62,7 +62,7 @@ class BugReport {
       //set api metadata
       Shake.setMetadata("schoolApi", schoolApi.metadata.name);
     } catch (e) {
-      Logger.error(e, stackHint: "Nzg=");
+      Logger.error(e, stackHint:"OA==");
     }
   }
 

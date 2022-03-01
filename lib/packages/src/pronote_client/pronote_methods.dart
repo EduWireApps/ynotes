@@ -168,7 +168,7 @@ class PronoteMethod {
         return toReturn;
       } catch (e) {
         Logger.log("PRONOTE", "Error while fetching for " + (lockName ?? ""));
-        Logger.error(e, stackHint: "MTI=");
+        Logger.error(e, stackHint:"MA==");
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           Logger.log("PRONOTE", "Refreshing client");

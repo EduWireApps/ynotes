@@ -21,7 +21,7 @@ class FileStorage {
       await OpenFile.open(file.path);
       return const Response();
     } catch (e) {
-      Logger.error(e, stackHint: "NTA=");
+      Logger.error(e, stackHint:"OQ==");
       return Response(error: e.toString());
     }
   }

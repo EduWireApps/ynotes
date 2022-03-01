@@ -12,7 +12,7 @@ rootdir=('./lib')
 # In this function we will walk into the whole directory to search for Logger.error calls
 # Each time we encounter a Logger.error() we add its line and the filename to a dictionnary
 def metas():
-    pattern = "Logger\.error\(e(.*stackHint\:\"(.*)\")?\)"
+    pattern = "Logger\.error\(.*\)"
     counter = 0
     dic = {}
     for folder, dirs, files in os.walk(rootdir):
