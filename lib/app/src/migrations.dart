@@ -23,19 +23,26 @@ Future<void> _fromV12ToV13() async {
   if (appAccount != null && appAccount.isNotEmpty) {
     String? newAppAccount;
     if (appAccount.contains('"apiType":"Pronote"')) {
-      newAppAccount = appAccount.replaceAll('"apiType":"Pronote"', '"apiType":"pronote"');
+      newAppAccount =
+          appAccount.replaceAll('"apiType":"Pronote"', '"apiType":"pronote"');
     } else if (appAccount.contains('"apiType":"EcoleDirecte"')) {
-      newAppAccount = appAccount.replaceAll('"apiType":"EcoleDirecte"', '"apiType":"ecoleDirecte"');
+      newAppAccount = appAccount.replaceAll(
+          '"apiType":"EcoleDirecte"', '"apiType":"ecoleDirecte"');
     }
     if (newAppAccount != null) {
       await KVS.write(key: "appAccount", value: newAppAccount);
     }
   }
+
   // As the logging system changed, the `logs.txt` file is no longer useful.
   final directory = await FileStorage.getAppDirectory();
   final File file = File("${directory.path}/logs.txt");
   if (await file.exists()) {
-    await file.delete();
+    try {
+      await file.delete();
+    } catch (e) {
+      Logger.error(e);
+    }
   }
   // There was an issue with new logs that can be corrupted.
   // In order to get the new system working, the old `logs` folder
@@ -49,7 +56,8 @@ Future<void> _fromV12ToV13() async {
       }
       await KVS.write(key: "logsReset0", value: "true");
     } catch (e) {
-      Logger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
+      Logger.log(
+          "BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
     }
   }
   // Logging is done in another check because the logs would have been removed
@@ -72,7 +80,8 @@ Future<void> _fromV13ToV14() async {
       // await LogsManager.deleteLogs();
       await KVS.write(key: "logsReset2", value: "true");
     } catch (e) {
-      Logger.log("BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
+      Logger.log(
+          "BACKWARD COMPATIBILITY", "Error while deleting logs folder: $e");
     }
   }
   // Logging is done in another check because the logs would have been removed
@@ -89,8 +98,12 @@ Future<void> _fromV14ToV15() async {
   final bool fullReset0 = (await KVS.read(key: "fullReset0")) == "true";
   if (!fullReset0) {
     await KVS.deleteAll();
-    final Directory dir = await FileStorage.getAppDirectory();
-    dir.deleteSync(recursive: true);
-    await KVS.write(key: "fullReset0", value: "true");
+    try {
+      final Directory dir = await FileStorage.getAppDirectory();
+      dir.deleteSync(recursive: true);
+      await KVS.write(key: "fullReset0", value: "true");
+    } catch (e) {
+      Logger.error(e);
+    }
   }
 }
