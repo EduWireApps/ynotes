@@ -63,6 +63,7 @@ dependencies:
   crypto: ^3.0.1
   html: ^0.15.0
   new_version: ^0.3.0
+  device_info_plus: ^3.2.2
 
 # dependency_overrides:
 

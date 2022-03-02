@@ -27,7 +27,8 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
 
   Future<List<String>?> fetch() async {
     final List<String> errors = [];
-    for (final module in modules) {
+    Logger.log("MODULES", modules.where((element) => element._isAvailable && element._isSupported));
+    for (final module in modules.where((element) => element._isAvailable && element._isSupported)) {
       final res = await module.fetch();
       if (res.error != null) {
         errors.add(res.error!);
