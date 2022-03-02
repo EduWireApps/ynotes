@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:shake_flutter/enums/shake_screen.dart';
 import 'package:shake_flutter/models/shake_file.dart';
 import 'package:shake_flutter/shake_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/utilities.dart';
-
-import 'package:ynotes/core/services.dart';
 import 'package:ynotes/core/extensions.dart';
+import 'package:ynotes/core/services.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -18,6 +19,18 @@ import 'package:ynotes_packages/theme.dart';
 /// The class that handles the bug reporting process.
 class BugReport {
   const BugReport._();
+
+  static String generateCleanJson(List<Log> logs) {
+    Map finalMap = {};
+    for (Log element in logs) {
+      if (finalMap.containsKey(element.category)) {
+        finalMap[element.category].add(element);
+      } else {
+        finalMap[element.category] = [element];
+      }
+    }
+    return jsonEncode(finalMap);
+  }
 
   /// Initializes the bug report client
   static void init() {
@@ -29,14 +42,7 @@ class BugReport {
     Shake.setShowFloatingReportButton(false);
     Shake.setInvokeShakeOnScreenshot(false);
     Shake.start(config.clientID, config.clientSecret);
-  }
-
-  static void updateShakeFeatureStatus() {
-    if (!AppConfig.shake.isSupported) {
-      return;
-    }
-    // Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
-    Shake.setInvokeShakeOnShakeDeviceEvent(SettingsService.settings.global.shakeToReport);
+    registerUser();
   }
 
   /// Saves and anonymizes the bug data to send it to the report platform
@@ -62,20 +68,43 @@ class BugReport {
       //set api metadata
       Shake.setMetadata("schoolApi", schoolApi.metadata.name);
     } catch (e) {
-      Logger.error(e, stackHint:"OA==");
+      Logger.error(e, stackHint: "OA==");
     }
   }
 
-  static String generateCleanJson(List<Log> logs) {
-    Map finalMap = {};
-    for (Log element in logs) {
-      if (finalMap.containsKey(element.category)) {
-        finalMap[element.category].add(element);
-      } else {
-        finalMap[element.category] = [element];
-      }
+  static void registerUser({String? firstName, String? lastName}) async {
+    Shake.registerUser(await userId());
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String? deviceInfoString;
+    if (Platform.isIOS) {
+      deviceInfoString =
+          (((await deviceInfo.iosInfo).model) ?? "") + " " + (((await deviceInfo.iosInfo).systemVersion) ?? "");
     }
-    return jsonEncode(finalMap);
+    if (Platform.isAndroid) {
+      deviceInfoString = (((await deviceInfo.androidInfo).model) ?? "") +
+          " " +
+          (((await deviceInfo.androidInfo).androidId) ?? "") +
+          " " +
+          (((await deviceInfo.androidInfo).version.release) ?? "");
+      deviceInfoString = (await deviceInfo.androidInfo).model;
+    }
+    if (Platform.isLinux) {
+      deviceInfoString = (await deviceInfo.linuxInfo).name;
+    }
+    if (Platform.isWindows) {
+      deviceInfoString = (await deviceInfo.windowsInfo).computerName;
+    }
+    if (Platform.isMacOS) {
+      deviceInfoString = (await deviceInfo.macOsInfo).osRelease;
+    }
+    Shake.updateUserMetadata({
+      "first_name": firstName,
+      "last_name": lastName,
+      "schoolApi": schoolApi.metadata.name,
+      "deviceInfo": deviceInfoString,
+      "lastLaunch": DateTime.now().toString(),
+      "modules": ""
+    });
   }
 
   /// Opens the report widget
@@ -84,7 +113,7 @@ class BugReport {
       final Future<void> future = prepareReportData();
       AppDialogs.showReportLoaderDialog(AppConfig.navigatorKey.currentContext!, future: future);
       await future;
-      Shake.show();
+      Shake.show(ShakeScreen.home);
     } else {
       final bool res = await YDialogs.getChoice(
           AppConfig.navigatorKey.currentContext!,
@@ -99,6 +128,14 @@ class BugReport {
         launch("https://ynotes.fr/contact");
       }
     }
+  }
+
+  static void updateShakeFeatureStatus() {
+    if (!AppConfig.shake.isSupported) {
+      return;
+    }
+    // Shake.setInvokeShakeOnShakeDeviceEvent(appSys.settings.user.global.shakeToReport);
+    Shake.setInvokeShakeOnShakeDeviceEvent(SettingsService.settings.global.shakeToReport);
   }
 
   /// Retrieves the user id

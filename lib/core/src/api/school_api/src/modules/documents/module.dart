@@ -32,7 +32,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    return const Response(error: "Not implemented");
+    return const Response();
   }
 
   Future<Response<void>> addDocuments(List<Document> documents) async {
@@ -117,7 +117,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
   }
 
   Future<Response<void>> upload(Document document) async {
-    return const Response(error: "Not implemented");
+    return const Response();
   }
 
   @override

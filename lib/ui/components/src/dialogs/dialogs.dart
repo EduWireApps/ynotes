@@ -15,6 +15,10 @@ class AppDialogs {
     await showDialog(context: context, builder: (_) => const _AboutDialog());
   }
 
+  /// Show a dialog related to the support user metadata
+  static Future<void> showUserSupportMetaDataDialog(BuildContext context) async {
+    await showDialog(context: context, builder: (_) =>  _UserSupportMetadataDialog());
+  }
   /// Show a dialog that show a loader while waiting for a future complete.
   static Future<void> showReportLoaderDialog(BuildContext context, {required Future future}) async {
     await showDialog(

@@ -84,7 +84,7 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    return const Response(error: "Not implemented");
+    return const Response();
   }
 
   Future<Response<String>> login(
