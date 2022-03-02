@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/core/services.dart';
+import 'package:ynotes/core/utilities.dart';
+import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
 
@@ -30,6 +31,14 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
                               settings.global.shakeToReport = value;
                               await SettingsService.update();
                               BugReport.updateShakeFeatureStatus();
+                            }),
+                        YSettingsTile(
+                            title: "Vos coordonnées",
+                            leading: MdiIcons.account,
+                            onTap: () async {
+                              await AppDialogs.showUserSupportMetaDataDialog(context);
+                              BugReport.registerUser(
+                                  firstName: settings.global.userFirstName, lastName: settings.global.userLastName);
                             }),
                         YSettingsTile(
                             title: "Logs",

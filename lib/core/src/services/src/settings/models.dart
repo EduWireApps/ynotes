@@ -5,21 +5,6 @@ part of settings_service;
 // TODO: documentation
 
 @JsonSerializable()
-class Settings extends ChangeNotifier {
-  GlobalSettings global;
-  PagesSettings pages;
-  NotificationsSettings notifications;
-
-  Settings({required this.global, required this.pages, required this.notifications});
-
-  void notify() => notifyListeners();
-
-  factory Settings.fromJson(Map<String, dynamic> json) => _$SettingsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SettingsToJson(this);
-}
-
-@JsonSerializable()
 class GlobalSettings {
   String lastReadPatchNotes;
   int themeId;
@@ -27,6 +12,8 @@ class GlobalSettings {
   bool batterySaver;
   bool shakeToReport;
   String? uuid;
+  String? userFirstName;
+  String? userLastName;
 
   GlobalSettings(
       {required this.lastReadPatchNotes,
@@ -34,22 +21,13 @@ class GlobalSettings {
       required this.api,
       required this.batterySaver,
       required this.shakeToReport,
-      required this.uuid});
+      required this.uuid,
+      required this.userFirstName,
+      required this.userLastName});
 
   factory GlobalSettings.fromJson(Map<String, dynamic> json) => _$GlobalSettingsFromJson(json);
 
   Map<String, dynamic> toJson() => _$GlobalSettingsToJson(this);
-}
-
-@JsonSerializable()
-class PagesSettings {
-  HomeworkPageSettings homework;
-
-  PagesSettings({required this.homework});
-
-  factory PagesSettings.fromJson(Map<String, dynamic> json) => _$PagesSettingsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PagesSettingsToJson(this);
 }
 
 @JsonSerializable()
@@ -75,4 +53,30 @@ class NotificationsSettings {
   factory NotificationsSettings.fromJson(Map<String, dynamic> json) => _$NotificationsSettingsFromJson(json);
 
   Map<String, dynamic> toJson() => _$NotificationsSettingsToJson(this);
+}
+
+@JsonSerializable()
+class PagesSettings {
+  HomeworkPageSettings homework;
+
+  PagesSettings({required this.homework});
+
+  factory PagesSettings.fromJson(Map<String, dynamic> json) => _$PagesSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PagesSettingsToJson(this);
+}
+
+@JsonSerializable()
+class Settings extends ChangeNotifier {
+  GlobalSettings global;
+  PagesSettings pages;
+  NotificationsSettings notifications;
+
+  Settings({required this.global, required this.pages, required this.notifications});
+
+  factory Settings.fromJson(Map<String, dynamic> json) => _$SettingsFromJson(json);
+
+  void notify() => notifyListeners();
+
+  Map<String, dynamic> toJson() => _$SettingsToJson(this);
 }
