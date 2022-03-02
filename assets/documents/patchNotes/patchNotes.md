@@ -1,3 +1,8 @@
+
+# 0.15.1
+
+- Ajout du chat in-app. Il faut qu'on parle. Nous avons donc rajouté un chat in-app exactement au même endroit que lorsque vous envoyiez des rapports de bugs. Nous pourrons donc discuter de la procédure à suivre ainsi que l'avancée de l'équipe sur la correction du bug ou juste discuter un peu. Vous recevrez même des notifications lorsque nous répondons. Sympa non ? 
+
 # 0.15.0
 
 Après plus de 2 mois de développement, yNotes reçoit _enfin_ une mise à jour... et majeure qui plus est !

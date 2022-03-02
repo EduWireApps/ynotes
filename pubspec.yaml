@@ -4,7 +4,7 @@ description: yNotes application de gestion de vie scolaire
 # Don't delete the `+9`
 #
 # Before building the app for Windows, go to `windows/runner/Runner.rc` and edit `VERSION_AS_NUMBER` and `VERSION_AS_STRING`
-version: 0.15+9
+version: 0.15.1+9
 publish_to: none
 
 environment:
