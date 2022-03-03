@@ -27,9 +27,9 @@ platform :ios do
         match(type: "appstore")
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         api_key = app_store_connect_api_key(
-            key_id: "5R2MFY6PX4",
-            issuer_id: "2bea063b-c85d-4d31-9d3e-130f8c768e4e",
-            key_filepath:  "./AuthKey_5R2MFY6PX4.p8",
+            key_id: "YM9RAPWYT7",
+            issuer_id: "bc7c2389-aa2a-43a6-a567-546a6eea7f3a",
+            key_filepath:  "./AuthKey_YM9RAPWYT7.p8",
             in_house: false, # optional but may be required if using match/sigh
         )
         upload_to_testflight(api_key: api_key, changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
@@ -39,9 +39,9 @@ platform :ios do
         match(type: "appstore")
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         api_key = app_store_connect_api_key(
-            key_id: "5R2MFY6PX4",
-            issuer_id: "2bea063b-c85d-4d31-9d3e-130f8c768e4e",
-            key_filepath:  "./AuthKey_5R2MFY6PX4.p8",
+            key_id: "YM9RAPWYT7",
+            issuer_id: "bc7c2389-aa2a-43a6-a567-546a6eea7f3a",
+            key_filepath:  "./AuthKey_YM9RAPWYT7.p8",
             in_house: false, # optional but may be required if using match/sigh
         )
         upload_to_app_store(
@@ -56,7 +56,7 @@ platform :ios do
         api_key = app_store_connect_api_key(
             key_id: ENV["APP_STORE_API_KEY_ID"],
             issuer_id: ENV["APP_STORE_API_KEY_ISSUER_ID"],
-            key_filepath:  "./AuthKey_5R2MFY6PX4.p8",
+            key_filepath:  "./AuthKey_YM9RAPWYT7.p8",
             in_house: false, # optional but may be required if using match/sigh
           )
         upload_to_testflight(changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
