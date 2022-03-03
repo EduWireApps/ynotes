@@ -1,8 +1,8 @@
 app_identifier("fr.eduwire.ynotes") # The bundle identifier of your app
-apple_id("androz2091@gmail.com") # Your Apple email address
+apple_id("josselin.robert78@gmail.com") # Your Apple email address
 
-itc_team_id("122891946") # App Store Connect Team ID
-team_id("CQ53Y973KM") # Developer Portal Team ID
+itc_team_id("124173777") # App Store Connect Team ID
+team_id("BCVF7WM5KT") # Developer Portal Team ID
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile
