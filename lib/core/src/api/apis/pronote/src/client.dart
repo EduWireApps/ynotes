@@ -12,4 +12,5 @@ abstract class PronoteClient {
   PronoteClient({required this.username, required this.password, required this.url, required this.isCas}) {
     communication = _Communication(this);
   }
+  
 }

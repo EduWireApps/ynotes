@@ -10,16 +10,17 @@ class _Communication {
   late bool encryptRequests;
   late bool compressRequests;
 
+  Map? attributes;
+  //The request number needed for all requests
+  late int requestNumber;
+  //The list of tabs allowed by the present session
+  List? authorizedTabs;
+
   _Communication(this.client) {
     url = client.url;
-    final split = Utils.splitAdress(url);
+    final split = splitAdress(url);
     urlRoot = split[0];
     urlPath = split[1];
-  }
-
-  Future<Response<Map<String, dynamic>>> post(String name,
-      {Map<String, dynamic>? data, Map<String, dynamic>? decryptionChange}) async {
-    return Response(error: "Not implemented");
   }
 
   Future<Response<List<Object>>> init() async {
@@ -71,5 +72,85 @@ class _Communication {
       attributes[key] = value.toString().replaceAll("'", "");
     }
     return Response(data: attributes);
+  }
+
+  Future<Response<Map<String, dynamic>>> post(String name,
+      {dynamic data, Map<String, dynamic>? decryptionChange}) async {
+    if (data != null && data is Map) {
+      if (data["_Signature_"] != null &&
+          !authorizedTabs.toString().contains(data['_Signature_']['onglet'].toString())) {
+        return const Response(error: "Action not permitted. (onglet is not normally accessible)");
+      }
+    }
+
+    if (compressRequests) {
+      data = jsonEncode(data);
+      var zlibInstance = ZLibCodec(level: 6, raw: true);
+      data = zlibInstance.encode(utf8.encode(hex.encode(utf8.encode(data))));
+    }
+    if (encryptRequests) {
+      data = encryption.aesEncrypt(data).data;
+    }
+
+    String? rNumber = encryption.aesEncrypt(utf8.encode(requestNumber.toString())).data;
+
+    var request_json = {
+      'session': int.parse(attributes!['h']),
+      'numeroOrdre': rNumber,
+      'nom': name,
+      'donneesSec': data
+    };
+    String pSite = urlRoot + '/appelfonction/' + attributes!['a'] + '/' + attributes!['h'] + '/' + (rNumber ?? "");
+
+    requestNumber += 2;
+
+    final res = await http.post(Uri.parse(pSite), body: request_json).catchError((onError) {
+      return Response(error: "Error occured during request : ${onError.toString()}");
+    });
+
+    final String resBody = _decodeBody(res);
+    final Map<String, dynamic> json = jsonDecode(resBody);
+
+    lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
+
+    if (resBody.contains("Erreur")) {
+      if (json["Erreur"]['G'] == 22) {
+        return Response(error: "Connexion expirée");
+      }
+      if (json["Erreur"]['G'] == 10) {
+        /*
+        appSys.loginController.details = "Connexion expirée";
+        appSys.loginController.actualState = loginStatus.error;*/
+
+        return const Response(error: "Connexion expirée");
+      }
+
+      if (decryptionChange != null) {
+        if (decryptionChange.toString().contains("iv")) {
+          encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
+        }
+
+        if (decryptionChange.toString().contains("key")) {
+          encryption.aesKey = decryptionChange['key'];
+        }
+      }
+
+      if (encryptRequests) {
+        json['donneesSec'] = encryption.aesDecryptAsBytes(hex.decode(json['donneesSec']));
+      }
+      var zlibInstanceDecoder = ZLibDecoder(raw: true);
+      if (compressRequests) {
+        var toDecode = json['donneesSec'];
+        json['donneesSec'] = utf8.decode(zlibInstanceDecoder.convert(toDecode));
+      }
+      if (json['donneesSec'].runtimeType == String) {
+        try {
+          json['donneesSec'] = jsonDecode(json['donneesSec']);
+        } catch (e) {
+          return const Response(error: "JSON decode error");
+        }
+      }
+    }
+    return Response(data: json);
   }
 }
