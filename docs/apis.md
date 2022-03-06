@@ -228,7 +228,7 @@ Maintenant que nous annonçons la récupération des données, nous pouvons rée
 
 ```dart
 final res = await repository.get();
-if (res.error != null) return res;
+if (res.hasError) return res;
 final List<Repas> _repas = res.data!["repas"] ?? [];
 ```
 
@@ -254,7 +254,7 @@ Il faut maintenant pouvoir ajouter un repas :
 ```dart
 Future<Response<void>> add(Repas repas) async {
   final res = await repository.add(repas);
-  if (res.error != null) return res;
+  if (res.hasError) return res;
   await offline.writeTxn((isar) async {
     await isar.repas.put(repas);
   });

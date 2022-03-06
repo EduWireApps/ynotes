@@ -9,8 +9,8 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
           api: api,
         );
 
-  List<Email> get emailsSent => offline.emails.filter().entityIdEqualTo("").sortByDate().findAllSync();
   List<Email> get emailsReceived => offline.emails.filter().not().entityIdEqualTo("").sortByDate().findAllSync();
+  List<Email> get emailsSent => offline.emails.filter().entityIdEqualTo("").sortByDate().findAllSync();
   List<Email> get favoriteEmails => offline.emails.filter().favoriteEqualTo(true).sortByDate().findAllSync();
   List<Recipient> get recipients => offline.recipients.where().sortByLastName().findAllSync();
 
@@ -19,7 +19,7 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
     fetching = true;
     notifyListeners();
     final res = await repository.get();
-    if (res.error != null) return res;
+    if (res.hasError) return res;
     final List<Email> __emailsReceived = res.data!["emailsReceived"] ?? [];
     if (__emailsReceived.length > emailsReceived.length) {
       final List<Email> newEmails = __emailsReceived.sublist(emailsReceived.length);
@@ -49,22 +49,13 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
     if (email.content != null) return const Response();
     final bool received = emailsReceived.contains(email);
     final res = await repository.getEmailContent(email, received);
-    if (res.error != null) return res;
+    if (res.hasError) return res;
     email.read = true;
     email.content = res.data!;
     await offline.writeTxn((isar) async {
       await isar.emails.put(email);
     });
     notifyListeners();
-    return const Response();
-  }
-
-  Future<Response<void>> send(Email email) async {
-    final res = await repository.sendEmail(email);
-    if (res.error != null) {
-      return Response(error: res.error);
-    }
-    await fetch();
     return const Response();
   }
 
@@ -75,5 +66,14 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
       await isar.recipients.clear();
     });
     notifyListeners();
+  }
+
+  Future<Response<void>> send(Email email) async {
+    final res = await repository.sendEmail(email);
+    if (res.hasError) {
+      return Response(error: res.error);
+    }
+    await fetch();
+    return const Response();
   }
 }

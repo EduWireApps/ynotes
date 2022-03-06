@@ -4,6 +4,6 @@ class Response<T> {
   final T? data;
   final String? error;
 
+  bool get hasError => error != null;
   const Response({this.data, this.error});
-  Function? onError(Function onError, {bool test(Object error)?}) {}
 }

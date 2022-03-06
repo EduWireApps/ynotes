@@ -62,7 +62,7 @@ class _Encryption {
 
   Response<Uint8List> rsaEncrypt(Uint8List input, Map<String, String> rsaKeys) {
     if (rsaKeys["MR"] == null || rsaKeys["ER"] == null) {
-      return Response(error: "Missing RSA keys");
+      return const Response(error: "Missing RSA keys");
     }
     try {
       final String modulusBytes = rsaKeys['MR']!;

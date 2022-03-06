@@ -5,14 +5,24 @@ class _AuthModule extends AuthModule<_AuthRepository> {
 }
 
 class _AuthProvider extends Provider {
-  _AuthProvider(SchoolApi api) : super(api);
+  _AuthProvider(PronoteApi api) : super(api);
+
+  Future<Response<Map<String, dynamic>>> firstInit(String username, String password, Map parameters) async {
+    (api as PronoteApi).client =
+        PronoteClient(username: parameters["is"], password: parameters["isCas"], parameters: parameters);
+    (api as PronoteApi).client.communication.init();
+    (api as PronoteApi).client.communication.login();
+    return Response();
+  }
 
   Future<Response<Map<String, dynamic>>> get(Map<String, String> body) async => Response();
+
+  Future<Response<Map<String, dynamic>>> handleError(Map<String, String> body) async => Response();
 }
 
 class _AuthRepository extends AuthRepository {
   @protected
-  late final _AuthProvider authProvider = _AuthProvider(api);
+  late final _AuthProvider authProvider = _AuthProvider(api as PronoteApi);
 
   _AuthRepository(SchoolApi api) : super(api);
   Future<Response<Map<String, dynamic>>> login(

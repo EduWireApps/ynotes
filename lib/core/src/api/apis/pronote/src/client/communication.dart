@@ -1,16 +1,20 @@
 part of pronote;
 
+
+enum PronoteLoginWay  {qrCodeLogin, casLogin, standardLogin}
 class _Communication {
   late final String url;
   late final String urlRoot;
   late final String urlPath;
   _Encryption encryption = _Encryption();
+  
   late double lastPing;
   final PronoteClient client;
   late bool encryptRequests;
   late bool compressRequests;
+  late Map attributes;
 
-  Map? attributes;
+
   //The request number needed for all requests
   late int requestNumber;
   //The list of tabs allowed by the present session
@@ -23,6 +27,9 @@ class _Communication {
     urlPath = split[1];
   }
 
+  Future<void> _setCredentials(Map<String, dynamic> credentials) async {
+    await KVS.write(key: "credentials", value: json.encode(credentials));
+  }
   Future<Response<List<Object>>> init() async {
     final Map<String, String> headers = {
       'connection': 'keep-alive',
@@ -32,10 +39,10 @@ class _Communication {
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       final res = parseHtml(response.body); // L94 legacy/communication.dart
-      if (res.error != null) return Response(error: res.error);
+      if (res.hasError) return Response(error: res.error);
       final Map<String, dynamic> attributes = res.data!;
       final res0 = encryption.rsaEncrypt(encryption.aesIVTemp.bytes, {'MR': attributes['MR'], 'ER': attributes['ER']});
-      if (res0.error != null) return Response(error: res0.error);
+      if (res0.hasError) return Response(error: res0.error);
       final String uuid = base64.encode(res0.data!);
       final Map<String, dynamic> data = {
         "donnees": {
@@ -103,10 +110,12 @@ class _Communication {
     String pSite = urlRoot + '/appelfonction/' + attributes!['a'] + '/' + attributes!['h'] + '/' + (rNumber ?? "");
 
     requestNumber += 2;
+try {
 
-    final res = await http.post(Uri.parse(pSite), body: request_json).catchError((onError) {
-      return Response(error: "Error occured during request : ${onError.toString()}");
-    });
+
+    final res = (await http.post(Uri.parse(pSite), body: request_json));
+    
+  
 
     final String resBody = _decodeBody(res);
     final Map<String, dynamic> json = jsonDecode(resBody);
@@ -115,13 +124,10 @@ class _Communication {
 
     if (resBody.contains("Erreur")) {
       if (json["Erreur"]['G'] == 22) {
-        return Response(error: "Connexion expirée");
+        return const Response(error: "Connexion expirée");
       }
       if (json["Erreur"]['G'] == 10) {
-        /*
-        appSys.loginController.details = "Connexion expirée";
-        appSys.loginController.actualState = loginStatus.error;*/
-
+        
         return const Response(error: "Connexion expirée");
       }
 
@@ -152,5 +158,159 @@ class _Communication {
       }
     }
     return Response(data: json);
+    }
+    catch(e)
+    {
+       return Response(error: "Error occured during request : ${e.toString()}");
+    }
+  }
+  login() async
+  {
+ 
+    
+    Map indentJson = {
+      "genreConnexion": 0,
+      "genreEspace": int.parse(attributes!['a']),
+      "identifiant": client.username,
+      "pourENT": client.isCas,
+      "enConnexionAuto": false,
+      "demandeConnexionAuto": false,
+      "enConnexionAppliMobile": client.loginWay == PronoteLoginWay.casLogin,
+      "demandeConnexionAppliMobile": client.loginWay== PronoteLoginWay.qrCodeLogin,
+      "demandeConnexionAppliMobileJeton": client.loginWay== PronoteLoginWay.qrCodeLogin,
+      "uuidAppliMobile": SettingsService.settings.global.uuid,
+      "loginTokenSAV": ""
+    };
+    Response identificationResponse = await client.communication.post("Identification", data: {'donnees': indentJson});
+
+    if(identificationResponse.hasError)
+    {
+      return Response(error: "Error during Identification ${identificationResponse.error}" );
+    }
+    Map identificationData = identificationResponse.data;
+    Logger.log("PRONOTE", "Identification");
+    
+    var challenge = identificationData['donneesSec']['donnees']['challenge'];
+
+    dynamic postablePassword;
+
+    if (client.loginWay != PronoteLoginWay.standardLogin) {
+      List<int> encoded = utf8.encode(client.password);
+      postablePassword = sha256.convert(encoded).bytes;
+      postablePassword = hex.encode(postablePassword);
+      postablePassword = postablePassword.toString().toUpperCase();
+      client.encryption.aesKey =  Key.fromBase16(hex.encode(md5.convert(utf8.encode(postablePassword)).bytes)) ;
+    } else {
+      var u = client.username;
+      var p = client.password;
+
+      //Convert credentials to lowercase if needed (API returns 1)
+      if (identificationData['donneesSec']['donnees']['modeCompLog'] != null && identificationData['donneesSec']['donnees']['modeCompLog'] != 0) {
+        Logger.log("PRONOTE", "LOWER CASE ID");
+        Logger.log("PRONOTE", identificationData['donneesSec']['donnees']['modeCompLog'].toString());
+        u = u.toString().toLowerCase();
+        
+      }
+
+      if (identificationData['donneesSec']['donnees']['modeCompMdp'] != null && identificationData['donneesSec']['donnees']['modeCompMdp'] != 0) {
+        Logger.log("PRONOTE", "LOWER CASE PASSWORD");
+        Logger.log("PRONOTE", identificationData['donneesSec']['donnees']['modeCompMdp'].toString());
+        p = p.toString().toLowerCase();
+        
+      }
+
+      var alea = identificationData['donneesSec']['donnees']['alea'];
+      Logger.log("PRONOTE", alea);
+      List<int> encoded = utf8.encode((alea ?? "") + p);
+      postablePassword = sha256.convert(encoded);
+      postablePassword = hex.encode(postablePassword.bytes);
+      postablePassword = postablePassword.toString().toUpperCase();
+      client.encryption.aesKey =  Key.fromBase16(utf8.decode(md5.convert(utf8.encode(u + postablePassword)).bytes));
+    }
+
+    Response rawChallenge = client.encryption.aesDecrypt(hex.decode(challenge));
+    
+    if(rawChallenge.hasError)
+    {
+      return Response(error: "Error while AES decrypting " + rawChallenge.error!);
+    }
+
+    var rawChallengeWithoutAlea = removeAlea(rawChallenge.data);
+    
+
+    var encryptedChallenge = client.encryption.aesEncrypt(utf8.encode(rawChallengeWithoutAlea));
+    
+
+    Map authentificationJson = {"connexion": 0, "challenge": encryptedChallenge, "espace": int.parse(attributes['a'])};
+    
+    Response authResponse = await post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});;
+    Map authResponseData = {};
+    if(authResponse.error!=null)
+    {
+      return Response(error: "Error during Authentification");
+    }
+    else {
+      authResponseData = authResponse.data;
+    }
+
+    try {
+      if ((client.loginWay != PronoteLoginWay.standardLogin) &&
+          authResponseData['donneesSec']['donnees']["jetonConnexionAppliMobile"] != null) {
+
+        
+        Logger.log("PRONOTE", "Saving token");
+                String newPassword = authResponseData['donneesSec']['donnees']["jetonConnexionAppliMobile"];
+
+        Map<String, dynamic> newCredentials = {
+          "password": newPassword,
+          "username":client.username,
+          "parameters:" :client.parameters
+        };
+
+        client.password = newPassword;
+        _setCredentials(newCredentials);
+      }
+      if (authResponseData['donneesSec']['donnees'].toString().contains("cle")) {
+        
+        await afterAuth(authResponse);
+        
+        
+        if (isOldAPIUsed == false) {
+          try {
+            paramsUser = await communication!.post("ParametresUtilisateur", data: {'donnees': {}});
+            encryption.aesKey = communication?.encryption.aesKey;
+
+            communication!.authorizedTabs = prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'listeOnglets']));
+
+            
+
+            try {
+              KVS.write(
+                  key: "classe",
+                  value: mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
+              KVS.write(key: "userFullName", value: mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
+            } catch (e) {
+              
+
+              Logger.log("PRONOTE", "Failed to register UserInfos");
+              CustomLogger.error(e, stackHint:"MTY=");
+            }
+          } catch (e) {
+            
+
+            Logger.log("PRONOTE", "Surely using OLD API");
+          }
+        }
+
+        Logger.log("PRONOTE", "Successfully logged in as ${client.username}");
+        return true;
+      } else {
+        Logger.log("PRONOTE", "Login failed");
+        return false;
+      }
+    } catch (e) {
+      return Response (error:"Error during after auth " + e.toString());
+    }
+  }
   }
 }

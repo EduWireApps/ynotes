@@ -9,7 +9,7 @@ import 'package:ynotes/core/utilities.dart';
 /// Storage is encrypted, its encryption key is stored with [KVS].
 ///
 /// Before using [Offline], you must call [init] to initialize the class. Please note that calling
-/// [OfflineModel.init] also calls [init] internally so it is not necessary to call it manually.
+/// [OfflineModel.firstInit] also calls [init] internally so it is not necessary to call it manually.
 ///
 /// Isar files are stored in `/files/offline` directory in the app's storage,
 /// depending of the platform.
@@ -46,7 +46,7 @@ abstract class Offline {
   ];
 
   /// This method must be called before using [Offline]. Please note that calling
-  /// [OfflineModel.init] also calls [init] internally so it is not necessary to call it manually.
+  /// [OfflineModel.firstInit] also calls [init] internally so it is not necessary to call it manually.
   ///
   /// It can be called multiple times without any issues since it will check if
   /// [Offline] has already been initialized usng [store.initialized].

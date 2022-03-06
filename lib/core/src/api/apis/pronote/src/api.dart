@@ -1,5 +1,8 @@
 part of pronote;
 
+const ModulesSupport modulesSupport =
+    ModulesSupport(grades: true, schoolLife: false, emails: false, homework: false, documents: false);
+
 final Metadata metadata = Metadata(
     name: "Pronote",
     imagePath: "assets/images/icons/oribite/PronoteIcon.png",
@@ -9,11 +12,10 @@ final Metadata metadata = Metadata(
     coloredLogo: true,
     loginRoute: "/login/pronote");
 
-const ModulesSupport modulesSupport =
-    ModulesSupport(grades: true, schoolLife: false, emails: false, homework: false, documents: false);
-
 class PronoteApi extends SchoolApi implements SchoolApiModules {
-  PronoteApi() : super(metadata: metadata, modulesSupport: modulesSupport);
+  
+  late final PronoteClient client;
+
 
   @override
   late AuthModule authModule = _AuthModule(this);
@@ -32,4 +34,6 @@ class PronoteApi extends SchoolApi implements SchoolApiModules {
 
   @override
   late DocumentsModule documentsModule = _DocumentsModule(this);
+
+  PronoteApi() : super(metadata: metadata, modulesSupport: modulesSupport);
 }

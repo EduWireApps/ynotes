@@ -27,7 +27,7 @@ class _HomeworkRepository extends HomeworkRepository {
   @override
   Future<Response<Map<String, dynamic>>> get() async {
     final res = await homeworkProvider.get();
-    if (res.error != null) return res;
+    if (res.hasError) return res;
     try {
       final List<Homework> homework = [];
       (res.data!["data"].cast<String, List<dynamic>>() as Map<String, List<dynamic>>).forEach((k, v) {
@@ -56,7 +56,7 @@ class _HomeworkRepository extends HomeworkRepository {
   @override
   Future<Response<List<Homework>>> getDay(DateTime date) async {
     final res = await homeworkProvider.getDay(date);
-    if (res.error != null) return Response(error: res.error);
+    if (res.hasError) return Response(error: res.error);
     try {
       final List<List<Document>> documents = [];
       for (final h in (res.data!["data"]["matieres"] as List<dynamic>).where((e) => e["aFaire"] != null)) {

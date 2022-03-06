@@ -20,7 +20,7 @@ class _GradesRepository extends Repository {
   @override
   Future<Response<Map<String, dynamic>>> get() async {
     final res = await gradesProvider.get();
-    if (res.error != null) return res;
+    if (res.hasError) return res;
 
     final List<dynamic> filteredPeriods = (res.data!["data"]["periodes"] as List<dynamic>)
         // Keep the space after "Relevé"

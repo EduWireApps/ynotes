@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/controllers.dart';
 import 'package:ynotes/core/utilities.dart';
-import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -21,30 +21,6 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
   final QrLoginController controller = QrLoginController();
   QRViewController? qrController;
   bool loaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    handlePermission();
-  }
-
-  Future<void> handlePermission() async {
-    final String? res = await controller.handlePermission();
-    if (res == null) {
-      setState(() {
-        loaded = true;
-      });
-    } else {
-      await YDialogs.showInfo(
-          context,
-          YInfoDialog(
-            title: LoginContent.pronote.qrCode.permissionDenied,
-            body: Text(res, style: theme.texts.body1),
-            confirmLabel: "OK",
-          ));
-      Navigator.pop(context);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +112,30 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     }
   }
 
+  Future<void> handlePermission() async {
+    final String? res = await controller.handlePermission();
+    if (res == null) {
+      setState(() {
+        loaded = true;
+      });
+    } else {
+      await YDialogs.showInfo(
+          context,
+          YInfoDialog(
+            title: LoginContent.pronote.qrCode.permissionDenied,
+            body: Text(res, style: theme.texts.body1),
+            confirmLabel: "OK",
+          ));
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handlePermission();
+  }
+
   Future<void> login(String code) async {
     final List<String>? decryptedData = controller.decrypt(code);
     if (decryptedData == null) {
@@ -151,7 +151,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
       "qrCodeLogin": true,
       "mobileCasLogin": false,
     });
-    if (res.error != null) {
+    if (res.hasError) {
       YSnackbars.error(context, title: LoginContent.pronote.qrCode.error, message: res.error!);
       controller.reset();
       return;

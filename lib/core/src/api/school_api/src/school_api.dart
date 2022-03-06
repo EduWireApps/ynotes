@@ -7,8 +7,6 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
 
   final ModulesAvailability modulesAvailability = ModulesAvailability();
 
-  SchoolApi({required this.metadata, required this.modulesSupport});
-
   late final List<Module> modules = [
     authModule,
     gradesModule,
@@ -18,19 +16,14 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
     documentsModule
   ];
 
-  /// Should only be called after [modulesAvailability] update ([modulesAvailability.save]).
-  void refreshModules() {
-    for (Module module in modules) {
-      module = module;
-    }
-  }
+  SchoolApi({required this.metadata, required this.modulesSupport});
 
   Future<List<String>?> fetch() async {
     final List<String> errors = [];
     Logger.log("MODULES", modules.where((element) => element._isAvailable && element._isSupported));
     for (final module in modules.where((element) => element._isAvailable && element._isSupported)) {
       final res = await module.fetch();
-      if (res.error != null) {
+      if (res.hasError) {
         errors.add(res.error!);
       }
     }
@@ -43,6 +36,13 @@ abstract class SchoolApi extends ChangeNotifier implements SchoolApiModules {
     await modulesAvailability.load();
     for (final module in modules) {
       await module._init();
+    }
+  }
+
+  /// Should only be called after [modulesAvailability] update ([modulesAvailability.save]).
+  void refreshModules() {
+    for (Module module in modules) {
+      module = module;
     }
   }
 
