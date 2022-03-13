@@ -51,13 +51,13 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    return const Response();
+    return Response();
   }
 
   Future<Response<Map<String, dynamic>>> getCredentials() async {
     final String? data = await KVS.read(key: _credentialsKey);
     if (data == null) {
-      return const Response(error: "No credentials found");
+      return Response(error: "No credentials found");
     }
     return Response(data: json.decode(data));
   }
@@ -72,23 +72,27 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
       notifyListeners();
       return Response(error: res.error);
     }
-    await setCredentials({"username": username, "password": password, "parameters": parameters});
-    status = AuthStatus.authenticated;
-    details = "Connecté";
-    logs = null;
-    notifyListeners();
-    final AppAccount account = res.data!["appAccount"];
-    final SchoolAccount schoolAccount = res.data!["schoolAccount"];
-    await offline.writeTxn((isar) async {
-      await isar.appAccounts.put(account);
-      await account.accounts.save();
-      await isar.schoolAccounts.put(schoolAccount);
-    });
-    _Storage.values.appAccountId = account.entityId;
-    _Storage.values.schoolAccountId = schoolAccount.entityId;
-    await _Storage.update();
-    notifyListeners();
-    return Response(data: "Bienvenue ${account.fullName}");
+    try {
+      await setCredentials({"username": username, "password": password, "parameters": parameters});
+      status = AuthStatus.authenticated;
+      details = "Connecté";
+      logs = null;
+      notifyListeners();
+      final AppAccount account = res.data!["appAccount"];
+      final SchoolAccount schoolAccount = res.data!["schoolAccount"];
+      await offline.writeTxn((isar) async {
+        await isar.appAccounts.put(account);
+        await account.accounts.save();
+        await isar.schoolAccounts.put(schoolAccount);
+      });
+      _Storage.values.appAccountId = account.entityId;
+      _Storage.values.schoolAccountId = schoolAccount.entityId;
+      await _Storage.update();
+      notifyListeners();
+      return Response(data: "Bienvenue ${account.fullName}");
+    } catch (e) {
+      return Response(error: "Impossible d'initialiser le compte $e");
+    }
   }
 
   Future<void> loginFromOffline() async {

@@ -52,17 +52,13 @@ class _Encryption {
     }
   }
 
-  void setAesIV([IV? iv]) {
-    aesIV = iv ?? IV.fromLength(16);
-  }
-
   String generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
   }
 
   Response<Uint8List> rsaEncrypt(Uint8List input, Map<String, String> rsaKeys) {
     if (rsaKeys["MR"] == null || rsaKeys["ER"] == null) {
-      return const Response(error: "Missing RSA keys");
+      return Response(error: "Missing RSA keys");
     }
     try {
       final String modulusBytes = rsaKeys['MR']!;
@@ -75,6 +71,10 @@ class _Encryption {
     } catch (e) {
       return Response(error: "Error during RSA encryption: $e");
     }
+  }
+
+  void setAesIV([IV? iv]) {
+    aesIV = iv ?? IV.fromLength(16);
   }
 }
 

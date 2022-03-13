@@ -18,11 +18,10 @@ String getHostname(String url) {
   return '${uri.host}:${uri.port}';
 }
 
-List<String> splitAdress(String address) {
-  final Uri uri = Uri.parse(address);
+List<String> getRootAdress(addr) {
   return [
-    "${uri.scheme}://${uri.host}${uri.port != 80 ? ':${uri.port}' : ''}",
-    "${uri.path}${uri.query == '' ? '' : '?'}${uri.query}",
+    (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
+    (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
   ];
 }
 
@@ -53,6 +52,15 @@ String removeAlea(String text) {
 
   return sansalea.join("");
 }
+
+List<String> splitAdress(String address) {
+  final Uri uri = Uri.parse(address);
+  return [
+    "${uri.scheme}://${uri.host}${uri.port == 80 ? ':${uri.port}' : ''}",
+    "${uri.path}${uri.query == '' ? '' : '?'}${uri.query}",
+  ];
+}
+
 String _decodeBody(http.Response res) => const Utf8Decoder().convert(res.bodyBytes);
 
 String _encodeBody(Map<String, dynamic>? body) {

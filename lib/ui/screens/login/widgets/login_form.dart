@@ -89,7 +89,7 @@ class _LoginFormState extends State<LoginForm> {
       final res = await schoolApi.authModule.login(
           username: _credentials.username.trim(),
           password: _credentials.password.trim(),
-          parameters: {"url": _credentials.url.trim(), "mobileCasLogin": false});
+          parameters: {"url": _credentials.url.trim(), "loginWay": "default"});
       if (res.hasError) {
         YSnackbars.error(context, title: LoginContent.widgets.form.error, message: res.error!);
         setState(() {

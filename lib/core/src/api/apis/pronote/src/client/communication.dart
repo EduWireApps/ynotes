@@ -21,13 +21,13 @@ class _Communication {
   late Map userParameters;
 
   //The request number needed for all requests
-  late int requestNumber;
+  int requestNumber = 1;
   //The list of tabs allowed by the present session
   List? authorizedTabs;
 
   _Communication(this.client) {
     url = client.url;
-    final split = splitAdress(url);
+    final split = getRootAdress(url);
     urlRoot = split[0];
     urlPath = split[1];
   }
@@ -54,117 +54,128 @@ class _Communication {
   }
 
   Future<Response<List<Object>>> init() async {
+    requestNumber = 1;
     final Map<String, String> headers = {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-    final String url = "$urlRoot/?fd=${client.isCas ? '1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335' : 1}";
+    final String url = "$urlRoot/$urlPath?fd=${client.isCas ? '1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335' : 1}";
+    Logger.log("TWEAKED URL", url);
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       final res = parseHtml(response.body); // L94 legacy/communication.dart
+
       if (res.hasError) return Response(error: res.error);
-      final Map<String, dynamic> attributes = res.data!;
+
+      attributes = res.data!;
       final res0 = encryption.rsaEncrypt(encryption.aesIVTemp.bytes, {'MR': attributes['MR'], 'ER': attributes['ER']});
       if (res0.hasError) return Response(error: res0.error);
       final String uuid = base64.encode(res0.data!);
       final Map<String, dynamic> data = {
-        "donnees": {
-          {'Uuid': uuid, 'identifiantNav': null}
-        }
+        "donnees": {"Uuid": uuid, "identifiantNav": ""}
       };
       encryptRequests = attributes["sCrA"] == null;
       compressRequests = attributes["sCoA"] == null;
       final initialResponse = await post("FonctionsParametres",
           data: data, decryptionChange: {"iv": hex.encode(md5.convert(encryption.aesIVTemp.bytes).bytes)});
+      Logger.log("INIT", "Init successful");
       return Response(data: [attributes, initialResponse]);
     } catch (e) {
+      Logger.log("INIT", "Fail to init $e");
+
       return Response(error: e.toString());
     }
   }
 
   login() async {
-    Map indentJson = {
-      "genreConnexion": 0,
-      "genreEspace": int.parse(attributes['a']),
-      "identifiant": client.username,
-      "pourENT": client.isCas,
-      "enConnexionAuto": false,
-      "demandeConnexionAuto": false,
-      "enConnexionAppliMobile": client.loginWay == PronoteLoginWay.casLogin,
-      "demandeConnexionAppliMobile": client.loginWay == PronoteLoginWay.qrCodeLogin,
-      "demandeConnexionAppliMobileJeton": client.loginWay == PronoteLoginWay.qrCodeLogin,
-      "uuidAppliMobile": SettingsService.settings.global.uuid,
-      "loginTokenSAV": ""
-    };
-    Response identificationResponse = await client.communication.post("Identification", data: {'donnees': indentJson});
-
-    if (identificationResponse.hasError) {
-      return Response(error: "Error during Identification ${identificationResponse.error}");
-    }
-    Map identificationData = identificationResponse.data;
-    Logger.log("PRONOTE", "Identification");
-
-    var challenge = identificationData['donneesSec']['donnees']['challenge'];
-
-    dynamic postablePassword;
-
-    if (client.loginWay != PronoteLoginWay.standardLogin) {
-      List<int> encoded = utf8.encode(client.password);
-      postablePassword = sha256.convert(encoded).bytes;
-      postablePassword = hex.encode(postablePassword);
-      postablePassword = postablePassword.toString().toUpperCase();
-      client.encryption.aesKey = Key.fromBase16(hex.encode(md5.convert(utf8.encode(postablePassword)).bytes));
-    } else {
-      var u = client.username;
-      var p = client.password;
-
-      //Convert credentials to lowercase if needed (API returns 1)
-      if (identificationData['donneesSec']['donnees']['modeCompLog'] != null &&
-          identificationData['donneesSec']['donnees']['modeCompLog'] != 0) {
-        Logger.log("PRONOTE", "LOWER CASE ID");
-        Logger.log("PRONOTE", identificationData['donneesSec']['donnees']['modeCompLog'].toString());
-        u = u.toString().toLowerCase();
-      }
-
-      if (identificationData['donneesSec']['donnees']['modeCompMdp'] != null &&
-          identificationData['donneesSec']['donnees']['modeCompMdp'] != 0) {
-        Logger.log("PRONOTE", "LOWER CASE PASSWORD");
-        Logger.log("PRONOTE", identificationData['donneesSec']['donnees']['modeCompMdp'].toString());
-        p = p.toString().toLowerCase();
-      }
-
-      var alea = identificationData['donneesSec']['donnees']['alea'];
-      Logger.log("PRONOTE", alea);
-      List<int> encoded = utf8.encode((alea ?? "") + p);
-      postablePassword = sha256.convert(encoded);
-      postablePassword = hex.encode(postablePassword.bytes);
-      postablePassword = postablePassword.toString().toUpperCase();
-      client.encryption.aesKey = Key.fromBase16(utf8.decode(md5.convert(utf8.encode(u + postablePassword)).bytes));
-    }
-
-    Response rawChallenge = client.encryption.aesDecrypt(hex.decode(challenge));
-
-    if (rawChallenge.hasError) {
-      return Response(error: "Error while AES decrypting " + rawChallenge.error!);
-    }
-
-    var rawChallengeWithoutAlea = removeAlea(rawChallenge.data);
-
-    var encryptedChallenge = client.encryption.aesEncrypt(utf8.encode(rawChallengeWithoutAlea));
-
-    Map authentificationJson = {"connexion": 0, "challenge": encryptedChallenge, "espace": int.parse(attributes['a'])};
-
-    Response authResponse =
-        await post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
-
-    Map authResponseData = {};
-    if (authResponse.hasError) {
-      return Response(error: "Error during Authentification ${authResponse.error}");
-    } else {
-      authResponseData = authResponse.data;
-    }
-
     try {
+      Map indentJson = {
+        "genreConnexion": 0,
+        "genreEspace": int.parse(attributes['a']),
+        "identifiant": client.username,
+        "pourENT": client.isCas,
+        "enConnexionAuto": false,
+        "demandeConnexionAuto": false,
+        "enConnexionAppliMobile": client.loginWay == PronoteLoginWay.casLogin,
+        "demandeConnexionAppliMobile": client.loginWay == PronoteLoginWay.qrCodeLogin,
+        "demandeConnexionAppliMobileJeton": client.loginWay == PronoteLoginWay.qrCodeLogin,
+        "uuidAppliMobile": SettingsService.settings.global.uuid,
+        "loginTokenSAV": ""
+      };
+
+      Response identificationResponse =
+          await client.communication.post("Identification", data: {'donnees': indentJson});
+
+      if (identificationResponse.hasError) {
+        return Response(error: "Error during Identification ${identificationResponse.error}");
+      }
+      Map identificationData = identificationResponse.data;
+      Logger.log("PRONOTE", "Identification");
+      Logger.logWrapped("PRONOTE", "Identification", identificationData.toString());
+      var challenge = identificationData['donneesSec']['donnees']['challenge'];
+
+      dynamic postablePassword;
+
+      if (client.loginWay != PronoteLoginWay.standardLogin) {
+        List<int> encoded = utf8.encode(client.password);
+        postablePassword = sha256.convert(encoded).bytes;
+        postablePassword = hex.encode(postablePassword);
+        postablePassword = postablePassword.toString().toUpperCase();
+        client.encryption.aesKey = Key.fromBase16(hex.encode(md5.convert(utf8.encode(postablePassword)).bytes));
+      } else {
+        var u = client.username;
+        var p = client.password;
+
+        //Convert credentials to lowercase if needed (API returns 1)
+        if (identificationData['donneesSec']['donnees']['modeCompLog'] != null &&
+            identificationData['donneesSec']['donnees']['modeCompLog'] != 0) {
+          Logger.log("PRONOTE", "LOWER CASE ID");
+          Logger.log("PRONOTE", identificationData['donneesSec']['donnees']['modeCompLog'].toString());
+          u = u.toString().toLowerCase();
+        }
+
+        if (identificationData['donneesSec']['donnees']['modeCompMdp'] != null &&
+            identificationData['donneesSec']['donnees']['modeCompMdp'] != 0) {
+          Logger.log("PRONOTE", "LOWER CASE PASSWORD");
+          Logger.log("PRONOTE", identificationData['donneesSec']['donnees']['modeCompMdp'].toString());
+          p = p.toString().toLowerCase();
+        }
+
+        var alea = identificationData['donneesSec']['donnees']['alea'];
+        Logger.log("PRONOTE", alea);
+        List<int> encoded = utf8.encode((alea ?? "") + p);
+        postablePassword = sha256.convert(encoded);
+        postablePassword = hex.encode(postablePassword.bytes);
+        postablePassword = postablePassword.toString().toUpperCase();
+        client.encryption.aesKey = Key.fromBase16(utf8.decode(md5.convert(utf8.encode(u + postablePassword)).bytes));
+      }
+
+      Response rawChallenge = client.encryption.aesDecrypt(hex.decode(challenge));
+
+      if (rawChallenge.hasError) {
+        return Response(error: "Error while AES decrypting " + rawChallenge.error!);
+      }
+
+      var rawChallengeWithoutAlea = removeAlea(rawChallenge.data);
+
+      var encryptedChallenge = client.encryption.aesEncrypt(utf8.encode(rawChallengeWithoutAlea));
+
+      Map authentificationJson = {
+        "connexion": 0,
+        "challenge": encryptedChallenge,
+        "espace": int.parse(attributes['a'])
+      };
+
+      Response authResponse =
+          await post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
+
+      Map authResponseData = {};
+      if (authResponse.hasError) {
+        return Response(error: "Error during Authentification ${authResponse.error}");
+      } else {
+        authResponseData = authResponse.data;
+      }
+
       if ((client.loginWay != PronoteLoginWay.standardLogin) &&
           authResponseData['donneesSec']['donnees']["jetonConnexionAppliMobile"] != null) {
         Logger.log("PRONOTE", "Saving token");
@@ -209,13 +220,24 @@ class _Communication {
         }
 
         Logger.log("PRONOTE", "Successfully logged in as ${client.username}");
-        return true;
+
+        final Map<String, dynamic> map = {
+          "appAccount": AppAccount(entityId: "", lastName: "", firstName: ""),
+          "schoolAccount": SchoolAccount(
+              firstName: "Test",
+              lastName: "Test",
+              className: "Test",
+              entityId: "test",
+              profilePicture: "",
+              school: "test")
+        };
+        return Response(data: map);
       } else {
         Logger.log("PRONOTE", "Login failed");
-        return false;
+        return Response(error: "Login failed");
       }
     } catch (e) {
-      return Response(error: "Error during after auth " + e.toString());
+      return Response(error: "Error during Login " + e.toString());
     }
   }
 
@@ -227,9 +249,9 @@ class _Communication {
       onLoad = body.attributes["onload"]!.substring(14, body.attributes["onload"]!.length - 37);
     } else {
       if (html.contains("IP")) {
-        return const Response(error: "IP suspended.");
+        return Response(error: "IP suspended.");
       } else {
-        return const Response(error: "HTML page error.");
+        return Response(error: "HTML page error.");
       }
     }
     final Map<String, dynamic> attributes = {};
@@ -243,71 +265,96 @@ class _Communication {
 
   Future<Response<Map<String, dynamic>>> post(String name,
       {dynamic data, Map<String, dynamic>? decryptionChange}) async {
-    if (data != null && data is Map) {
-      if (data["_Signature_"] != null &&
-          !authorizedTabs.toString().contains(data['_Signature_']['onglet'].toString())) {
-        return const Response(error: "Action not permitted. (onglet is not normally accessible)");
-      }
-    }
-
-    if (compressRequests) {
-      data = jsonEncode(data);
-      var zlibInstance = ZLibCodec(level: 6, raw: true);
-      data = zlibInstance.encode(utf8.encode(hex.encode(utf8.encode(data))));
-    }
-    if (encryptRequests) {
-      data = encryption.aesEncrypt(data).data;
-    }
-
-    String? rNumber = encryption.aesEncrypt(utf8.encode(requestNumber.toString())).data;
-
-    var requestJson = {'session': int.parse(attributes['h']), 'numeroOrdre': rNumber, 'nom': name, 'donneesSec': data};
-    String pSite = urlRoot + '/appelfonction/' + attributes['a'] + '/' + attributes['h'] + '/' + (rNumber ?? "");
-
-    requestNumber += 2;
     try {
-      final res = (await http.post(Uri.parse(pSite), body: requestJson));
-
-      final String resBody = _decodeBody(res);
-      final Map<String, dynamic> json = jsonDecode(resBody);
-
-      lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
-
-      if (resBody.contains("Erreur")) {
-        if (json["Erreur"]['G'] == 22) {
-          return const Response(error: "Connexion expirée");
-        }
-        if (json["Erreur"]['G'] == 10) {
-          return const Response(error: "Connexion expirée");
-        }
-
-        if (decryptionChange != null) {
-          if (decryptionChange.toString().contains("iv")) {
-            encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
-          }
-
-          if (decryptionChange.toString().contains("key")) {
-            encryption.aesKey = decryptionChange['key'];
-          }
-        }
-
-        if (encryptRequests) {
-          json['donneesSec'] = encryption.aesDecryptAsBytes(hex.decode(json['donneesSec']));
-        }
-        var zlibInstanceDecoder = ZLibDecoder(raw: true);
-        if (compressRequests) {
-          var toDecode = json['donneesSec'];
-          json['donneesSec'] = utf8.decode(zlibInstanceDecoder.convert(toDecode));
-        }
-        if (json['donneesSec'].runtimeType == String) {
-          try {
-            json['donneesSec'] = jsonDecode(json['donneesSec']);
-          } catch (e) {
-            return const Response(error: "JSON decode error");
-          }
+      if (data != null && data is Map) {
+        if (data["_Signature_"] != null &&
+            !authorizedTabs.toString().contains(data['_Signature_']['onglet'].toString())) {
+          return Response(error: "Action not permitted. (onglet is not normally accessible)");
         }
       }
-      return Response(data: json);
+
+      if (compressRequests) {
+        data = jsonEncode(data);
+        var zlibInstance = ZLibCodec(level: 6, raw: true);
+        data = zlibInstance.encode(utf8.encode(hex.encode(utf8.encode(data))));
+      }
+
+      if (encryptRequests) {
+        data = encryption.aesEncrypt(data).data;
+      }
+
+      String? rNumber = encryption.aesEncrypt(utf8.encode(requestNumber.toString())).data;
+
+
+      Map<String, dynamic> requestJson = {
+        'session': int.parse(attributes['h']),
+        'numeroOrdre': rNumber ?? "",
+        'nom': name,
+        'donneesSec': data
+      };
+      Logger.log("REQUEST", "E");
+
+      Logger.logWrapped("requestJson", "Test", requestJson.toString());
+      String pSite = urlRoot + '/appelfonction/' + attributes['a'] + '/' + attributes['h'] + '/' + (rNumber ?? "");
+      requestNumber += 2;
+
+
+      try {
+        final res = (await http.post(
+          Uri.parse(pSite),
+          body: jsonEncode(requestJson),
+        ));
+
+
+        final String resBody = _decodeBody(res);
+        Logger.log("TEST", pSite);
+
+
+        final Map<String, dynamic> json = jsonDecode(resBody);
+        lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
+
+
+        if (resBody.contains("Erreur")) {
+          if (json["Erreur"]['G'] == 22) {
+            return Response(error: "Connexion expirée");
+          }
+          if (json["Erreur"]['G'] == 10) {
+            return Response(error: "Connexion expirée");
+          }
+          if (json["Erreur"]['G'] == 11) {
+            return Response(error: "Page expirée");
+          }
+          if (decryptionChange != null) {
+            if (decryptionChange.toString().contains("iv")) {
+              encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
+            }
+
+            if (decryptionChange.toString().contains("key")) {
+              encryption.aesKey = decryptionChange['key'];
+            }
+          }
+          Logger.log("REQUEST", "J");
+
+          if (encryptRequests) {
+            json['donneesSec'] = encryption.aesDecryptAsBytes(hex.decode(json['donneesSec']));
+          }
+          var zlibInstanceDecoder = ZLibDecoder(raw: true);
+          if (compressRequests) {
+            var toDecode = json['donneesSec'];
+            json['donneesSec'] = utf8.decode(zlibInstanceDecoder.convert(toDecode));
+          }
+          if (json['donneesSec'].runtimeType == String) {
+            try {
+              json['donneesSec'] = jsonDecode(json['donneesSec']);
+            } catch (e) {
+              return Response(error: "JSON decode error");
+            }
+          }
+        }
+        return Response(data: json);
+      } catch (e) {
+        return Response(error: "Error occured during request : ${e.toString()}");
+      }
     } catch (e) {
       return Response(error: "Error occured during request : ${e.toString()}");
     }

@@ -42,11 +42,11 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
     });
     fetching = false;
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   Future<Response<void>> read(Email email) async {
-    if (email.content != null) return const Response();
+    if (email.content != null) return Response();
     final bool received = emailsReceived.contains(email);
     final res = await repository.getEmailContent(email, received);
     if (res.hasError) return res;
@@ -56,7 +56,7 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
       await isar.emails.put(email);
     });
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   @override
@@ -74,6 +74,6 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
       return Response(error: res.error);
     }
     await fetch();
-    return const Response();
+    return Response();
   }
 }

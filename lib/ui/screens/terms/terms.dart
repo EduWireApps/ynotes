@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ynotes/core/src/services/settings.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
@@ -24,7 +25,7 @@ class TermsPage extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       Logger.log("LOGIN", "An error occured while getting the TOS");
-                      Logger.error(snapshot.error, stackHint:"NQ==");
+                      Logger.error(snapshot.error, stackHint: "NQ==");
                     }
                     return Text(
                       snapshot.data.toString(),
@@ -41,6 +42,16 @@ class TermsPage extends StatelessWidget {
                   text: "J'ACCEPTE",
                   block: true,
                   size: YButtonSize.large),
+              if (kDebugMode) YVerticalSpacer(YScale.s2),
+              if (kDebugMode)
+                YButton(
+                    onPressed: () {
+                      KVS.deleteAll();
+                      Navigator.pushReplacementNamed(context, "/login");
+                    },
+                    text: "PANIC",
+                    block: true,
+                    size: YButtonSize.large),
               YVerticalSpacer(YScale.s2),
               AppButtons.legalLinks
             ],

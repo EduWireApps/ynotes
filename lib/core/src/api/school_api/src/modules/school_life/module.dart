@@ -28,7 +28,7 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R> {
     });
     fetching = false;
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   @override

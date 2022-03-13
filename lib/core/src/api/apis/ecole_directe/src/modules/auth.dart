@@ -18,7 +18,7 @@ class _AuthRepository extends AuthRepository {
   _AuthRepository(SchoolApi api) : super(api);
 
   @override
-  Future<Response<Map<String, dynamic>>> get() async => const Response(error: "Not implemented");
+  Future<Response<Map<String, dynamic>>> get() async => Response(error: "Not implemented");
 
   @override
   Future<Response<Map<String, dynamic>>> login(

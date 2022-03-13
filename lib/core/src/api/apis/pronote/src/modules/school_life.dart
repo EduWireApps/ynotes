@@ -7,9 +7,7 @@ class _SchoolLifeModule extends SchoolLifeModule<_SchoolLifeRepository> {
 class _SchoolLifeProvider extends Provider {
   _SchoolLifeProvider(SchoolApi api) : super(api);
 
-  Future<Response<Map<String, dynamic>>> get() async =>
-           const Response(error: "Not implemented");
-
+  Future<Response<Map<String, dynamic>>> get() async => Response(error: "Not implemented");
 }
 
 class _SchoolLifeRepository extends Repository {
@@ -20,6 +18,6 @@ class _SchoolLifeRepository extends Repository {
 
   @override
   Future<Response<Map<String, dynamic>>> get() async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 }

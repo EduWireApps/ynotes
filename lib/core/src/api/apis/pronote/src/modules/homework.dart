@@ -9,10 +9,10 @@ class _HomeworkProvider extends Provider {
 
   String? get _studentId => api.authModule.schoolAccount?.entityId;
 
-  Future<Response<Map<String, dynamic>>> get() async => const Response(error: "Not implemented");
+  Future<Response<Map<String, dynamic>>> get() async => Response(error: "Not implemented");
 
   Future<Response<Map<String, dynamic>>> getDay(DateTime date) async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 }
 
@@ -24,11 +24,11 @@ class _HomeworkRepository extends HomeworkRepository {
 
   @override
   Future<Response<Map<String, dynamic>>> get() async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 
   @override
   Future<Response<List<Homework>>> getDay(DateTime date) async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 }

@@ -67,7 +67,7 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R> {
     }
     fetching = false;
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   @override
@@ -79,6 +79,6 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R> {
   }
 
   Future<Response<void>> updateHomework(List<Homework> h) async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 }

@@ -79,13 +79,13 @@ class SystemService {
 
   static Future<Response<void>> _handlePermission(Permission permission, String name, {bool first = true}) async {
     if (!(!kIsWeb && (Platform.isAndroid || Platform.isIOS))) {
-      return const Response();
+      return Response();
     }
     final PermissionStatus status = await (first ? permission.status : permission.request());
     UIU.setSystemUIOverlayStyle();
     switch (status) {
       case PermissionStatus.granted:
-        return const Response();
+        return Response();
       case PermissionStatus.permanentlyDenied:
         return Response(
             error:

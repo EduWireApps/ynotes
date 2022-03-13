@@ -16,16 +16,16 @@ class _EmailsRepository extends EmailsRepository {
 
   @override
   Future<Response<Map<String, dynamic>>> get() async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 
   @override
   Future<Response<String>> getEmailContent(Email email, bool received) async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 
   @override
   Future<Response<void>> sendEmail(Email email) async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 }

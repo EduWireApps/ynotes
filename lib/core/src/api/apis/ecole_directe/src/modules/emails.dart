@@ -187,6 +187,6 @@ class _EmailsRepository extends EmailsRepository {
     if (res.hasError) {
       return Response(error: res.error);
     }
-    return const Response();
+    return Response();
   }
 }

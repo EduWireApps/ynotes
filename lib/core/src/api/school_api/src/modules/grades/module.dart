@@ -69,12 +69,12 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// Adds a custom [grade].
   Future<Response<void>> addCustomGrade(Grade grade) async {
-    if (!grade.custom) return const Response(error: "Grade is not custom");
+    if (!grade.custom) return Response(error: "Grade is not custom");
     await offline.writeTxn((isar) async {
       await isar.grades.put(grade);
     });
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   /// Adds a [filter] to [customFilters].
@@ -85,7 +85,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       await filter.subjects.save();
     });
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   /// Calculates a a weighted average from a list of values and coefficients.
@@ -140,7 +140,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   @override
   Future<Response<void>> fetch() async {
     if (fetching) {
-      return const Response(error: "Already fetching");
+      return Response(error: "Already fetching");
     }
     fetching = true;
     notifyListeners();
@@ -230,17 +230,17 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     fetching = false;
     notifyListeners();
     Logger.log("GRADES MODULE", "Fetch successful");
-    return const Response();
+    return Response();
   }
 
   /// Removes a custom [grade].
   Future<Response<void>> removeCustomGrade(Grade grade) async {
-    if (!grade.custom) return const Response(error: "Grade is not custom");
+    if (!grade.custom) return Response(error: "Grade is not custom");
     await offline.writeTxn((isar) async {
       await isar.grades.delete(grade.id!);
     });
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   /// Removes a [filter] from [customFilters].
@@ -252,7 +252,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       await setCurrentFilter(_defaultFilters.first);
     }
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   @override
@@ -319,7 +319,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   Future<Response<void>> updateFilter(SubjectsFilter filter) async {
     await removeFilter(filter);
     await addFilter(filter);
-    return const Response();
+    return Response();
   }
 
   /// Updates a subject.

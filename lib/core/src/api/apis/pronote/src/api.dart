@@ -5,16 +5,16 @@ const ModulesSupport modulesSupport =
 
 final Metadata metadata = Metadata(
     name: "Pronote",
-    imagePath: "assets/images/icons/oribite/PronoteIcon.png",
+    imagePath: "assets/images/icons/pronote/PronoteIcon.png",
     color: AppColors.green,
     beta: true,
     api: Apis.pronote,
-    coloredLogo: true,
+    coloredLogo: false,
     loginRoute: "/login/pronote");
 
 class PronoteApi extends SchoolApi implements SchoolApiModules {
   
-  late final PronoteClient client;
+   PronoteClient? client;
 
 
   @override

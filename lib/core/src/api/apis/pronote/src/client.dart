@@ -14,7 +14,7 @@ class PronoteClient {
   late Map<String, dynamic> attributes;
 
   PronoteClient({required this.username, required this.password, required this.parameters}) {
-    communication = _Communication(this);
+    Logger.log("URL", parameters["url"]);
     url = parameters["url"];
 
     PronoteLoginWay _loginWay() {
@@ -30,5 +30,7 @@ class PronoteClient {
 
     loginWay = _loginWay();
     isCas = loginWay != PronoteLoginWay.standardLogin;
+        communication = _Communication(this);
+
   }
 }

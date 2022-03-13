@@ -116,7 +116,7 @@ abstract class CantineModule<R extends CantineRepository> extends Module<R> {
 
   @override
   Future<Response<void>> fetch() async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 
   @override
@@ -218,7 +218,7 @@ On peut donc s'occuper de `fetch`.
 @override
 Future<Response<void>> fetch() async {
   if (fetching) {
-    return const Response(error: "Already fetching");
+    return Response(error: "Already fetching");
   }
   fetching = true;
   notifyListeners();
@@ -245,7 +245,7 @@ await offline.writeTxn((isar) async {
 fetching = false;
 notifyListeners();
 Logger.log("CANTINE MODULE", "Fetch successful");
-return const Response();
+return Response();
 }
 ```
 
@@ -258,7 +258,7 @@ Future<Response<void>> add(Repas repas) async {
   await offline.writeTxn((isar) async {
     await isar.repas.put(repas);
   });
-  return const Response();
+  return Response();
 }
 ```
 

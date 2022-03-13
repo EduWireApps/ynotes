@@ -18,15 +18,15 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
       await isar.documents.putAll(documents);
     });
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   Future<Response<void>> download(Document document, {bool force = false}) async {
     if (status == DocumentsModuleStatus.processing) {
-      return const Response(error: "Already downloading");
+      return Response(error: "Already downloading");
     }
     if (!force && document.saved) {
-      return const Response(error: "Already downloaded");
+      return Response(error: "Already downloaded");
     }
     final res = repository.download(document);
     if (res.hasError) return res;
@@ -74,13 +74,13 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
       case DocumentsModuleStatus.error:
         return Response(error: "$error");
       default:
-        return const Response();
+        return Response();
     }
   }
 
   @override
   Future<Response<void>> fetch({bool online = false}) async {
-    return const Response();
+    return Response();
   }
 
   Future<Response<void>> removeDocuments(List<Document> documents) async {
@@ -88,7 +88,7 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
       await isar.documents.deleteAll(documents.map((e) => e.id!).toList());
     });
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   @override
@@ -104,11 +104,11 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
       await isar.documents.putAll(documents);
     });
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   Future<Response<void>> upload(Document document) async {
-    return const Response();
+    return Response();
   }
 }
 
