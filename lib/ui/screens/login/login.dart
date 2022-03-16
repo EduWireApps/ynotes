@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/src/api/apis/ecole_directe/ecole_directe.dart';
 import 'package:ynotes/core/src/api/school_api/school_api.dart';
+import 'package:ynotes/core/src/utilities/logger/logger.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -30,15 +30,13 @@ class LoginPage extends StatelessWidget {
         ...spacedChildren(schoolApis.map((e) => SchoolServiceBox(e.metadata)).toList()),
         YButton(
             onPressed: () async {
+
               schoolApi = schoolApiManager(Apis.pronote);
               schoolApi.authModule.reset();
               final res = await schoolApi.authModule.login(
                   username: "demonstration",
                   password: "pronotevs",
-                  parameters: {
-                    "url": "https://demo.index-education.net/pronote/eleve.html",
-                    "loginWay": "default"
-                  });
+                  parameters: {"url": "https://demo.index-education.net/pronote/eleve.html", "loginWay": "default"});
               if (res.hasError) {
                 YSnackbars.error(context, title: LoginContent.widgets.form.error, message: res.error!);
 

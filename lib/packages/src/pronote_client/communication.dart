@@ -202,20 +202,8 @@ class Communication {
       Logger.log("PRONOTE", response.content());
       var responseJson = response.json();
 
-      if (responseJson["Erreur"]['G'] == 22) {
-        throw errorMessages["22"];
-      }
-      if (responseJson["Erreur"]['G'] == 10) {
-        appSys.loginController.details = "Connexion expirée";
-        appSys.loginController.actualState = loginStatus.error;
-
-        throw errorMessages["10"];
-      }
-
-      if (recursive) {
-        throw "Unknown error from pronote: ${responseJson["Erreur"]["G"]} | ${responseJson["Erreur"]["Titre"]}\n$responseJson";
-      }
-
+      if (responseJson
+      
       return await client.communication?.post(functionName, data: data, recursive: true);
     }
 

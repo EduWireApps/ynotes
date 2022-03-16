@@ -7,20 +7,21 @@ class _AuthModule extends AuthModule<_AuthRepository> {
 class _AuthProvider extends Provider {
   _AuthProvider(PronoteApi api) : super(api);
 
-  Future<Response> firstInit(
-      String username, String password, Map<String, dynamic> parameters) async {
+  Future<Response> firstInit(String username, String password, Map<String, dynamic> parameters) async {
     if ((api as PronoteApi).client == null) {
       (api as PronoteApi).client = PronoteClient(username: username, password: password, parameters: parameters);
     }
-    Response init = await (api as PronoteApi).client!.communication.init();
+
+    Response init = await (api as PronoteApi).client!.init();
      if (init.hasError) {
       return Response(error: init.error);
     }
-   /* Response login = await (api as PronoteApi).client!.communication.login();
+    Response login = await (api as PronoteApi).client!.login();
+
     if (login.hasError) {
       return Response(error: login.error);
-    }*/
-    return Response();
+    }
+    return Response(error: "");
   }
 
   Future<Response<Map<String, dynamic>>> get(Map<String, String> body) async => Response();

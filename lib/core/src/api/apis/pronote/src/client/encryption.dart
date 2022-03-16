@@ -1,12 +1,12 @@
 part of pronote;
 
 
-class _Encryption {
+class Encryption {
   late IV aesIV;
-  late final IV aesIVTemp;
-  late final Key aesKey;
+  late IV aesIVTemp;
+  late Key aesKey;
 
-  _Encryption() {
+  Encryption() {
     aesIV = IV.fromLength(16);
     aesIVTemp = IV.fromSecureRandom(16);
     aesKey = Key.fromBase16(generateMd5(""));

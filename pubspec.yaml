@@ -50,6 +50,10 @@ dependencies:
   shake_flutter: ^15.1.0
   simple_animations: ^4.0.1
   smooth_page_indicator: ^1.0.0+2
+  requests:
+    git:
+      ref: master
+      url: "https://github.com/jossef/requests"
   url_launcher: ^6.0.18
   uuid: ^3.0.5
   ynotes_packages: # flutter pub upgrade ynotes_packages

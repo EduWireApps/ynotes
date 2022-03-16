@@ -2,8 +2,8 @@ part of pronote;
 
 Response<String> getDownloadUrl(
     {required Document document,
-    required _Communication communication,
-    required _Encryption encryption,
+    required Communication communication,
+    required Encryption encryption,
     required attributes}) {
   final Map<String, dynamic> data = {"N": document.id, "G": document.type};
   final res = encryption.aesEncrypt(utf8.encode(jsonEncode(data)));
