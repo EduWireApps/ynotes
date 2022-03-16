@@ -81,7 +81,7 @@ class PronoteClient {
     }
   }
 
-  Future<Response> login() async {
+  Future<Response<Map>> login() async {
     try {
       if (isCas) {
         username = attributes['e'];
@@ -105,8 +105,7 @@ class PronoteClient {
 
       var idr = identificationResponse.data!;
       Logger.log("PRONOTE", "Identification");
-     
-    
+
       var challenge = idr['donneesSec']['donnees']['challenge'];
       var e = Encryption();
 
@@ -205,12 +204,10 @@ class PronoteClient {
             Logger.log("PRONOTE", "Surely using OLD API");
           }
         }
-        String? classe = safeMapGetter(fonctionParameters, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]);
-        String? userFullName = safeMapGetter(fonctionParameters, ['donneesSec', 'donnees', 'ressource', "L"]);
 
         Logger.log("PRONOTE", "Successfully logged in as $username");
         return Response(
-          data: [classe, userFullName],
+          data: fonctionParameters,
         );
       } else {
         Logger.log("PRONOTE", "Login failed");
@@ -219,6 +216,10 @@ class PronoteClient {
     } catch (e) {
       return Response(error: "Login failed $e");
     }
+  }
+
+  refresh() {
+    communication = Communication(this);
   }
 }
 

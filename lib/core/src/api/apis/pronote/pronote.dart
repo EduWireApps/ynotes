@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:pointycastle/export.dart' hide Digest;
 import 'package:requests/requests.dart' as req;
+import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/src/services/settings.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/core/api.dart';
@@ -24,6 +25,8 @@ part 'src/client/communication.dart';
 
 //part 'src/client/communication_legacy.dart';
 part 'src/client/encryption.dart';
+part 'src/client/keepAlive.dart';
+
 part 'src/client.dart';
 part 'src/utils.dart';
 
