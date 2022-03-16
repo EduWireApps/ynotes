@@ -12,7 +12,8 @@ class LoginPage extends StatelessWidget {
   // This is only temporary and should be stored in the [API] class
   static final List<SchoolServiceBox> _services = [
     SchoolServiceBox(
-        image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
+        image: const AssetImage(
+            'assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
         imageColor: theme.colors.foregroundColor,
         name: 'Ecole Directe',
         route: '/login/ecoledirecte',
@@ -22,6 +23,12 @@ class LoginPage extends StatelessWidget {
         name: 'Pronote',
         route: '/login/pronote',
         parser: 1),
+    const SchoolServiceBox(
+        name: 'La vie scolaire',
+        route: '/login/lvs',
+        image: AssetImage(
+            'assets/images/icons/pronote/PronoteIcon.png'), //temporary
+        parser: 2),
     // LA VIE SCOLAIRE, beta = true
     const SchoolServiceBox(name: "Démonstrations", route: "/login/demos")
   ];
@@ -43,7 +50,8 @@ class LoginPage extends StatelessWidget {
                   context,
                   YInfoDialog(
                     title: LoginContent.login.missingService,
-                    body: Text(LoginContent.login.dialogBody, style: theme.texts.body1),
+                    body: Text(LoginContent.login.dialogBody,
+                        style: theme.texts.body1),
                     confirmLabel: "OK",
                   ));
             },

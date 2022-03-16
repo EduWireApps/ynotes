@@ -11,6 +11,8 @@ import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
+import 'lvs.dart';
+
 //Return the good API (will be extended to Pronote)
 List<String> colorList = [
   "#f07aa0",
@@ -37,6 +39,9 @@ apiManager(Offline _offline) {
 
     case 1:
       return APIPronote(_offline);
+
+    case 2:
+      return APILVS(_offline);
   }
 }
 
@@ -47,7 +52,8 @@ String getInfoUrl(String url) {
 
 Future<bool> checkPronoteURL(String url) async {
   try {
-    var response = await http.get(Uri.parse(getInfoUrl(url))).catchError((e) {});
+    var response =
+        await http.get(Uri.parse(getInfoUrl(url))).catchError((e) {});
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -85,7 +91,8 @@ Future<int> getColor(String? disciplineCode) async {
 
 ///Generate lesson ID using, the next scheme : week parity (1 or 2), day of week (1-7) and an hashcode
 ///composed of the lesson start datetime, the lesson end datetime and the discipline name
-Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) async {
+Future<int> getLessonID(
+    DateTime start, DateTime end, String disciplineName) async {
   int parity = ((await getWeek(start)).isEven) ? 1 : 2;
   int weekDay = start.weekday;
   TimeOfDay startTimeOfDay = TimeOfDay.fromDateTime(start);
@@ -96,7 +103,8 @@ Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) asy
       endTimeOfDay.minute.toString();
   int endHash = (parsedStartAndEnd + disciplineName).hashCode;
 
-  int finalID = int.parse(parity.toString() + weekDay.toString() + endHash.toString());
+  int finalID =
+      int.parse(parity.toString() + weekDay.toString() + endHash.toString());
 
   return finalID;
 }
@@ -111,14 +119,23 @@ List<String> getRootAddress(String address) {
 
 getWeek(DateTime date) async {
   if (await (KVS.read(key: "startday")) != null) {
-    return (1 + (date.difference(DateTime.parse(await (KVS.read(key: "startday")) ?? "")).inDays / 7).floor()).round();
+    return (1 +
+            (date
+                        .difference(DateTime.parse(
+                            await (KVS.read(key: "startday")) ?? ""))
+                        .inDays /
+                    7)
+                .floor())
+        .round();
   } else {
     return 0;
   }
 }
 
 String linkify(String link) {
-  return link.replaceAllMapped(RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+  return link.replaceAllMapped(
+      RegExp(r'(>|\s)+(https?.+?)(<|\s)',
+          multiLine: true, caseSensitive: false), (match) {
     return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
   });
 }
