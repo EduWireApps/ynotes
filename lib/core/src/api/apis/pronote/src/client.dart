@@ -105,13 +105,8 @@ class PronoteClient {
 
       var idr = identificationResponse.data!;
       Logger.log("PRONOTE", "Identification");
-      Logger.log(
-          "PRONOTE",
-          "Using following credentials : " +
-              username +
-              " , " +
-              password.toString().substring(0, password.toString().length - 2),
-          save: false);
+     
+    
       var challenge = idr['donneesSec']['donnees']['challenge'];
       var e = Encryption();
 
