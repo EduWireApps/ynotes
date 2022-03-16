@@ -86,6 +86,18 @@ class _AgendaSettingsState extends State<AgendaSettings> {
             color: ThemeUtils.textColor(),
           ),
         ),
+        SwitchListTile(
+          value: appSys.settings.user.agendaPage.hideSaturdayAndSunday,
+          title: Text("Passer le samedi et le dimanche",
+           style: TextStyle(
+                  fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
+          onChanged: (value) {
+            appSys.settings.user.agendaPage.hideSaturdayAndSunday = value;
+            appSys.saveSettings();
+            setState(() {});
+          }, 
+          secondary: Icon(MdiIcons.calendarWeekend, color: ThemeUtils.textColor()),
+        ),
         if (!kIsWeb && Platform.isAndroid)
           ListTile(
             title: Text("Notification constante",
