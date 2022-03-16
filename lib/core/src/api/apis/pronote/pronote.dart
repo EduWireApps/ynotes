@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:pointycastle/export.dart' hide Digest;
 import 'package:requests/requests.dart' as req;
 import 'package:uuid/uuid.dart';
+import 'package:ynotes/core/src/api/apis/pronote/src/content/pronote_content.dart';
 import 'package:ynotes/core/src/services/settings.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/core/api.dart';

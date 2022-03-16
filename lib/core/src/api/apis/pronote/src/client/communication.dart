@@ -45,7 +45,8 @@ class Communication {
       }
       Response<String> keyRes = encryption.aesDecrypt(hex.decode(data['donneesSec']['donnees']['cle']));
       if (keyRes.hasError) {
-        return Response(error: "Failed to decrypt key ${keyRes.error}");
+        Logger.error(keyRes.error);
+        return Response(error: PronoteContent.loginErrors.unexpected_error + " (key decryption)");
       }
       try {
         authorizedTabs = prepareTabs(data['donneesSec']['donnees']['listeOnglets']);
@@ -62,7 +63,8 @@ class Communication {
       encryption.aesKey = Key(Uint8List.fromList(key.bytes));
       return Response();
     } catch (e) {
-      return Response(error: "Error while processing after-auth $e");
+      Logger.error(e);
+      return Response(error: PronoteContent.loginErrors.unexpected_error + " (after auth)");
     }
   }
 
@@ -74,7 +76,6 @@ class Communication {
   }
 
   Future<Response<List<Object>>> init() async {
-
     var headers = {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
@@ -92,13 +93,18 @@ class Communication {
 
     final res = parseHtml(response.content()); // L94 legacy/communication.dart
 
-    if (res.hasError) return Response(error: res.error);
-
+    if (res.hasError) {
+      Logger.error(res.error);
+      return Response(error: res.error);
+    }
     attributes = res.data!;
 
     //uuid
     final res0 = encryption.rsaEncrypt(encryption.aesIVTemp.bytes, {'MR': attributes['MR'], 'ER': attributes['ER']});
-    if (res0.hasError) return Response(error: res0.error);
+    if (res0.hasError) {
+      Logger.error(res0.error);
+      return Response(error: PronoteContent.loginErrors.unexpected_error + " (RSA encoding)");
+    }
     final String uuid = base64.encode(res0.data!);
 
     var jsonPost = {'Uuid': uuid, 'identifiantNav': null};
@@ -110,7 +116,8 @@ class Communication {
         data: {'donnees': jsonPost},
         decryptionChange: {'iv': hex.encode(md5.convert(encryption.aesIVTemp.bytes).bytes)});
     if (initialResponse.hasError) {
-      return Response(error: "Error while collecting FonctionParametres ${initialResponse.error}");
+      Logger.error(initialResponse.error);
+      return Response(error: PronoteContent.loginErrors.unexpected_error + " (fonction paramètres)");
     }
     return Response(data: [attributes, initialResponse.data]);
   }
@@ -123,9 +130,9 @@ class Communication {
       onLoad = body.attributes["onload"]!.substring(14, body.attributes["onload"]!.length - 37);
     } else {
       if (html.contains("IP")) {
-        return Response(error: "IP suspended.");
+        return Response(error: PronoteContent.loginErrors.ip_suspended);
       } else {
-        return Response(error: "HTML page error.");
+        return Response(error: PronoteContent.loginErrors.unexpected_error + " (HTML)");
       }
     }
     final Map<String, dynamic> attributes = {};
@@ -180,13 +187,13 @@ class Communication {
       var responseJson = response.json();
 
       if (responseJson["Erreur"]['G'] == 22) {
-        return Response(error: "Connexion expirée $requestNumber");
+        return Response(error: PronoteContent.loginErrors.expired_connexion);
       }
       if (responseJson["Erreur"]['G'] == 10) {
-        return Response(error: "Connexion expirée $requestNumber");
+        return Response(error: PronoteContent.loginErrors.expired_connexion);
       }
-
-      return Response(error: "Erreur pendant le post ${responseJson["Erreur"]}");
+      Logger.error("Erreur while posting ${responseJson["Erreur"]}");
+      return Response(error: PronoteContent.loginErrors.unexpected_error + " (post)");
     }
 
     if (decryptionChange != null) {
@@ -219,7 +226,8 @@ class Communication {
       try {
         responseData['donneesSec'] = jsonDecode(responseData['donneesSec']);
       } catch (e) {
-        throw "JSONDecodeError";
+        Logger.error("JSONDecodeError");
+        return Response(error: PronoteContent.loginErrors.unexpected_error);
       }
     }
     return Response(data: responseData);
