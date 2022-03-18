@@ -80,7 +80,7 @@ class GradeContainer extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       AutoSizeText(
-                        grade.value.display(),
+                        grade.value.display,
                         style: TextStyle(
                           fontWeight: YFontWeight.semibold,
                           color: color.foregroundColor,
@@ -88,11 +88,11 @@ class GradeContainer extends StatelessWidget {
                         ),
                         softWrap: false,
                       ),
-                      if (grade.coefficient != 1)
+                      if (grade.value.valueType != gradeValueType.string && grade.value.coefficient != 1)
                         Positioned(
-                            top: -YScale.s3, right: -YScale.s2, child: bubble(grade.coefficient.display(), true)),
-                      if (grade.outOf != 20)
-                        Positioned(bottom: -YScale.s3, right: -YScale.s2, child: bubble("/${grade.outOf.display()}"))
+                            top: -YScale.s3, right: -YScale.s2, child: bubble(grade.value.coefficient.display(), true)),
+                      if (grade.value.valueType != gradeValueType.string && grade.value.outOf != 20)
+                        Positioned(bottom: -YScale.s3, right: -YScale.s2, child: bubble("/${grade.value.outOf.display()}"))
                     ],
                   ),
                 )),

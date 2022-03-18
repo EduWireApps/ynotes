@@ -104,14 +104,20 @@ class _GradesRepository extends Repository {
     // When this setting is set to [false], all grades' coefficient are set to 0. To counter this,
     // we set the coefficient to 1 for all grades.
     final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
+
     final List<Grade> grades = res.data!["data"]["notes"].map<Grade>((e) {
+      
+      final GradeValue value = GradeValue(
+        valueType: gradeValueType.double,
+        coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
+        outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
+        doubleValue: (e["valeur"] as String).toDouble() ?? double.nan,
+        significant: !(e["nonSignificatif"] as bool),
+      );
+
       Grade g = Grade(
         name: e["devoir"],
         type: e["typeDevoir"],
-        coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
-        outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
-        value: (e["valeur"] as String).toDouble() ?? double.nan,
-        significant: !(e["nonSignificatif"] as bool),
         date: DateTime.parse(e["date"]),
         entryDate: DateTime.parse(e["dateSaisie"]),
         classAverage: (e["moyenneClasse"] as String).toDouble() ?? double.nan,
@@ -120,7 +126,8 @@ class _GradesRepository extends Repository {
       )
         ..subject.value =
             subjects.firstWhere((s) => s.entityId == e["codeMatiere"] && s.period.value!.entityId == e["codePeriode"])
-        ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"]);
+        ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"])
+        ..value = value;
       return g;
     }).toList();
     return Response(data: {

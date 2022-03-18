@@ -6,7 +6,6 @@
     "configurations": [
         {
             "name": "Flutter",
-            "request": "launch",
             "type": "dart",
             "windows": {
                 "args": [
@@ -15,7 +14,9 @@
                 ],
             },
             "linux": {
+                
                 "args": [
+                    "--no-dds",
                     "--flavor",
                     "dev",
                 ],

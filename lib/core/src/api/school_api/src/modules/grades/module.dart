@@ -128,8 +128,11 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       List<double> values = [];
       List<double> coefficients = [];
       for (Grade grade in grades) {
-        values.add(grade.realValue);
-        coefficients.add(grade.coefficient);
+        if (grade.value.significant && (grade.value.valueType != gradeValueType.string)) {
+          values.add(grade.realValue);
+          /// It is asserted not null
+          coefficients.add(grade.value.coefficient!);
+        }
       }
       return calculateAverage(values, coefficients);
     }

@@ -1,5 +1,20 @@
 part of models;
 
+
+class GradeValueTypeConverter extends TypeConverter<gradeValueType, int> {
+  const GradeValueTypeConverter(); // Converters need to have an empty const constructor
+
+  @override
+  gradeValueType fromIsar(int enumIndex) {
+    return gradeValueType.values[enumIndex];
+  }
+
+  @override
+  int toIsar(gradeValueType gradeValueType) {
+    return gradeValueType.index;
+  }
+}
+
 class ListMapConverter extends TypeConverter<List<Map?>?, String?> {
   const ListMapConverter(); // Converters need to have an empty const constructor
 

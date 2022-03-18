@@ -1,6 +1,7 @@
 part of pronote;
 
 class PronoteClient {
+  Map assignedColors = {};
   final Map parameters;
   String username;
   String password;
@@ -45,7 +46,6 @@ class PronoteClient {
     isCas = loginWay != PronoteLoginWay.standardLogin;
     communication = Communication(this);
   }
-
   init() async {
     try {
       Response<List<Object>> communicationInitReq = await communication.init();
@@ -218,9 +218,229 @@ class PronoteClient {
     }
   }
 
+  Response<List<PronotePeriod>> periods() {
+    try {
+      Logger.log("PRONOTE", "Getting periods");
+      dynamic json;
+      try {
+        json = fonctionParameters['donneesSec']['donnees']['General']['ListePeriodes'];
+      } catch (e) {
+        Logger.error("Error while parsing JSON " + e.toString());
+        Response(error: PronoteContent.gradesErrors.periodsFetchFailed);
+      }
+
+      List<PronotePeriod> toReturn = [];
+      json.forEach((j) {
+        PronotePeriod per = PronotePeriod(this, j);
+        assignedColors = per._client.assignedColors;
+        toReturn.add(per);
+      });
+      return Response(data: toReturn);
+    } catch (e) {
+      Logger.error("Error while adding periods " + e.toString());
+      return Response(error: PronoteContent.gradesErrors.periodsFetchFailed);
+    }
+  }
+
   refresh() {
     communication = Communication(this);
   }
 }
 
 enum PronoteLoginWay { qrCodeLogin, casLogin, standardLogin }
+
+class PronotePeriod {
+  late DateTime end;
+
+  late DateTime start;
+
+  late String name;
+
+  late String id;
+
+  late double overallAverage;
+  late double classAverage;
+
+  late PronoteClient _client;
+
+  // Represents a period of the school year. You shouldn't have to create this class manually.
+
+  // Attributes
+  // ----------
+  // id : str
+  //     the id of the period (used internally)
+  // name : str
+  //     name of the period
+  // start : str
+  //     date on which the period starts
+  // end : str
+  //     date on which the period ends
+
+  PronotePeriod(PronoteClient client, Map parsedJson) {
+    _client = client;
+    id = parsedJson['N'];
+    name = parsedJson['L'];
+    var inputFormat = DateFormat("dd/MM/yyyy");
+    start = inputFormat.parse(parsedJson['dateDebut']['V']);
+    end = inputFormat.parse(parsedJson['dateFin']['V']);
+  }
+  Period get toPeriod {
+    return Period(
+      classAverage: classAverage,
+      overallAverage: overallAverage,
+      name: name,
+      entityId: id,
+      minAverage: double.nan,
+      maxAverage: double.nan,
+      startDate: start,
+      endDate: end,
+      headTeacher: "",
+    );
+  }
+
+  ///Return the eleve average, the max average, the min average, and the class average
+  average(var json, var codeMatiere) {
+    //The services for the period
+    List services = json['donneesSec']['donnees']['listeServices']['V'];
+    //The average data for the given matiere
+
+    var averageData = services.firstWhere((element) => element["L"].hashCode.toString() == codeMatiere);
+    //Logger.log("PRONOTE", averageData["moyEleve"]["V"]);
+
+    return [
+      gradeTranslate(averageData["moyEleve"]["V"]),
+      gradeTranslate(averageData["moyMax"]["V"]),
+      gradeTranslate(averageData["moyMin"]["V"]),
+      gradeTranslate(averageData["moyClasse"]["V"])
+    ];
+  }
+
+  bool countsAsZero(String grade) {
+    List<String> zerosGrades = ["Absent zéro", "Non rendu zéro"];
+    if (zerosGrades.contains(grade)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Subject getRelatedSubject(List rawSubjects, subjectId) {
+    Map data = rawSubjects.firstWhere((element) => element["N"] == subjectId);
+    final colors = List.from(AppColors.colors);
+    final Random random = Random();
+    late YTColor color;
+    if (_client.assignedColors.containsKey(data["couleur"])) {
+      color = _client.assignedColors[data["couleur"]]!;
+    } else {
+      color = colors[random.nextInt(colors.length)];
+      _client.assignedColors[data["couleur"]] = color;
+
+      colors.remove(color);
+    }
+
+    return Subject(
+      color: color,
+      entityId: subjectId,
+      name: data["L"],
+      classAverage: double.tryParse(safeMapGetter(data, ["moyClasse", "V"])) ?? double.nan,
+      maxAverage: double.tryParse(safeMapGetter(data, ["moyMin", "V"])) ?? double.nan,
+      minAverage: double.tryParse(safeMapGetter(data, ["moyMin", "V"])) ?? double.nan,
+      coefficient: 1.0,
+
+      /// To do retrieve coefficients
+      teachers: "",
+      average: double.tryParse(safeMapGetter(data, ["moyEleve", "V"])) ?? double.nan,
+    );
+  }
+
+  Future<Response<List<Grade>>> grades() async {
+    //Get grades from the period.
+    List<Grade> list = [];
+    var jsonData = {
+      'donnees': {
+        'Periode': {'N': id, 'L': name}
+      },
+      "_Signature_": {"onglet": 198}
+    };
+
+    Response responseReq = await _client.communication.post('DernieresNotes', data: jsonData);
+    if (responseReq.hasError) return Response(error: PronoteContent.gradesErrors.requestFailed);
+    Map response = responseReq.data!;
+
+    try {
+      List grades = safeMapGetter(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
+      List rawDisciplines = safeMapGetter(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
+
+      overallAverage = gradeTranslate(safeMapGetter(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
+      classAverage = gradeTranslate(safeMapGetter(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "");
+
+      grades.forEach((element) {
+        final GradeValue value = GradeValue(
+            valueType: gradeType(safeMapGetter(element, ["note", "V"]) ?? ""),
+            coefficient: double.tryParse(safeMapGetter(element, ["coefficient"])) ?? double.nan,
+            outOf: double.tryParse(safeMapGetter(element, ["bareme", "V"])) ?? double.nan,
+            doubleValue: countsAsZero(gradeTranslate(safeMapGetter(element, ["note", "V"]) ?? ""))
+                ? 0.0
+                : (double.tryParse(gradeTranslate(safeMapGetter(element, ["note", "V"]))) ?? double.nan),
+            stringValue: gradeTranslate(safeMapGetter(element, ["note", "V"]) ?? ""),
+            significant: significant(safeMapGetter(element, ["note", "V"])));
+        Grade g = Grade(
+          name: element["commentaire"],
+          type: "Interrogation",
+          date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
+          entryDate: DateFormat("dd/MM/yyyy").parse(safeMapGetter(element, ["date", "V"])),
+          classAverage: gradeTranslate(safeMapGetter(element, ["moyenne", "V"]) ?? "") ?? double.nan,
+          classMax: gradeTranslate(safeMapGetter(element, ["noteMax", "V"]) ?? "") ?? double.nan,
+          classMin: gradeTranslate(safeMapGetter(element, ["noteMin", "V"]) ?? "") ?? double.nan,
+        )
+          ..subject.value = getRelatedSubject(rawDisciplines, safeMapGetter(element, ["service", "V", "L"]))
+          ..period.value = toPeriod
+          ..value = value;
+
+        list.add(g);
+      });
+      return Response(data: list);
+    } catch (e) {
+      return Response(error: PronoteContent.gradesErrors.parsingFailed);
+    }
+  }
+
+  gradeTranslate(String value) {
+    List gradeTranslate = [
+      'Absent',
+      'Dispensé',
+      'Non noté',
+      'Inapte',
+      'Non rendu',
+      'Absent zéro',
+      'Non rendu zéro',
+      'Félicitations'
+    ];
+    if (gradeType(value) == gradeValueType.string) {
+      return gradeTranslate[int.parse(value[1]) - 1];
+    } else {
+      return value;
+    }
+  }
+
+  gradeValueType gradeType(String rawGrade) {
+    if (rawGrade.contains("|")) {
+      if (countsAsZero(rawGrade)) {
+        return gradeValueType.stringWithValue;
+      }
+      return gradeValueType.string;
+    } else {
+      return gradeValueType.double;
+    }
+  }
+
+  bool significant(String grade) {
+    List<String> unsignificantGrades = ["Dispensé", "Inapte", "Non rendu", "Non noté"];
+
+    if (unsignificantGrades.contains(grade)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}

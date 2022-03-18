@@ -46,7 +46,7 @@ class Communication {
       Response<String> keyRes = encryption.aesDecrypt(hex.decode(data['donneesSec']['donnees']['cle']));
       if (keyRes.hasError) {
         Logger.error(keyRes.error);
-        return Response(error: PronoteContent.loginErrors.unexpected_error + " (key decryption)");
+        return Response(error: PronoteContent.loginErrors.unexpectedError + " (key decryption)");
       }
       try {
         authorizedTabs = prepareTabs(data['donneesSec']['donnees']['listeOnglets']);
@@ -64,7 +64,7 @@ class Communication {
       return Response();
     } catch (e) {
       Logger.error(e);
-      return Response(error: PronoteContent.loginErrors.unexpected_error + " (after auth)");
+      return Response(error: PronoteContent.loginErrors.unexpectedError + " (after auth)");
     }
   }
 
@@ -103,7 +103,7 @@ class Communication {
     final res0 = encryption.rsaEncrypt(encryption.aesIVTemp.bytes, {'MR': attributes['MR'], 'ER': attributes['ER']});
     if (res0.hasError) {
       Logger.error(res0.error);
-      return Response(error: PronoteContent.loginErrors.unexpected_error + " (RSA encoding)");
+      return Response(error: PronoteContent.loginErrors.unexpectedError + " (RSA encoding)");
     }
     final String uuid = base64.encode(res0.data!);
 
@@ -117,7 +117,7 @@ class Communication {
         decryptionChange: {'iv': hex.encode(md5.convert(encryption.aesIVTemp.bytes).bytes)});
     if (initialResponse.hasError) {
       Logger.error(initialResponse.error);
-      return Response(error: PronoteContent.loginErrors.unexpected_error + " (fonction paramètres)");
+      return Response(error: PronoteContent.loginErrors.unexpectedError + " (fonction paramètres)");
     }
     return Response(data: [attributes, initialResponse.data]);
   }
@@ -130,9 +130,9 @@ class Communication {
       onLoad = body.attributes["onload"]!.substring(14, body.attributes["onload"]!.length - 37);
     } else {
       if (html.contains("IP")) {
-        return Response(error: PronoteContent.loginErrors.ip_suspended);
+        return Response(error: PronoteContent.loginErrors.ipSuspended);
       } else {
-        return Response(error: PronoteContent.loginErrors.unexpected_error + " (HTML)");
+        return Response(error: PronoteContent.loginErrors.unexpectedError + " (HTML)");
       }
     }
     final Map<String, dynamic> attributes = {};
@@ -187,13 +187,13 @@ class Communication {
       var responseJson = response.json();
 
       if (responseJson["Erreur"]['G'] == 22) {
-        return Response(error: PronoteContent.loginErrors.expired_connexion);
+        return Response(error: PronoteContent.loginErrors.expiredConnexion);
       }
       if (responseJson["Erreur"]['G'] == 10) {
-        return Response(error: PronoteContent.loginErrors.expired_connexion);
+        return Response(error: PronoteContent.loginErrors.expiredConnexion);
       }
       Logger.error("Erreur while posting ${responseJson["Erreur"]}");
-      return Response(error: PronoteContent.loginErrors.unexpected_error + " (post)");
+      return Response(error: PronoteContent.loginErrors.unexpectedError + " (post)");
     }
 
     if (decryptionChange != null) {
@@ -227,7 +227,7 @@ class Communication {
         responseData['donneesSec'] = jsonDecode(responseData['donneesSec']);
       } catch (e) {
         Logger.error("JSONDecodeError");
-        return Response(error: PronoteContent.loginErrors.unexpected_error);
+        return Response(error: PronoteContent.loginErrors.unexpectedError);
       }
     }
     return Response(data: responseData);

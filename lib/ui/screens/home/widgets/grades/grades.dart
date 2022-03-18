@@ -20,7 +20,7 @@ class _GradesSectionState extends State<GradesSection> {
 
   // We get all grades and sort them by entryDate
   List<Grade> get grades =>
-      module.currentPeriod?.sortedGrades.where((grade) => grade.significant && !grade.custom).toList() ?? [];
+      module.currentPeriod?.sortedGrades.where((grade) => grade.value.significant && !grade.custom).toList() ?? [];
 
   List<ChartElement> get chartElements {
     final List<Grade> fetchedGrades = grades;

@@ -1,7 +1,6 @@
 part of pronote;
 
-
-class PronotePeriod {
+/* class PronotePeriod {
   DateTime? end;
 
   DateTime? start;
@@ -130,7 +129,7 @@ class PronotePeriod {
     }
   }
 }
-
+ */
 class _GradesModule extends GradesModule<_GradesRepository> {
   _GradesModule(SchoolApi api) : super(repository: _GradesRepository(api), api: api);
 }
@@ -138,7 +137,17 @@ class _GradesModule extends GradesModule<_GradesRepository> {
 class _GradesProvider extends Provider {
   _GradesProvider(SchoolApi api) : super(api);
 
-  Future<Response<Map<String, dynamic>>> get() async => Response();
+  Future<Response<List<Grade>>> get() async {
+    List<Grade> grades = [];
+    Response<List<PronotePeriod>> res = await (api as PronoteApi).client!.periods();
+    if (res.hasError) return Response(error: res.error);
+    Future.forEach(res.data!, (PronotePeriod pronotePeriod) async {
+      Response gradeRes = await pronotePeriod.grades();
+      if (gradeRes.hasError) return Response(error: gradeRes.error);
+      grades.addAll(gradeRes.data!);
+    });
+    return Response(data: grades);
+  }
 }
 
 class _GradesRepository extends Repository {
@@ -149,13 +158,24 @@ class _GradesRepository extends Repository {
 
   @override
   Future<Response<Map<String, dynamic>>> get() async {
-    final res = await gradesProvider.get();
+    final Response<List<Grade>> res = await gradesProvider.get();
+    if (res.hasError) {
+      return Response(error: res.error!);
+    }
 
     List<Period> periods = [];
-    List<Period> subjects = [];
-
-    List<Period> grades = [];
-
+    List<Subject> subjects = [];
+    List<Grade> grades = [];
+    grades.addAll(res.data!);
+    res.data!.forEach(((element) {
+      element.load();
+      if (!periods.any((Period period) => period.id == element.period.value?.id)) {
+        periods.add(element.period.value!);
+      }
+      if (!subjects.any((Subject subject) => subject.id == element.subject.value?.id)) {
+        subjects.add(element.subject.value!);
+      }
+    }));
     return Response(data: {
       "periods": periods,
       "subjects": subjects,

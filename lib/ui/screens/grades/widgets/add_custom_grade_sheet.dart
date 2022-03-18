@@ -19,20 +19,6 @@ class _AddCustomGradeSheetState extends State<AddCustomGradeSheet> {
   double coefficient = 1;
   Subject? subject;
 
-  void submit(bool value) {
-    _formKey.currentState!.save();
-    final Grade grade = Grade.custom(
-      coefficient: coefficient,
-      outOf: outOf,
-      value: this.value,
-    )
-      ..subject.value = subject
-      ..period.value = widget.module.currentPeriod!;
-    Navigator.pop(context, grade);
-  }
-
-  double? parseValue(String value) => double.tryParse(value.replaceAll(",", "."));
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -161,5 +147,22 @@ class _AddCustomGradeSheetState extends State<AddCustomGradeSheet> {
             )
           ],
         ));
+  }
+
+  double? parseValue(String value) => double.tryParse(value.replaceAll(",", "."));
+
+  void submit(bool value) {
+    _formKey.currentState!.save();
+    final GradeValue gradeValue = GradeValue(
+        valueType: gradeValueType.double,
+        outOf: outOf,
+        doubleValue: this.value,
+        coefficient: coefficient,
+        significant: true);
+    final Grade grade = Grade.custom()
+      ..subject.value = subject
+      ..period.value = widget.module.currentPeriod!
+      ..value = gradeValue;
+    Navigator.pop(context, grade);
   }
 }

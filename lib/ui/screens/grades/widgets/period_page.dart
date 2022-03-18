@@ -71,7 +71,7 @@ class _Stats extends StatelessWidget {
   const _Stats(this.module, this.period, this.simulate, {Key? key}) : super(key: key);
 
   List<Grade> get grades => period.sortedGrades.where((grade) {
-        final bool s = grade.significant;
+        final bool s = grade.value.significant;
         if (simulate) {
           return s;
         } else {
