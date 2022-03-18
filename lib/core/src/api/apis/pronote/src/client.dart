@@ -181,22 +181,21 @@ class PronoteClient {
         if (afterAuthReq.hasError) return Response(error: afterAuthReq.error);
         if (communication.legacyApi == false) {
           try {
-            Response fonctionParametersReq = await communication.post("ParametresUtilisateur", data: {'donnees': {}});
-            if (fonctionParametersReq.hasError) return Response(error: "Error while collecting ParametresUtilisateur");
-            fonctionParameters = fonctionParametersReq.data!;
+            Response userParametersReq = await communication.post("ParametresUtilisateur", data: {'donnees': {}});
+            if (userParametersReq.hasError) return Response(error: "Error while collecting ParametresUtilisateur");
+            userParameters = userParametersReq.data!;
             encryption.aesKey = communication.encryption.aesKey;
 
             communication.authorizedTabs =
-                prepareTabs(safeMapGetter(fonctionParameters, ['donneesSec', 'donnees', 'listeOnglets']));
+                prepareTabs(safeMapGetter(userParameters, ['donneesSec', 'donnees', 'listeOnglets']));
 
             try {
               KVS.write(
                   key: "classe",
-                  value:
-                      safeMapGetter(fonctionParameters, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
+                  value: safeMapGetter(userParameters, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
               KVS.write(
                   key: "userFullName",
-                  value: safeMapGetter(fonctionParameters, ['donneesSec', 'donnees', 'ressource', "L"]));
+                  value: safeMapGetter(userParameters, ['donneesSec', 'donnees', 'ressource', "L"]));
             } catch (e) {
               Logger.log("PRONOTE", "Failed to register UserInfos");
             }
@@ -207,7 +206,7 @@ class PronoteClient {
 
         Logger.log("PRONOTE", "Successfully logged in as $username");
         return Response(
-          data: fonctionParameters,
+          data: userParameters,
         );
       } else {
         Logger.log("PRONOTE", "Login failed");
@@ -222,6 +221,7 @@ class PronoteClient {
     try {
       Logger.log("PRONOTE", "Getting periods");
       dynamic json;
+
       try {
         json = fonctionParameters['donneesSec']['donnees']['General']['ListePeriodes'];
       } catch (e) {
@@ -401,6 +401,7 @@ class PronotePeriod {
       });
       return Response(data: list);
     } catch (e) {
+      Logger.error(e);
       return Response(error: PronoteContent.gradesErrors.parsingFailed);
     }
   }

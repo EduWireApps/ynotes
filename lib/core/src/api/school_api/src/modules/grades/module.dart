@@ -130,6 +130,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       for (Grade grade in grades) {
         if (grade.value.significant && (grade.value.valueType != gradeValueType.string)) {
           values.add(grade.realValue);
+
           /// It is asserted not null
           coefficients.add(grade.value.coefficient!);
         }
@@ -148,7 +149,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     fetching = true;
     notifyListeners();
     final res = await repository.get();
-    if (res.hasError) return res;
+    if (res.hasError) {
+      fetching = false;
+      return res;
+    }
     final List<Period> __periods = res.data!["periods"] ?? [];
     final List<Subject> __subjects = res.data!["subjects"] ?? [];
     // If a subject already exists, we only keep its color so that it doesn't

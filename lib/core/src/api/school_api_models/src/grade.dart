@@ -84,10 +84,10 @@ class Grade extends _LinkedModel {
   /// The value out of 20. Use this to calculate averages.
   double get realValue {
     if (value.valueType == gradeValueType.double) {
-      return 20 * value.doubleValue! / value.outOf!;
+      return 20 * value.doubleValue! / value.outOf;
     }
     if (value.valueType == gradeValueType.stringWithValue) {
-      return 20 * value.doubleValue! / value.outOf!;
+      return 20 * value.doubleValue! / value.outOf;
     } else {
       return double.nan;
     }

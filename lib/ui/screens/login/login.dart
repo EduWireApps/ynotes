@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/src/api/school_api/school_api.dart';
-import 'package:ynotes/core/src/utilities/logger/logger.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -28,9 +27,9 @@ class LoginPage extends StatelessWidget {
             )),
         YVerticalSpacer(YScale.s10),
         ...spacedChildren(schoolApis.map((e) => SchoolServiceBox(e.metadata)).toList()),
+        YVerticalSpacer(YScale.s10),
         YButton(
             onPressed: () async {
-
               schoolApi = schoolApiManager(Apis.pronote);
               schoolApi.authModule.reset();
               final res = await schoolApi.authModule.login(
@@ -42,8 +41,17 @@ class LoginPage extends StatelessWidget {
 
                 return;
               }
+              if (res.hasError) {
+                YSnackbars.error(context, title: LoginContent.widgets.form.error, message: res.error!);
+
+                return;
+              }
+
+              YSnackbars.success(context, title: LoginContent.widgets.form.connected, message: res.data!);
+              await Future.delayed(const Duration(seconds: 3));
+              Navigator.pushReplacementNamed(context, "/terms");
             },
-            text: "PANIC",
+            text: "Démo Pronote",
             block: true,
             size: YButtonSize.large),
         Padding(

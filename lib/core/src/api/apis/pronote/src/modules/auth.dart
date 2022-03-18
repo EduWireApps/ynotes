@@ -80,7 +80,7 @@ class _AuthProvider extends Provider {
 
       accounts.add(SchoolAccount(
           firstName: name ?? "Sans nom",
-          lastName: "",
+          lastName: "Sans nom",
           className: studentClass ?? "",
           entityId: studentID ?? "",
           school: schoolName ?? "Sans nom",
@@ -96,7 +96,7 @@ class _AuthProvider extends Provider {
     String? studentID = safeMapGetter(schoolAccountData, ["N"]);
     return SchoolAccount(
         firstName: name ?? "Sans nom",
-        lastName: "",
+        lastName: "Sans nom",
         className: studentClass ?? "",
         entityId: studentID ?? "",
         school: schoolName ?? "Sans nom",
@@ -116,7 +116,9 @@ class _AuthRepository extends AuthRepository {
     Map accountData = res.data!;
     AppAccount appAccount = authProvider.account(accountData)[0];
     List<SchoolAccount> accounts = authProvider.account(accountData)[1];
-
+      api.modulesAvailability.grades = true;
+      await api.modulesAvailability.save();
+      api.refreshModules();
     final Map<String, dynamic> map = {"appAccount": appAccount, "schoolAccount": accounts[0]};
     return Response(data: map);
   }
