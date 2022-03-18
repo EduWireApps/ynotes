@@ -35,7 +35,7 @@ class FileStorage {
       await OpenFile.open(file.path);
       return Response();
     } catch (e) {
-      Logger.error(e, stackHint: "OQ==");
+      Logger.error(e, stackHint:"MjY=");
       return Response(error: e.toString());
     }
   }

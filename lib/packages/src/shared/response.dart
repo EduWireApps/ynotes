@@ -6,7 +6,7 @@ class Response<T> {
 
   Response({this.data, this.error}) {
     if (hasError) {
-      Logger.error(error);
+      Logger.error(error, stackHint:"MA==");
     }
   }
   bool get hasError => error != null;

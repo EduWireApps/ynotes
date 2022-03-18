@@ -45,7 +45,7 @@ class Communication {
       }
       Response<String> keyRes = encryption.aesDecrypt(hex.decode(data['donneesSec']['donnees']['cle']));
       if (keyRes.hasError) {
-        Logger.error(keyRes.error);
+        Logger.error(e, stackHint:"MTM=");
         return Response(error: PronoteContent.loginErrors.unexpectedError + " (key decryption)");
       }
       try {
@@ -63,7 +63,7 @@ class Communication {
       encryption.aesKey = Key(Uint8List.fromList(key.bytes));
       return Response();
     } catch (e) {
-      Logger.error(e);
+      Logger.error(e, stackHint:"MTQ=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (after auth)");
     }
   }
@@ -94,7 +94,7 @@ class Communication {
     final res = parseHtml(response.content()); // L94 legacy/communication.dart
 
     if (res.hasError) {
-      Logger.error(res.error);
+      Logger.error(e, stackHint:"MTU=");
       return Response(error: res.error);
     }
     attributes = res.data!;
@@ -102,7 +102,7 @@ class Communication {
     //uuid
     final res0 = encryption.rsaEncrypt(encryption.aesIVTemp.bytes, {'MR': attributes['MR'], 'ER': attributes['ER']});
     if (res0.hasError) {
-      Logger.error(res0.error);
+      Logger.error(e, stackHint:"MTY=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (RSA encoding)");
     }
     final String uuid = base64.encode(res0.data!);
@@ -116,7 +116,7 @@ class Communication {
         data: {'donnees': jsonPost},
         decryptionChange: {'iv': hex.encode(md5.convert(encryption.aesIVTemp.bytes).bytes)});
     if (initialResponse.hasError) {
-      Logger.error(initialResponse.error);
+      Logger.error(e, stackHint:"MTc=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (fonction paramètres)");
     }
     return Response(data: [attributes, initialResponse.data]);
@@ -192,7 +192,7 @@ class Communication {
       if (responseJson["Erreur"]['G'] == 10) {
         return Response(error: PronoteContent.loginErrors.expiredConnexion);
       }
-      Logger.error("Erreur while posting ${responseJson["Erreur"]}");
+      Logger.error(e, stackHint:"MTg=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (post)");
     }
 
@@ -226,7 +226,7 @@ class Communication {
       try {
         responseData['donneesSec'] = jsonDecode(responseData['donneesSec']);
       } catch (e) {
-        Logger.error("JSONDecodeError");
+        Logger.error(e, stackHint:"MTk=");
         return Response(error: PronoteContent.loginErrors.unexpectedError);
       }
     }
@@ -307,7 +307,7 @@ class PronoteClient {
       if (url != null) Logger.log("PRONOTE", url);
       return url;
     } catch (e) {
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"MjA=");
     }
   }
 */
@@ -391,7 +391,7 @@ class PronoteClient {
         try {
           listToReturn.add(PronoteConverter.lesson(this, lesson));
         } catch (e) {
-          CustomLogger.error(e);
+          CustomLogger.error(e, stackHint:"MjE=");
         }
       });
       Logger.log("PRONOTE", "Agenda collecte succeeded");
@@ -508,7 +508,7 @@ class PronoteClient {
       var response = await communication!.post('SaisieActualites', data: data);
       Logger.log("PRONOTE", response);
     } catch (e) {
-      CustomLogger.error(e);
+      CustomLogger.error(e, stackHint:"MjI=");
     }
   }
 */
@@ -621,7 +621,7 @@ class PronoteClient {
                   key: "userFullName", value: safeMapGetter(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
             } catch (e) {
               Logger.log("PRONOTE", "Failed to register UserInfos");
-              CustomLogger.error(e);
+              CustomLogger.error(e, stackHint:"MjM=");
             }
           } catch (e) {
             Logger.log("PRONOTE", "Surely using OLD API");

@@ -225,7 +225,7 @@ class PronoteClient {
       try {
         json = fonctionParameters['donneesSec']['donnees']['General']['ListePeriodes'];
       } catch (e) {
-        Logger.error("Error while parsing JSON " + e.toString());
+        Logger.error(e, stackHint:"MTA=");
         Response(error: PronoteContent.gradesErrors.periodsFetchFailed);
       }
 
@@ -237,7 +237,7 @@ class PronoteClient {
       });
       return Response(data: toReturn);
     } catch (e) {
-      Logger.error("Error while adding periods " + e.toString());
+      Logger.error(e, stackHint:"MTE=");
       return Response(error: PronoteContent.gradesErrors.periodsFetchFailed);
     }
   }
@@ -401,7 +401,7 @@ class PronotePeriod {
       });
       return Response(data: list);
     } catch (e) {
-      Logger.error(e);
+      Logger.error(e, stackHint:"MTI=");
       return Response(error: PronoteContent.gradesErrors.parsingFailed);
     }
   }

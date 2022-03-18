@@ -25,7 +25,7 @@ class TermsPage extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       Logger.log("LOGIN", "An error occured while getting the TOS");
-                      Logger.error(snapshot.error, stackHint: "NQ==");
+                      Logger.error(snapshot.error, stackHint:"OA==");
                     }
                     return Text(
                       snapshot.data.toString(),
