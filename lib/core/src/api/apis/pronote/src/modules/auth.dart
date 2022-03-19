@@ -19,13 +19,13 @@ class _AuthProvider extends Provider {
       String id = const Uuid().v1();
       AppAccount(
         firstName: name ?? "Sans nom",
-        lastName: "" ?? "Sans nom",
+        lastName: "",
         entityId: id,
       ).accounts.addAll(accounts);
       return [
         AppAccount(
           firstName: name ?? "Sans nom",
-          lastName: "" ?? "Sans nom",
+          lastName: "",
           entityId: id,
         ),
         accounts
