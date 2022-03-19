@@ -134,6 +134,7 @@ class _GradesRepository extends Repository {
         ..gradeValue.value = gradesValues[i];
       return g;
     }).toList();
+    
     return Response(data: {"periods": periods, "subjects": subjects, "grades": grades, "gradesValues": gradesValues});
   }
 }

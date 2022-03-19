@@ -17,7 +17,7 @@ extension GetGradeCollection on Isar {
 final GradeSchema = CollectionSchema(
   name: 'Grade',
   schema:
-      '{"name":"Grade","properties":[{"name":"classAverage","type":"Double"},{"name":"classMax","type":"Double"},{"name":"classMin","type":"Double"},{"name":"custom","type":"Byte"},{"name":"date","type":"Long"},{"name":"entryDate","type":"Long"},{"name":"name","type":"String"},{"name":"realValue","type":"Double"},{"name":"type","type":"String"}],"indexes":[],"links":[{"name":"period","target":"Period"},{"name":"subject","target":"Subject"}]}',
+      '{"name":"Grade","properties":[{"name":"classAverage","type":"Double"},{"name":"classMax","type":"Double"},{"name":"classMin","type":"Double"},{"name":"custom","type":"Byte"},{"name":"date","type":"Long"},{"name":"entryDate","type":"Long"},{"name":"name","type":"String"},{"name":"realValue","type":"Double"},{"name":"type","type":"String"}],"indexes":[],"links":[{"name":"gradeValue","target":"GradeValue"},{"name":"period","target":"Period"},{"name":"subject","target":"Subject"}]}',
   adapter: const _GradeAdapter(),
   idName: 'id',
   propertyIds: {
@@ -33,12 +33,12 @@ final GradeSchema = CollectionSchema(
   },
   indexIds: {},
   indexTypes: {},
-  linkIds: {'period': 0, 'subject': 1},
+  linkIds: {'gradeValue': 0, 'period': 1, 'subject': 2},
   backlinkIds: {},
-  linkedCollections: ['Period', 'Subject'],
+  linkedCollections: ['GradeValue', 'Period', 'Subject'],
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.period, obj.subject],
+  getLinks: (obj) => [obj.gradeValue, obj.period, obj.subject],
   version: 1,
 );
 
@@ -135,6 +135,13 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
   }
 
   void attachLinks(Isar isar, Grade object) {
+    object.gradeValue.attach(
+      isar.grades,
+      isar.getCollection<GradeValue>("GradeValue"),
+      object,
+      "gradeValue",
+      false,
+    );
     object.period.attach(
       isar.grades,
       isar.getCollection<Period>("Period"),

@@ -88,17 +88,14 @@ class Grade extends _LinkedModel {
     return gradeValue.value!;
   }
 
-  set value(GradeValue newValue) {
-    gradeValue.value = newValue;
-  }
-
   @override
   void load() {
     Offline.isar.writeTxnSync((isar) {
       subject.loadSync();
       period.loadSync();
+
       ///TO DO: fix this
-      //gradeValue.loadSync();
+      gradeValue.loadSync();
     });
   }
 }
@@ -139,7 +136,7 @@ class GradeValue {
       required this.valueType,
       this.stringValue,
       this.doubleValue,
-      required this.significant}) {}
+      required this.significant});
   String get display {
     if (valueType == gradeValueType.double) {
       return doubleValue!.display();

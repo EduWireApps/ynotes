@@ -157,7 +157,6 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       final List<Period> __periods = res.data!["periods"] ?? [];
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
       final List<GradeValue> __gradesValues = res.data!["gradesValues"] ?? [];
-      print(__gradesValues);
       // If a subject already exists, we only keep its color so that it doesn't
       // get updated on each [fetch].
       for (final __subject in __subjects) {
@@ -187,16 +186,16 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
         // STEP 1.5
         final filters = await isar.subjectsFilters.where().findAll();
-        for (final filter in filters) {
+        /*for (final filter in filters) {
           await filter.subjects.load();
           final List<String> subjectsIds = filter.subjects.map((subject) => subject.entityId).toSet().toList();
           final List<Subject> subjects = __subjects.where((subject) => subjectsIds.contains(subject.entityId)).toList();
           filter.subjects.clear();
           filter.subjects.addAll(subjects);
-        }
+        }*/
         // STEP 2
         // TODO: add check for gradeValues too
-        for (final grade in customGrades) {
+        /* for (final grade in customGrades) {
           await grade.subject.load();
           await grade.period.load();
           final Subject? subject =
@@ -210,34 +209,34 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
             grade.period.value = period;
           }
         }
-
+*/
         // STEP 3
         await isar.periods.clear();
+        await isar.gradeValues.clear();
         await isar.subjects.clear();
         await isar.grades.clear();
         await isar.subjectsFilters.clear();
-        await isar.gradeValues.clear();
 
         // STEP 4
         await isar.periods.putAll(__periods);
         await isar.subjects.putAll(__subjects);
+        await isar.gradeValues.putAll(__gradesValues);
+
         // TODO: fix this (maybe it's shadow cloning ???)
         // await isar.gradeValues.putAll(__grades.map((e) => e.gradeValue.value!).toList());
-        await isar.gradeValues.putAll(__gradesValues);
         await isar.grades.putAll(__grades);
 
         // STEP 5
         await isar.grades.putAll(customGrades);
-        await Future.forEach(customGrades, (Grade element) async {
+        /*await Future.forEach(customGrades, (Grade element) async {
           await isar.gradeValues.put(element.gradeValue.value!);
-        });
+        });*/
         await isar.subjectsFilters.putAll(filters);
 
         // STEP 6
         await Future.forEach(__subjects, (Subject subject) async {
           await subject.period.save();
         });
-
         await Future.forEach(__grades, (Grade grade) async {
           await grade.period.save();
           await grade.subject.save();
@@ -262,7 +261,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     } catch (e) {
       fetching = false;
       notifyListeners();
-      rethrow;
+      
       return Response(error: "");
     }
   }
