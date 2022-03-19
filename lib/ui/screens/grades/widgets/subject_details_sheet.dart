@@ -113,8 +113,10 @@ class _Chart extends StatelessWidget {
 
   const _Chart({Key? key, required this.subject, required this.grades}) : super(key: key);
 
-  List<double> get gradesValues => grades.map((e) => e.realValue).toList();
-  List<double> get classAverages => grades.map((e) => e.classAverage).toList();
+  List<Grade> get _grades => grades.where((e) => !e.realValue.isNaN).toList();
+
+  List<double> get gradesValues => _grades.map((e) => e.realValue).toList();
+  List<double> get classAverages => _grades.map((e) => e.classAverage).toList();
   double get minY => ([...gradesValues, ...classAverages].reduce(min) - .5).round().toDouble();
   double get maxY => ([...gradesValues, ...classAverages].reduce(max)).round().toDouble();
 
