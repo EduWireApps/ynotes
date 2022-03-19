@@ -218,7 +218,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         // STEP 4
         await isar.periods.putAll(__periods);
         await isar.subjects.putAll(__subjects);
-         ///TO DO: fix this (maybe it's shadow cloning ???)
+        // TODO: fix this (maybe it's shadow cloning ???)
         await isar.gradeValues.putAll(__grades.map((e) => e.gradeValue.value!).toList());
         await isar.grades.putAll(__grades);
 
@@ -237,13 +237,15 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         await Future.forEach(__grades, (Grade grade) async {
           await grade.period.save();
           await grade.subject.save();
-           ///TO DO: fix this (weirdly not stored in database)
+
+          ///TO DO: fix this (weirdly not stored in database)
           await grade.gradeValue.save();
         });
         await Future.forEach(customGrades, (Grade grade) async {
           await grade.period.save();
           await grade.subject.save();
-           ///TO DO: same than above
+
+          ///TO DO: same than above
           await grade.gradeValue.save();
         });
       });
