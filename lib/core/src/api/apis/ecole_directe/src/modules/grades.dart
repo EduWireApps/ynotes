@@ -105,15 +105,19 @@ class _GradesRepository extends Repository {
     // we set the coefficient to 1 for all grades.
     final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
 
-    final List<Grade> grades = res.data!["data"]["notes"].map<Grade>((e) {
-      
-      final GradeValue value = GradeValue(
-        valueType: gradeValueType.double,
-        coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
-        outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
-        doubleValue: (e["valeur"] as String).toDouble() ?? double.nan,
-        significant: !(e["nonSignificatif"] as bool),
-      );
+    final List<GradeValue> gradesValues = res.data!["data"]["notes"]
+        .map<GradeValue>((e) => GradeValue(
+              valueType: gradeValueType.double,
+              coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
+              outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
+              doubleValue: (e["valeur"] as String).toDouble() ?? double.nan,
+              significant: !(e["nonSignificatif"] as bool),
+            ))
+        .toList();
+
+    final List<Grade> grades = res.data!["data"]["notes"].asMap().entries.map<Grade>((entry) {
+      final Map<String, dynamic> e = entry.value;
+      final int i = entry.key;
 
       Grade g = Grade(
         name: e["devoir"],
@@ -127,13 +131,9 @@ class _GradesRepository extends Repository {
         ..subject.value =
             subjects.firstWhere((s) => s.entityId == e["codeMatiere"] && s.period.value!.entityId == e["codePeriode"])
         ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"])
-        ..gradeValue.value = value;
+        ..gradeValue.value = gradesValues[i];
       return g;
     }).toList();
-    return Response(data: {
-      "periods": periods,
-      "subjects": subjects,
-      "grades": grades,
-    });
+    return Response(data: {"periods": periods, "subjects": subjects, "grades": grades, "gradesValues": gradesValues});
   }
 }
