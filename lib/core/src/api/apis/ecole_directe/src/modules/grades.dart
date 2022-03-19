@@ -106,7 +106,7 @@ class _GradesRepository extends Repository {
     final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
 
     final List<GradeValue> gradesValues = res.data!["data"]["notes"].map<GradeValue>((e) {
-      final bool isString = double.tryParse(e["valeur"]) == null;
+      final bool isString = (e["valeur"] as String).toDouble() == null;
       return GradeValue(
         valueType: isString ? gradeValueType.string : gradeValueType.double,
         coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,

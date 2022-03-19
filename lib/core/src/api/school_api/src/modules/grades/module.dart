@@ -128,7 +128,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       List<double> values = [];
       List<double> coefficients = [];
       for (Grade grade in grades) {
-        if (grade.value.significant && (grade.value.valueType != gradeValueType.string)) {
+        if (grade.value.significant && (!grade.realValue.isNaN)) {
           values.add(grade.realValue);
 
           /// It is asserted not null
@@ -261,7 +261,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     } catch (e) {
       fetching = false;
       notifyListeners();
-      
+
       return Response(error: "");
     }
   }
