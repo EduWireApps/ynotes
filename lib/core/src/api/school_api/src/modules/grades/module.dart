@@ -156,6 +156,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       }
       final List<Period> __periods = res.data!["periods"] ?? [];
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
+      final List<GradeValue> __gradeValues = res.data!["gradesValues"] ?? [];
       // If a subject already exists, we only keep its color so that it doesn't
       // get updated on each [fetch].
       for (final __subject in __subjects) {
@@ -219,7 +220,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         await isar.periods.putAll(__periods);
         await isar.subjects.putAll(__subjects);
         // TODO: fix this (maybe it's shadow cloning ???)
-        await isar.gradeValues.putAll(__grades.map((e) => e.gradeValue.value!).toList());
+        // await isar.gradeValues.putAll(__grades.map((e) => e.gradeValue.value!).toList());
+        await isar.gradeValues.putAll(__gradeValues);
         await isar.grades.putAll(__grades);
 
         // STEP 5
@@ -238,14 +240,14 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           await grade.period.save();
           await grade.subject.save();
 
-          ///TO DO: fix this (weirdly not stored in database)
+          // TODO: fix this (weirdly not stored in database)
           await grade.gradeValue.save();
         });
         await Future.forEach(customGrades, (Grade grade) async {
           await grade.period.save();
           await grade.subject.save();
 
-          ///TO DO: same than above
+          // TODO: same than above
           await grade.gradeValue.save();
         });
       });
