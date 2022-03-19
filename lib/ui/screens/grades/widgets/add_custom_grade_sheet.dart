@@ -162,7 +162,7 @@ class _AddCustomGradeSheetState extends State<AddCustomGradeSheet> {
     final Grade grade = Grade.custom()
       ..subject.value = subject
       ..period.value = widget.module.currentPeriod!
-      ..value = gradeValue;
+      ..gradeValue.value = gradeValue;
     Navigator.pop(context, grade);
   }
 }

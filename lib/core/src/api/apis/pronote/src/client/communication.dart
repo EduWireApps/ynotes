@@ -45,7 +45,7 @@ class Communication {
       }
       Response<String> keyRes = encryption.aesDecrypt(hex.decode(data['donneesSec']['donnees']['cle']));
       if (keyRes.hasError) {
-        Logger.error(e, stackHint:"MTM=");
+        Logger.error(e, stackHint: "MTM=");
         return Response(error: PronoteContent.loginErrors.unexpectedError + " (key decryption)");
       }
       try {
@@ -63,7 +63,7 @@ class Communication {
       encryption.aesKey = Key(Uint8List.fromList(key.bytes));
       return Response();
     } catch (e) {
-      Logger.error(e, stackHint:"MTQ=");
+      Logger.error(e, stackHint: "MTQ=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (after auth)");
     }
   }
@@ -94,7 +94,7 @@ class Communication {
     final res = parseHtml(response.content()); // L94 legacy/communication.dart
 
     if (res.hasError) {
-      Logger.error(e, stackHint:"MTU=");
+      Logger.error(e, stackHint: "MTU=");
       return Response(error: res.error);
     }
     attributes = res.data!;
@@ -102,7 +102,7 @@ class Communication {
     //uuid
     final res0 = encryption.rsaEncrypt(encryption.aesIVTemp.bytes, {'MR': attributes['MR'], 'ER': attributes['ER']});
     if (res0.hasError) {
-      Logger.error(e, stackHint:"MTY=");
+      Logger.error(e, stackHint: "MTY=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (RSA encoding)");
     }
     final String uuid = base64.encode(res0.data!);
@@ -116,7 +116,7 @@ class Communication {
         data: {'donnees': jsonPost},
         decryptionChange: {'iv': hex.encode(md5.convert(encryption.aesIVTemp.bytes).bytes)});
     if (initialResponse.hasError) {
-      Logger.error(e, stackHint:"MTc=");
+      Logger.error(e, stackHint: "MTc=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (fonction paramètres)");
     }
     return Response(data: [attributes, initialResponse.data]);
@@ -145,92 +145,102 @@ class Communication {
   }
 
   Future<Response> post(String functionName, {var data, Map<String, dynamic>? decryptionChange}) async {
-    if (data != null && data! is String) {
-      if (data["_Signature_"] != null &&
-          !authorizedTabs.toString().contains(data['_Signature_']['onglet'].toString())) {
-        throw ('Action not permitted. (onglet is not normally accessible)');
-      }
-    }
-
-    if (compressRequests) {
-      Logger.log("PRONOTE", "Compress request");
-      data = jsonEncode(data);
-
-      Logger.log("PRONOTE", data);
-      var zlibInstance = ZLibCodec(level: 6, raw: true);
-      data = zlibInstance.encode(utf8.encode(hex.encode(utf8.encode(data))));
-    }
-    if (encryptRequests) {
-      Logger.log("PRONOTE", "Encrypt requests");
-      data = encryption.aesEncrypt(data).data;
-    }
-    String? rNumber = encryption.aesEncrypt(utf8.encode(requestNumber.toString())).data;
-
-    var json = {'session': int.parse(attributes['h']), 'numeroOrdre': rNumber, 'nom': functionName, 'donneesSec': data};
-    String pSite = urlRoot + '/appelfonction/' + attributes['a'] + '/' + attributes['h'] + '/' + rNumber!;
-    Logger.log("PRONOTE", pSite);
-
-    requestNumber += 2;
-    Logger.log("PRONOTE", json.toString());
-    var response = await req.Requests.post(pSite, json: json).catchError((onError) {
-      Logger.log("PRONOTE", "Error occured during request : $onError");
-    });
-
-    lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
-    lastResponse = response;
-    if (response.hasError) {
-      throw "Status code: ${response.statusCode}";
-    }
-    if (response.content().contains("Erreur")) {
-      Logger.log("PRONOTE", "Error occured");
-      Logger.log("PRONOTE", response.content());
-      var responseJson = response.json();
-
-      if (responseJson["Erreur"]['G'] == 22) {
-        return Response(error: PronoteContent.loginErrors.expiredConnexion);
-      }
-      if (responseJson["Erreur"]['G'] == 10) {
-        return Response(error: PronoteContent.loginErrors.expiredConnexion);
-      }
-      Logger.error(e, stackHint:"MTg=");
-      return Response(error: PronoteContent.loginErrors.unexpectedError + " (post)");
-    }
-
-    if (decryptionChange != null) {
-      Logger.log("PRONOTE", "decryption change");
-      if (decryptionChange.toString().contains("iv")) {
-        Logger.log("PRONOTE", "decryption_change contains IV");
-        Logger.log("PRONOTE", decryptionChange['iv']);
-        encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
+    try {
+      if (data != null && data! is String) {
+        if (data["_Signature_"] != null &&
+            !authorizedTabs.toString().contains(data['_Signature_']['onglet'].toString())) {
+          throw ('Action not permitted. (onglet is not normally accessible)');
+        }
       }
 
-      if (decryptionChange.toString().contains("key")) {
-        Logger.log("PRONOTE", "decryption_change contains key");
-        Logger.log("PRONOTE", decryptionChange['key']);
-        encryption.aesKey = decryptionChange['key'];
-      }
-    }
+      if (compressRequests) {
+        Logger.log("PRONOTE", "Compress request");
+        data = jsonEncode(data);
 
-    Map responseData = response.json();
-
-    if (encryptRequests) {
-      responseData['donneesSec'] = encryption.aesDecryptAsBytes(hex.decode(responseData['donneesSec']));
-      Logger.log("PRONOTE", "décrypté données sec");
-    }
-    var zlibInstanceDecoder = ZLibDecoder(raw: true);
-    if (compressRequests) {
-      var toDecode = responseData['donneesSec'];
-      responseData['donneesSec'] = utf8.decode(zlibInstanceDecoder.convert(toDecode));
-    }
-    if (responseData['donneesSec'].runtimeType == String) {
-      try {
-        responseData['donneesSec'] = jsonDecode(responseData['donneesSec']);
-      } catch (e) {
-        Logger.error(e, stackHint:"MTk=");
-        return Response(error: PronoteContent.loginErrors.unexpectedError);
+        Logger.log("PRONOTE", data);
+        var zlibInstance = ZLibCodec(level: 6, raw: true);
+        data = zlibInstance.encode(utf8.encode(hex.encode(utf8.encode(data))));
       }
+      if (encryptRequests) {
+        Logger.log("PRONOTE", "Encrypt requests");
+        data = encryption.aesEncrypt(data).data;
+      }
+      String? rNumber = encryption.aesEncrypt(utf8.encode(requestNumber.toString())).data;
+
+      var json = {
+        'session': int.parse(attributes['h']),
+        'numeroOrdre': rNumber,
+        'nom': functionName,
+        'donneesSec': data
+      };
+      String pSite = urlRoot + '/appelfonction/' + attributes['a'] + '/' + attributes['h'] + '/' + rNumber!;
+      Logger.log("PRONOTE", pSite);
+
+      requestNumber += 2;
+      Logger.log("PRONOTE", json.toString());
+      var response = await req.Requests.post(pSite, json: json).catchError((onError) {
+        Logger.log("PRONOTE", "Error occured during request : $onError");
+      });
+
+      lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
+      lastResponse = response;
+      if (response.hasError) {
+        throw "Status code: ${response.statusCode}";
+      }
+      if (response.content().contains("Erreur")) {
+        Logger.log("PRONOTE", "Error occured");
+        Logger.log("PRONOTE", response.content());
+        var responseJson = response.json();
+
+        if (responseJson["Erreur"]['G'] == 22) {
+          return Response(error: PronoteContent.loginErrors.expiredConnexion);
+        }
+        if (responseJson["Erreur"]['G'] == 10) {
+          return Response(error: PronoteContent.loginErrors.expiredConnexion);
+        }
+        Logger.error(e, stackHint: "MTg=");
+        return Response(error: PronoteContent.loginErrors.unexpectedError + " (post)");
+      }
+
+      if (decryptionChange != null) {
+        Logger.log("PRONOTE", "decryption change");
+        if (decryptionChange.toString().contains("iv")) {
+          Logger.log("PRONOTE", "decryption_change contains IV");
+          Logger.log("PRONOTE", decryptionChange['iv']);
+          encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
+        }
+
+        if (decryptionChange.toString().contains("key")) {
+          Logger.log("PRONOTE", "decryption_change contains key");
+          Logger.log("PRONOTE", decryptionChange['key']);
+          encryption.aesKey = decryptionChange['key'];
+        }
+      }
+
+      Map responseData = response.json();
+
+      if (encryptRequests) {
+        responseData['donneesSec'] = encryption.aesDecryptAsBytes(hex.decode(responseData['donneesSec']));
+        Logger.log("PRONOTE", "décrypté données sec");
+      }
+      var zlibInstanceDecoder = ZLibDecoder(raw: true);
+      if (compressRequests) {
+        var toDecode = responseData['donneesSec'];
+        responseData['donneesSec'] = utf8.decode(zlibInstanceDecoder.convert(toDecode));
+      }
+      if (responseData['donneesSec'].runtimeType == String) {
+        try {
+          responseData['donneesSec'] = jsonDecode(responseData['donneesSec']);
+        } catch (e) {
+          Logger.error(e, stackHint: "MTk=");
+          return Response(error: PronoteContent.loginErrors.unexpectedError);
+        }
+      }
+      return Response(data: responseData);
+    } catch (e) {
+      Logger.error(e);
+      return Response(error: PronoteContent.gradesErrors.requestFailed);
     }
-    return Response(data: responseData);
   }
 
   toBytes(String string) {

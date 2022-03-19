@@ -127,7 +127,7 @@ class _GradesRepository extends Repository {
         ..subject.value =
             subjects.firstWhere((s) => s.entityId == e["codeMatiere"] && s.period.value!.entityId == e["codePeriode"])
         ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"])
-        ..value = value;
+        ..gradeValue.value = value;
       return g;
     }).toList();
     return Response(data: {

@@ -225,7 +225,7 @@ class PronoteClient {
       try {
         json = fonctionParameters['donneesSec']['donnees']['General']['ListePeriodes'];
       } catch (e) {
-        Logger.error(e, stackHint:"MTA=");
+        Logger.error(e, stackHint: "MTA=");
         Response(error: PronoteContent.gradesErrors.periodsFetchFailed);
       }
 
@@ -237,7 +237,7 @@ class PronoteClient {
       });
       return Response(data: toReturn);
     } catch (e) {
-      Logger.error(e, stackHint:"MTE=");
+      Logger.error(e, stackHint: "MTE=");
       return Response(error: PronoteContent.gradesErrors.periodsFetchFailed);
     }
   }
@@ -354,54 +354,59 @@ class PronotePeriod {
   }
 
   Future<Response<List<Grade>>> grades() async {
-    //Get grades from the period.
-    List<Grade> list = [];
-    var jsonData = {
-      'donnees': {
-        'Periode': {'N': id, 'L': name}
-      },
-      "_Signature_": {"onglet": 198}
-    };
-
-    Response responseReq = await _client.communication.post('DernieresNotes', data: jsonData);
-    if (responseReq.hasError) return Response(error: PronoteContent.gradesErrors.requestFailed);
-    Map response = responseReq.data!;
-
     try {
-      List grades = safeMapGetter(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
-      List rawDisciplines = safeMapGetter(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
+      //Get grades from the period.
+      List<Grade> list = [];
+      var jsonData = {
+        'donnees': {
+          'Periode': {'N': id, 'L': name}
+        },
+        "_Signature_": {"onglet": 198}
+      };
 
-      overallAverage = gradeTranslate(safeMapGetter(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
-      classAverage = gradeTranslate(safeMapGetter(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "");
+      Response responseReq = await _client.communication.post('DernieresNotes', data: jsonData);
+      if (responseReq.hasError) return Response(error: PronoteContent.gradesErrors.requestFailed);
+      Map response = responseReq.data!;
+
+      List grades = safeMapGetter(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
+      List rawDisciplines = safeMapGetter(response, ['donneesSec', 'donnees', 'listeServices', 'V']) ?? [];
+
+      overallAverage = double.tryParse(
+              gradeTranslate(safeMapGetter(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "")) ??
+          double.nan;
+      classAverage = double.tryParse(
+              gradeTranslate(safeMapGetter(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "")) ??
+          double.nan;
 
       grades.forEach((element) {
         final GradeValue value = GradeValue(
             valueType: gradeType(safeMapGetter(element, ["note", "V"]) ?? ""),
-            coefficient: double.tryParse(safeMapGetter(element, ["coefficient"])) ?? double.nan,
+            coefficient: double.tryParse(safeMapGetter(element, ["coefficient"]).toString()) ?? double.nan,
             outOf: double.tryParse(safeMapGetter(element, ["bareme", "V"])) ?? double.nan,
             doubleValue: countsAsZero(gradeTranslate(safeMapGetter(element, ["note", "V"]) ?? ""))
                 ? 0.0
                 : (double.tryParse(gradeTranslate(safeMapGetter(element, ["note", "V"]))) ?? double.nan),
-            stringValue: gradeTranslate(safeMapGetter(element, ["note", "V"]) ?? ""),
+            stringValue: gradeTranslate(safeMapGetter(element, ["note", "V"]) ?? "").toString(),
             significant: significant(safeMapGetter(element, ["note", "V"])));
         Grade g = Grade(
           name: element["commentaire"],
           type: "Interrogation",
           date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
           entryDate: DateFormat("dd/MM/yyyy").parse(safeMapGetter(element, ["date", "V"])),
-          classAverage: gradeTranslate(safeMapGetter(element, ["moyenne", "V"]) ?? "") ?? double.nan,
-          classMax: gradeTranslate(safeMapGetter(element, ["noteMax", "V"]) ?? "") ?? double.nan,
-          classMin: gradeTranslate(safeMapGetter(element, ["noteMin", "V"]) ?? "") ?? double.nan,
+          classAverage: double.tryParse(safeMapGetter(element, ["moyenne", "V"]) ?? "") ?? double.nan,
+          classMax: double.tryParse(safeMapGetter(element, ["noteMax", "V"]) ?? "") ?? double.nan,
+          classMin: double.tryParse(safeMapGetter(element, ["noteMin", "V"]) ?? "") ?? double.nan,
         )
-          ..subject.value = getRelatedSubject(rawDisciplines, safeMapGetter(element, ["service", "V", "L"]))
+          ..subject.value = getRelatedSubject(rawDisciplines, safeMapGetter(element, ["service", "V", "N"]))
           ..period.value = toPeriod
-          ..value = value;
+          ..gradeValue.value = value;
 
         list.add(g);
       });
+
       return Response(data: list);
     } catch (e) {
-      Logger.error(e, stackHint:"MTI=");
+      Logger.error(e);
       return Response(error: PronoteContent.gradesErrors.parsingFailed);
     }
   }

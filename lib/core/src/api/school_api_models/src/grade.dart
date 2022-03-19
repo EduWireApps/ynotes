@@ -13,7 +13,7 @@ class Grade extends _LinkedModel {
   final String name;
 
   /// The grade value and its numeric details
-  final IsarLink<GradeValue> _gradeValue = IsarLink<GradeValue>();
+  final IsarLink<GradeValue> gradeValue = IsarLink<GradeValue>();
 
   /// The type of assessment. Depends of the api.
 
@@ -72,15 +72,6 @@ class Grade extends _LinkedModel {
         classMin = double.nan,
         custom = true;
 
-  GradeValue get value {
-    _gradeValue.loadSync();
-    return _gradeValue.value!;
-  }
-
-  set value(GradeValue newValue) {
-    _gradeValue.value = newValue;
-  }
-
   /// The value out of 20. Use this to calculate averages.
   double get realValue {
     if (value.valueType == gradeValueType.double) {
@@ -93,12 +84,21 @@ class Grade extends _LinkedModel {
     }
   }
 
+  GradeValue get value {
+    return gradeValue.value!;
+  }
+
+  set value(GradeValue newValue) {
+    gradeValue.value = newValue;
+  }
+
   @override
   void load() {
     Offline.isar.writeTxnSync((isar) {
       subject.loadSync();
       period.loadSync();
-      _gradeValue.loadSync();
+      ///TO DO: fix this
+      //gradeValue.loadSync();
     });
   }
 }
@@ -139,18 +139,7 @@ class GradeValue {
       required this.valueType,
       this.stringValue,
       this.doubleValue,
-      required this.significant}) {
-    assert(
-        (valueType == gradeValueType.string && stringValue != null) ||
-            (valueType == gradeValueType.stringWithValue &&
-                stringValue != null &&
-                valueType == gradeValueType.double &&
-                doubleValue != null &&
-                outOf != null &&
-                coefficient != null) ||
-            (valueType == gradeValueType.double && doubleValue != null && outOf != null && coefficient != null),
-        "Grade value should be consistent");
-  }
+      required this.significant}) {}
   String get display {
     if (valueType == gradeValueType.double) {
       return doubleValue!.display();

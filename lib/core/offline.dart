@@ -34,6 +34,7 @@ abstract class Offline {
     DocumentSchema,
     EmailSchema,
     GradeSchema,
+    GradeValueSchema,
     HomeworkSchema,
     PeriodSchema,
     RecipientSchema,

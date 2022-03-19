@@ -232,9 +232,9 @@ class _GradeContainer extends StatelessWidget {
                 softWrap: false,
               ),
               if (grade.value.valueType == gradeValueType.double && grade.value.coefficient != 1)
-                Positioned(top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.value.coefficient!.display(), true)),
+                Positioned(top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.value.coefficient.display(), true)),
               if (grade.value.valueType == gradeValueType.double && grade.value.outOf != 20)
-                Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.value.outOf!.display()}"))
+                Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.value.outOf.display()}"))
             ],
           ),
         ));

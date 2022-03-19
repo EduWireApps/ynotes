@@ -132,7 +132,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           values.add(grade.realValue);
 
           /// It is asserted not null
-          coefficients.add(grade.value.coefficient!);
+          coefficients.add(grade.value.coefficient);
         }
       }
       return calculateAverage(values, coefficients);
@@ -146,98 +146,119 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
     if (fetching) {
       return Response(error: "Already fetching");
     }
-    fetching = true;
-    notifyListeners();
-    final res = await repository.get();
-    if (res.hasError) {
-      fetching = false;
-      return res;
-    }
-    final List<Period> __periods = res.data!["periods"] ?? [];
-    final List<Subject> __subjects = res.data!["subjects"] ?? [];
-    // If a subject already exists, we only keep its color so that it doesn't
-    // get updated on each [fetch].
-    for (final __subject in __subjects) {
-      final Subject? _subject = subjects.firstWhereOrNull((subject) => subject.entityId == __subject.entityId);
-      if (_subject != null) {
-        __subject.color = _subject.color;
+    try {
+      fetching = true;
+      notifyListeners();
+      final res = await repository.get();
+      if (res.hasError) {
+        fetching = false;
+        notifyListeners();
       }
-    }
-    final List<Grade> __grades = res.data!["grades"] ?? [];
-    // For each new grade, a notification is sent.
-    if (__grades.length > grades.length) {
-      // TODO: check if this really works
-      // TODO: trigger notification
-      final List<Grade> newGrades = __grades.sublist(grades.length);
-    }
-    // We save all the data. Here is an overview of the process:
-    // 1. We retrieve the custom grades
-    // 1.5 We retrieve the filters and assigned the new corresponding subjects
-    // 2. For each custom grade, we update its subject and period to a new one, not
-    //    saved in Isar yet. If the subject or period is not found, we delete the grade.
-    // 3. We clear all the data
-    // 4. We store all the data that comes from the API
-    // 5. We save the custom grades
-    // 6. We save the links of all grades
-    await offline.writeTxn((isar) async {
-      // STEP 1
-      final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
-      // STEP 1.5
-      final filters = await isar.subjectsFilters.where().findAll();
-      for (final filter in filters) {
-        await filter.subjects.load();
-        final List<String> subjectsIds = filter.subjects.map((subject) => subject.entityId).toSet().toList();
-        final List<Subject> subjects = __subjects.where((subject) => subjectsIds.contains(subject.entityId)).toList();
-        filter.subjects.clear();
-        filter.subjects.addAll(subjects);
-      }
-      // STEP 2
-      for (final grade in customGrades) {
-        await grade.subject.load();
-        await grade.period.load();
-        final Subject? subject =
-            __subjects.firstWhereOrNull((subject) => subject.entityId == grade.subject.value!.entityId);
-        final Period? period = __periods.firstWhereOrNull((period) => period.entityId == grade.period.value!.entityId);
-        if (subject == null || period == null) {
-          await isar.grades.delete(grade.id!);
-        } else {
-          grade.subject.value = subject;
-          grade.period.value = period;
+      final List<Period> __periods = res.data!["periods"] ?? [];
+      final List<Subject> __subjects = res.data!["subjects"] ?? [];
+      // If a subject already exists, we only keep its color so that it doesn't
+      // get updated on each [fetch].
+      for (final __subject in __subjects) {
+        final Subject? _subject = subjects.firstWhereOrNull((subject) => subject.entityId == __subject.entityId);
+        if (_subject != null) {
+          __subject.color = _subject.color;
         }
       }
+      final List<Grade> __grades = res.data!["grades"] ?? [];
+      // For each new grade, a notification is sent.
+      if (__grades.length > grades.length) {
+        // TODO: check if this really works
+        // TODO: trigger notification
+        final List<Grade> newGrades = __grades.sublist(grades.length);
+      }
+      // We save all the data. Here is an overview of the process:
+      // 1. We retrieve the custom grades
+      // 1.5 We retrieve the filters and assigned the new corresponding subjects
+      // 2. For each custom grade, we update its subject and period to a new one, not
+      //    saved in Isar yet. If the subject or period is not found, we delete the grade.
+      // 3. We clear all the data
+      // 4. We store all the data that comes from the API
+      // 5. We save the custom grades
+      // 6. We save the links of all grades
+      await offline.writeTxn((isar) async {
+        // STEP 1
+        final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
+        // STEP 1.5
+        final filters = await isar.subjectsFilters.where().findAll();
+        for (final filter in filters) {
+          await filter.subjects.load();
+          final List<String> subjectsIds = filter.subjects.map((subject) => subject.entityId).toSet().toList();
+          final List<Subject> subjects = __subjects.where((subject) => subjectsIds.contains(subject.entityId)).toList();
+          filter.subjects.clear();
+          filter.subjects.addAll(subjects);
+        }
+        // STEP 2
+        for (final grade in customGrades) {
+          await grade.subject.load();
+          await grade.period.load();
+          final Subject? subject =
+              __subjects.firstWhereOrNull((subject) => subject.entityId == grade.subject.value!.entityId);
+          final Period? period =
+              __periods.firstWhereOrNull((period) => period.entityId == grade.period.value!.entityId);
+          if (subject == null || period == null) {
+            await isar.grades.delete(grade.id!);
+          } else {
+            grade.subject.value = subject;
+            grade.period.value = period;
+          }
+        }
 
-      // STEP 3
-      await isar.periods.clear();
-      await isar.subjects.clear();
-      await isar.grades.clear();
-      await isar.subjectsFilters.clear();
-      // STEP 4
-      await isar.periods.putAll(__periods);
-      await isar.subjects.putAll(__subjects);
-      await isar.grades.putAll(__grades);
-      // STEP 5
-      await isar.grades.putAll(customGrades);
-      await isar.subjectsFilters.putAll(filters);
+        // STEP 3
+        await isar.periods.clear();
+        await isar.subjects.clear();
+        await isar.grades.clear();
+        await isar.subjectsFilters.clear();
+        await isar.gradeValues.clear();
 
-      // STEP 6
-      await Future.forEach(__subjects, (Subject subject) async {
-        await subject.period.save();
+        // STEP 4
+        await isar.periods.putAll(__periods);
+        await isar.subjects.putAll(__subjects);
+         ///TO DO: fix this (maybe it's shadow cloning ???)
+        await isar.gradeValues.putAll(__grades.map((e) => e.gradeValue.value!).toList());
+        await isar.grades.putAll(__grades);
+
+        // STEP 5
+        await isar.grades.putAll(customGrades);
+        await Future.forEach(customGrades, (Grade element) async {
+          await isar.gradeValues.put(element.gradeValue.value!);
+        });
+        await isar.subjectsFilters.putAll(filters);
+
+        // STEP 6
+        await Future.forEach(__subjects, (Subject subject) async {
+          await subject.period.save();
+        });
+
+        await Future.forEach(__grades, (Grade grade) async {
+          await grade.period.save();
+          await grade.subject.save();
+           ///TO DO: fix this (weirdly not stored in database)
+          await grade.gradeValue.save();
+        });
+        await Future.forEach(customGrades, (Grade grade) async {
+          await grade.period.save();
+          await grade.subject.save();
+           ///TO DO: same than above
+          await grade.gradeValue.save();
+        });
       });
-      await Future.forEach(__grades, (Grade grade) async {
-        await grade.period.save();
-        await grade.subject.save();
-      });
-      await Future.forEach(customGrades, (Grade grade) async {
-        await grade.period.save();
-        await grade.subject.save();
-      });
-    });
-    await setCurrentPeriod();
-    await setCurrentFilter();
-    fetching = false;
-    notifyListeners();
-    Logger.log("GRADES MODULE", "Fetch successful");
-    return Response();
+      await setCurrentPeriod();
+      await setCurrentFilter();
+      fetching = false;
+      notifyListeners();
+      Logger.log("GRADES MODULE", "Fetch successful");
+      return Response();
+    } catch (e) {
+      fetching = false;
+      notifyListeners();
+      rethrow;
+      return Response(error: "");
+    }
   }
 
   /// Removes a custom [grade].
