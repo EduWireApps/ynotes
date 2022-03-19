@@ -105,15 +105,17 @@ class _GradesRepository extends Repository {
     // we set the coefficient to 1 for all grades.
     final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
 
-    final List<GradeValue> gradesValues = res.data!["data"]["notes"]
-        .map<GradeValue>((e) => GradeValue(
-              valueType: gradeValueType.double,
-              coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
-              outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
-              doubleValue: (e["valeur"] as String).toDouble() ?? double.nan,
-              significant: !(e["nonSignificatif"] as bool),
-            ))
-        .toList();
+    final List<GradeValue> gradesValues = res.data!["data"]["notes"].map<GradeValue>((e) {
+      final bool isString = double.tryParse(e["valeur"]) == null;
+      return GradeValue(
+        valueType: isString ? gradeValueType.string : gradeValueType.double,
+        coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
+        outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
+        doubleValue: isString ? null : (e["valeur"] as String).toDouble() ?? double.nan,
+        stringValue: isString ? e["valeur"] as String : null,
+        significant: !(e["nonSignificatif"] as bool),
+      );
+    }).toList();
 
     final List<Grade> grades = res.data!["data"]["notes"].asMap().entries.map<Grade>((entry) {
       final Map<String, dynamic> e = entry.value;
@@ -134,7 +136,7 @@ class _GradesRepository extends Repository {
         ..gradeValue.value = gradesValues[i];
       return g;
     }).toList();
-    
+
     return Response(data: {"periods": periods, "subjects": subjects, "grades": grades, "gradesValues": gradesValues});
   }
 }
