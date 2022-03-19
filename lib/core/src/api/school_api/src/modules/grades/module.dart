@@ -156,7 +156,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       }
       final List<Period> __periods = res.data!["periods"] ?? [];
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
-      final List<GradeValue> __gradeValues = res.data!["gradesValues"] ?? [];
+      final List<GradeValue> __gradesValues = res.data!["gradesValues"] ?? [];
+      print(__gradesValues);
       // If a subject already exists, we only keep its color so that it doesn't
       // get updated on each [fetch].
       for (final __subject in __subjects) {
@@ -194,6 +195,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
           filter.subjects.addAll(subjects);
         }
         // STEP 2
+        // TODO: add check for gradeValues too
         for (final grade in customGrades) {
           await grade.subject.load();
           await grade.period.load();
@@ -221,7 +223,7 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         await isar.subjects.putAll(__subjects);
         // TODO: fix this (maybe it's shadow cloning ???)
         // await isar.gradeValues.putAll(__grades.map((e) => e.gradeValue.value!).toList());
-        await isar.gradeValues.putAll(__gradeValues);
+        await isar.gradeValues.putAll(__gradesValues);
         await isar.grades.putAll(__grades);
 
         // STEP 5
