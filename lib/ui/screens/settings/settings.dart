@@ -34,10 +34,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         title: "Compte",
                         leading: Icons.account_circle_rounded,
                         onTap: () => Navigator.pushNamed(context, "/settings/account")),
-                    YSettingsTile(
+                    /*YSettingsTile(
                         title: "Notifications",
                         leading: Icons.notifications_rounded,
-                        onTap: () => Navigator.pushNamed(context, "/settings/notifications")),
+                        onTap: () => Navigator.pushNamed(context, "/settings/notifications")),*/
                     YSettingsTile(
                         title: "Assistance",
                         leading: Icons.support_rounded,
