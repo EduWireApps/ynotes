@@ -5,13 +5,13 @@ on:
   push:
     branches:
       - beta-releases
-
+      - master
 jobs:
   # CD
   deploy_ios:
     runs-on: macos-latest
     # Beta release only
-    if: github.ref == 'refs/heads/beta-releases'
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
