@@ -11,7 +11,7 @@ class AboutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const String content =
-        "Developpé avec amour en France.\n\nAPI Pronote adaptée de l'API pronotepy développée par Bain sous licence MIT.\n\nNous tenons à remercier les beta-testeurs ainsi que chaque personne ayant participé à cette application.";
+        "Developpé avec amour en France.\n\nAPI Pronote adaptée de l'API pronotepy développée par Bain sous licence MIT.\n\nNous tenons à remercier les beta-testeurs ainsi que chaque personne ayant participé à cette application.\n\n The devil is in the detail.";
     return FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (_, snapshot) {

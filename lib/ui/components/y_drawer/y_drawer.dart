@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
@@ -36,7 +34,6 @@ class _YDrawerState extends State<YDrawer> {
     }
 
     final List<_SpecialRoute> specialRoutes = [
-      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => BugReportUtils.report()),
       _SpecialRoute(title: "Paramètres", icon: Icons.settings, onTap: () => Navigator.pushNamed(context, "/settings")),
     ];
 
@@ -49,8 +46,6 @@ class _YDrawerState extends State<YDrawer> {
           title: "Github",
           icon: FontAwesomeIcons.github,
           onTap: () async => await launch("https://github.com/EduWireApps/ynotes")),
-      _SpecialRoute(
-          title: "Nous contacter", icon: Icons.mail, onTap: () async => await launch("https://ynotes.fr/contact/")),
       _SpecialRoute(
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];

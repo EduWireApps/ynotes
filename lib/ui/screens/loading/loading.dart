@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
-import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
 import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
@@ -33,7 +31,6 @@ class _LoadingPageState extends State<LoadingPage> {
       backgroundColor: theme.colors.backgroundColor,
       body: Stack(
         children: [
-          Opacity(opacity: 0.2, child: WeatherBg(weatherType: WeatherType.heavySnow, width: screenSize.width, height: screenSize.height)),
           FadeAnimation(
             0.2,
             Center(
@@ -51,7 +48,6 @@ class _LoadingPageState extends State<LoadingPage> {
                   child: YLinearProgressBar(),
                 ),
                 const YVerticalSpacer(50),
-                FadeAnimation(0.2, Text("Bonnes fêtes !", style: theme.texts.title)),
               ],
             )),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -6,8 +7,6 @@ import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
-
   // This is the list of the available school services
   // This is only temporary and should be stored in the [API] class
   static final List<SchoolServiceBox> _services = [
@@ -23,8 +22,10 @@ class LoginPage extends StatelessWidget {
         route: '/login/pronote',
         parser: 1),
     // LA VIE SCOLAIRE, beta = true
-    const SchoolServiceBox(name: "Démonstrations", route: "/login/demos")
+    //const SchoolServiceBox(name: "Démonstrations", route: "/login/demos")
   ];
+
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,27 @@ class LoginPage extends StatelessWidget {
       backButton: false,
       subtitle: LoginContent.login.subtitle,
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            width: double.infinity,
+            decoration: BoxDecoration(color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.xl),
+            padding: EdgeInsets.symmetric(vertical: YScale.s1p5, horizontal: YScale.s6),
+            child: Column(
+              children: [
+                Text(
+                  LoginContent.login.endOfSupport,
+                  style: theme.texts.body1.copyWith(color: theme.colors.danger.foregroundColor),
+                  textAlign: TextAlign.justify,
+                ),
+                YButton(
+                  text: LoginContent.login.learnMore,
+                  variant: YButtonVariant.text,
+                  onPressed: () async {
+                    launch("https://ynotes.fr");
+                  },
+                ),
+              ],
+            )),
+        YVerticalSpacer(YScale.s2),
         ...spacedChildren(_services),
         Padding(
           padding: YPadding.pt(YScale.s1),

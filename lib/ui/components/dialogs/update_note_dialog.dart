@@ -13,7 +13,7 @@ class UpdateNoteDialog extends StatefulWidget {
 class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
   static const String markdownText = "documents/updateNoteAssets/updateNote.md";
 
-  static const String thumbnail = "documents/updateNoteAssets/0_14thumbnail.png";
+  static const String thumbnail = "documents/updateNoteAssets/the_end.jpg";
   String? markdown;
   @override
   Widget build(BuildContext context) {

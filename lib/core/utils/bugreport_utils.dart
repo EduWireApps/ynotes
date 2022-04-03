@@ -26,10 +26,10 @@ class BugReportUtils {
     if (!config.isSupported) {
       return;
     }
-    updateShakeFeatureStatus();
+    /*updateShakeFeatureStatus();
     Shake.setShowFloatingReportButton(false);
     Shake.setInvokeShakeOnScreenshot(false);
-    Shake.start(config.clientID, config.clientSecret);
+    Shake.start(config.clientID, config.clientSecret);*/
   }
 
   static void updateShakeFeatureStatus() {

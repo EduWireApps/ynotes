@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
-import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
@@ -15,20 +14,33 @@ class AccountLoginStatus extends StatefulWidget {
 }
 
 class _AccountLoginStatusState extends State<AccountLoginStatus> {
-  loginStatus get state => widget.controller.actualState;
-
   final String loggedTitle = "Tout va bien vous êtes connecté !";
+
   final String loggedLabel = "Les petits oiseaux chantent et le ciel est bleu.";
-
   final String offlineTitle = "Vous êtes hors ligne";
+
   final String offlineLabel = "Vous pouvez accéder à vos données hors ligne.";
-
   final String loggedOffTitle = "Vous êtes déconnecté";
-  final String loggedOffLabel = "Nous vous connectons...";
 
+  final String loggedOffLabel = "Nous vous connectons...";
   final String errorTitle = "Oups ! Une erreur s'est produite.";
+
   final String errorLabel =
       "Consultez tout d'abord l'erreur ci-dessous. Reconnectez-vous maintenant ou dans quelques minutes. Si le problème persiste, contactez le support.";
+  String get label {
+    switch (state) {
+      case loginStatus.loggedIn:
+        return loggedLabel;
+      case loginStatus.loggedOff:
+        return loggedOffLabel;
+      case loginStatus.error:
+        return errorLabel;
+      case loginStatus.offline:
+        return offlineLabel;
+    }
+  }
+
+  loginStatus get state => widget.controller.actualState;
 
   String get title {
     switch (state) {
@@ -40,19 +52,6 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
         return errorTitle;
       case loginStatus.offline:
         return offlineTitle;
-    }
-  }
-
-  String get label {
-    switch (state) {
-      case loginStatus.loggedIn:
-        return loggedLabel;
-      case loginStatus.loggedOff:
-        return loggedOffLabel;
-      case loginStatus.error:
-        return errorLabel;
-      case loginStatus.offline:
-        return offlineLabel;
     }
   }
 
@@ -114,18 +113,6 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
             ],
           ),
         YVerticalSpacer(YScale.s4),
-        Row(
-          children: [
-            YButton(onPressed: () => widget.controller.login(), text: "Reconnexion", color: YColor.success),
-            YHorizontalSpacer(YScale.s2),
-            YButton(
-              onPressed: () => BugReportUtils.report(),
-              text: "Support",
-              color: state == loginStatus.error ? YColor.danger : YColor.secondary,
-              invertColors: true,
-            ),
-          ],
-        )
       ],
     );
   }

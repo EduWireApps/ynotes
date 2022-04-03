@@ -17,7 +17,7 @@ class LogsManager {
 
   /// Saves [logs] of a [category] to the right log file.
   static Future<void> saveLogs({required List<YLog> logs, required String category, bool? overwrite}) async {
-    if (_editingFile) {
+    /*if (_editingFile) {
       await Future.delayed(const Duration(milliseconds: 100));
       saveLogs(logs: logs, category: category, overwrite: overwrite);
       return;
@@ -39,8 +39,8 @@ class LogsManager {
       await file.writeAsString(content, mode: FileMode.write);
     } catch (e) {
       CustomLogger.error(e, stackHint:"MzA=");
-    }
-    _editingFile = false;
+    }*
+    _editingFile = false;*/
   }
 
   /// Deletes all logs or from one [category].
