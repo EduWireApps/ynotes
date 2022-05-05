@@ -32,32 +32,8 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
   Timer? timer;
 
   @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  getCredentials(String credsData) {
-    if (credsData.isNotEmpty) {
-      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData, save: false);
-      final Map<String, dynamic> decoded = json.decode(credsData);
-      CustomLogger.log("LOGIN", "(Web view) Status: ${decoded["status"]}");
-      if (decoded["status"] == 0) {
-        if (!authenticated) {
-          Navigator.of(context).pop(decoded);
-          setState(() {
-            authenticated = true;
-          });
-        }
-      } else {}
-    } else {
-      //This can happen if the page is not fully loaded
-      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
     final _url = RoutingUtils.getArgs<String>(context);
     setState(() {
       url = _url;
@@ -101,7 +77,9 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
       ),
       body: Column(
         children: [
-          Expanded(
+          Container(
+            height: screenSize.size.height,
+            width: screenSize.size.width,
             child: Stack(
               children: [
                 Opacity(
@@ -200,5 +178,30 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  getCredentials(String credsData) {
+    if (credsData.isNotEmpty) {
+      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData, save: false);
+      final Map<String, dynamic> decoded = json.decode(credsData);
+      CustomLogger.log("LOGIN", "(Web view) Status: ${decoded["status"]}");
+      if (decoded["status"] == 0) {
+        if (!authenticated) {
+          Navigator.of(context).pop(decoded);
+          setState(() {
+            authenticated = true;
+          });
+        }
+      } else {}
+    } else {
+      //This can happen if the page is not fully loaded
+      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
+    }
   }
 }

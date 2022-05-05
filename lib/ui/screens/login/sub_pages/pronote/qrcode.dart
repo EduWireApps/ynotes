@@ -23,31 +23,8 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
   bool loaded = false;
 
   @override
-  void initState() {
-    super.initState();
-    handlePermission();
-  }
-
-  Future<void> handlePermission() async {
-    final String? res = await controller.handlePermission();
-    if (res == null) {
-      setState(() {
-        loaded = true;
-      });
-    } else {
-      await YDialogs.showInfo(
-          context,
-          YInfoDialog(
-            title: LoginContent.pronote.qrCode.permissionDenied,
-            body: Text(res, style: theme.texts.body1),
-            confirmLabel: "OK",
-          ));
-      Navigator.pop(context);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
     return ControllerConsumer<QrLoginController>(
       controller: controller,
       builder: (context, controller, child) => YPage(
@@ -72,25 +49,29 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                 : null)
             : null,
         body: loaded && controller.status == QrStatus.initial
-            ? Column(children: [
-                Expanded(
-                    child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    QRView(
-                        key: GlobalKey(debugLabel: 'QR'),
-                        onQRViewCreated: (QRViewController qrController) async {
-                          this.qrController = qrController;
-                          qrController.scannedDataStream.listen((barCode) async {
-                            if (controller.status == QrStatus.initial && controller.isQrCodeValid(barCode)) {
-                              await getCode();
-                            }
-                          });
-                        }),
-                    const QrCrossHair()
-                  ],
-                ))
-              ])
+            ? Container(
+                height: screenSize.size.height,
+                width: screenSize.size.width,
+                child: Column(children: [
+                  Expanded(
+                      child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      QRView(
+                          key: GlobalKey(debugLabel: 'QR'),
+                          onQRViewCreated: (QRViewController qrController) async {
+                            this.qrController = qrController;
+                            qrController.scannedDataStream.listen((barCode) async {
+                              if (controller.status == QrStatus.initial && controller.isQrCodeValid(barCode)) {
+                                await getCode();
+                              }
+                            });
+                          }),
+                      const QrCrossHair()
+                    ],
+                  ))
+                ]),
+              )
             : Center(
                 child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 250),
@@ -134,6 +115,30 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     } else {
       controller.reset();
     }
+  }
+
+  Future<void> handlePermission() async {
+    final String? res = await controller.handlePermission();
+    if (res == null) {
+      setState(() {
+        loaded = true;
+      });
+    } else {
+      await YDialogs.showInfo(
+          context,
+          YInfoDialog(
+            title: LoginContent.pronote.qrCode.permissionDenied,
+            body: Text(res, style: theme.texts.body1),
+            confirmLabel: "OK",
+          ));
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handlePermission();
   }
 
   Future<void> login(String code) async {
