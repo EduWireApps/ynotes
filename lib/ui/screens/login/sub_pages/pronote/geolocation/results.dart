@@ -68,6 +68,7 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
       controller: geolocationController!,
       builder: (context, controller, child) {
         return YPage(
+          scrollable: true,
             appBar: YAppBar(
               title: LoginContent.pronote.geolocation.results.title,
               bottom: controller.status == GeolocationStatus.loading ? const YLinearProgressBar() : null,

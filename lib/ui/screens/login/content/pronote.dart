@@ -11,7 +11,9 @@ class _Pronote {
 
 class _PMethods {
   final qrCode = _PMethod(title: "QR Code", subtitle: "Il suffit de flasher !");
-  final geolocation = _PMethod(title: "Géolocalisation", subtitle: "Trouve les établissements à proximité");
+  final geolocation = _PMethod(
+      title: "Géolocalisation",
+      subtitle: "Trouve les établissements à proximité");
   final url = _PMethod(title: "Url", subtitle: "Connecte-toi directement");
 }
 
@@ -58,7 +60,7 @@ class _PUrlWebview {
 class _PUrlWebviewDialog {
   final title = "Je ne parviens pas à me connecter";
   final body =
-      "Impossible de se connecter, une page blanche ou une question ? Rejoignez le serveur Discord de support pour obtenir une réponse. \n\nSi votre problème est une simple erreur d'affichage ou ne vous empêche pas de vous connecter signalez l'erreur avec l'outil de rapport ci-dessous.";
+      "Nous ne fournissons malheureusement aucun support actif pour l'application, par manque de temps. Merci de votre compréhension.";
   final support = "Besoin d'une assistance rapide";
   final report = "Signaler un problème mineur";
 }

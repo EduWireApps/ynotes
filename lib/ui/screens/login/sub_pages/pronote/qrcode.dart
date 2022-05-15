@@ -49,29 +49,27 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                 : null)
             : null,
         body: loaded && controller.status == QrStatus.initial
-            ? Container(
-                height: screenSize.size.height,
-                width: screenSize.size.width,
-                child: Column(children: [
-                  Expanded(
-                      child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      QRView(
-                          key: GlobalKey(debugLabel: 'QR'),
-                          onQRViewCreated: (QRViewController qrController) async {
-                            this.qrController = qrController;
-                            qrController.scannedDataStream.listen((barCode) async {
-                              if (controller.status == QrStatus.initial && controller.isQrCodeValid(barCode)) {
-                                await getCode();
-                              }
-                            });
-                          }),
-                      const QrCrossHair()
-                    ],
-                  ))
-                ]),
-              )
+            ? Column(children: [
+                Expanded(
+                    child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    QRView(
+                        key: GlobalKey(debugLabel: 'QR'),
+                        onQRViewCreated: (QRViewController qrController) async {
+                          this.qrController = qrController;
+                          qrController.scannedDataStream
+                              .listen((barCode) async {
+                            if (controller.status == QrStatus.initial &&
+                                controller.isQrCodeValid(barCode)) {
+                              await getCode();
+                            }
+                          });
+                        }),
+                    const QrCrossHair()
+                  ],
+                ))
+              ])
             : Center(
                 child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 250),
@@ -145,23 +143,27 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     final List<String>? decryptedData = controller.decrypt(code);
     if (decryptedData == null) {
       YSnackbars.error(context,
-          title: LoginContent.pronote.qrCode.error, message: LoginContent.pronote.qrCode.errorMessage);
+          title: LoginContent.pronote.qrCode.error,
+          message: LoginContent.pronote.qrCode.errorMessage);
       getCode();
       return;
     }
 
     //Login
-    final List<dynamic>? data = await appSys.api!.login(decryptedData[0], decryptedData[1], additionnalSettings: {
+    final List<dynamic>? data = await appSys.api!
+        .login(decryptedData[0], decryptedData[1], additionnalSettings: {
       "url": controller.url + "?login=true",
       "qrCodeLogin": true,
       "mobileCasLogin": false,
     });
     if (data != null && data[0] == 1) {
-      YSnackbars.success(context, title: LoginContent.pronote.qrCode.connected, message: data[1]);
+      YSnackbars.success(context,
+          title: LoginContent.pronote.qrCode.connected, message: data[1]);
       await Future.delayed(const Duration(seconds: 3));
       Navigator.pushReplacementNamed(context, "/terms");
     } else {
-      YSnackbars.error(context, title: LoginContent.pronote.qrCode.error, message: data![1]);
+      YSnackbars.error(context,
+          title: LoginContent.pronote.qrCode.error, message: data![1]);
       controller.reset();
     }
   }

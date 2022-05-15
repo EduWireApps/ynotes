@@ -12,12 +12,15 @@ class LoginPronoteGeolocationPage extends StatefulWidget {
   const LoginPronoteGeolocationPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPronoteGeolocationPageState createState() => _LoginPronoteGeolocationPageState();
+  _LoginPronoteGeolocationPageState createState() =>
+      _LoginPronoteGeolocationPageState();
 }
 
-class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPage> with TickerProviderStateMixin {
+class _LoginPronoteGeolocationPageState
+    extends State<LoginPronoteGeolocationPage> with TickerProviderStateMixin {
   static const double defaultZoomValue = 6.5;
-  final PronoteGeolocationController geolocationController = PronoteGeolocationController();
+  final PronoteGeolocationController geolocationController =
+      PronoteGeolocationController();
   final MapController mapController = MapController();
   LatLng? previousPosition;
   @override
@@ -33,20 +36,24 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
                 if (controller.coordinates != null)
                   YButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, "/login/pronote/geolocation/results",
+                        Navigator.pushNamed(
+                            context, "/login/pronote/geolocation/results",
                             arguments: geolocationController);
                       },
                       text: LoginContent.pronote.geolocation.searchButton,
                       variant: YButtonVariant.text),
               ],
-              bottom: controller.status == GeolocationStatus.loading ? const YLinearProgressBar() : null,
+              bottom: controller.status == GeolocationStatus.loading
+                  ? const YLinearProgressBar()
+                  : null,
             ),
             scrollable: false,
             floatingButtons: [
               YFloatingButton(
                 icon: Icons.search_rounded,
                 onPressed: () async {
-                  final dynamic location = await Navigator.pushNamed(context, "/login/pronote/geolocation/search",
+                  final dynamic location = await Navigator.pushNamed(
+                      context, "/login/pronote/geolocation/search",
                       arguments: geolocationController) as LatLng?;
                   if (location != null) {
                     geolocationController.updateCoordinates(location);
@@ -61,44 +68,42 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
                   },
                   color: YColor.primary),
             ],
-            body: Container(
-              height: screenSize.size.height,
-              width: screenSize.size.width,
-              child: Column(
-                children: [
-                  Expanded(
-                      child: FlutterMap(
-                    mapController: mapController,
-                    options: MapOptions(
-                      center: LatLng(46.71109, 1.7191036),
-                      zoom: defaultZoomValue,
+            body: Column(
+              children: [
+                Expanded(
+                    child: FlutterMap(
+                  mapController: mapController,
+                  options: MapOptions(
+                    center: LatLng(46.71109, 1.7191036),
+                    zoom: defaultZoomValue,
+                  ),
+                  layers: [
+                    TileLayerOptions(
+                      urlTemplate:
+                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                      subdomains: ['a', 'b', 'c'],
+                      attributionAlignment: Alignment.bottomLeft,
+                      attributionBuilder: (_) => Text(
+                          LoginContent.pronote.geolocation.osmContributors,
+                          style: theme.texts.body1),
                     ),
-                    layers: [
-                      TileLayerOptions(
-                        urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c'],
-                        attributionAlignment: Alignment.bottomLeft,
-                        attributionBuilder: (_) =>
-                            Text(LoginContent.pronote.geolocation.osmContributors, style: theme.texts.body1),
-                      ),
-                      MarkerLayerOptions(
-                        markers: [
-                          if (previousPosition != null)
-                            Marker(
-                                width: YScale.s12,
-                                height: YScale.s12,
-                                point: previousPosition!,
-                                builder: (ctx) => Icon(
-                                      Icons.place,
-                                      color: theme.colors.primary.backgroundColor,
-                                      size: YScale.s12,
-                                    )),
-                        ],
-                      ),
-                    ],
-                  ))
-                ],
-              ),
+                    MarkerLayerOptions(
+                      markers: [
+                        if (previousPosition != null)
+                          Marker(
+                              width: YScale.s12,
+                              height: YScale.s12,
+                              point: previousPosition!,
+                              builder: (ctx) => Icon(
+                                    Icons.place,
+                                    color: theme.colors.primary.backgroundColor,
+                                    size: YScale.s12,
+                                  )),
+                      ],
+                    ),
+                  ],
+                )),
+              ],
             ),
           );
         });
@@ -144,22 +149,28 @@ class _LoginPronoteGeolocationPageState extends State<LoginPronoteGeolocationPag
 
   // late final animationController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
 
-  void _animatedMapMove(LatLng destLocation, [double destZoom = defaultZoomValue]) {
+  void _animatedMapMove(LatLng destLocation,
+      [double destZoom = defaultZoomValue]) {
     // Create some tweens. These serve to split up the transition from one location to another.
     // In our case, we want to split the transition be<tween> our current map center and the destination.
-    final _latTween = Tween<double>(begin: mapController.center.latitude, end: destLocation.latitude);
-    final _lngTween = Tween<double>(begin: mapController.center.longitude, end: destLocation.longitude);
+    final _latTween = Tween<double>(
+        begin: mapController.center.latitude, end: destLocation.latitude);
+    final _lngTween = Tween<double>(
+        begin: mapController.center.longitude, end: destLocation.longitude);
     final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
     // The animation determines what path the animation will take. You can try different Curves values, although I found
     // fastOutSlowIn to be my favorite.
-    final animationController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
+    final animationController = AnimationController(
+        duration: const Duration(milliseconds: 1500), vsync: this);
 
-    Animation<double> animation = CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn);
+    Animation<double> animation = CurvedAnimation(
+        parent: animationController, curve: Curves.fastOutSlowIn);
 
     animationController.addListener(() {
       mapController.move(
-          LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)), _zoomTween.evaluate(animation));
+          LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)),
+          _zoomTween.evaluate(animation));
     });
 
     animation.addStatusListener((status) {

@@ -53,20 +53,6 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
                       body: Column(
                         children: [
                           Text(LoginContent.pronote.url.webview.dialog.body, style: theme.texts.body1),
-                          YVerticalSpacer(YScale.s2),
-                          YButton(
-                            onPressed: () async => await launch("https://discord.gg/pRCBs22dNX"),
-                            color: YColor.primary,
-                            text: LoginContent.pronote.url.webview.dialog.support,
-                            icon: FontAwesomeIcons.discord,
-                          ),
-                          YVerticalSpacer(YScale.s2),
-                          YButton(
-                            onPressed: () => BugReportUtils.report(),
-                            color: YColor.secondary,
-                            text: LoginContent.pronote.url.webview.dialog.report,
-                            icon: MdiIcons.forum,
-                          )
                         ],
                       ),
                       confirmLabel: "Fermer",
@@ -77,9 +63,8 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
       ),
       body: Column(
         children: [
-          Container(
-            height: screenSize.size.height,
-            width: screenSize.size.width,
+          Expanded(
+         
             child: Stack(
               children: [
                 Opacity(
