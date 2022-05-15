@@ -397,7 +397,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           refreshLocalCloudItemsList();
         }));
   }

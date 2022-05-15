@@ -80,7 +80,7 @@ class _IntroPageState extends State<IntroPage> {
         _pageIndex = _pageController.page!.round();
       });
     });
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       UIUtils.setSystemUIOverlayStyle(systemNavigationBarColor: _foregroundColor);
     });
   }

@@ -22,7 +22,7 @@ class _HomeworkSectionState extends State<HomeworkSection> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.refresh();
     });
   }

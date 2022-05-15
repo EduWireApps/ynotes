@@ -617,7 +617,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin 
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
+    SchedulerBinding.instance.addPostFrameCallback((_) => mounted
         ? setState(() {
             getInitialPath();
           })

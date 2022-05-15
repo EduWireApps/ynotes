@@ -25,7 +25,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       appSys.schoolLifeController.refresh();
     });
   }

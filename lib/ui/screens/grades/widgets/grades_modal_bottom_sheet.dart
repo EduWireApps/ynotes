@@ -78,8 +78,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
         colorGroup = Color(widget.discipline!.color!);
       }
     }
-    SchedulerBinding.instance?.addPostFrameCallback(postFrameCallback);
-    SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
+    SchedulerBinding.instance.addPostFrameCallback(postFrameCallback);
+    SchedulerBinding.instance.addPostFrameCallback(postFrameCallbackLowerPart);
 
     return Stack(
       children: [
@@ -452,7 +452,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
 
   Widget buildStatsPart() {
     MediaQueryData screenSize = MediaQuery.of(context);
-    SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
+    SchedulerBinding.instance.addPostFrameCallback(postFrameCallbackLowerPart);
 
     return SizedBox(
       width: 500,

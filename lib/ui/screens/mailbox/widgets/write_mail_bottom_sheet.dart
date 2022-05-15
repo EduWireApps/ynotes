@@ -255,7 +255,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           if (widget.defaultRecipients != null) {
             selectedRecipients = widget.defaultRecipients;
           }

@@ -39,7 +39,7 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       geolocationController!.addListener(() {
         if (geolocationController!.status == GeolocationStatus.error) {
           handleError();

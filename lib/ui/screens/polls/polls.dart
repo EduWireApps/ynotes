@@ -44,7 +44,7 @@ class _PollsPageState extends State<PollsPage> with LayoutMixin {
                 future: pollsFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
-                    SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
+                    SchedulerBinding.instance.addPostFrameCallback((_) => mounted
                         ? setState(() {
                             pollsList = snapshot.data;
                           })

@@ -7,7 +7,8 @@ import 'package:ynotes_packages/utilities.dart';
 class AccountLoginStatus extends StatefulWidget {
   final LoginController controller;
 
-  const AccountLoginStatus({Key? key, required this.controller}) : super(key: key);
+  const AccountLoginStatus({Key? key, required this.controller})
+      : super(key: key);
 
   @override
   _AccountLoginStatusState createState() => _AccountLoginStatusState();
@@ -22,7 +23,7 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
   final String offlineLabel = "Vous pouvez accéder à vos données hors ligne.";
   final String loggedOffTitle = "Vous êtes déconnecté";
 
-  final String loggedOffLabel = "Nous vous connectons...";
+  final String loggedOffLabel = "Nous vous reconnectons...";
   final String errorTitle = "Oups ! Une erreur s'est produite.";
 
   final String errorLabel =
@@ -89,7 +90,8 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
               color: widget.controller.color.foregroundColor,
             ),
           ),
-          if ([loginStatus.error, loginStatus.loggedOff].contains(state)) errorDetails(context)
+          if ([loginStatus.error, loginStatus.loggedOff].contains(state))
+            errorDetails(context)
         ],
       ),
     );
@@ -109,10 +111,19 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
                     color: theme.colors.backgroundColor,
                     borderRadius: YBorderRadius.lg,
                   ),
-                  child: Text(widget.controller.logs, style: theme.texts.body1)),
+                  child:
+                      Text(widget.controller.logs, style: theme.texts.body1)),
             ],
           ),
         YVerticalSpacer(YScale.s4),
+        Row(
+          children: [
+            YButton(
+                onPressed: () => widget.controller.login(),
+                text: "Reconnexion",
+                color: YColor.success),
+          ],
+        )
       ],
     );
   }

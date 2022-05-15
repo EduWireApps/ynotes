@@ -62,7 +62,7 @@ class _CountDownState extends State<CountDown> {
     _text = _getRandomElement(_texts);
     _emoji = _getRandomElement(_emojis);
     // We fetch the events of the day.
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       init();
     });
     // We refresh the countdown every second.

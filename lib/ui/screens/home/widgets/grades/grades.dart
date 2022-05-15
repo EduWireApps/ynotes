@@ -24,7 +24,7 @@ class _GradesSectionState extends State<GradesSection> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.refresh();
     });
   }
