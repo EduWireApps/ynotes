@@ -38,24 +38,30 @@ class GradesChart extends StatelessWidget {
       borderData: FlBorderData(show: false),
       titlesData: FlTitlesData(
         show: true,
-        topTitles: SideTitles(showTitles: false),
-        rightTitles: SideTitles(showTitles: false),
-        bottomTitles: SideTitles(
-            showTitles: true,
-            getTitles: (value) => value.asFixed(1) == value.asFixed(1).roundToDouble() ? els[value.toInt()].text : "",
-            getTextStyles: (context, _) =>
-                theme.texts.body2.copyWith(color: theme.colors.foregroundColor, fontWeight: YFontWeight.semibold)),
-        leftTitles: SideTitles(
+        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) => Text(
+                      value.asFixed(1) == value.asFixed(1).roundToDouble() ? els[value.toInt()].text : "",
+                      style: theme.texts.body2.copyWith(
+                        color: theme.colors.foregroundColor,
+                        fontWeight: YFontWeight.semibold,
+                      ),
+                    ))),
+        leftTitles: AxisTitles(
+            sideTitles: SideTitles(
           interval: 1,
           showTitles: true,
-          getTextStyles: (contect, _) => theme.texts.body2,
-        ),
+          getTitlesWidget: (value, meta) => Text(meta.formattedValue, style: theme.texts.body2),
+        )),
       ),
       lineBarsData: [
         LineChartBarData(
           spots: List.generate(els.length, (index) => FlSpot(index.toDouble(), els[index].value)),
           isCurved: true,
-          colors: [theme.colors.primary.backgroundColor],
+          color: theme.colors.primary.backgroundColor,
           barWidth: YScale.s1,
           isStrokeCapRound: true,
           dotData: FlDotData(
@@ -63,7 +69,7 @@ class GradesChart extends StatelessWidget {
           ),
           belowBarData: BarAreaData(
             show: true,
-            colors: [theme.colors.primary.lightColor.withOpacity(.2)],
+            color: theme.colors.primary.lightColor.withOpacity(.2),
           ),
         ),
       ],

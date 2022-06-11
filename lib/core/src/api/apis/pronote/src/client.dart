@@ -235,6 +235,7 @@ class PronoteClient {
         assignedColors = per._client.assignedColors;
         toReturn.add(per);
       });
+      print(toReturn.map((e) => e.name));
       return Response(data: toReturn);
     } catch (e) {
       Logger.error(e, stackHint: "MTE=");

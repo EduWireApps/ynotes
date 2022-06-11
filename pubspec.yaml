@@ -20,7 +20,7 @@ dependencies:
   device_info_plus: ^3.2.2
   dotted_border: ^2.0.0+2
   encrypt: ^5.0.1
-  fl_chart: ^0.41.0
+  fl_chart: ^0.51.0
   flutter:
     sdk: flutter
   flutter_inappwebview: ^5.3.2

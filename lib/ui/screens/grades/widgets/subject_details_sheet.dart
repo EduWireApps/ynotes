@@ -25,219 +25,6 @@ class SubjectDetailsSheet extends StatefulWidget {
   _SubjectDetailsSheetState createState() => _SubjectDetailsSheetState();
 }
 
-class _SubjectDetailsSheetState extends State<SubjectDetailsSheet> {
-  Subject get subject => widget.subject;
-  List<Grade> get grades => subject.sortedGrades.where((grade) => !grade.custom).toList();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: YPadding.p(YScale.s4),
-      child: Column(
-        children: [
-          _AverageContainer(subject, widget.average),
-          YVerticalSpacer(YScale.s2),
-          Text(
-            subject.name,
-            style: theme.texts.title,
-            textAlign: TextAlign.center,
-          ),
-          YVerticalSpacer(YScale.s1),
-          Text(subject.teachers,
-              style: theme.texts.body1.copyWith(color: subject.color.backgroundColor), textAlign: TextAlign.center),
-          YVerticalSpacer(YScale.s6),
-          _ClassData(
-            subject: subject,
-            average: widget.average,
-            simulate: widget.simulate,
-          ),
-          if (grades.length > 1)
-            Column(
-              children: [
-                YVerticalSpacer(YScale.s16),
-                _Chart(subject: subject, grades: grades),
-                YVerticalSpacer(YScale.s10),
-                _Legend(subject: subject)
-              ],
-            ),
-          YVerticalSpacer(YScale.s6),
-          YButton(
-            onPressed: () async {
-              final YTColor? color = await AppDialogs.showColorPickerDialog(context, color: subject.color);
-              if (color != null) {
-                subject.color = color;
-                setState(() {});
-                schoolApi.gradesModule.updateSubject(subject);
-              }
-            },
-            text: "COULEUR",
-            icon: Icons.color_lens_rounded,
-            color: YColor.secondary,
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class _Legend extends StatelessWidget {
-  final Subject subject;
-
-  const _Legend({Key? key, required this.subject}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        line(theme.colors.primary.backgroundColor, "Notes"),
-        YVerticalSpacer(YScale.s2),
-        line(subject.color.backgroundColor, "Moyennes de la classe"),
-      ],
-    );
-  }
-
-  Widget line(Color color, String label) {
-    return Row(
-      children: [
-        Container(width: YScale.s8, height: YScale.s1, color: color),
-        YHorizontalSpacer(YScale.s2),
-        Text(label, style: theme.texts.body1),
-      ],
-    );
-  }
-}
-
-class _Chart extends StatelessWidget {
-  final List<Grade> grades;
-  final Subject subject;
-
-  const _Chart({Key? key, required this.subject, required this.grades}) : super(key: key);
-
-  List<Grade> get _grades => grades.where((e) => !e.realValue.isNaN).toList();
-
-  List<double> get gradesValues => _grades.map((e) => e.realValue).toList();
-  List<double> get classAverages => _grades.map((e) => e.classAverage).toList();
-  double get minY => ([...gradesValues, ...classAverages].reduce(min) - .5).round().toDouble();
-  double get maxY => ([...gradesValues, ...classAverages].reduce(max)).round().toDouble();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: YScale.s24,
-      child: LineChart(LineChartData(
-        minY: minY,
-        maxY: maxY,
-        gridData: FlGridData(
-          show: false,
-        ),
-        lineTouchData: LineTouchData(
-            touchTooltipData: LineTouchTooltipData(
-                tooltipBgColor: theme.colors.backgroundLightColor,
-                tooltipRoundedRadius: YScale.s2,
-                getTooltipItems: (spots) => spots
-                    .map((spot) => LineTooltipItem(spot.y.toString(), TextStyle(color: theme.colors.foregroundColor)))
-                    .toList())),
-        borderData: FlBorderData(show: false),
-        titlesData: FlTitlesData(
-          show: true,
-          topTitles: SideTitles(showTitles: false),
-          rightTitles: SideTitles(showTitles: false),
-          bottomTitles: SideTitles(showTitles: false),
-          leftTitles: SideTitles(
-            interval: 2,
-            showTitles: true,
-            getTextStyles: (contect, _) => theme.texts.body2,
-          ),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: List.generate(gradesValues.length, (index) => FlSpot(index.toDouble(), gradesValues[index])),
-            isCurved: true,
-            colors: [theme.colors.primary.backgroundColor],
-            barWidth: YScale.s1,
-            isStrokeCapRound: true,
-            dotData: FlDotData(
-              show: true,
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              colors: [theme.colors.primary.lightColor.withOpacity(.2)],
-            ),
-          ),
-          LineChartBarData(
-            spots: List.generate(classAverages.length, (index) => FlSpot(index.toDouble(), classAverages[index])),
-            isCurved: true,
-            colors: [subject.color.backgroundColor],
-            barWidth: YScale.s1,
-            isStrokeCapRound: true,
-            dotData: FlDotData(
-              show: true,
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              colors: [subject.color.lightColor.withOpacity(.2)],
-            ),
-          ),
-        ],
-      )),
-    );
-  }
-}
-
-class _ClassData extends StatelessWidget {
-  const _ClassData({Key? key, required this.subject, required this.average, required this.simulate}) : super(key: key);
-
-  final Subject subject;
-  final double average;
-  final bool simulate;
-
-  bool sameAverages(double a, double b) {
-    if (a.isNaN && b.isNaN) {
-      return true;
-    } else if ((a.isNaN && !b.isNaN) || (!a.isNaN && b.isNaN)) {
-      return false;
-    } else {
-      return a == b;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: YScale.s4, runSpacing: YScale.s2, children: [
-      ...[
-        ["CLASSE", subject.classAverage.display()],
-        ["MAX", subject.maxAverage.display()],
-        ["MIN", subject.minAverage.display()]
-      ].map((e) => _Data(label: e[0], value: e[1])).toList(),
-      if (!simulate && !sameAverages(average, subject.average)) const OutdatedDataWarning(),
-    ]);
-  }
-}
-
-class _Data extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _Data({Key? key, required this.label, required this.value}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: theme.colors.backgroundLightColor, borderRadius: YBorderRadius.xl),
-      padding: YPadding.p(YScale.s2),
-      width: YScale.s16,
-      child: Column(
-        children: [
-          Text(label, style: theme.texts.body2),
-          YVerticalSpacer(YScale.s1),
-          Text(value,
-              style: theme.texts.body1.copyWith(fontWeight: YFontWeight.semibold, color: theme.colors.foregroundColor)),
-        ],
-      ),
-    );
-  }
-}
-
 class _AverageContainer extends StatelessWidget {
   final Subject subject;
   final double average;
@@ -294,5 +81,218 @@ class _AverageContainer extends StatelessWidget {
             ],
           ),
         ));
+  }
+}
+
+class _Chart extends StatelessWidget {
+  final List<Grade> grades;
+  final Subject subject;
+
+  const _Chart({Key? key, required this.subject, required this.grades}) : super(key: key);
+
+  List<double> get classAverages => _grades.map((e) => e.classAverage).toList();
+
+  List<double> get gradesValues => _grades.map((e) => e.realValue).toList();
+  double get maxY => ([...gradesValues, ...classAverages].reduce(max)).round().toDouble();
+  double get minY => ([...gradesValues, ...classAverages].reduce(min) - .5).round().toDouble();
+  List<Grade> get _grades => grades.where((e) => !e.realValue.isNaN).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: YScale.s24,
+      child: LineChart(LineChartData(
+        minY: minY,
+        maxY: maxY,
+        gridData: FlGridData(
+          show: false,
+        ),
+        lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+                tooltipBgColor: theme.colors.backgroundLightColor,
+                tooltipRoundedRadius: YScale.s2,
+                getTooltipItems: (spots) => spots
+                    .map((spot) => LineTooltipItem(spot.y.toString(), TextStyle(color: theme.colors.foregroundColor)))
+                    .toList())),
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          show: true,
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles:AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles:AxisTitles(sideTitles:  SideTitles(
+            interval: 2,
+            showTitles: true,
+            getTitlesWidget: (a,b) => Text(b.formattedValue, style: theme.texts.body2),
+          )),
+        ),
+        lineBarsData: [
+          LineChartBarData(
+            spots: List.generate(gradesValues.length, (index) => FlSpot(index.toDouble(), gradesValues[index])),
+            isCurved: true,
+            color: theme.colors.primary.backgroundColor,
+            barWidth: YScale.s1,
+            isStrokeCapRound: true,
+            dotData: FlDotData(
+              show: true,
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              color: theme.colors.primary.lightColor.withOpacity(.2),
+            ),
+          ),
+          LineChartBarData(
+            spots: List.generate(classAverages.length, (index) => FlSpot(index.toDouble(), classAverages[index])),
+            isCurved: true,
+            color: subject.color.backgroundColor,
+            barWidth: YScale.s1,
+            isStrokeCapRound: true,
+            dotData: FlDotData(
+              show: true,
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              color: subject.color.lightColor.withOpacity(.2),
+            ),
+          ),
+        ],
+      )),
+    );
+  }
+}
+
+class _ClassData extends StatelessWidget {
+  final Subject subject;
+
+  final double average;
+  final bool simulate;
+  const _ClassData({Key? key, required this.subject, required this.average, required this.simulate}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: YScale.s4, runSpacing: YScale.s2, children: [
+      ...[
+        ["CLASSE", subject.classAverage.display()],
+        ["MAX", subject.maxAverage.display()],
+        ["MIN", subject.minAverage.display()]
+      ].map((e) => _Data(label: e[0], value: e[1])).toList(),
+      if (!simulate && !sameAverages(average, subject.average)) const OutdatedDataWarning(),
+    ]);
+  }
+
+  bool sameAverages(double a, double b) {
+    if (a.isNaN && b.isNaN) {
+      return true;
+    } else if ((a.isNaN && !b.isNaN) || (!a.isNaN && b.isNaN)) {
+      return false;
+    } else {
+      return a == b;
+    }
+  }
+}
+
+class _Data extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _Data({Key? key, required this.label, required this.value}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(color: theme.colors.backgroundLightColor, borderRadius: YBorderRadius.xl),
+      padding: YPadding.p(YScale.s2),
+      width: YScale.s16,
+      child: Column(
+        children: [
+          Text(label, style: theme.texts.body2),
+          YVerticalSpacer(YScale.s1),
+          Text(value,
+              style: theme.texts.body1.copyWith(fontWeight: YFontWeight.semibold, color: theme.colors.foregroundColor)),
+        ],
+      ),
+    );
+  }
+}
+
+class _Legend extends StatelessWidget {
+  final Subject subject;
+
+  const _Legend({Key? key, required this.subject}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        line(theme.colors.primary.backgroundColor, "Notes"),
+        YVerticalSpacer(YScale.s2),
+        line(subject.color.backgroundColor, "Moyennes de la classe"),
+      ],
+    );
+  }
+
+  Widget line(Color color, String label) {
+    return Row(
+      children: [
+        Container(width: YScale.s8, height: YScale.s1, color: color),
+        YHorizontalSpacer(YScale.s2),
+        Text(label, style: theme.texts.body1),
+      ],
+    );
+  }
+}
+
+class _SubjectDetailsSheetState extends State<SubjectDetailsSheet> {
+  List<Grade> get grades => subject.sortedGrades.where((grade) => !grade.custom).toList();
+  Subject get subject => widget.subject;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: YPadding.p(YScale.s4),
+      child: Column(
+        children: [
+          _AverageContainer(subject, widget.average),
+          YVerticalSpacer(YScale.s2),
+          Text(
+            subject.name,
+            style: theme.texts.title,
+            textAlign: TextAlign.center,
+          ),
+          YVerticalSpacer(YScale.s1),
+          Text(subject.teachers,
+              style: theme.texts.body1.copyWith(color: subject.color.backgroundColor), textAlign: TextAlign.center),
+          YVerticalSpacer(YScale.s6),
+          _ClassData(
+            subject: subject,
+            average: widget.average,
+            simulate: widget.simulate,
+          ),
+          if (grades.length > 1)
+            Column(
+              children: [
+                YVerticalSpacer(YScale.s16),
+                _Chart(subject: subject, grades: grades),
+                YVerticalSpacer(YScale.s10),
+                _Legend(subject: subject)
+              ],
+            ),
+          YVerticalSpacer(YScale.s6),
+          YButton(
+            onPressed: () async {
+              final YTColor? color = await AppDialogs.showColorPickerDialog(context, color: subject.color);
+              if (color != null) {
+                subject.color = color;
+                setState(() {});
+                schoolApi.gradesModule.updateSubject(subject);
+              }
+            },
+            text: "COULEUR",
+            icon: Icons.color_lens_rounded,
+            color: YColor.secondary,
+          )
+        ],
+      ),
+    );
   }
 }
