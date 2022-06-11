@@ -20,7 +20,7 @@ class Communication {
   late bool compressRequests;
   late double lastPing;
   late bool encryptRequests;
-  req.Response? lastResponse;
+  req.Requests? lastResponse;
 
   Communication(this.client) {
     url = client.url;

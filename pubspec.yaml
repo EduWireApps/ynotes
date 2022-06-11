@@ -13,13 +13,18 @@ environment:
 dependencies:
   auto_size_text: ^3.0.0
   background_fetch: ^1.0.3
-  optimize_battery: ^0.0.2
+  collection: ^1.15.0
   connectivity_plus: ^2.2.0
+  convert: ^3.0.1
+  crypto: ^3.0.1
+  device_info_plus: ^3.2.2
+  dotted_border: ^2.0.0+2
   encrypt: ^5.0.1
   fl_chart: ^0.41.0
   flutter:
     sdk: flutter
   flutter_inappwebview: ^5.3.2
+  flutter_local_notifications: ^9.2.0
   flutter_localizations:
     sdk: flutter
   flutter_map: ^0.14.0
@@ -31,53 +36,44 @@ dependencies:
   font_awesome_flutter: ^9.2.0
   geolocator: ^8.0.3
   google_fonts: ^2.2.0
+  html: ^0.15.0
   html_character_entities: ^1.0.0+1
   html_unescape: ^2.0.0
-  isar: ^2.1.4
-  isar_flutter_libs: ^2.1.4 # contains the binaries
   http: ^0.13.4
   intl: ^0.17.0
+  isar: ^2.1.4
+  isar_flutter_libs: ^2.1.4 # contains the binaries
   json_annotation: ^4.4.0
   latlong2: ^0.8.1
   material_design_icons_flutter: ^5.0.6595
+  new_version: ^0.3.0
   open_file: ^3.2.1
+  optimize_battery: ^0.0.2
   package_info_plus: ^1.3.0
   path_provider: ^2.0.8
   permission_handler: ^8.3.0
   pointycastle: ^3.5.0
   provider: ^6.0.2
   qr_code_scanner: ^0.6.1
+  requests: ^4.3.0
   shake_flutter: ^15.1.0
   simple_animations: ^4.0.1
   smooth_page_indicator: ^1.0.0+2
-  requests:
-    git:
-      ref: master
-      url: "https://github.com/jossef/requests"
   url_launcher: ^6.0.18
   uuid: ^3.0.5
   ynotes_packages: # flutter pub upgrade ynotes_packages
     git:
       ref: main
       url: "https://github.com/EduWireApps/ynotes-packages"
-  dotted_border: ^2.0.0+2
-  flutter_local_notifications: ^9.2.0
-  collection: ^1.15.0
-  convert: ^3.0.1
-  crypto: ^3.0.1
-  html: ^0.15.0
-  new_version: ^0.3.0
-  device_info_plus: ^3.2.2
 
 # dependency_overrides:
-
 dev_dependencies:
-  isar_generator: ^2.1.4
   build_runner: ^2.0.4 # flutter packages pub run build_runner build --delete-conflicting-outputs
   dependency_validator: ^3.1.0 # flutter pub run dependency_validator
   flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
+  isar_generator: ^2.1.4
   json_serializable: ^6.1.4
 
 flutter_icons:
