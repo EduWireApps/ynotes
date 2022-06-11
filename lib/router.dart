@@ -40,7 +40,7 @@ final List<CustomRoute> routes = [
   ...homeRoutes,
   CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: const GradesPage(), tab: appTabs.grades),
   CustomRoute(
-      path: "/homework", icon: Icons.class_rounded, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
+      path: "/homework", icon: Icons.class__rounded, title: "Devoirs", page: HomeworkPage(), tab: appTabs.homework),
   CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: const AgendaPage(), tab: appTabs.agenda),
   CustomRoute(
       path: "/mailbox",
