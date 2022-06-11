@@ -20,13 +20,12 @@ class Communication {
   late bool compressRequests;
   late double lastPing;
   late bool encryptRequests;
-  req.Requests? lastResponse;
+  http.Response? lastResponse;
 
   Communication(this.client) {
     url = client.url;
     urlRoot = getRootAdress(url)[0];
     urlPath = getRootAdress(url)[1];
-
     attributes = {};
     requestNumber = 1;
     lastPing = 0;
