@@ -56,7 +56,7 @@ dependencies:
   provider: ^6.0.2
   qr_code_scanner: ^0.6.1
   requests: ^4.3.0
-  shake_flutter: ^15.1.0
+  shake_flutter: ^15.2.0
   simple_animations: ^4.0.1
   smooth_page_indicator: ^1.0.0+2
   url_launcher: ^6.0.18

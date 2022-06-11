@@ -62,6 +62,7 @@ abstract class Offline {
       name: "data",
       schemas: schemas,
       directory: '${dir.path}/offline',
+      inspector: true
     );
     store.initialized = true;
   }
