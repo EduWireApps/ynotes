@@ -4,6 +4,7 @@ late SchoolApi schoolApi;
 
 SchoolApi schoolApiManager(Apis api) {
   late SchoolApi _api;
+ 
   switch (api) {
     case Apis.ecoleDirecte:
       _api = EcoleDirecteApi();

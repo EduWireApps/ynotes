@@ -1,3 +1,3 @@
 part of school_api;
 
-enum Apis { ecoleDirecte }
+enum Apis { ecoleDirecte, pronote }
