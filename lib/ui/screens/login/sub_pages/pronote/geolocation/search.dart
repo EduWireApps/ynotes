@@ -12,10 +12,12 @@ class LoginPronoteGeolocationSearchPage extends StatefulWidget {
   const LoginPronoteGeolocationSearchPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPronoteGeolocationSearchPageState createState() => _LoginPronoteGeolocationSearchPageState();
+  _LoginPronoteGeolocationSearchPageState createState() =>
+      _LoginPronoteGeolocationSearchPageState();
 }
 
-class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocationSearchPage> {
+class _LoginPronoteGeolocationSearchPageState
+    extends State<LoginPronoteGeolocationSearchPage> {
   PronoteGeolocationController? geolocationController;
   String _location = "";
   List<OSMLocation> _locations = [];
@@ -26,14 +28,16 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
     final int _length = _locations.length;
 
     for (int i = 0; i < _length + _length - 1; i++) {
-      _els.add(i % 2 == 0 ? _LocationTile(_locations[i ~/ 2]) : const YDivider());
+      _els.add(
+          i % 2 == 0 ? _LocationTile(_locations[i ~/ 2]) : const YDivider());
     }
 
     return _els;
   }
 
   Future<void> fetchLocations() async {
-    final List<OSMLocation> _locations = await geolocationController!.locateNearPlaces(_location);
+    final List<OSMLocation> _locations =
+        await geolocationController!.locateNearPlaces(_location);
     setState(() {
       this._locations = _locations;
     });
@@ -61,6 +65,7 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
   Widget build(BuildContext context) {
     geolocationController ??= AppRouter.getArgs<PronoteGeolocationController>(context);
     return YPage(
+        scrollable: true,
         appBar: YAppBar(title: LoginContent.pronote.geolocation.search.title),
         body: Column(
           children: [
@@ -69,7 +74,8 @@ class _LoginPronoteGeolocationSearchPageState extends State<LoginPronoteGeolocat
               child: YFormField(
                   type: YFormFieldInputType.text,
                   label: LoginContent.pronote.geolocation.search.search,
-                  properties: YFormFieldProperties(textInputAction: TextInputAction.search),
+                  properties: YFormFieldProperties(
+                      textInputAction: TextInputAction.search),
                   onChanged: _onSearchChanged),
             ),
             Padding(
@@ -98,7 +104,8 @@ class _LocationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(Icons.home_work_rounded, color: theme.colors.foregroundLightColor),
+      leading: Icon(Icons.home_work_rounded,
+          color: theme.colors.foregroundLightColor),
       title: Text("${location.name} ", style: theme.texts.body1),
       onTap: () async {
         Navigator.pop(context, location.coordinates);

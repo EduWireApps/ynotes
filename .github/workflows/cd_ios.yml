@@ -5,13 +5,13 @@ on:
   push:
     branches:
       - beta-releases
-
+      - master
 jobs:
   # CD
   deploy_ios:
     runs-on: macos-latest
     # Beta release only
-    if: github.ref == 'refs/heads/beta-releases'
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
-            flutter-version: '2.8.x'
+            flutter-version: '3.x'
 
       - name: Install Flutter dependencies
         run: flutter pub get

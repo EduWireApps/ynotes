@@ -6,171 +6,211 @@ part of logger;
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetLogCollection on Isar {
-  IsarCollection<Log> get logs {
-    return getCollection('Log');
-  }
+  IsarCollection<Log> get logs => getCollection();
 }
 
-final LogSchema = CollectionSchema(
+const LogSchema = CollectionSchema(
   name: 'Log',
   schema:
-      '{"name":"Log","properties":[{"name":"category","type":"String"},{"name":"comment","type":"String"},{"name":"date","type":"Long"},{"name":"stacktrace","type":"String"}],"indexes":[],"links":[]}',
-  adapter: const _LogAdapter(),
+      '{"name":"Log","idName":"id","properties":[{"name":"category","type":"String"},{"name":"comment","type":"String"},{"name":"date","type":"Long"},{"name":"stacktrace","type":"String"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {'category': 0, 'comment': 1, 'date': 2, 'stacktrace': 3},
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {},
-  backlinkIds: {},
-  linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _logGetId,
+  setId: _logSetId,
+  getLinks: _logGetLinks,
+  attachLinks: _logAttachLinks,
+  serializeNative: _logSerializeNative,
+  deserializeNative: _logDeserializeNative,
+  deserializePropNative: _logDeserializePropNative,
+  serializeWeb: _logSerializeWeb,
+  deserializeWeb: _logDeserializeWeb,
+  deserializePropWeb: _logDeserializePropWeb,
+  version: 3,
 );
 
-class _LogAdapter extends IsarTypeAdapter<Log> {
-  const _LogAdapter();
-
-  @override
-  void serialize(IsarCollection<Log> collection, IsarRawObject rawObj,
-      Log object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.category;
-    final _category = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _category.length;
-    final value1 = object.comment;
-    final _comment = BinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += _comment.length;
-    final value2 = object.date;
-    final _date = value2;
-    final value3 = object.stacktrace;
-    IsarUint8List? _stacktrace;
-    if (value3 != null) {
-      _stacktrace = BinaryWriter.utf8Encoder.convert(value3);
-    }
-    dynamicSize += _stacktrace?.length ?? 0;
-    final size = dynamicSize + 34;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 34);
-    writer.writeBytes(offsets[0], _category);
-    writer.writeBytes(offsets[1], _comment);
-    writer.writeDateTime(offsets[2], _date);
-    writer.writeBytes(offsets[3], _stacktrace);
-  }
-
-  @override
-  Log deserialize(IsarCollection<Log> collection, int id, BinaryReader reader,
-      List<int> offsets) {
-    final object = Log(
-      category: reader.readString(offsets[0]),
-      comment: reader.readString(offsets[1]),
-      stacktrace: reader.readStringOrNull(offsets[3]),
-    );
-    object.id = id;
-    return object;
-  }
-
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      case 2:
-        return (reader.readDateTime(offset)) as P;
-      case 3:
-        return (reader.readStringOrNull(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
+int? _logGetId(Log object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
 }
+
+void _logSetId(Log object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _logGetLinks(Log object) {
+  return [];
+}
+
+void _logSerializeNative(IsarCollection<Log> collection, IsarRawObject rawObj,
+    Log object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.category;
+  final _category = IsarBinaryWriter.utf8Encoder.convert(value0);
+  dynamicSize += (_category.length) as int;
+  final value1 = object.comment;
+  final _comment = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_comment.length) as int;
+  final value2 = object.date;
+  final _date = value2;
+  final value3 = object.stacktrace;
+  IsarUint8List? _stacktrace;
+  if (value3 != null) {
+    _stacktrace = IsarBinaryWriter.utf8Encoder.convert(value3);
+  }
+  dynamicSize += (_stacktrace?.length ?? 0) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _category);
+  writer.writeBytes(offsets[1], _comment);
+  writer.writeDateTime(offsets[2], _date);
+  writer.writeBytes(offsets[3], _stacktrace);
+}
+
+Log _logDeserializeNative(IsarCollection<Log> collection, int id,
+    IsarBinaryReader reader, List<int> offsets) {
+  final object = Log(
+    category: reader.readString(offsets[0]),
+    comment: reader.readString(offsets[1]),
+    stacktrace: reader.readStringOrNull(offsets[3]),
+  );
+  object.id = id;
+  return object;
+}
+
+P _logDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readDateTime(offset)) as P;
+    case 3:
+      return (reader.readStringOrNull(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _logSerializeWeb(IsarCollection<Log> collection, Log object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'category', object.category);
+  IsarNative.jsObjectSet(jsObj, 'comment', object.comment);
+  IsarNative.jsObjectSet(
+      jsObj, 'date', object.date.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'stacktrace', object.stacktrace);
+  return jsObj;
+}
+
+Log _logDeserializeWeb(IsarCollection<Log> collection, dynamic jsObj) {
+  final object = Log(
+    category: IsarNative.jsObjectGet(jsObj, 'category') ?? '',
+    comment: IsarNative.jsObjectGet(jsObj, 'comment') ?? '',
+    stacktrace: IsarNative.jsObjectGet(jsObj, 'stacktrace'),
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  return object;
+}
+
+P _logDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'category':
+      return (IsarNative.jsObjectGet(jsObj, 'category') ?? '') as P;
+    case 'comment':
+      return (IsarNative.jsObjectGet(jsObj, 'comment') ?? '') as P;
+    case 'date':
+      return (IsarNative.jsObjectGet(jsObj, 'date') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'date'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'stacktrace':
+      return (IsarNative.jsObjectGet(jsObj, 'stacktrace')) as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _logAttachLinks(IsarCollection col, int id, Log object) {}
 
 extension LogQueryWhereSort on QueryBuilder<Log, Log, QWhere> {
   QueryBuilder<Log, Log, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension LogQueryWhere on QueryBuilder<Log, Log, QWhereClause> {
-  QueryBuilder<Log, Log, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Log, Log, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Log, Log, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Log, Log, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Log, Log, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Log, Log, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Log, Log, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Log, Log, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Log, Log, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -434,7 +474,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Log, Log, QAfterFilterCondition> idEqualTo(int? value) {
+  QueryBuilder<Log, Log, QAfterFilterCondition> idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -443,7 +483,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
   }
 
   QueryBuilder<Log, Log, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -455,7 +495,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
   }
 
   QueryBuilder<Log, Log, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -467,8 +507,8 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
   }
 
   QueryBuilder<Log, Log, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -591,6 +631,8 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     ));
   }
 }
+
+extension LogQueryLinks on QueryBuilder<Log, Log, QFilterCondition> {}
 
 extension LogQueryWhereSortBy on QueryBuilder<Log, Log, QSortBy> {
   QueryBuilder<Log, Log, QAfterSortBy> sortByCategory() {

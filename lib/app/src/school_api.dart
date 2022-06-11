@@ -8,6 +8,7 @@ SchoolApi schoolApiManager(Apis api) {
   SettingsService.settings.global.api = api;
   SettingsService.update();
   late SchoolApi _api;
+ 
   switch (api) {
     case Apis.ecoleDirecte:
       _api = EcoleDirecteApi();

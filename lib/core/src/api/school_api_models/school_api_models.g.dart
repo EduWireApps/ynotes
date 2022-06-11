@@ -6,15 +6,13 @@ part of models;
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetGradeCollection on Isar {
-  IsarCollection<Grade> get grades {
-    return getCollection('Grade');
-  }
+  IsarCollection<Grade> get grades => getCollection();
 }
 
-final GradeSchema = CollectionSchema(
+const GradeSchema = CollectionSchema(
   name: 'Grade',
   schema:
       '{"name":"Grade","properties":[{"name":"classAverage","type":"Double"},{"name":"classMax","type":"Double"},{"name":"classMin","type":"Double"},{"name":"custom","type":"Byte"},{"name":"date","type":"Long"},{"name":"entryDate","type":"Long"},{"name":"name","type":"String"},{"name":"realValue","type":"Double"},{"name":"type","type":"String"}],"indexes":[],"links":[{"name":"gradeValue","target":"GradeValue"},{"name":"period","target":"Period"},{"name":"subject","target":"Subject"}]}',
@@ -31,7 +29,9 @@ final GradeSchema = CollectionSchema(
     'realValue': 7,
     'type': 8
   },
+  listProperties: {},
   indexIds: {},
+<<<<<<< HEAD
   indexTypes: {},
   linkIds: {'gradeValue': 0, 'period': 1, 'subject': 2},
   backlinkIds: {},
@@ -132,8 +132,33 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
       default:
         throw 'Illegal propertyIndex';
     }
-  }
+=======
+  indexValueTypes: {},
+  linkIds: {'period': 0, 'subject': 1},
+  backlinkLinkNames: {},
+  getId: _gradeGetId,
+  setId: _gradeSetId,
+  getLinks: _gradeGetLinks,
+  attachLinks: _gradeAttachLinks,
+  serializeNative: _gradeSerializeNative,
+  deserializeNative: _gradeDeserializeNative,
+  deserializePropNative: _gradeDeserializePropNative,
+  serializeWeb: _gradeSerializeWeb,
+  deserializeWeb: _gradeDeserializeWeb,
+  deserializePropWeb: _gradeDeserializePropWeb,
+  version: 3,
+);
 
+int? _gradeGetId(Grade object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
+>>>>>>> release/update0.15
+  }
+}
+
+<<<<<<< HEAD
   void attachLinks(Isar isar, Grade object) {
     object.gradeValue.attach(
       isar.grades,
@@ -156,83 +181,298 @@ class _GradeAdapter extends IsarTypeAdapter<Grade> {
       "subject",
       false,
     );
+=======
+void _gradeSetId(Grade object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _gradeGetLinks(Grade object) {
+  return [object.period, object.subject];
+}
+
+void _gradeSerializeNative(
+    IsarCollection<Grade> collection,
+    IsarRawObject rawObj,
+    Grade object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.classAverage;
+  final _classAverage = value0;
+  final value1 = object.classMax;
+  final _classMax = value1;
+  final value2 = object.classMin;
+  final _classMin = value2;
+  final value3 = object.coefficient;
+  final _coefficient = value3;
+  final value4 = object.custom;
+  final _custom = value4;
+  final value5 = object.date;
+  final _date = value5;
+  final value6 = object.entryDate;
+  final _entryDate = value6;
+  final value7 = object.name;
+  final _name = IsarBinaryWriter.utf8Encoder.convert(value7);
+  dynamicSize += (_name.length) as int;
+  final value8 = object.outOf;
+  final _outOf = value8;
+  final value9 = object.realValue;
+  final _realValue = value9;
+  final value10 = object.significant;
+  final _significant = value10;
+  final value11 = object.type;
+  final _type = IsarBinaryWriter.utf8Encoder.convert(value11);
+  dynamicSize += (_type.length) as int;
+  final value12 = object.value;
+  final _value = value12;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeDouble(offsets[0], _classAverage);
+  writer.writeDouble(offsets[1], _classMax);
+  writer.writeDouble(offsets[2], _classMin);
+  writer.writeDouble(offsets[3], _coefficient);
+  writer.writeBool(offsets[4], _custom);
+  writer.writeDateTime(offsets[5], _date);
+  writer.writeDateTime(offsets[6], _entryDate);
+  writer.writeBytes(offsets[7], _name);
+  writer.writeDouble(offsets[8], _outOf);
+  writer.writeDouble(offsets[9], _realValue);
+  writer.writeBool(offsets[10], _significant);
+  writer.writeBytes(offsets[11], _type);
+  writer.writeDouble(offsets[12], _value);
+}
+
+Grade _gradeDeserializeNative(IsarCollection<Grade> collection, int id,
+    IsarBinaryReader reader, List<int> offsets) {
+  final object = Grade(
+    classAverage: reader.readDouble(offsets[0]),
+    classMax: reader.readDouble(offsets[1]),
+    classMin: reader.readDouble(offsets[2]),
+    coefficient: reader.readDouble(offsets[3]),
+    custom: reader.readBool(offsets[4]),
+    date: reader.readDateTime(offsets[5]),
+    entryDate: reader.readDateTime(offsets[6]),
+    name: reader.readString(offsets[7]),
+    outOf: reader.readDouble(offsets[8]),
+    significant: reader.readBool(offsets[10]),
+    type: reader.readString(offsets[11]),
+    value: reader.readDouble(offsets[12]),
+  );
+  object.id = id;
+  _gradeAttachLinks(collection, id, object);
+  return object;
+}
+
+P _gradeDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readDouble(offset)) as P;
+    case 1:
+      return (reader.readDouble(offset)) as P;
+    case 2:
+      return (reader.readDouble(offset)) as P;
+    case 3:
+      return (reader.readDouble(offset)) as P;
+    case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
+      return (reader.readDateTime(offset)) as P;
+    case 6:
+      return (reader.readDateTime(offset)) as P;
+    case 7:
+      return (reader.readString(offset)) as P;
+    case 8:
+      return (reader.readDouble(offset)) as P;
+    case 9:
+      return (reader.readDouble(offset)) as P;
+    case 10:
+      return (reader.readBool(offset)) as P;
+    case 11:
+      return (reader.readString(offset)) as P;
+    case 12:
+      return (reader.readDouble(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
   }
+}
+
+dynamic _gradeSerializeWeb(IsarCollection<Grade> collection, Grade object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'classAverage', object.classAverage);
+  IsarNative.jsObjectSet(jsObj, 'classMax', object.classMax);
+  IsarNative.jsObjectSet(jsObj, 'classMin', object.classMin);
+  IsarNative.jsObjectSet(jsObj, 'coefficient', object.coefficient);
+  IsarNative.jsObjectSet(jsObj, 'custom', object.custom);
+  IsarNative.jsObjectSet(
+      jsObj, 'date', object.date.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(
+      jsObj, 'entryDate', object.entryDate.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'name', object.name);
+  IsarNative.jsObjectSet(jsObj, 'outOf', object.outOf);
+  IsarNative.jsObjectSet(jsObj, 'realValue', object.realValue);
+  IsarNative.jsObjectSet(jsObj, 'significant', object.significant);
+  IsarNative.jsObjectSet(jsObj, 'type', object.type);
+  IsarNative.jsObjectSet(jsObj, 'value', object.value);
+  return jsObj;
+}
+
+Grade _gradeDeserializeWeb(IsarCollection<Grade> collection, dynamic jsObj) {
+  final object = Grade(
+    classAverage: IsarNative.jsObjectGet(jsObj, 'classAverage') ??
+        double.negativeInfinity,
+    classMax:
+        IsarNative.jsObjectGet(jsObj, 'classMax') ?? double.negativeInfinity,
+    classMin:
+        IsarNative.jsObjectGet(jsObj, 'classMin') ?? double.negativeInfinity,
+    coefficient:
+        IsarNative.jsObjectGet(jsObj, 'coefficient') ?? double.negativeInfinity,
+    custom: IsarNative.jsObjectGet(jsObj, 'custom') ?? false,
+    date: IsarNative.jsObjectGet(jsObj, 'date') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'date'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    entryDate: IsarNative.jsObjectGet(jsObj, 'entryDate') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'entryDate'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
+    outOf: IsarNative.jsObjectGet(jsObj, 'outOf') ?? double.negativeInfinity,
+    significant: IsarNative.jsObjectGet(jsObj, 'significant') ?? false,
+    type: IsarNative.jsObjectGet(jsObj, 'type') ?? '',
+    value: IsarNative.jsObjectGet(jsObj, 'value') ?? double.negativeInfinity,
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  _gradeAttachLinks(collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
+  return object;
+}
+
+P _gradeDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'classAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'classAverage') ??
+          double.negativeInfinity) as P;
+    case 'classMax':
+      return (IsarNative.jsObjectGet(jsObj, 'classMax') ??
+          double.negativeInfinity) as P;
+    case 'classMin':
+      return (IsarNative.jsObjectGet(jsObj, 'classMin') ??
+          double.negativeInfinity) as P;
+    case 'coefficient':
+      return (IsarNative.jsObjectGet(jsObj, 'coefficient') ??
+          double.negativeInfinity) as P;
+    case 'custom':
+      return (IsarNative.jsObjectGet(jsObj, 'custom') ?? false) as P;
+    case 'date':
+      return (IsarNative.jsObjectGet(jsObj, 'date') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'date'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'entryDate':
+      return (IsarNative.jsObjectGet(jsObj, 'entryDate') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'entryDate'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'name':
+      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
+    case 'outOf':
+      return (IsarNative.jsObjectGet(jsObj, 'outOf') ?? double.negativeInfinity)
+          as P;
+    case 'realValue':
+      return (IsarNative.jsObjectGet(jsObj, 'realValue') ??
+          double.negativeInfinity) as P;
+    case 'significant':
+      return (IsarNative.jsObjectGet(jsObj, 'significant') ?? false) as P;
+    case 'type':
+      return (IsarNative.jsObjectGet(jsObj, 'type') ?? '') as P;
+    case 'value':
+      return (IsarNative.jsObjectGet(jsObj, 'value') ?? double.negativeInfinity)
+          as P;
+    default:
+      throw 'Illegal propertyName';
+>>>>>>> release/update0.15
+  }
+}
+
+void _gradeAttachLinks(IsarCollection col, int id, Grade object) {
+  object.period.attach(col, col.isar.periods, 'period', id);
+  object.subject.attach(col, col.isar.subjects, 'subject', id);
 }
 
 extension GradeQueryWhereSort on QueryBuilder<Grade, Grade, QWhere> {
   QueryBuilder<Grade, Grade, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension GradeQueryWhere on QueryBuilder<Grade, Grade, QWhereClause> {
-  QueryBuilder<Grade, Grade, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Grade, Grade, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Grade, Grade, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Grade, Grade, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Grade, Grade, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Grade, Grade, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Grade, Grade, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Grade, Grade, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Grade, Grade, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -444,7 +684,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> idEqualTo(int? value) {
+  QueryBuilder<Grade, Grade, QAfterFilterCondition> idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -453,7 +693,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
   }
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -465,7 +705,7 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
   }
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -477,8 +717,8 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
   }
 
   QueryBuilder<Grade, Grade, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -722,6 +962,26 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
       value: pattern,
       caseSensitive: caseSensitive,
     ));
+  }
+}
+
+extension GradeQueryLinks on QueryBuilder<Grade, Grade, QFilterCondition> {
+  QueryBuilder<Grade, Grade, QAfterFilterCondition> period(
+      FilterQuery<Period> q) {
+    return linkInternal(
+      isar.periods,
+      q,
+      'period',
+    );
+  }
+
+  QueryBuilder<Grade, Grade, QAfterFilterCondition> subject(
+      FilterQuery<Subject> q) {
+    return linkInternal(
+      isar.subjects,
+      q,
+      'subject',
+    );
   }
 }
 
@@ -1824,19 +2084,16 @@ extension GradeValueQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetSubjectCollection on Isar {
-  IsarCollection<Subject> get subjects {
-    return getCollection('Subject');
-  }
+  IsarCollection<Subject> get subjects => getCollection();
 }
 
-final SubjectSchema = CollectionSchema(
+const SubjectSchema = CollectionSchema(
   name: 'Subject',
   schema:
-      '{"name":"Subject","properties":[{"name":"average","type":"Double"},{"name":"classAverage","type":"Double"},{"name":"coefficient","type":"Double"},{"name":"color","type":"String"},{"name":"entityId","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"teachers","type":"String"}],"indexes":[],"links":[{"name":"period","target":"Period"}]}',
-  adapter: const _SubjectAdapter(),
+      '{"name":"Subject","idName":"id","properties":[{"name":"average","type":"Double"},{"name":"classAverage","type":"Double"},{"name":"coefficient","type":"Double"},{"name":"color","type":"String"},{"name":"entityId","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"teachers","type":"String"}],"indexes":[],"links":[{"name":"period","target":"Period"}]}',
   idName: 'id',
   propertyIds: {
     'average': 0,
@@ -1849,208 +2106,275 @@ final SubjectSchema = CollectionSchema(
     'name': 7,
     'teachers': 8
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
-  linkIds: {'period': 0},
-  backlinkIds: {'grades': 0},
-  linkedCollections: ['Grade', 'Period'],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.grades, obj.period],
-  version: 1,
+  indexValueTypes: {},
+  linkIds: {'period': 0, 'grades': 1},
+  backlinkLinkNames: {'grades': 'subject'},
+  getId: _subjectGetId,
+  setId: _subjectSetId,
+  getLinks: _subjectGetLinks,
+  attachLinks: _subjectAttachLinks,
+  serializeNative: _subjectSerializeNative,
+  deserializeNative: _subjectDeserializeNative,
+  deserializePropNative: _subjectDeserializePropNative,
+  serializeWeb: _subjectSerializeWeb,
+  deserializeWeb: _subjectDeserializeWeb,
+  deserializePropWeb: _subjectDeserializePropWeb,
+  version: 3,
 );
 
-class _SubjectAdapter extends IsarTypeAdapter<Subject> {
-  const _SubjectAdapter();
-
-  static const _yTColorConverter = YTColorConverter();
-
-  @override
-  void serialize(IsarCollection<Subject> collection, IsarRawObject rawObj,
-      Subject object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.average;
-    final _average = value0;
-    final value1 = object.classAverage;
-    final _classAverage = value1;
-    final value2 = object.coefficient;
-    final _coefficient = value2;
-    final value3 = _SubjectAdapter._yTColorConverter.toIsar(object.color);
-    final _color = BinaryWriter.utf8Encoder.convert(value3);
-    dynamicSize += _color.length;
-    final value4 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _entityId.length;
-    final value5 = object.maxAverage;
-    final _maxAverage = value5;
-    final value6 = object.minAverage;
-    final _minAverage = value6;
-    final value7 = object.name;
-    final _name = BinaryWriter.utf8Encoder.convert(value7);
-    dynamicSize += _name.length;
-    final value8 = object.teachers;
-    final _teachers = BinaryWriter.utf8Encoder.convert(value8);
-    dynamicSize += _teachers.length;
-    final size = dynamicSize + 74;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 74);
-    writer.writeDouble(offsets[0], _average);
-    writer.writeDouble(offsets[1], _classAverage);
-    writer.writeDouble(offsets[2], _coefficient);
-    writer.writeBytes(offsets[3], _color);
-    writer.writeBytes(offsets[4], _entityId);
-    writer.writeDouble(offsets[5], _maxAverage);
-    writer.writeDouble(offsets[6], _minAverage);
-    writer.writeBytes(offsets[7], _name);
-    writer.writeBytes(offsets[8], _teachers);
-    attachLinks(collection.isar, object);
+int? _subjectGetId(Subject object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
+}
 
-  @override
-  Subject deserialize(IsarCollection<Subject> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = Subject(
-      average: reader.readDouble(offsets[0]),
-      classAverage: reader.readDouble(offsets[1]),
-      coefficient: reader.readDouble(offsets[2]),
-      color: _SubjectAdapter._yTColorConverter
-          .fromIsar(reader.readString(offsets[3])),
-      entityId: reader.readString(offsets[4]),
-      maxAverage: reader.readDouble(offsets[5]),
-      minAverage: reader.readDouble(offsets[6]),
-      name: reader.readString(offsets[7]),
-      teachers: reader.readString(offsets[8]),
-    );
-    object.id = id;
-    attachLinks(collection.isar, object);
-    return object;
-  }
+void _subjectSetId(Subject object, int id) {
+  object.id = id;
+}
 
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readDouble(offset)) as P;
-      case 1:
-        return (reader.readDouble(offset)) as P;
-      case 2:
-        return (reader.readDouble(offset)) as P;
-      case 3:
-        return (_SubjectAdapter._yTColorConverter
-            .fromIsar(reader.readString(offset))) as P;
-      case 4:
-        return (reader.readString(offset)) as P;
-      case 5:
-        return (reader.readDouble(offset)) as P;
-      case 6:
-        return (reader.readDouble(offset)) as P;
-      case 7:
-        return (reader.readString(offset)) as P;
-      case 8:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
-  }
+List<IsarLinkBase> _subjectGetLinks(Subject object) {
+  return [object.period, object.grades];
+}
 
-  void attachLinks(Isar isar, Subject object) {
-    object.grades.attach(
-      isar.subjects,
-      isar.getCollection<Grade>("Grade"),
-      object,
-      "grades",
-      true,
-    );
-    object.period.attach(
-      isar.subjects,
-      isar.getCollection<Period>("Period"),
-      object,
-      "period",
-      false,
-    );
+const _subjectYTColorConverter = YTColorConverter();
+
+void _subjectSerializeNative(
+    IsarCollection<Subject> collection,
+    IsarRawObject rawObj,
+    Subject object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.average;
+  final _average = value0;
+  final value1 = object.classAverage;
+  final _classAverage = value1;
+  final value2 = object.coefficient;
+  final _coefficient = value2;
+  final value3 = _subjectYTColorConverter.toIsar(object.color);
+  IsarUint8List? _color;
+  if (value3 != null) {
+    _color = IsarBinaryWriter.utf8Encoder.convert(value3);
   }
+  dynamicSize += (_color?.length ?? 0) as int;
+  final value4 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_entityId.length) as int;
+  final value5 = object.maxAverage;
+  final _maxAverage = value5;
+  final value6 = object.minAverage;
+  final _minAverage = value6;
+  final value7 = object.name;
+  final _name = IsarBinaryWriter.utf8Encoder.convert(value7);
+  dynamicSize += (_name.length) as int;
+  final value8 = object.teachers;
+  final _teachers = IsarBinaryWriter.utf8Encoder.convert(value8);
+  dynamicSize += (_teachers.length) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeDouble(offsets[0], _average);
+  writer.writeDouble(offsets[1], _classAverage);
+  writer.writeDouble(offsets[2], _coefficient);
+  writer.writeBytes(offsets[3], _color);
+  writer.writeBytes(offsets[4], _entityId);
+  writer.writeDouble(offsets[5], _maxAverage);
+  writer.writeDouble(offsets[6], _minAverage);
+  writer.writeBytes(offsets[7], _name);
+  writer.writeBytes(offsets[8], _teachers);
+}
+
+Subject _subjectDeserializeNative(IsarCollection<Subject> collection, int id,
+    IsarBinaryReader reader, List<int> offsets) {
+  final object = Subject(
+    average: reader.readDouble(offsets[0]),
+    classAverage: reader.readDouble(offsets[1]),
+    coefficient: reader.readDouble(offsets[2]),
+    color:
+        _subjectYTColorConverter.fromIsar(reader.readStringOrNull(offsets[3])),
+    entityId: reader.readString(offsets[4]),
+    maxAverage: reader.readDouble(offsets[5]),
+    minAverage: reader.readDouble(offsets[6]),
+    name: reader.readString(offsets[7]),
+    teachers: reader.readString(offsets[8]),
+  );
+  object.id = id;
+  _subjectAttachLinks(collection, id, object);
+  return object;
+}
+
+P _subjectDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readDouble(offset)) as P;
+    case 1:
+      return (reader.readDouble(offset)) as P;
+    case 2:
+      return (reader.readDouble(offset)) as P;
+    case 3:
+      return (_subjectYTColorConverter
+          .fromIsar(reader.readStringOrNull(offset))) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readDouble(offset)) as P;
+    case 6:
+      return (reader.readDouble(offset)) as P;
+    case 7:
+      return (reader.readString(offset)) as P;
+    case 8:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _subjectSerializeWeb(
+    IsarCollection<Subject> collection, Subject object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'average', object.average);
+  IsarNative.jsObjectSet(jsObj, 'classAverage', object.classAverage);
+  IsarNative.jsObjectSet(jsObj, 'coefficient', object.coefficient);
+  IsarNative.jsObjectSet(
+      jsObj, 'color', _subjectYTColorConverter.toIsar(object.color));
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'maxAverage', object.maxAverage);
+  IsarNative.jsObjectSet(jsObj, 'minAverage', object.minAverage);
+  IsarNative.jsObjectSet(jsObj, 'name', object.name);
+  IsarNative.jsObjectSet(jsObj, 'teachers', object.teachers);
+  return jsObj;
+}
+
+Subject _subjectDeserializeWeb(
+    IsarCollection<Subject> collection, dynamic jsObj) {
+  final object = Subject(
+    average:
+        IsarNative.jsObjectGet(jsObj, 'average') ?? double.negativeInfinity,
+    classAverage: IsarNative.jsObjectGet(jsObj, 'classAverage') ??
+        double.negativeInfinity,
+    coefficient:
+        IsarNative.jsObjectGet(jsObj, 'coefficient') ?? double.negativeInfinity,
+    color: _subjectYTColorConverter
+        .fromIsar(IsarNative.jsObjectGet(jsObj, 'color')),
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    maxAverage:
+        IsarNative.jsObjectGet(jsObj, 'maxAverage') ?? double.negativeInfinity,
+    minAverage:
+        IsarNative.jsObjectGet(jsObj, 'minAverage') ?? double.negativeInfinity,
+    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
+    teachers: IsarNative.jsObjectGet(jsObj, 'teachers') ?? '',
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  _subjectAttachLinks(collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
+  return object;
+}
+
+P _subjectDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'average':
+      return (IsarNative.jsObjectGet(jsObj, 'average') ??
+          double.negativeInfinity) as P;
+    case 'classAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'classAverage') ??
+          double.negativeInfinity) as P;
+    case 'coefficient':
+      return (IsarNative.jsObjectGet(jsObj, 'coefficient') ??
+          double.negativeInfinity) as P;
+    case 'color':
+      return (_subjectYTColorConverter
+          .fromIsar(IsarNative.jsObjectGet(jsObj, 'color'))) as P;
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'maxAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'maxAverage') ??
+          double.negativeInfinity) as P;
+    case 'minAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'minAverage') ??
+          double.negativeInfinity) as P;
+    case 'name':
+      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
+    case 'teachers':
+      return (IsarNative.jsObjectGet(jsObj, 'teachers') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _subjectAttachLinks(IsarCollection col, int id, Subject object) {
+  object.period.attach(col, col.isar.periods, 'period', id);
+  object.grades.attach(col, col.isar.grades, 'grades', id);
 }
 
 extension SubjectQueryWhereSort on QueryBuilder<Subject, Subject, QWhere> {
   QueryBuilder<Subject, Subject, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension SubjectQueryWhere on QueryBuilder<Subject, Subject, QWhereClause> {
-  QueryBuilder<Subject, Subject, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Subject, Subject, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Subject, Subject, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Subject, Subject, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Subject, Subject, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Subject, Subject, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Subject, Subject, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Subject, Subject, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Subject, Subject, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -2151,6 +2475,14 @@ extension SubjectQueryFilter
     ));
   }
 
+  QueryBuilder<Subject, Subject, QAfterFilterCondition> colorIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'color',
+      value: null,
+    ));
+  }
+
   QueryBuilder<Subject, Subject, QAfterFilterCondition> colorEqualTo(
     YTColor value, {
     bool caseSensitive = true,
@@ -2158,7 +2490,7 @@ extension SubjectQueryFilter
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'color',
-      value: _SubjectAdapter._yTColorConverter.toIsar(value),
+      value: _subjectYTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2172,7 +2504,7 @@ extension SubjectQueryFilter
       type: ConditionType.gt,
       include: include,
       property: 'color',
-      value: _SubjectAdapter._yTColorConverter.toIsar(value),
+      value: _subjectYTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2186,7 +2518,7 @@ extension SubjectQueryFilter
       type: ConditionType.lt,
       include: include,
       property: 'color',
-      value: _SubjectAdapter._yTColorConverter.toIsar(value),
+      value: _subjectYTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2200,9 +2532,9 @@ extension SubjectQueryFilter
   }) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'color',
-      lower: _SubjectAdapter._yTColorConverter.toIsar(lower),
+      lower: _subjectYTColorConverter.toIsar(lower),
       includeLower: includeLower,
-      upper: _SubjectAdapter._yTColorConverter.toIsar(upper),
+      upper: _subjectYTColorConverter.toIsar(upper),
       includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
@@ -2215,7 +2547,7 @@ extension SubjectQueryFilter
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'color',
-      value: _SubjectAdapter._yTColorConverter.toIsar(value),
+      value: _subjectYTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2227,7 +2559,7 @@ extension SubjectQueryFilter
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'color',
-      value: _SubjectAdapter._yTColorConverter.toIsar(value),
+      value: _subjectYTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2238,7 +2570,7 @@ extension SubjectQueryFilter
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'color',
-      value: _SubjectAdapter._yTColorConverter.toIsar(value),
+      value: _subjectYTColorConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2365,7 +2697,7 @@ extension SubjectQueryFilter
     ));
   }
 
-  QueryBuilder<Subject, Subject, QAfterFilterCondition> idEqualTo(int? value) {
+  QueryBuilder<Subject, Subject, QAfterFilterCondition> idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -2374,7 +2706,7 @@ extension SubjectQueryFilter
   }
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -2386,7 +2718,7 @@ extension SubjectQueryFilter
   }
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -2398,8 +2730,8 @@ extension SubjectQueryFilter
   }
 
   QueryBuilder<Subject, Subject, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2681,6 +3013,27 @@ extension SubjectQueryFilter
   }
 }
 
+extension SubjectQueryLinks
+    on QueryBuilder<Subject, Subject, QFilterCondition> {
+  QueryBuilder<Subject, Subject, QAfterFilterCondition> period(
+      FilterQuery<Period> q) {
+    return linkInternal(
+      isar.periods,
+      q,
+      'period',
+    );
+  }
+
+  QueryBuilder<Subject, Subject, QAfterFilterCondition> grades(
+      FilterQuery<Grade> q) {
+    return linkInternal(
+      isar.grades,
+      q,
+      'grades',
+    );
+  }
+}
+
 extension SubjectQueryWhereSortBy on QueryBuilder<Subject, Subject, QSortBy> {
   QueryBuilder<Subject, Subject, QAfterSortBy> sortByAverage() {
     return addSortByInternal('average', Sort.asc);
@@ -2936,176 +3289,205 @@ extension SubjectQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetSubjectsFilterCollection on Isar {
-  IsarCollection<SubjectsFilter> get subjectsFilters {
-    return getCollection('SubjectsFilter');
+  IsarCollection<SubjectsFilter> get subjectsFilters => getCollection();
+}
+
+const SubjectsFilterSchema = CollectionSchema(
+  name: 'SubjectsFilter',
+  schema:
+      '{"name":"SubjectsFilter","idName":"id","properties":[{"name":"entityId","type":"String"},{"name":"name","type":"String"}],"indexes":[],"links":[{"name":"subjects","target":"Subject"}]}',
+  idName: 'id',
+  propertyIds: {'entityId': 0, 'name': 1},
+  listProperties: {},
+  indexIds: {},
+  indexValueTypes: {},
+  linkIds: {'subjects': 0},
+  backlinkLinkNames: {},
+  getId: _subjectsFilterGetId,
+  setId: _subjectsFilterSetId,
+  getLinks: _subjectsFilterGetLinks,
+  attachLinks: _subjectsFilterAttachLinks,
+  serializeNative: _subjectsFilterSerializeNative,
+  deserializeNative: _subjectsFilterDeserializeNative,
+  deserializePropNative: _subjectsFilterDeserializePropNative,
+  serializeWeb: _subjectsFilterSerializeWeb,
+  deserializeWeb: _subjectsFilterDeserializeWeb,
+  deserializePropWeb: _subjectsFilterDeserializePropWeb,
+  version: 3,
+);
+
+int? _subjectsFilterGetId(SubjectsFilter object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
 }
 
-final SubjectsFilterSchema = CollectionSchema(
-  name: 'SubjectsFilter',
-  schema:
-      '{"name":"SubjectsFilter","properties":[{"name":"entityId","type":"String"},{"name":"name","type":"String"}],"indexes":[],"links":[{"name":"subjects","target":"Subject"}]}',
-  adapter: const _SubjectsFilterAdapter(),
-  idName: 'id',
-  propertyIds: {'entityId': 0, 'name': 1},
-  indexIds: {},
-  indexTypes: {},
-  linkIds: {'subjects': 0},
-  backlinkIds: {},
-  linkedCollections: ['Subject'],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.subjects],
-  version: 1,
-);
+void _subjectsFilterSetId(SubjectsFilter object, int id) {
+  object.id = id;
+}
 
-class _SubjectsFilterAdapter extends IsarTypeAdapter<SubjectsFilter> {
-  const _SubjectsFilterAdapter();
+List<IsarLinkBase> _subjectsFilterGetLinks(SubjectsFilter object) {
+  return [object.subjects];
+}
 
-  @override
-  void serialize(
-      IsarCollection<SubjectsFilter> collection,
-      IsarRawObject rawObj,
-      SubjectsFilter object,
-      List<int> offsets,
-      AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _entityId.length;
-    final value1 = object.name;
-    final _name = BinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += _name.length;
-    final size = dynamicSize + 18;
+void _subjectsFilterSerializeNative(
+    IsarCollection<SubjectsFilter> collection,
+    IsarRawObject rawObj,
+    SubjectsFilter object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value0);
+  dynamicSize += (_entityId.length) as int;
+  final value1 = object.name;
+  final _name = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_name.length) as int;
+  final size = staticSize + dynamicSize;
 
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 18);
-    writer.writeBytes(offsets[0], _entityId);
-    writer.writeBytes(offsets[1], _name);
-    attachLinks(collection.isar, object);
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _entityId);
+  writer.writeBytes(offsets[1], _name);
+}
+
+SubjectsFilter _subjectsFilterDeserializeNative(
+    IsarCollection<SubjectsFilter> collection,
+    int id,
+    IsarBinaryReader reader,
+    List<int> offsets) {
+  final object = SubjectsFilter(
+    entityId: reader.readString(offsets[0]),
+    name: reader.readString(offsets[1]),
+  );
+  object.id = id;
+  _subjectsFilterAttachLinks(collection, id, object);
+  return object;
+}
+
+P _subjectsFilterDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
   }
+}
 
-  @override
-  SubjectsFilter deserialize(IsarCollection<SubjectsFilter> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = SubjectsFilter(
-      entityId: reader.readString(offsets[0]),
-      name: reader.readString(offsets[1]),
-    );
-    object.id = id;
-    attachLinks(collection.isar, object);
-    return object;
-  }
+dynamic _subjectsFilterSerializeWeb(
+    IsarCollection<SubjectsFilter> collection, SubjectsFilter object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'name', object.name);
+  return jsObj;
+}
 
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
-  }
+SubjectsFilter _subjectsFilterDeserializeWeb(
+    IsarCollection<SubjectsFilter> collection, dynamic jsObj) {
+  final object = SubjectsFilter(
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  _subjectsFilterAttachLinks(
+      collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
+  return object;
+}
 
-  void attachLinks(Isar isar, SubjectsFilter object) {
-    object.subjects.attach(
-      isar.subjectsFilters,
-      isar.getCollection<Subject>("Subject"),
-      object,
-      "subjects",
-      false,
-    );
+P _subjectsFilterDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'name':
+      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
   }
+}
+
+void _subjectsFilterAttachLinks(
+    IsarCollection col, int id, SubjectsFilter object) {
+  object.subjects.attach(col, col.isar.subjects, 'subjects', id);
 }
 
 extension SubjectsFilterQueryWhereSort
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QWhere> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension SubjectsFilterQueryWhere
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QWhereClause> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhereClause> idEqualTo(
-      int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+      int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhereClause> idNotEqualTo(
-      int? id) {
+      int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+      int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+      int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -3230,7 +3612,7 @@ extension SubjectsFilterQueryFilter
   }
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -3240,7 +3622,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -3253,7 +3635,7 @@ extension SubjectsFilterQueryFilter
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -3265,8 +3647,8 @@ extension SubjectsFilterQueryFilter
   }
 
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -3387,6 +3769,18 @@ extension SubjectsFilterQueryFilter
   }
 }
 
+extension SubjectsFilterQueryLinks
+    on QueryBuilder<SubjectsFilter, SubjectsFilter, QFilterCondition> {
+  QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterFilterCondition> subjects(
+      FilterQuery<Subject> q) {
+    return linkInternal(
+      isar.subjects,
+      q,
+      'subjects',
+    );
+  }
+}
+
 extension SubjectsFilterQueryWhereSortBy
     on QueryBuilder<SubjectsFilter, SubjectsFilter, QSortBy> {
   QueryBuilder<SubjectsFilter, SubjectsFilter, QAfterSortBy> sortByEntityId() {
@@ -3475,19 +3869,16 @@ extension SubjectsFilterQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetPeriodCollection on Isar {
-  IsarCollection<Period> get periods {
-    return getCollection('Period');
-  }
+  IsarCollection<Period> get periods => getCollection();
 }
 
-final PeriodSchema = CollectionSchema(
+const PeriodSchema = CollectionSchema(
   name: 'Period',
   schema:
-      '{"name":"Period","properties":[{"name":"classAverage","type":"Double"},{"name":"endDate","type":"Long"},{"name":"entityId","type":"String"},{"name":"headTeacher","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"overallAverage","type":"Double"},{"name":"startDate","type":"Long"}],"indexes":[],"links":[]}',
-  adapter: const _PeriodAdapter(),
+      '{"name":"Period","idName":"id","properties":[{"name":"classAverage","type":"Double"},{"name":"endDate","type":"Long"},{"name":"entityId","type":"String"},{"name":"headTeacher","type":"String"},{"name":"maxAverage","type":"Double"},{"name":"minAverage","type":"Double"},{"name":"name","type":"String"},{"name":"overallAverage","type":"Double"},{"name":"startDate","type":"Long"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {
     'classAverage': 0,
@@ -3500,203 +3891,282 @@ final PeriodSchema = CollectionSchema(
     'overallAverage': 7,
     'startDate': 8
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
-  linkIds: {},
-  backlinkIds: {'grades': 0, 'subjects': 1},
-  linkedCollections: ['Grade', 'Subject'],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.grades, obj.subjects],
-  version: 1,
+  indexValueTypes: {},
+  linkIds: {'grades': 0, 'subjects': 1},
+  backlinkLinkNames: {'grades': 'period', 'subjects': 'period'},
+  getId: _periodGetId,
+  setId: _periodSetId,
+  getLinks: _periodGetLinks,
+  attachLinks: _periodAttachLinks,
+  serializeNative: _periodSerializeNative,
+  deserializeNative: _periodDeserializeNative,
+  deserializePropNative: _periodDeserializePropNative,
+  serializeWeb: _periodSerializeWeb,
+  deserializeWeb: _periodDeserializeWeb,
+  deserializePropWeb: _periodDeserializePropWeb,
+  version: 3,
 );
 
-class _PeriodAdapter extends IsarTypeAdapter<Period> {
-  const _PeriodAdapter();
-
-  @override
-  void serialize(IsarCollection<Period> collection, IsarRawObject rawObj,
-      Period object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.classAverage;
-    final _classAverage = value0;
-    final value1 = object.endDate;
-    final _endDate = value1;
-    final value2 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _entityId.length;
-    final value3 = object.headTeacher;
-    final _headTeacher = BinaryWriter.utf8Encoder.convert(value3);
-    dynamicSize += _headTeacher.length;
-    final value4 = object.maxAverage;
-    final _maxAverage = value4;
-    final value5 = object.minAverage;
-    final _minAverage = value5;
-    final value6 = object.name;
-    final _name = BinaryWriter.utf8Encoder.convert(value6);
-    dynamicSize += _name.length;
-    final value7 = object.overallAverage;
-    final _overallAverage = value7;
-    final value8 = object.startDate;
-    final _startDate = value8;
-    final size = dynamicSize + 74;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 74);
-    writer.writeDouble(offsets[0], _classAverage);
-    writer.writeDateTime(offsets[1], _endDate);
-    writer.writeBytes(offsets[2], _entityId);
-    writer.writeBytes(offsets[3], _headTeacher);
-    writer.writeDouble(offsets[4], _maxAverage);
-    writer.writeDouble(offsets[5], _minAverage);
-    writer.writeBytes(offsets[6], _name);
-    writer.writeDouble(offsets[7], _overallAverage);
-    writer.writeDateTime(offsets[8], _startDate);
-    attachLinks(collection.isar, object);
+int? _periodGetId(Period object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
+}
 
-  @override
-  Period deserialize(IsarCollection<Period> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = Period(
-      classAverage: reader.readDouble(offsets[0]),
-      endDate: reader.readDateTime(offsets[1]),
-      entityId: reader.readString(offsets[2]),
-      headTeacher: reader.readString(offsets[3]),
-      maxAverage: reader.readDouble(offsets[4]),
-      minAverage: reader.readDouble(offsets[5]),
-      name: reader.readString(offsets[6]),
-      overallAverage: reader.readDouble(offsets[7]),
-      startDate: reader.readDateTime(offsets[8]),
-    );
-    object.id = id;
-    attachLinks(collection.isar, object);
-    return object;
-  }
+void _periodSetId(Period object, int id) {
+  object.id = id;
+}
 
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readDouble(offset)) as P;
-      case 1:
-        return (reader.readDateTime(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readString(offset)) as P;
-      case 4:
-        return (reader.readDouble(offset)) as P;
-      case 5:
-        return (reader.readDouble(offset)) as P;
-      case 6:
-        return (reader.readString(offset)) as P;
-      case 7:
-        return (reader.readDouble(offset)) as P;
-      case 8:
-        return (reader.readDateTime(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
-  }
+List<IsarLinkBase> _periodGetLinks(Period object) {
+  return [object.grades, object.subjects];
+}
 
-  void attachLinks(Isar isar, Period object) {
-    object.grades.attach(
-      isar.periods,
-      isar.getCollection<Grade>("Grade"),
-      object,
-      "grades",
-      true,
-    );
-    object.subjects.attach(
-      isar.periods,
-      isar.getCollection<Subject>("Subject"),
-      object,
-      "subjects",
-      true,
-    );
+void _periodSerializeNative(
+    IsarCollection<Period> collection,
+    IsarRawObject rawObj,
+    Period object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.classAverage;
+  final _classAverage = value0;
+  final value1 = object.endDate;
+  final _endDate = value1;
+  final value2 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_entityId.length) as int;
+  final value3 = object.headTeacher;
+  final _headTeacher = IsarBinaryWriter.utf8Encoder.convert(value3);
+  dynamicSize += (_headTeacher.length) as int;
+  final value4 = object.maxAverage;
+  final _maxAverage = value4;
+  final value5 = object.minAverage;
+  final _minAverage = value5;
+  final value6 = object.name;
+  final _name = IsarBinaryWriter.utf8Encoder.convert(value6);
+  dynamicSize += (_name.length) as int;
+  final value7 = object.overallAverage;
+  final _overallAverage = value7;
+  final value8 = object.startDate;
+  final _startDate = value8;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeDouble(offsets[0], _classAverage);
+  writer.writeDateTime(offsets[1], _endDate);
+  writer.writeBytes(offsets[2], _entityId);
+  writer.writeBytes(offsets[3], _headTeacher);
+  writer.writeDouble(offsets[4], _maxAverage);
+  writer.writeDouble(offsets[5], _minAverage);
+  writer.writeBytes(offsets[6], _name);
+  writer.writeDouble(offsets[7], _overallAverage);
+  writer.writeDateTime(offsets[8], _startDate);
+}
+
+Period _periodDeserializeNative(IsarCollection<Period> collection, int id,
+    IsarBinaryReader reader, List<int> offsets) {
+  final object = Period(
+    classAverage: reader.readDouble(offsets[0]),
+    endDate: reader.readDateTime(offsets[1]),
+    entityId: reader.readString(offsets[2]),
+    headTeacher: reader.readString(offsets[3]),
+    maxAverage: reader.readDouble(offsets[4]),
+    minAverage: reader.readDouble(offsets[5]),
+    name: reader.readString(offsets[6]),
+    overallAverage: reader.readDouble(offsets[7]),
+    startDate: reader.readDateTime(offsets[8]),
+  );
+  object.id = id;
+  _periodAttachLinks(collection, id, object);
+  return object;
+}
+
+P _periodDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readDouble(offset)) as P;
+    case 1:
+      return (reader.readDateTime(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
+      return (reader.readDouble(offset)) as P;
+    case 5:
+      return (reader.readDouble(offset)) as P;
+    case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
+      return (reader.readDouble(offset)) as P;
+    case 8:
+      return (reader.readDateTime(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
   }
+}
+
+dynamic _periodSerializeWeb(IsarCollection<Period> collection, Period object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'classAverage', object.classAverage);
+  IsarNative.jsObjectSet(
+      jsObj, 'endDate', object.endDate.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'headTeacher', object.headTeacher);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'maxAverage', object.maxAverage);
+  IsarNative.jsObjectSet(jsObj, 'minAverage', object.minAverage);
+  IsarNative.jsObjectSet(jsObj, 'name', object.name);
+  IsarNative.jsObjectSet(jsObj, 'overallAverage', object.overallAverage);
+  IsarNative.jsObjectSet(
+      jsObj, 'startDate', object.startDate.toUtc().millisecondsSinceEpoch);
+  return jsObj;
+}
+
+Period _periodDeserializeWeb(IsarCollection<Period> collection, dynamic jsObj) {
+  final object = Period(
+    classAverage: IsarNative.jsObjectGet(jsObj, 'classAverage') ??
+        double.negativeInfinity,
+    endDate: IsarNative.jsObjectGet(jsObj, 'endDate') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'endDate'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    headTeacher: IsarNative.jsObjectGet(jsObj, 'headTeacher') ?? '',
+    maxAverage:
+        IsarNative.jsObjectGet(jsObj, 'maxAverage') ?? double.negativeInfinity,
+    minAverage:
+        IsarNative.jsObjectGet(jsObj, 'minAverage') ?? double.negativeInfinity,
+    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
+    overallAverage: IsarNative.jsObjectGet(jsObj, 'overallAverage') ??
+        double.negativeInfinity,
+    startDate: IsarNative.jsObjectGet(jsObj, 'startDate') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'startDate'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  _periodAttachLinks(collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
+  return object;
+}
+
+P _periodDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'classAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'classAverage') ??
+          double.negativeInfinity) as P;
+    case 'endDate':
+      return (IsarNative.jsObjectGet(jsObj, 'endDate') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'endDate'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'headTeacher':
+      return (IsarNative.jsObjectGet(jsObj, 'headTeacher') ?? '') as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'maxAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'maxAverage') ??
+          double.negativeInfinity) as P;
+    case 'minAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'minAverage') ??
+          double.negativeInfinity) as P;
+    case 'name':
+      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
+    case 'overallAverage':
+      return (IsarNative.jsObjectGet(jsObj, 'overallAverage') ??
+          double.negativeInfinity) as P;
+    case 'startDate':
+      return (IsarNative.jsObjectGet(jsObj, 'startDate') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'startDate'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _periodAttachLinks(IsarCollection col, int id, Period object) {
+  object.grades.attach(col, col.isar.grades, 'grades', id);
+  object.subjects.attach(col, col.isar.subjects, 'subjects', id);
 }
 
 extension PeriodQueryWhereSort on QueryBuilder<Period, Period, QWhere> {
   QueryBuilder<Period, Period, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension PeriodQueryWhere on QueryBuilder<Period, Period, QWhereClause> {
-  QueryBuilder<Period, Period, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Period, Period, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Period, Period, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Period, Period, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Period, Period, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Period, Period, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Period, Period, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Period, Period, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Period, Period, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -3996,7 +4466,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Period, Period, QAfterFilterCondition> idEqualTo(int? value) {
+  QueryBuilder<Period, Period, QAfterFilterCondition> idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -4005,7 +4475,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   }
 
   QueryBuilder<Period, Period, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -4017,7 +4487,7 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   }
 
   QueryBuilder<Period, Period, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -4029,8 +4499,8 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   }
 
   QueryBuilder<Period, Period, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -4287,6 +4757,26 @@ extension PeriodQueryFilter on QueryBuilder<Period, Period, QFilterCondition> {
   }
 }
 
+extension PeriodQueryLinks on QueryBuilder<Period, Period, QFilterCondition> {
+  QueryBuilder<Period, Period, QAfterFilterCondition> grades(
+      FilterQuery<Grade> q) {
+    return linkInternal(
+      isar.grades,
+      q,
+      'grades',
+    );
+  }
+
+  QueryBuilder<Period, Period, QAfterFilterCondition> subjects(
+      FilterQuery<Subject> q) {
+    return linkInternal(
+      isar.subjects,
+      q,
+      'subjects',
+    );
+  }
+}
+
 extension PeriodQueryWhereSortBy on QueryBuilder<Period, Period, QSortBy> {
   QueryBuilder<Period, Period, QAfterSortBy> sortByClassAverage() {
     return addSortByInternal('classAverage', Sort.asc);
@@ -4539,19 +5029,16 @@ extension PeriodQueryProperty on QueryBuilder<Period, Period, QQueryProperty> {
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetAppAccountCollection on Isar {
-  IsarCollection<AppAccount> get appAccounts {
-    return getCollection('AppAccount');
-  }
+  IsarCollection<AppAccount> get appAccounts => getCollection();
 }
 
-final AppAccountSchema = CollectionSchema(
+const AppAccountSchema = CollectionSchema(
   name: 'AppAccount',
   schema:
-      '{"name":"AppAccount","properties":[{"name":"entityId","type":"String"},{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"isParent","type":"Byte"},{"name":"lastName","type":"String"}],"indexes":[],"links":[{"name":"accounts","target":"SchoolAccount"}]}',
-  adapter: const _AppAccountAdapter(),
+      '{"name":"AppAccount","idName":"id","properties":[{"name":"entityId","type":"String"},{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"isParent","type":"Bool"},{"name":"lastName","type":"String"}],"indexes":[],"links":[{"name":"accounts","target":"SchoolAccount"}]}',
   idName: 'id',
   propertyIds: {
     'entityId': 0,
@@ -4560,174 +5047,213 @@ final AppAccountSchema = CollectionSchema(
     'isParent': 3,
     'lastName': 4
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {'accounts': 0},
-  backlinkIds: {},
-  linkedCollections: ['SchoolAccount'],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.accounts],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _appAccountGetId,
+  setId: _appAccountSetId,
+  getLinks: _appAccountGetLinks,
+  attachLinks: _appAccountAttachLinks,
+  serializeNative: _appAccountSerializeNative,
+  deserializeNative: _appAccountDeserializeNative,
+  deserializePropNative: _appAccountDeserializePropNative,
+  serializeWeb: _appAccountSerializeWeb,
+  deserializeWeb: _appAccountDeserializeWeb,
+  deserializePropWeb: _appAccountDeserializePropWeb,
+  version: 3,
 );
 
-class _AppAccountAdapter extends IsarTypeAdapter<AppAccount> {
-  const _AppAccountAdapter();
-
-  @override
-  void serialize(IsarCollection<AppAccount> collection, IsarRawObject rawObj,
-      AppAccount object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _entityId.length;
-    final value1 = object.firstName;
-    final _firstName = BinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += _firstName.length;
-    final value2 = object.fullName;
-    final _fullName = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _fullName.length;
-    final value3 = object.isParent;
-    final _isParent = value3;
-    final value4 = object.lastName;
-    final _lastName = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _lastName.length;
-    final size = dynamicSize + 35;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 35);
-    writer.writeBytes(offsets[0], _entityId);
-    writer.writeBytes(offsets[1], _firstName);
-    writer.writeBytes(offsets[2], _fullName);
-    writer.writeBool(offsets[3], _isParent);
-    writer.writeBytes(offsets[4], _lastName);
-    attachLinks(collection.isar, object);
+int? _appAccountGetId(AppAccount object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
+}
 
-  @override
-  AppAccount deserialize(IsarCollection<AppAccount> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = AppAccount(
-      entityId: reader.readString(offsets[0]),
-      firstName: reader.readString(offsets[1]),
-      lastName: reader.readString(offsets[4]),
-    );
-    object.id = id;
-    attachLinks(collection.isar, object);
-    return object;
-  }
+void _appAccountSetId(AppAccount object, int id) {
+  object.id = id;
+}
 
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readBool(offset)) as P;
-      case 4:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
-  }
+List<IsarLinkBase> _appAccountGetLinks(AppAccount object) {
+  return [object.accounts];
+}
 
-  void attachLinks(Isar isar, AppAccount object) {
-    object.accounts.attach(
-      isar.appAccounts,
-      isar.getCollection<SchoolAccount>("SchoolAccount"),
-      object,
-      "accounts",
-      false,
-    );
+void _appAccountSerializeNative(
+    IsarCollection<AppAccount> collection,
+    IsarRawObject rawObj,
+    AppAccount object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value0);
+  dynamicSize += (_entityId.length) as int;
+  final value1 = object.firstName;
+  final _firstName = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_firstName.length) as int;
+  final value2 = object.fullName;
+  final _fullName = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_fullName.length) as int;
+  final value3 = object.isParent;
+  final _isParent = value3;
+  final value4 = object.lastName;
+  final _lastName = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_lastName.length) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _entityId);
+  writer.writeBytes(offsets[1], _firstName);
+  writer.writeBytes(offsets[2], _fullName);
+  writer.writeBool(offsets[3], _isParent);
+  writer.writeBytes(offsets[4], _lastName);
+}
+
+AppAccount _appAccountDeserializeNative(IsarCollection<AppAccount> collection,
+    int id, IsarBinaryReader reader, List<int> offsets) {
+  final object = AppAccount(
+    entityId: reader.readString(offsets[0]),
+    firstName: reader.readString(offsets[1]),
+    lastName: reader.readString(offsets[4]),
+  );
+  object.id = id;
+  _appAccountAttachLinks(collection, id, object);
+  return object;
+}
+
+P _appAccountDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readBool(offset)) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
   }
+}
+
+dynamic _appAccountSerializeWeb(
+    IsarCollection<AppAccount> collection, AppAccount object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'firstName', object.firstName);
+  IsarNative.jsObjectSet(jsObj, 'fullName', object.fullName);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'isParent', object.isParent);
+  IsarNative.jsObjectSet(jsObj, 'lastName', object.lastName);
+  return jsObj;
+}
+
+AppAccount _appAccountDeserializeWeb(
+    IsarCollection<AppAccount> collection, dynamic jsObj) {
+  final object = AppAccount(
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    firstName: IsarNative.jsObjectGet(jsObj, 'firstName') ?? '',
+    lastName: IsarNative.jsObjectGet(jsObj, 'lastName') ?? '',
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  _appAccountAttachLinks(
+      collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
+  return object;
+}
+
+P _appAccountDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'firstName':
+      return (IsarNative.jsObjectGet(jsObj, 'firstName') ?? '') as P;
+    case 'fullName':
+      return (IsarNative.jsObjectGet(jsObj, 'fullName') ?? '') as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'isParent':
+      return (IsarNative.jsObjectGet(jsObj, 'isParent') ?? false) as P;
+    case 'lastName':
+      return (IsarNative.jsObjectGet(jsObj, 'lastName') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _appAccountAttachLinks(IsarCollection col, int id, AppAccount object) {
+  object.accounts.attach(col, col.isar.schoolAccounts, 'accounts', id);
 }
 
 extension AppAccountQueryWhereSort
     on QueryBuilder<AppAccount, AppAccount, QWhere> {
   QueryBuilder<AppAccount, AppAccount, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension AppAccountQueryWhere
     on QueryBuilder<AppAccount, AppAccount, QWhereClause> {
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idNotEqualTo(
-      int? id) {
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -5059,7 +5585,7 @@ extension AppAccountQueryFilter
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -5068,7 +5594,7 @@ extension AppAccountQueryFilter
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -5080,7 +5606,7 @@ extension AppAccountQueryFilter
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -5092,8 +5618,8 @@ extension AppAccountQueryFilter
   }
 
   QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -5218,6 +5744,18 @@ extension AppAccountQueryFilter
       value: pattern,
       caseSensitive: caseSensitive,
     ));
+  }
+}
+
+extension AppAccountQueryLinks
+    on QueryBuilder<AppAccount, AppAccount, QFilterCondition> {
+  QueryBuilder<AppAccount, AppAccount, QAfterFilterCondition> accounts(
+      FilterQuery<SchoolAccount> q) {
+    return linkInternal(
+      isar.schoolAccounts,
+      q,
+      'accounts',
+    );
   }
 }
 
@@ -5381,175 +5919,220 @@ extension AppAccountQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetDocumentCollection on Isar {
-  IsarCollection<Document> get documents {
-    return getCollection('Document');
-  }
+  IsarCollection<Document> get documents => getCollection();
 }
 
-final DocumentSchema = CollectionSchema(
+const DocumentSchema = CollectionSchema(
   name: 'Document',
   schema:
-      '{"name":"Document","properties":[{"name":"entityId","type":"String"},{"name":"fileName","type":"String"},{"name":"name","type":"String"},{"name":"saved","type":"Byte"},{"name":"type","type":"String"}],"indexes":[],"links":[]}',
-  adapter: const _DocumentAdapter(),
+      '{"name":"Document","idName":"id","properties":[{"name":"entityId","type":"String"},{"name":"fileName","type":"String"},{"name":"name","type":"String"},{"name":"saved","type":"Bool"},{"name":"type","type":"String"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {'entityId': 0, 'fileName': 1, 'name': 2, 'saved': 3, 'type': 4},
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {},
-  backlinkIds: {},
-  linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _documentGetId,
+  setId: _documentSetId,
+  getLinks: _documentGetLinks,
+  attachLinks: _documentAttachLinks,
+  serializeNative: _documentSerializeNative,
+  deserializeNative: _documentDeserializeNative,
+  deserializePropNative: _documentDeserializePropNative,
+  serializeWeb: _documentSerializeWeb,
+  deserializeWeb: _documentDeserializeWeb,
+  deserializePropWeb: _documentDeserializePropWeb,
+  version: 3,
 );
 
-class _DocumentAdapter extends IsarTypeAdapter<Document> {
-  const _DocumentAdapter();
-
-  @override
-  void serialize(IsarCollection<Document> collection, IsarRawObject rawObj,
-      Document object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _entityId.length;
-    final value1 = object.fileName;
-    final _fileName = BinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += _fileName.length;
-    final value2 = object.name;
-    final _name = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _name.length;
-    final value3 = object.saved;
-    final _saved = value3;
-    final value4 = object.type;
-    final _type = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _type.length;
-    final size = dynamicSize + 35;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 35);
-    writer.writeBytes(offsets[0], _entityId);
-    writer.writeBytes(offsets[1], _fileName);
-    writer.writeBytes(offsets[2], _name);
-    writer.writeBool(offsets[3], _saved);
-    writer.writeBytes(offsets[4], _type);
-  }
-
-  @override
-  Document deserialize(IsarCollection<Document> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = Document(
-      entityId: reader.readString(offsets[0]),
-      name: reader.readString(offsets[2]),
-      saved: reader.readBool(offsets[3]),
-      type: reader.readString(offsets[4]),
-    );
-    object.id = id;
-    return object;
-  }
-
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readBool(offset)) as P;
-      case 4:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
+int? _documentGetId(Document object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
 }
+
+void _documentSetId(Document object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _documentGetLinks(Document object) {
+  return [];
+}
+
+void _documentSerializeNative(
+    IsarCollection<Document> collection,
+    IsarRawObject rawObj,
+    Document object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value0);
+  dynamicSize += (_entityId.length) as int;
+  final value1 = object.fileName;
+  final _fileName = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_fileName.length) as int;
+  final value2 = object.name;
+  final _name = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_name.length) as int;
+  final value3 = object.saved;
+  final _saved = value3;
+  final value4 = object.type;
+  final _type = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_type.length) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _entityId);
+  writer.writeBytes(offsets[1], _fileName);
+  writer.writeBytes(offsets[2], _name);
+  writer.writeBool(offsets[3], _saved);
+  writer.writeBytes(offsets[4], _type);
+}
+
+Document _documentDeserializeNative(IsarCollection<Document> collection, int id,
+    IsarBinaryReader reader, List<int> offsets) {
+  final object = Document(
+    entityId: reader.readString(offsets[0]),
+    name: reader.readString(offsets[2]),
+    saved: reader.readBool(offsets[3]),
+    type: reader.readString(offsets[4]),
+  );
+  object.id = id;
+  return object;
+}
+
+P _documentDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readBool(offset)) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _documentSerializeWeb(
+    IsarCollection<Document> collection, Document object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'fileName', object.fileName);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'name', object.name);
+  IsarNative.jsObjectSet(jsObj, 'saved', object.saved);
+  IsarNative.jsObjectSet(jsObj, 'type', object.type);
+  return jsObj;
+}
+
+Document _documentDeserializeWeb(
+    IsarCollection<Document> collection, dynamic jsObj) {
+  final object = Document(
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
+    saved: IsarNative.jsObjectGet(jsObj, 'saved') ?? false,
+    type: IsarNative.jsObjectGet(jsObj, 'type') ?? '',
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  return object;
+}
+
+P _documentDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'fileName':
+      return (IsarNative.jsObjectGet(jsObj, 'fileName') ?? '') as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'name':
+      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
+    case 'saved':
+      return (IsarNative.jsObjectGet(jsObj, 'saved') ?? false) as P;
+    case 'type':
+      return (IsarNative.jsObjectGet(jsObj, 'type') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _documentAttachLinks(IsarCollection col, int id, Document object) {}
 
 extension DocumentQueryWhereSort on QueryBuilder<Document, Document, QWhere> {
   QueryBuilder<Document, Document, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension DocumentQueryWhere on QueryBuilder<Document, Document, QWhereClause> {
-  QueryBuilder<Document, Document, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Document, Document, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Document, Document, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Document, Document, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Document, Document, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Document, Document, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Document, Document, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Document, Document, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Document, Document, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -5771,8 +6354,7 @@ extension DocumentQueryFilter
     ));
   }
 
-  QueryBuilder<Document, Document, QAfterFilterCondition> idEqualTo(
-      int? value) {
+  QueryBuilder<Document, Document, QAfterFilterCondition> idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -5781,7 +6363,7 @@ extension DocumentQueryFilter
   }
 
   QueryBuilder<Document, Document, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -5793,7 +6375,7 @@ extension DocumentQueryFilter
   }
 
   QueryBuilder<Document, Document, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -5805,8 +6387,8 @@ extension DocumentQueryFilter
   }
 
   QueryBuilder<Document, Document, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -6035,6 +6617,9 @@ extension DocumentQueryFilter
   }
 }
 
+extension DocumentQueryLinks
+    on QueryBuilder<Document, Document, QFilterCondition> {}
+
 extension DocumentQueryWhereSortBy
     on QueryBuilder<Document, Document, QSortBy> {
   QueryBuilder<Document, Document, QAfterSortBy> sortByEntityId() {
@@ -6195,19 +6780,16 @@ extension DocumentQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetEmailCollection on Isar {
-  IsarCollection<Email> get emails {
-    return getCollection('Email');
-  }
+  IsarCollection<Email> get emails => getCollection();
 }
 
-final EmailSchema = CollectionSchema(
+const EmailSchema = CollectionSchema(
   name: 'Email',
   schema:
-      '{"name":"Email","properties":[{"name":"content","type":"String"},{"name":"date","type":"Long"},{"name":"entityId","type":"String"},{"name":"favorite","type":"Byte"},{"name":"read","type":"Byte"},{"name":"subject","type":"String"}],"indexes":[],"links":[{"name":"documents","target":"Document"},{"name":"from","target":"Recipient"},{"name":"to","target":"Recipient"}]}',
-  adapter: const _EmailAdapter(),
+      '{"name":"Email","idName":"id","properties":[{"name":"content","type":"String"},{"name":"date","type":"Long"},{"name":"entityId","type":"String"},{"name":"favorite","type":"Bool"},{"name":"read","type":"Bool"},{"name":"subject","type":"String"}],"indexes":[],"links":[{"name":"documents","target":"Document"},{"name":"from","target":"Recipient"},{"name":"to","target":"Recipient"}]}',
   idName: 'id',
   propertyIds: {
     'content': 0,
@@ -6217,195 +6799,237 @@ final EmailSchema = CollectionSchema(
     'read': 4,
     'subject': 5
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {'documents': 0, 'from': 1, 'to': 2},
-  backlinkIds: {},
-  linkedCollections: ['Document', 'Recipient'],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.documents, obj.from, obj.to],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _emailGetId,
+  setId: _emailSetId,
+  getLinks: _emailGetLinks,
+  attachLinks: _emailAttachLinks,
+  serializeNative: _emailSerializeNative,
+  deserializeNative: _emailDeserializeNative,
+  deserializePropNative: _emailDeserializePropNative,
+  serializeWeb: _emailSerializeWeb,
+  deserializeWeb: _emailDeserializeWeb,
+  deserializePropWeb: _emailDeserializePropWeb,
+  version: 3,
 );
 
-class _EmailAdapter extends IsarTypeAdapter<Email> {
-  const _EmailAdapter();
-
-  @override
-  void serialize(IsarCollection<Email> collection, IsarRawObject rawObj,
-      Email object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.content;
-    IsarUint8List? _content;
-    if (value0 != null) {
-      _content = BinaryWriter.utf8Encoder.convert(value0);
-    }
-    dynamicSize += _content?.length ?? 0;
-    final value1 = object.date;
-    final _date = value1;
-    final value2 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _entityId.length;
-    final value3 = object.favorite;
-    final _favorite = value3;
-    final value4 = object.read;
-    final _read = value4;
-    final value5 = object.subject;
-    final _subject = BinaryWriter.utf8Encoder.convert(value5);
-    dynamicSize += _subject.length;
-    final size = dynamicSize + 36;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 36);
-    writer.writeBytes(offsets[0], _content);
-    writer.writeDateTime(offsets[1], _date);
-    writer.writeBytes(offsets[2], _entityId);
-    writer.writeBool(offsets[3], _favorite);
-    writer.writeBool(offsets[4], _read);
-    writer.writeBytes(offsets[5], _subject);
-    attachLinks(collection.isar, object);
+int? _emailGetId(Email object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
+}
 
-  @override
-  Email deserialize(IsarCollection<Email> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = Email(
-      content: reader.readStringOrNull(offsets[0]),
-      date: reader.readDateTime(offsets[1]),
-      entityId: reader.readString(offsets[2]),
-      read: reader.readBool(offsets[4]),
-      subject: reader.readString(offsets[5]),
-    );
-    object.favorite = reader.readBool(offsets[3]);
-    object.id = id;
-    attachLinks(collection.isar, object);
-    return object;
-  }
+void _emailSetId(Email object, int id) {
+  object.id = id;
+}
 
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readStringOrNull(offset)) as P;
-      case 1:
-        return (reader.readDateTime(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readBool(offset)) as P;
-      case 4:
-        return (reader.readBool(offset)) as P;
-      case 5:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
-  }
+List<IsarLinkBase> _emailGetLinks(Email object) {
+  return [object.documents, object.from, object.to];
+}
 
-  void attachLinks(Isar isar, Email object) {
-    object.documents.attach(
-      isar.emails,
-      isar.getCollection<Document>("Document"),
-      object,
-      "documents",
-      false,
-    );
-    object.from.attach(
-      isar.emails,
-      isar.getCollection<Recipient>("Recipient"),
-      object,
-      "from",
-      false,
-    );
-    object.to.attach(
-      isar.emails,
-      isar.getCollection<Recipient>("Recipient"),
-      object,
-      "to",
-      false,
-    );
+void _emailSerializeNative(
+    IsarCollection<Email> collection,
+    IsarRawObject rawObj,
+    Email object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.content;
+  IsarUint8List? _content;
+  if (value0 != null) {
+    _content = IsarBinaryWriter.utf8Encoder.convert(value0);
   }
+  dynamicSize += (_content?.length ?? 0) as int;
+  final value1 = object.date;
+  final _date = value1;
+  final value2 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_entityId.length) as int;
+  final value3 = object.favorite;
+  final _favorite = value3;
+  final value4 = object.read;
+  final _read = value4;
+  final value5 = object.subject;
+  final _subject = IsarBinaryWriter.utf8Encoder.convert(value5);
+  dynamicSize += (_subject.length) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _content);
+  writer.writeDateTime(offsets[1], _date);
+  writer.writeBytes(offsets[2], _entityId);
+  writer.writeBool(offsets[3], _favorite);
+  writer.writeBool(offsets[4], _read);
+  writer.writeBytes(offsets[5], _subject);
+}
+
+Email _emailDeserializeNative(IsarCollection<Email> collection, int id,
+    IsarBinaryReader reader, List<int> offsets) {
+  final object = Email(
+    content: reader.readStringOrNull(offsets[0]),
+    date: reader.readDateTime(offsets[1]),
+    entityId: reader.readString(offsets[2]),
+    read: reader.readBool(offsets[4]),
+    subject: reader.readString(offsets[5]),
+  );
+  object.favorite = reader.readBool(offsets[3]);
+  object.id = id;
+  _emailAttachLinks(collection, id, object);
+  return object;
+}
+
+P _emailDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readStringOrNull(offset)) as P;
+    case 1:
+      return (reader.readDateTime(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readBool(offset)) as P;
+    case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _emailSerializeWeb(IsarCollection<Email> collection, Email object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'content', object.content);
+  IsarNative.jsObjectSet(
+      jsObj, 'date', object.date.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'favorite', object.favorite);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'read', object.read);
+  IsarNative.jsObjectSet(jsObj, 'subject', object.subject);
+  return jsObj;
+}
+
+Email _emailDeserializeWeb(IsarCollection<Email> collection, dynamic jsObj) {
+  final object = Email(
+    content: IsarNative.jsObjectGet(jsObj, 'content'),
+    date: IsarNative.jsObjectGet(jsObj, 'date') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'date'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    read: IsarNative.jsObjectGet(jsObj, 'read') ?? false,
+    subject: IsarNative.jsObjectGet(jsObj, 'subject') ?? '',
+  );
+  object.favorite = IsarNative.jsObjectGet(jsObj, 'favorite') ?? false;
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  _emailAttachLinks(collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
+  return object;
+}
+
+P _emailDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'content':
+      return (IsarNative.jsObjectGet(jsObj, 'content')) as P;
+    case 'date':
+      return (IsarNative.jsObjectGet(jsObj, 'date') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'date'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'favorite':
+      return (IsarNative.jsObjectGet(jsObj, 'favorite') ?? false) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'read':
+      return (IsarNative.jsObjectGet(jsObj, 'read') ?? false) as P;
+    case 'subject':
+      return (IsarNative.jsObjectGet(jsObj, 'subject') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _emailAttachLinks(IsarCollection col, int id, Email object) {
+  object.documents.attach(col, col.isar.documents, 'documents', id);
+  object.from.attach(col, col.isar.recipients, 'from', id);
+  object.to.attach(col, col.isar.recipients, 'to', id);
 }
 
 extension EmailQueryWhereSort on QueryBuilder<Email, Email, QWhere> {
   QueryBuilder<Email, Email, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension EmailQueryWhere on QueryBuilder<Email, Email, QWhereClause> {
-  QueryBuilder<Email, Email, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Email, Email, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Email, Email, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Email, Email, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Email, Email, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Email, Email, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Email, Email, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Email, Email, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Email, Email, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -6691,7 +7315,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Email, Email, QAfterFilterCondition> idEqualTo(int? value) {
+  QueryBuilder<Email, Email, QAfterFilterCondition> idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -6700,7 +7324,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   }
 
   QueryBuilder<Email, Email, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -6712,7 +7336,7 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   }
 
   QueryBuilder<Email, Email, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -6724,8 +7348,8 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
   }
 
   QueryBuilder<Email, Email, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -6847,6 +7471,35 @@ extension EmailQueryFilter on QueryBuilder<Email, Email, QFilterCondition> {
       value: pattern,
       caseSensitive: caseSensitive,
     ));
+  }
+}
+
+extension EmailQueryLinks on QueryBuilder<Email, Email, QFilterCondition> {
+  QueryBuilder<Email, Email, QAfterFilterCondition> documents(
+      FilterQuery<Document> q) {
+    return linkInternal(
+      isar.documents,
+      q,
+      'documents',
+    );
+  }
+
+  QueryBuilder<Email, Email, QAfterFilterCondition> from(
+      FilterQuery<Recipient> q) {
+    return linkInternal(
+      isar.recipients,
+      q,
+      'from',
+    );
+  }
+
+  QueryBuilder<Email, Email, QAfterFilterCondition> to(
+      FilterQuery<Recipient> q) {
+    return linkInternal(
+      isar.recipients,
+      q,
+      'to',
+    );
   }
 }
 
@@ -7029,19 +7682,16 @@ extension EmailQueryProperty on QueryBuilder<Email, Email, QQueryProperty> {
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetHomeworkCollection on Isar {
-  IsarCollection<Homework> get homeworks {
-    return getCollection('Homework');
-  }
+  IsarCollection<Homework> get homeworks => getCollection();
 }
 
-final HomeworkSchema = CollectionSchema(
+const HomeworkSchema = CollectionSchema(
   name: 'Homework',
   schema:
-      '{"name":"Homework","properties":[{"name":"assessment","type":"Byte"},{"name":"content","type":"String"},{"name":"date","type":"Long"},{"name":"done","type":"Byte"},{"name":"due","type":"Byte"},{"name":"entityId","type":"String"},{"name":"entryDate","type":"Long"},{"name":"pinned","type":"Byte"}],"indexes":[],"links":[{"name":"documents","target":"Document"},{"name":"subject","target":"Subject"}]}',
-  adapter: const _HomeworkAdapter(),
+      '{"name":"Homework","idName":"id","properties":[{"name":"assessment","type":"Bool"},{"name":"content","type":"String"},{"name":"date","type":"Long"},{"name":"done","type":"Bool"},{"name":"due","type":"Bool"},{"name":"entityId","type":"String"},{"name":"entryDate","type":"Long"},{"name":"pinned","type":"Bool"}],"indexes":[],"links":[{"name":"documents","target":"Document"},{"name":"subject","target":"Subject"}]}',
   idName: 'id',
   propertyIds: {
     'assessment': 0,
@@ -7053,199 +7703,268 @@ final HomeworkSchema = CollectionSchema(
     'entryDate': 6,
     'pinned': 7
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {'documents': 0, 'subject': 1},
-  backlinkIds: {},
-  linkedCollections: ['Document', 'Subject'],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [obj.documents, obj.subject],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _homeworkGetId,
+  setId: _homeworkSetId,
+  getLinks: _homeworkGetLinks,
+  attachLinks: _homeworkAttachLinks,
+  serializeNative: _homeworkSerializeNative,
+  deserializeNative: _homeworkDeserializeNative,
+  deserializePropNative: _homeworkDeserializePropNative,
+  serializeWeb: _homeworkSerializeWeb,
+  deserializeWeb: _homeworkDeserializeWeb,
+  deserializePropWeb: _homeworkDeserializePropWeb,
+  version: 3,
 );
 
-class _HomeworkAdapter extends IsarTypeAdapter<Homework> {
-  const _HomeworkAdapter();
-
-  @override
-  void serialize(IsarCollection<Homework> collection, IsarRawObject rawObj,
-      Homework object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.assessment;
-    final _assessment = value0;
-    final value1 = object.content;
-    IsarUint8List? _content;
-    if (value1 != null) {
-      _content = BinaryWriter.utf8Encoder.convert(value1);
-    }
-    dynamicSize += _content?.length ?? 0;
-    final value2 = object.date;
-    final _date = value2;
-    final value3 = object.done;
-    final _done = value3;
-    final value4 = object.due;
-    final _due = value4;
-    final value5 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value5);
-    dynamicSize += _entityId.length;
-    final value6 = object.entryDate;
-    final _entryDate = value6;
-    final value7 = object.pinned;
-    final _pinned = value7;
-    final size = dynamicSize + 38;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 38);
-    writer.writeBool(offsets[0], _assessment);
-    writer.writeBytes(offsets[1], _content);
-    writer.writeDateTime(offsets[2], _date);
-    writer.writeBool(offsets[3], _done);
-    writer.writeBool(offsets[4], _due);
-    writer.writeBytes(offsets[5], _entityId);
-    writer.writeDateTime(offsets[6], _entryDate);
-    writer.writeBool(offsets[7], _pinned);
-    attachLinks(collection.isar, object);
+int? _homeworkGetId(Homework object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
+}
 
-  @override
-  Homework deserialize(IsarCollection<Homework> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = Homework(
-      assessment: reader.readBool(offsets[0]),
-      content: reader.readStringOrNull(offsets[1]),
-      date: reader.readDateTime(offsets[2]),
-      done: reader.readBool(offsets[3]),
-      due: reader.readBool(offsets[4]),
-      entityId: reader.readString(offsets[5]),
-      entryDate: reader.readDateTime(offsets[6]),
-      pinned: reader.readBool(offsets[7]),
-    );
-    object.id = id;
-    attachLinks(collection.isar, object);
-    return object;
-  }
+void _homeworkSetId(Homework object, int id) {
+  object.id = id;
+}
 
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readBool(offset)) as P;
-      case 1:
-        return (reader.readStringOrNull(offset)) as P;
-      case 2:
-        return (reader.readDateTime(offset)) as P;
-      case 3:
-        return (reader.readBool(offset)) as P;
-      case 4:
-        return (reader.readBool(offset)) as P;
-      case 5:
-        return (reader.readString(offset)) as P;
-      case 6:
-        return (reader.readDateTime(offset)) as P;
-      case 7:
-        return (reader.readBool(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
-  }
+List<IsarLinkBase> _homeworkGetLinks(Homework object) {
+  return [object.documents, object.subject];
+}
 
-  void attachLinks(Isar isar, Homework object) {
-    object.documents.attach(
-      isar.homeworks,
-      isar.getCollection<Document>("Document"),
-      object,
-      "documents",
-      false,
-    );
-    object.subject.attach(
-      isar.homeworks,
-      isar.getCollection<Subject>("Subject"),
-      object,
-      "subject",
-      false,
-    );
+void _homeworkSerializeNative(
+    IsarCollection<Homework> collection,
+    IsarRawObject rawObj,
+    Homework object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.assessment;
+  final _assessment = value0;
+  final value1 = object.content;
+  IsarUint8List? _content;
+  if (value1 != null) {
+    _content = IsarBinaryWriter.utf8Encoder.convert(value1);
   }
+  dynamicSize += (_content?.length ?? 0) as int;
+  final value2 = object.date;
+  final _date = value2;
+  final value3 = object.done;
+  final _done = value3;
+  final value4 = object.due;
+  final _due = value4;
+  final value5 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value5);
+  dynamicSize += (_entityId.length) as int;
+  final value6 = object.entryDate;
+  final _entryDate = value6;
+  final value7 = object.pinned;
+  final _pinned = value7;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBool(offsets[0], _assessment);
+  writer.writeBytes(offsets[1], _content);
+  writer.writeDateTime(offsets[2], _date);
+  writer.writeBool(offsets[3], _done);
+  writer.writeBool(offsets[4], _due);
+  writer.writeBytes(offsets[5], _entityId);
+  writer.writeDateTime(offsets[6], _entryDate);
+  writer.writeBool(offsets[7], _pinned);
+}
+
+Homework _homeworkDeserializeNative(IsarCollection<Homework> collection, int id,
+    IsarBinaryReader reader, List<int> offsets) {
+  final object = Homework(
+    assessment: reader.readBool(offsets[0]),
+    content: reader.readStringOrNull(offsets[1]),
+    date: reader.readDateTime(offsets[2]),
+    done: reader.readBool(offsets[3]),
+    due: reader.readBool(offsets[4]),
+    entityId: reader.readString(offsets[5]),
+    entryDate: reader.readDateTime(offsets[6]),
+    pinned: reader.readBool(offsets[7]),
+  );
+  object.id = id;
+  _homeworkAttachLinks(collection, id, object);
+  return object;
+}
+
+P _homeworkDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readBool(offset)) as P;
+    case 1:
+      return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readDateTime(offset)) as P;
+    case 3:
+      return (reader.readBool(offset)) as P;
+    case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readDateTime(offset)) as P;
+    case 7:
+      return (reader.readBool(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _homeworkSerializeWeb(
+    IsarCollection<Homework> collection, Homework object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'assessment', object.assessment);
+  IsarNative.jsObjectSet(jsObj, 'content', object.content);
+  IsarNative.jsObjectSet(
+      jsObj, 'date', object.date.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'done', object.done);
+  IsarNative.jsObjectSet(jsObj, 'due', object.due);
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(
+      jsObj, 'entryDate', object.entryDate.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'pinned', object.pinned);
+  return jsObj;
+}
+
+Homework _homeworkDeserializeWeb(
+    IsarCollection<Homework> collection, dynamic jsObj) {
+  final object = Homework(
+    assessment: IsarNative.jsObjectGet(jsObj, 'assessment') ?? false,
+    content: IsarNative.jsObjectGet(jsObj, 'content'),
+    date: IsarNative.jsObjectGet(jsObj, 'date') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'date'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    done: IsarNative.jsObjectGet(jsObj, 'done') ?? false,
+    due: IsarNative.jsObjectGet(jsObj, 'due') ?? false,
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    entryDate: IsarNative.jsObjectGet(jsObj, 'entryDate') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'entryDate'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    pinned: IsarNative.jsObjectGet(jsObj, 'pinned') ?? false,
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  _homeworkAttachLinks(collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
+  return object;
+}
+
+P _homeworkDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'assessment':
+      return (IsarNative.jsObjectGet(jsObj, 'assessment') ?? false) as P;
+    case 'content':
+      return (IsarNative.jsObjectGet(jsObj, 'content')) as P;
+    case 'date':
+      return (IsarNative.jsObjectGet(jsObj, 'date') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'date'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'done':
+      return (IsarNative.jsObjectGet(jsObj, 'done') ?? false) as P;
+    case 'due':
+      return (IsarNative.jsObjectGet(jsObj, 'due') ?? false) as P;
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'entryDate':
+      return (IsarNative.jsObjectGet(jsObj, 'entryDate') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'entryDate'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'pinned':
+      return (IsarNative.jsObjectGet(jsObj, 'pinned') ?? false) as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _homeworkAttachLinks(IsarCollection col, int id, Homework object) {
+  object.documents.attach(col, col.isar.documents, 'documents', id);
+  object.subject.attach(col, col.isar.subjects, 'subject', id);
 }
 
 extension HomeworkQueryWhereSort on QueryBuilder<Homework, Homework, QWhere> {
   QueryBuilder<Homework, Homework, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension HomeworkQueryWhere on QueryBuilder<Homework, Homework, QWhereClause> {
-  QueryBuilder<Homework, Homework, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Homework, Homework, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Homework, Homework, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Homework, Homework, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Homework, Homework, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Homework, Homework, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Homework, Homework, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Homework, Homework, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Homework, Homework, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -7598,8 +8317,7 @@ extension HomeworkQueryFilter
     ));
   }
 
-  QueryBuilder<Homework, Homework, QAfterFilterCondition> idEqualTo(
-      int? value) {
+  QueryBuilder<Homework, Homework, QAfterFilterCondition> idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -7608,7 +8326,7 @@ extension HomeworkQueryFilter
   }
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -7620,7 +8338,7 @@ extension HomeworkQueryFilter
   }
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -7632,8 +8350,8 @@ extension HomeworkQueryFilter
   }
 
   QueryBuilder<Homework, Homework, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -7653,6 +8371,27 @@ extension HomeworkQueryFilter
       property: 'pinned',
       value: value,
     ));
+  }
+}
+
+extension HomeworkQueryLinks
+    on QueryBuilder<Homework, Homework, QFilterCondition> {
+  QueryBuilder<Homework, Homework, QAfterFilterCondition> documents(
+      FilterQuery<Document> q) {
+    return linkInternal(
+      isar.documents,
+      q,
+      'documents',
+    );
+  }
+
+  QueryBuilder<Homework, Homework, QAfterFilterCondition> subject(
+      FilterQuery<Subject> q) {
+    return linkInternal(
+      isar.subjects,
+      q,
+      'subject',
+    );
   }
 }
 
@@ -7886,19 +8625,16 @@ extension HomeworkQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetRecipientCollection on Isar {
-  IsarCollection<Recipient> get recipients {
-    return getCollection('Recipient');
-  }
+  IsarCollection<Recipient> get recipients => getCollection();
 }
 
-final RecipientSchema = CollectionSchema(
+const RecipientSchema = CollectionSchema(
   name: 'Recipient',
   schema:
-      '{"name":"Recipient","properties":[{"name":"civility","type":"String"},{"name":"entityId","type":"String"},{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"headTeacher","type":"Byte"},{"name":"lastName","type":"String"},{"name":"subjects","type":"StringList"}],"indexes":[],"links":[]}',
-  adapter: const _RecipientAdapter(),
+      '{"name":"Recipient","idName":"id","properties":[{"name":"civility","type":"String"},{"name":"entityId","type":"String"},{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"headTeacher","type":"Bool"},{"name":"lastName","type":"String"},{"name":"subjects","type":"StringList"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {
     'civility': 0,
@@ -7909,182 +8645,246 @@ final RecipientSchema = CollectionSchema(
     'lastName': 5,
     'subjects': 6
   },
+  listProperties: {'subjects'},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {},
-  backlinkIds: {},
-  linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _recipientGetId,
+  setId: _recipientSetId,
+  getLinks: _recipientGetLinks,
+  attachLinks: _recipientAttachLinks,
+  serializeNative: _recipientSerializeNative,
+  deserializeNative: _recipientDeserializeNative,
+  deserializePropNative: _recipientDeserializePropNative,
+  serializeWeb: _recipientSerializeWeb,
+  deserializeWeb: _recipientDeserializeWeb,
+  deserializePropWeb: _recipientDeserializePropWeb,
+  version: 3,
 );
 
-class _RecipientAdapter extends IsarTypeAdapter<Recipient> {
-  const _RecipientAdapter();
-
-  @override
-  void serialize(IsarCollection<Recipient> collection, IsarRawObject rawObj,
-      Recipient object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.civility;
-    final _civility = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _civility.length;
-    final value1 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += _entityId.length;
-    final value2 = object.firstName;
-    final _firstName = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _firstName.length;
-    final value3 = object.fullName;
-    final _fullName = BinaryWriter.utf8Encoder.convert(value3);
-    dynamicSize += _fullName.length;
-    final value4 = object.headTeacher;
-    final _headTeacher = value4;
-    final value5 = object.lastName;
-    final _lastName = BinaryWriter.utf8Encoder.convert(value5);
-    dynamicSize += _lastName.length;
-    final value6 = object.subjects;
-    dynamicSize += (value6.length) * 8;
-    final bytesList6 = <IsarUint8List>[];
-    for (var str in value6) {
-      final bytes = BinaryWriter.utf8Encoder.convert(str);
-      bytesList6.add(bytes);
-      dynamicSize += bytes.length;
-    }
-    final _subjects = bytesList6;
-    final size = dynamicSize + 51;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 51);
-    writer.writeBytes(offsets[0], _civility);
-    writer.writeBytes(offsets[1], _entityId);
-    writer.writeBytes(offsets[2], _firstName);
-    writer.writeBytes(offsets[3], _fullName);
-    writer.writeBool(offsets[4], _headTeacher);
-    writer.writeBytes(offsets[5], _lastName);
-    writer.writeStringList(offsets[6], _subjects);
-  }
-
-  @override
-  Recipient deserialize(IsarCollection<Recipient> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = Recipient(
-      civility: reader.readString(offsets[0]),
-      entityId: reader.readString(offsets[1]),
-      firstName: reader.readString(offsets[2]),
-      headTeacher: reader.readBool(offsets[4]),
-      lastName: reader.readString(offsets[5]),
-      subjects: reader.readStringList(offsets[6]) ?? [],
-    );
-    object.id = id;
-    return object;
-  }
-
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readString(offset)) as P;
-      case 4:
-        return (reader.readBool(offset)) as P;
-      case 5:
-        return (reader.readString(offset)) as P;
-      case 6:
-        return (reader.readStringList(offset) ?? []) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
+int? _recipientGetId(Recipient object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
 }
+
+void _recipientSetId(Recipient object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _recipientGetLinks(Recipient object) {
+  return [];
+}
+
+void _recipientSerializeNative(
+    IsarCollection<Recipient> collection,
+    IsarRawObject rawObj,
+    Recipient object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.civility;
+  final _civility = IsarBinaryWriter.utf8Encoder.convert(value0);
+  dynamicSize += (_civility.length) as int;
+  final value1 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_entityId.length) as int;
+  final value2 = object.firstName;
+  final _firstName = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_firstName.length) as int;
+  final value3 = object.fullName;
+  final _fullName = IsarBinaryWriter.utf8Encoder.convert(value3);
+  dynamicSize += (_fullName.length) as int;
+  final value4 = object.headTeacher;
+  final _headTeacher = value4;
+  final value5 = object.lastName;
+  final _lastName = IsarBinaryWriter.utf8Encoder.convert(value5);
+  dynamicSize += (_lastName.length) as int;
+  final value6 = object.subjects;
+  dynamicSize += (value6.length) * 8;
+  final bytesList6 = <IsarUint8List>[];
+  for (var str in value6) {
+    final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
+    bytesList6.add(bytes);
+    dynamicSize += bytes.length as int;
+  }
+  final _subjects = bytesList6;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _civility);
+  writer.writeBytes(offsets[1], _entityId);
+  writer.writeBytes(offsets[2], _firstName);
+  writer.writeBytes(offsets[3], _fullName);
+  writer.writeBool(offsets[4], _headTeacher);
+  writer.writeBytes(offsets[5], _lastName);
+  writer.writeStringList(offsets[6], _subjects);
+}
+
+Recipient _recipientDeserializeNative(IsarCollection<Recipient> collection,
+    int id, IsarBinaryReader reader, List<int> offsets) {
+  final object = Recipient(
+    civility: reader.readString(offsets[0]),
+    entityId: reader.readString(offsets[1]),
+    firstName: reader.readString(offsets[2]),
+    headTeacher: reader.readBool(offsets[4]),
+    lastName: reader.readString(offsets[5]),
+    subjects: reader.readStringList(offsets[6]) ?? [],
+  );
+  object.id = id;
+  return object;
+}
+
+P _recipientDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readStringList(offset) ?? []) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _recipientSerializeWeb(
+    IsarCollection<Recipient> collection, Recipient object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'civility', object.civility);
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'firstName', object.firstName);
+  IsarNative.jsObjectSet(jsObj, 'fullName', object.fullName);
+  IsarNative.jsObjectSet(jsObj, 'headTeacher', object.headTeacher);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'lastName', object.lastName);
+  IsarNative.jsObjectSet(jsObj, 'subjects', object.subjects);
+  return jsObj;
+}
+
+Recipient _recipientDeserializeWeb(
+    IsarCollection<Recipient> collection, dynamic jsObj) {
+  final object = Recipient(
+    civility: IsarNative.jsObjectGet(jsObj, 'civility') ?? '',
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    firstName: IsarNative.jsObjectGet(jsObj, 'firstName') ?? '',
+    headTeacher: IsarNative.jsObjectGet(jsObj, 'headTeacher') ?? false,
+    lastName: IsarNative.jsObjectGet(jsObj, 'lastName') ?? '',
+    subjects: (IsarNative.jsObjectGet(jsObj, 'subjects') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>() ??
+        [],
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  return object;
+}
+
+P _recipientDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'civility':
+      return (IsarNative.jsObjectGet(jsObj, 'civility') ?? '') as P;
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'firstName':
+      return (IsarNative.jsObjectGet(jsObj, 'firstName') ?? '') as P;
+    case 'fullName':
+      return (IsarNative.jsObjectGet(jsObj, 'fullName') ?? '') as P;
+    case 'headTeacher':
+      return (IsarNative.jsObjectGet(jsObj, 'headTeacher') ?? false) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'lastName':
+      return (IsarNative.jsObjectGet(jsObj, 'lastName') ?? '') as P;
+    case 'subjects':
+      return ((IsarNative.jsObjectGet(jsObj, 'subjects') as List?)
+              ?.map((e) => e ?? '')
+              .toList()
+              .cast<String>() ??
+          []) as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _recipientAttachLinks(IsarCollection col, int id, Recipient object) {}
 
 extension RecipientQueryWhereSort
     on QueryBuilder<Recipient, Recipient, QWhere> {
   QueryBuilder<Recipient, Recipient, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension RecipientQueryWhere
     on QueryBuilder<Recipient, Recipient, QWhereClause> {
-  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
-  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idNotEqualTo(int? id) {
+  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
-  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
-  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+  QueryBuilder<Recipient, Recipient, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<Recipient, Recipient, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -8523,7 +9323,7 @@ extension RecipientQueryFilter
   }
 
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -8532,7 +9332,7 @@ extension RecipientQueryFilter
   }
 
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -8544,7 +9344,7 @@ extension RecipientQueryFilter
   }
 
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -8556,8 +9356,8 @@ extension RecipientQueryFilter
   }
 
   QueryBuilder<Recipient, Recipient, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -8779,6 +9579,9 @@ extension RecipientQueryFilter
   }
 }
 
+extension RecipientQueryLinks
+    on QueryBuilder<Recipient, Recipient, QFilterCondition> {}
+
 extension RecipientQueryWhereSortBy
     on QueryBuilder<Recipient, Recipient, QSortBy> {
   QueryBuilder<Recipient, Recipient, QAfterSortBy> sortByCivility() {
@@ -8968,19 +9771,16 @@ extension RecipientQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetSchoolAccountCollection on Isar {
-  IsarCollection<SchoolAccount> get schoolAccounts {
-    return getCollection('SchoolAccount');
-  }
+  IsarCollection<SchoolAccount> get schoolAccounts => getCollection();
 }
 
-final SchoolAccountSchema = CollectionSchema(
+const SchoolAccountSchema = CollectionSchema(
   name: 'SchoolAccount',
   schema:
-      '{"name":"SchoolAccount","properties":[{"name":"className","type":"String"},{"name":"entityId","type":"String"},{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"lastName","type":"String"},{"name":"profilePicture","type":"String"},{"name":"school","type":"String"}],"indexes":[],"links":[]}',
-  adapter: const _SchoolAccountAdapter(),
+      '{"name":"SchoolAccount","idName":"id","properties":[{"name":"className","type":"String"},{"name":"entityId","type":"String"},{"name":"firstName","type":"String"},{"name":"fullName","type":"String"},{"name":"lastName","type":"String"},{"name":"profilePicture","type":"String"},{"name":"school","type":"String"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {
     'className': 0,
@@ -8991,179 +9791,241 @@ final SchoolAccountSchema = CollectionSchema(
     'profilePicture': 5,
     'school': 6
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {},
-  backlinkIds: {},
-  linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _schoolAccountGetId,
+  setId: _schoolAccountSetId,
+  getLinks: _schoolAccountGetLinks,
+  attachLinks: _schoolAccountAttachLinks,
+  serializeNative: _schoolAccountSerializeNative,
+  deserializeNative: _schoolAccountDeserializeNative,
+  deserializePropNative: _schoolAccountDeserializePropNative,
+  serializeWeb: _schoolAccountSerializeWeb,
+  deserializeWeb: _schoolAccountDeserializeWeb,
+  deserializePropWeb: _schoolAccountDeserializePropWeb,
+  version: 3,
 );
 
-class _SchoolAccountAdapter extends IsarTypeAdapter<SchoolAccount> {
-  const _SchoolAccountAdapter();
-
-  @override
-  void serialize(IsarCollection<SchoolAccount> collection, IsarRawObject rawObj,
-      SchoolAccount object, List<int> offsets, AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.className;
-    final _className = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _className.length;
-    final value1 = object.entityId;
-    final _entityId = BinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += _entityId.length;
-    final value2 = object.firstName;
-    final _firstName = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _firstName.length;
-    final value3 = object.fullName;
-    final _fullName = BinaryWriter.utf8Encoder.convert(value3);
-    dynamicSize += _fullName.length;
-    final value4 = object.lastName;
-    final _lastName = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _lastName.length;
-    final value5 = object.profilePicture;
-    final _profilePicture = BinaryWriter.utf8Encoder.convert(value5);
-    dynamicSize += _profilePicture.length;
-    final value6 = object.school;
-    final _school = BinaryWriter.utf8Encoder.convert(value6);
-    dynamicSize += _school.length;
-    final size = dynamicSize + 58;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 58);
-    writer.writeBytes(offsets[0], _className);
-    writer.writeBytes(offsets[1], _entityId);
-    writer.writeBytes(offsets[2], _firstName);
-    writer.writeBytes(offsets[3], _fullName);
-    writer.writeBytes(offsets[4], _lastName);
-    writer.writeBytes(offsets[5], _profilePicture);
-    writer.writeBytes(offsets[6], _school);
-  }
-
-  @override
-  SchoolAccount deserialize(IsarCollection<SchoolAccount> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = SchoolAccount(
-      className: reader.readString(offsets[0]),
-      entityId: reader.readString(offsets[1]),
-      firstName: reader.readString(offsets[2]),
-      lastName: reader.readString(offsets[4]),
-      profilePicture: reader.readString(offsets[5]),
-      school: reader.readString(offsets[6]),
-    );
-    object.id = id;
-    return object;
-  }
-
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readString(offset)) as P;
-      case 4:
-        return (reader.readString(offset)) as P;
-      case 5:
-        return (reader.readString(offset)) as P;
-      case 6:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
+int? _schoolAccountGetId(SchoolAccount object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
 }
+
+void _schoolAccountSetId(SchoolAccount object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _schoolAccountGetLinks(SchoolAccount object) {
+  return [];
+}
+
+void _schoolAccountSerializeNative(
+    IsarCollection<SchoolAccount> collection,
+    IsarRawObject rawObj,
+    SchoolAccount object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.className;
+  final _className = IsarBinaryWriter.utf8Encoder.convert(value0);
+  dynamicSize += (_className.length) as int;
+  final value1 = object.entityId;
+  final _entityId = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_entityId.length) as int;
+  final value2 = object.firstName;
+  final _firstName = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_firstName.length) as int;
+  final value3 = object.fullName;
+  final _fullName = IsarBinaryWriter.utf8Encoder.convert(value3);
+  dynamicSize += (_fullName.length) as int;
+  final value4 = object.lastName;
+  final _lastName = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_lastName.length) as int;
+  final value5 = object.profilePicture;
+  final _profilePicture = IsarBinaryWriter.utf8Encoder.convert(value5);
+  dynamicSize += (_profilePicture.length) as int;
+  final value6 = object.school;
+  final _school = IsarBinaryWriter.utf8Encoder.convert(value6);
+  dynamicSize += (_school.length) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _className);
+  writer.writeBytes(offsets[1], _entityId);
+  writer.writeBytes(offsets[2], _firstName);
+  writer.writeBytes(offsets[3], _fullName);
+  writer.writeBytes(offsets[4], _lastName);
+  writer.writeBytes(offsets[5], _profilePicture);
+  writer.writeBytes(offsets[6], _school);
+}
+
+SchoolAccount _schoolAccountDeserializeNative(
+    IsarCollection<SchoolAccount> collection,
+    int id,
+    IsarBinaryReader reader,
+    List<int> offsets) {
+  final object = SchoolAccount(
+    className: reader.readString(offsets[0]),
+    entityId: reader.readString(offsets[1]),
+    firstName: reader.readString(offsets[2]),
+    lastName: reader.readString(offsets[4]),
+    profilePicture: reader.readString(offsets[5]),
+    school: reader.readString(offsets[6]),
+  );
+  object.id = id;
+  return object;
+}
+
+P _schoolAccountDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _schoolAccountSerializeWeb(
+    IsarCollection<SchoolAccount> collection, SchoolAccount object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'className', object.className);
+  IsarNative.jsObjectSet(jsObj, 'entityId', object.entityId);
+  IsarNative.jsObjectSet(jsObj, 'firstName', object.firstName);
+  IsarNative.jsObjectSet(jsObj, 'fullName', object.fullName);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'lastName', object.lastName);
+  IsarNative.jsObjectSet(jsObj, 'profilePicture', object.profilePicture);
+  IsarNative.jsObjectSet(jsObj, 'school', object.school);
+  return jsObj;
+}
+
+SchoolAccount _schoolAccountDeserializeWeb(
+    IsarCollection<SchoolAccount> collection, dynamic jsObj) {
+  final object = SchoolAccount(
+    className: IsarNative.jsObjectGet(jsObj, 'className') ?? '',
+    entityId: IsarNative.jsObjectGet(jsObj, 'entityId') ?? '',
+    firstName: IsarNative.jsObjectGet(jsObj, 'firstName') ?? '',
+    lastName: IsarNative.jsObjectGet(jsObj, 'lastName') ?? '',
+    profilePicture: IsarNative.jsObjectGet(jsObj, 'profilePicture') ?? '',
+    school: IsarNative.jsObjectGet(jsObj, 'school') ?? '',
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  return object;
+}
+
+P _schoolAccountDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'className':
+      return (IsarNative.jsObjectGet(jsObj, 'className') ?? '') as P;
+    case 'entityId':
+      return (IsarNative.jsObjectGet(jsObj, 'entityId') ?? '') as P;
+    case 'firstName':
+      return (IsarNative.jsObjectGet(jsObj, 'firstName') ?? '') as P;
+    case 'fullName':
+      return (IsarNative.jsObjectGet(jsObj, 'fullName') ?? '') as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'lastName':
+      return (IsarNative.jsObjectGet(jsObj, 'lastName') ?? '') as P;
+    case 'profilePicture':
+      return (IsarNative.jsObjectGet(jsObj, 'profilePicture') ?? '') as P;
+    case 'school':
+      return (IsarNative.jsObjectGet(jsObj, 'school') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _schoolAccountAttachLinks(
+    IsarCollection col, int id, SchoolAccount object) {}
 
 extension SchoolAccountQueryWhereSort
     on QueryBuilder<SchoolAccount, SchoolAccount, QWhere> {
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension SchoolAccountQueryWhere
     on QueryBuilder<SchoolAccount, SchoolAccount, QWhereClause> {
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhereClause> idEqualTo(
-      int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+      int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhereClause> idNotEqualTo(
-      int? id) {
+      int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhereClause> idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+      int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhereClause> idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+      int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -9608,7 +10470,7 @@ extension SchoolAccountQueryFilter
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -9618,7 +10480,7 @@ extension SchoolAccountQueryFilter
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -9630,7 +10492,7 @@ extension SchoolAccountQueryFilter
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition> idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -9642,8 +10504,8 @@ extension SchoolAccountQueryFilter
   }
 
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -9978,6 +10840,9 @@ extension SchoolAccountQueryFilter
   }
 }
 
+extension SchoolAccountQueryLinks
+    on QueryBuilder<SchoolAccount, SchoolAccount, QFilterCondition> {}
+
 extension SchoolAccountQueryWhereSortBy
     on QueryBuilder<SchoolAccount, SchoolAccount, QSortBy> {
   QueryBuilder<SchoolAccount, SchoolAccount, QAfterSortBy> sortByClassName() {
@@ -10205,19 +11070,16 @@ extension SchoolAccountQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetSchoolLifeSanctionCollection on Isar {
-  IsarCollection<SchoolLifeSanction> get schoolLifeSanctions {
-    return getCollection('SchoolLifeSanction');
-  }
+  IsarCollection<SchoolLifeSanction> get schoolLifeSanctions => getCollection();
 }
 
-final SchoolLifeSanctionSchema = CollectionSchema(
+const SchoolLifeSanctionSchema = CollectionSchema(
   name: 'SchoolLifeSanction',
   schema:
-      '{"name":"SchoolLifeSanction","properties":[{"name":"by","type":"String"},{"name":"date","type":"Long"},{"name":"reason","type":"String"},{"name":"registrationDate","type":"String"},{"name":"sanction","type":"String"},{"name":"type","type":"String"},{"name":"work","type":"String"}],"indexes":[],"links":[]}',
-  adapter: const _SchoolLifeSanctionAdapter(),
+      '{"name":"SchoolLifeSanction","idName":"id","properties":[{"name":"by","type":"String"},{"name":"date","type":"Long"},{"name":"reason","type":"String"},{"name":"registrationDate","type":"String"},{"name":"sanction","type":"String"},{"name":"type","type":"String"},{"name":"work","type":"String"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {
     'by': 0,
@@ -10228,186 +11090,252 @@ final SchoolLifeSanctionSchema = CollectionSchema(
     'type': 5,
     'work': 6
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {},
-  backlinkIds: {},
-  linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _schoolLifeSanctionGetId,
+  setId: _schoolLifeSanctionSetId,
+  getLinks: _schoolLifeSanctionGetLinks,
+  attachLinks: _schoolLifeSanctionAttachLinks,
+  serializeNative: _schoolLifeSanctionSerializeNative,
+  deserializeNative: _schoolLifeSanctionDeserializeNative,
+  deserializePropNative: _schoolLifeSanctionDeserializePropNative,
+  serializeWeb: _schoolLifeSanctionSerializeWeb,
+  deserializeWeb: _schoolLifeSanctionDeserializeWeb,
+  deserializePropWeb: _schoolLifeSanctionDeserializePropWeb,
+  version: 3,
 );
 
-class _SchoolLifeSanctionAdapter extends IsarTypeAdapter<SchoolLifeSanction> {
-  const _SchoolLifeSanctionAdapter();
-
-  @override
-  void serialize(
-      IsarCollection<SchoolLifeSanction> collection,
-      IsarRawObject rawObj,
-      SchoolLifeSanction object,
-      List<int> offsets,
-      AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.by;
-    final _by = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _by.length;
-    final value1 = object.date;
-    final _date = value1;
-    final value2 = object.reason;
-    final _reason = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _reason.length;
-    final value3 = object.registrationDate;
-    final _registrationDate = BinaryWriter.utf8Encoder.convert(value3);
-    dynamicSize += _registrationDate.length;
-    final value4 = object.sanction;
-    final _sanction = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _sanction.length;
-    final value5 = object.type;
-    final _type = BinaryWriter.utf8Encoder.convert(value5);
-    dynamicSize += _type.length;
-    final value6 = object.work;
-    final _work = BinaryWriter.utf8Encoder.convert(value6);
-    dynamicSize += _work.length;
-    final size = dynamicSize + 58;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 58);
-    writer.writeBytes(offsets[0], _by);
-    writer.writeDateTime(offsets[1], _date);
-    writer.writeBytes(offsets[2], _reason);
-    writer.writeBytes(offsets[3], _registrationDate);
-    writer.writeBytes(offsets[4], _sanction);
-    writer.writeBytes(offsets[5], _type);
-    writer.writeBytes(offsets[6], _work);
-  }
-
-  @override
-  SchoolLifeSanction deserialize(IsarCollection<SchoolLifeSanction> collection,
-      int id, BinaryReader reader, List<int> offsets) {
-    final object = SchoolLifeSanction(
-      by: reader.readString(offsets[0]),
-      date: reader.readDateTime(offsets[1]),
-      reason: reader.readString(offsets[2]),
-      registrationDate: reader.readString(offsets[3]),
-      sanction: reader.readString(offsets[4]),
-      type: reader.readString(offsets[5]),
-      work: reader.readString(offsets[6]),
-    );
-    object.id = id;
-    return object;
-  }
-
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readString(offset)) as P;
-      case 1:
-        return (reader.readDateTime(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readString(offset)) as P;
-      case 4:
-        return (reader.readString(offset)) as P;
-      case 5:
-        return (reader.readString(offset)) as P;
-      case 6:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
+int? _schoolLifeSanctionGetId(SchoolLifeSanction object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
 }
+
+void _schoolLifeSanctionSetId(SchoolLifeSanction object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _schoolLifeSanctionGetLinks(SchoolLifeSanction object) {
+  return [];
+}
+
+void _schoolLifeSanctionSerializeNative(
+    IsarCollection<SchoolLifeSanction> collection,
+    IsarRawObject rawObj,
+    SchoolLifeSanction object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.by;
+  final _by = IsarBinaryWriter.utf8Encoder.convert(value0);
+  dynamicSize += (_by.length) as int;
+  final value1 = object.date;
+  final _date = value1;
+  final value2 = object.reason;
+  final _reason = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_reason.length) as int;
+  final value3 = object.registrationDate;
+  final _registrationDate = IsarBinaryWriter.utf8Encoder.convert(value3);
+  dynamicSize += (_registrationDate.length) as int;
+  final value4 = object.sanction;
+  final _sanction = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_sanction.length) as int;
+  final value5 = object.type;
+  final _type = IsarBinaryWriter.utf8Encoder.convert(value5);
+  dynamicSize += (_type.length) as int;
+  final value6 = object.work;
+  final _work = IsarBinaryWriter.utf8Encoder.convert(value6);
+  dynamicSize += (_work.length) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeBytes(offsets[0], _by);
+  writer.writeDateTime(offsets[1], _date);
+  writer.writeBytes(offsets[2], _reason);
+  writer.writeBytes(offsets[3], _registrationDate);
+  writer.writeBytes(offsets[4], _sanction);
+  writer.writeBytes(offsets[5], _type);
+  writer.writeBytes(offsets[6], _work);
+}
+
+SchoolLifeSanction _schoolLifeSanctionDeserializeNative(
+    IsarCollection<SchoolLifeSanction> collection,
+    int id,
+    IsarBinaryReader reader,
+    List<int> offsets) {
+  final object = SchoolLifeSanction(
+    by: reader.readString(offsets[0]),
+    date: reader.readDateTime(offsets[1]),
+    reason: reader.readString(offsets[2]),
+    registrationDate: reader.readString(offsets[3]),
+    sanction: reader.readString(offsets[4]),
+    type: reader.readString(offsets[5]),
+    work: reader.readString(offsets[6]),
+  );
+  object.id = id;
+  return object;
+}
+
+P _schoolLifeSanctionDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readDateTime(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _schoolLifeSanctionSerializeWeb(
+    IsarCollection<SchoolLifeSanction> collection, SchoolLifeSanction object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'by', object.by);
+  IsarNative.jsObjectSet(
+      jsObj, 'date', object.date.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'reason', object.reason);
+  IsarNative.jsObjectSet(jsObj, 'registrationDate', object.registrationDate);
+  IsarNative.jsObjectSet(jsObj, 'sanction', object.sanction);
+  IsarNative.jsObjectSet(jsObj, 'type', object.type);
+  IsarNative.jsObjectSet(jsObj, 'work', object.work);
+  return jsObj;
+}
+
+SchoolLifeSanction _schoolLifeSanctionDeserializeWeb(
+    IsarCollection<SchoolLifeSanction> collection, dynamic jsObj) {
+  final object = SchoolLifeSanction(
+    by: IsarNative.jsObjectGet(jsObj, 'by') ?? '',
+    date: IsarNative.jsObjectGet(jsObj, 'date') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'date'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    reason: IsarNative.jsObjectGet(jsObj, 'reason') ?? '',
+    registrationDate: IsarNative.jsObjectGet(jsObj, 'registrationDate') ?? '',
+    sanction: IsarNative.jsObjectGet(jsObj, 'sanction') ?? '',
+    type: IsarNative.jsObjectGet(jsObj, 'type') ?? '',
+    work: IsarNative.jsObjectGet(jsObj, 'work') ?? '',
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  return object;
+}
+
+P _schoolLifeSanctionDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'by':
+      return (IsarNative.jsObjectGet(jsObj, 'by') ?? '') as P;
+    case 'date':
+      return (IsarNative.jsObjectGet(jsObj, 'date') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'date'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'reason':
+      return (IsarNative.jsObjectGet(jsObj, 'reason') ?? '') as P;
+    case 'registrationDate':
+      return (IsarNative.jsObjectGet(jsObj, 'registrationDate') ?? '') as P;
+    case 'sanction':
+      return (IsarNative.jsObjectGet(jsObj, 'sanction') ?? '') as P;
+    case 'type':
+      return (IsarNative.jsObjectGet(jsObj, 'type') ?? '') as P;
+    case 'work':
+      return (IsarNative.jsObjectGet(jsObj, 'work') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _schoolLifeSanctionAttachLinks(
+    IsarCollection col, int id, SchoolLifeSanction object) {}
 
 extension SchoolLifeSanctionQueryWhereSort
     on QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QWhere> {
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension SchoolLifeSanctionQueryWhere
     on QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QWhereClause> {
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhereClause>
-      idEqualTo(int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+      idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhereClause>
-      idNotEqualTo(int? id) {
+      idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhereClause>
-      idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+      idGreaterThan(int id, {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhereClause>
-      idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+      idLessThan(int id, {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterWhereClause>
       idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -10583,7 +11511,7 @@ extension SchoolLifeSanctionQueryFilter
   }
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
-      idEqualTo(int? value) {
+      idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -10593,7 +11521,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -10606,7 +11534,7 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -10619,8 +11547,8 @@ extension SchoolLifeSanctionQueryFilter
 
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterFilterCondition>
       idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -11169,6 +12097,9 @@ extension SchoolLifeSanctionQueryFilter
   }
 }
 
+extension SchoolLifeSanctionQueryLinks
+    on QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QFilterCondition> {}
+
 extension SchoolLifeSanctionQueryWhereSortBy
     on QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QSortBy> {
   QueryBuilder<SchoolLifeSanction, SchoolLifeSanction, QAfterSortBy>
@@ -11416,19 +12347,16 @@ extension SchoolLifeSanctionQueryProperty
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
 extension GetSchoolLifeTicketCollection on Isar {
-  IsarCollection<SchoolLifeTicket> get schoolLifeTickets {
-    return getCollection('SchoolLifeTicket');
-  }
+  IsarCollection<SchoolLifeTicket> get schoolLifeTickets => getCollection();
 }
 
-final SchoolLifeTicketSchema = CollectionSchema(
+const SchoolLifeTicketSchema = CollectionSchema(
   name: 'SchoolLifeTicket',
   schema:
-      '{"name":"SchoolLifeTicket","properties":[{"name":"date","type":"Long"},{"name":"displayDate","type":"String"},{"name":"duration","type":"String"},{"name":"isJustified","type":"Byte"},{"name":"reason","type":"String"},{"name":"type","type":"String"}],"indexes":[],"links":[]}',
-  adapter: const _SchoolLifeTicketAdapter(),
+      '{"name":"SchoolLifeTicket","idName":"id","properties":[{"name":"date","type":"Long"},{"name":"displayDate","type":"String"},{"name":"duration","type":"String"},{"name":"isJustified","type":"Bool"},{"name":"reason","type":"String"},{"name":"type","type":"String"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {
     'date': 0,
@@ -11438,177 +12366,239 @@ final SchoolLifeTicketSchema = CollectionSchema(
     'reason': 4,
     'type': 5
   },
+  listProperties: {},
   indexIds: {},
-  indexTypes: {},
+  indexValueTypes: {},
   linkIds: {},
-  backlinkIds: {},
-  linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
-  getLinks: (obj) => [],
-  version: 1,
+  backlinkLinkNames: {},
+  getId: _schoolLifeTicketGetId,
+  setId: _schoolLifeTicketSetId,
+  getLinks: _schoolLifeTicketGetLinks,
+  attachLinks: _schoolLifeTicketAttachLinks,
+  serializeNative: _schoolLifeTicketSerializeNative,
+  deserializeNative: _schoolLifeTicketDeserializeNative,
+  deserializePropNative: _schoolLifeTicketDeserializePropNative,
+  serializeWeb: _schoolLifeTicketSerializeWeb,
+  deserializeWeb: _schoolLifeTicketDeserializeWeb,
+  deserializePropWeb: _schoolLifeTicketDeserializePropWeb,
+  version: 3,
 );
 
-class _SchoolLifeTicketAdapter extends IsarTypeAdapter<SchoolLifeTicket> {
-  const _SchoolLifeTicketAdapter();
-
-  @override
-  void serialize(
-      IsarCollection<SchoolLifeTicket> collection,
-      IsarRawObject rawObj,
-      SchoolLifeTicket object,
-      List<int> offsets,
-      AdapterAlloc alloc) {
-    var dynamicSize = 0;
-    final value0 = object.date;
-    final _date = value0;
-    final value1 = object.displayDate;
-    final _displayDate = BinaryWriter.utf8Encoder.convert(value1);
-    dynamicSize += _displayDate.length;
-    final value2 = object.duration;
-    final _duration = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _duration.length;
-    final value3 = object.isJustified;
-    final _isJustified = value3;
-    final value4 = object.reason;
-    final _reason = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _reason.length;
-    final value5 = object.type;
-    final _type = BinaryWriter.utf8Encoder.convert(value5);
-    dynamicSize += _type.length;
-    final size = dynamicSize + 43;
-
-    rawObj.buffer = alloc(size);
-    rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 43);
-    writer.writeDateTime(offsets[0], _date);
-    writer.writeBytes(offsets[1], _displayDate);
-    writer.writeBytes(offsets[2], _duration);
-    writer.writeBool(offsets[3], _isJustified);
-    writer.writeBytes(offsets[4], _reason);
-    writer.writeBytes(offsets[5], _type);
-  }
-
-  @override
-  SchoolLifeTicket deserialize(IsarCollection<SchoolLifeTicket> collection,
-      int id, BinaryReader reader, List<int> offsets) {
-    final object = SchoolLifeTicket(
-      date: reader.readDateTime(offsets[0]),
-      displayDate: reader.readString(offsets[1]),
-      duration: reader.readString(offsets[2]),
-      isJustified: reader.readBool(offsets[3]),
-      reason: reader.readString(offsets[4]),
-      type: reader.readString(offsets[5]),
-    );
-    object.id = id;
-    return object;
-  }
-
-  @override
-  P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
-    switch (propertyIndex) {
-      case -1:
-        return id as P;
-      case 0:
-        return (reader.readDateTime(offset)) as P;
-      case 1:
-        return (reader.readString(offset)) as P;
-      case 2:
-        return (reader.readString(offset)) as P;
-      case 3:
-        return (reader.readBool(offset)) as P;
-      case 4:
-        return (reader.readString(offset)) as P;
-      case 5:
-        return (reader.readString(offset)) as P;
-      default:
-        throw 'Illegal propertyIndex';
-    }
+int? _schoolLifeTicketGetId(SchoolLifeTicket object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
   }
 }
+
+void _schoolLifeTicketSetId(SchoolLifeTicket object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _schoolLifeTicketGetLinks(SchoolLifeTicket object) {
+  return [];
+}
+
+void _schoolLifeTicketSerializeNative(
+    IsarCollection<SchoolLifeTicket> collection,
+    IsarRawObject rawObj,
+    SchoolLifeTicket object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.date;
+  final _date = value0;
+  final value1 = object.displayDate;
+  final _displayDate = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_displayDate.length) as int;
+  final value2 = object.duration;
+  final _duration = IsarBinaryWriter.utf8Encoder.convert(value2);
+  dynamicSize += (_duration.length) as int;
+  final value3 = object.isJustified;
+  final _isJustified = value3;
+  final value4 = object.reason;
+  final _reason = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_reason.length) as int;
+  final value5 = object.type;
+  final _type = IsarBinaryWriter.utf8Encoder.convert(value5);
+  dynamicSize += (_type.length) as int;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeDateTime(offsets[0], _date);
+  writer.writeBytes(offsets[1], _displayDate);
+  writer.writeBytes(offsets[2], _duration);
+  writer.writeBool(offsets[3], _isJustified);
+  writer.writeBytes(offsets[4], _reason);
+  writer.writeBytes(offsets[5], _type);
+}
+
+SchoolLifeTicket _schoolLifeTicketDeserializeNative(
+    IsarCollection<SchoolLifeTicket> collection,
+    int id,
+    IsarBinaryReader reader,
+    List<int> offsets) {
+  final object = SchoolLifeTicket(
+    date: reader.readDateTime(offsets[0]),
+    displayDate: reader.readString(offsets[1]),
+    duration: reader.readString(offsets[2]),
+    isJustified: reader.readBool(offsets[3]),
+    reason: reader.readString(offsets[4]),
+    type: reader.readString(offsets[5]),
+  );
+  object.id = id;
+  return object;
+}
+
+P _schoolLifeTicketDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readDateTime(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readBool(offset)) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _schoolLifeTicketSerializeWeb(
+    IsarCollection<SchoolLifeTicket> collection, SchoolLifeTicket object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(
+      jsObj, 'date', object.date.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'displayDate', object.displayDate);
+  IsarNative.jsObjectSet(jsObj, 'duration', object.duration);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'isJustified', object.isJustified);
+  IsarNative.jsObjectSet(jsObj, 'reason', object.reason);
+  IsarNative.jsObjectSet(jsObj, 'type', object.type);
+  return jsObj;
+}
+
+SchoolLifeTicket _schoolLifeTicketDeserializeWeb(
+    IsarCollection<SchoolLifeTicket> collection, dynamic jsObj) {
+  final object = SchoolLifeTicket(
+    date: IsarNative.jsObjectGet(jsObj, 'date') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'date'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    displayDate: IsarNative.jsObjectGet(jsObj, 'displayDate') ?? '',
+    duration: IsarNative.jsObjectGet(jsObj, 'duration') ?? '',
+    isJustified: IsarNative.jsObjectGet(jsObj, 'isJustified') ?? false,
+    reason: IsarNative.jsObjectGet(jsObj, 'reason') ?? '',
+    type: IsarNative.jsObjectGet(jsObj, 'type') ?? '',
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  return object;
+}
+
+P _schoolLifeTicketDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'date':
+      return (IsarNative.jsObjectGet(jsObj, 'date') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'date'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'displayDate':
+      return (IsarNative.jsObjectGet(jsObj, 'displayDate') ?? '') as P;
+    case 'duration':
+      return (IsarNative.jsObjectGet(jsObj, 'duration') ?? '') as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'isJustified':
+      return (IsarNative.jsObjectGet(jsObj, 'isJustified') ?? false) as P;
+    case 'reason':
+      return (IsarNative.jsObjectGet(jsObj, 'reason') ?? '') as P;
+    case 'type':
+      return (IsarNative.jsObjectGet(jsObj, 'type') ?? '') as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _schoolLifeTicketAttachLinks(
+    IsarCollection col, int id, SchoolLifeTicket object) {}
 
 extension SchoolLifeTicketQueryWhereSort
     on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QWhere> {
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
 extension SchoolLifeTicketQueryWhere
     on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QWhereClause> {
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhereClause> idEqualTo(
-      int? id) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
+      int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
       includeLower: true,
-      upper: [id],
+      upper: id,
       includeUpper: true,
     ));
   }
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhereClause>
-      idNotEqualTo(int? id) {
+      idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
     } else {
-      return addWhereClauseInternal(WhereClause(
-        indexName: null,
-        lower: [id],
-        includeLower: false,
-      )).addWhereClauseInternal(WhereClause(
-        indexName: null,
-        upper: [id],
-        includeUpper: false,
-      ));
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
     }
   }
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhereClause>
-      idGreaterThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [id],
-      includeLower: include,
-    ));
+      idGreaterThan(int id, {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
   }
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhereClause>
-      idLessThan(
-    int? id, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      upper: [id],
-      includeUpper: include,
-    ));
+      idLessThan(int id, {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
   }
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterWhereClause> idBetween(
-    int? lowerId,
-    int? upperId, {
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(WhereClause(
-      indexName: null,
-      lower: [lowerId],
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
       includeLower: includeLower,
-      upper: [upperId],
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -11891,7 +12881,7 @@ extension SchoolLifeTicketQueryFilter
   }
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
-      idEqualTo(int? value) {
+      idEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -11901,7 +12891,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -11914,7 +12904,7 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -11927,8 +12917,8 @@ extension SchoolLifeTicketQueryFilter
 
   QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QAfterFilterCondition>
       idBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -12164,6 +13154,9 @@ extension SchoolLifeTicketQueryFilter
     ));
   }
 }
+
+extension SchoolLifeTicketQueryLinks
+    on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QFilterCondition> {}
 
 extension SchoolLifeTicketQueryWhereSortBy
     on QueryBuilder<SchoolLifeTicket, SchoolLifeTicket, QSortBy> {

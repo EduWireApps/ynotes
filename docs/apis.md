@@ -369,6 +369,22 @@ Lors de l'ajout d'un module, l'implémentation concrète pour un service est nor
 
 **TODO: check if could be optimized.**
 
+> MORE TO COME
+
 ## Ajouter un service scolaire
 
-A venir
+### Structure
+
+```txt
+service_scolaire.dart
+src/
+--api.dart
+--utils.dart
+--modules/
+----auth.dart
+----documents.dart
+----emails.dart
+----grades.dart
+----homework.dart
+----school_life.dart
+```

@@ -57,8 +57,10 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                         key: GlobalKey(debugLabel: 'QR'),
                         onQRViewCreated: (QRViewController qrController) async {
                           this.qrController = qrController;
-                          qrController.scannedDataStream.listen((barCode) async {
-                            if (controller.status == QrStatus.initial && controller.isQrCodeValid(barCode)) {
+                          qrController.scannedDataStream
+                              .listen((barCode) async {
+                            if (controller.status == QrStatus.initial &&
+                                controller.isQrCodeValid(barCode)) {
                               await getCode();
                             }
                           });
@@ -140,7 +142,8 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     final List<String>? decryptedData = controller.decrypt(code);
     if (decryptedData == null) {
       YSnackbars.error(context,
-          title: LoginContent.pronote.qrCode.error, message: LoginContent.pronote.qrCode.errorMessage);
+          title: LoginContent.pronote.qrCode.error,
+          message: LoginContent.pronote.qrCode.errorMessage);
       getCode();
       return;
     }

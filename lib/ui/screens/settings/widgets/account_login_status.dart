@@ -18,15 +18,16 @@ class _AccountLoginStatusState extends State<AccountLoginStatus> {
   AuthStatus get status => widget.module.status;
 
   final String loggedTitle = "Tout va bien vous êtes connecté !";
+
   final String loggedLabel = "Les petits oiseaux chantent et le ciel est bleu.";
-
   final String offlineTitle = "Vous êtes hors ligne";
+
   final String offlineLabel = "Vous pouvez accéder à vos données hors ligne.";
-
   final String loggedOffTitle = "Vous êtes déconnecté";
-  final String loggedOffLabel = "Nous vous connectons...";
 
+  final String loggedOffLabel = "Nous vous reconnectons...";
   final String errorTitle = "Oups ! Une erreur s'est produite.";
+
   final String errorLabel =
       "Consultez tout d'abord l'erreur ci-dessous. Reconnectez-vous maintenant ou dans quelques minutes. Si le problème persiste, contactez le support.";
 
