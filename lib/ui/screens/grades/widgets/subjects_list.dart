@@ -201,7 +201,7 @@ class _GradeContainerState extends State<_GradeContainer> {
                   clipBehavior: Clip.none,
                   children: [
                     AutoSizeText(
-                      widget.grade.value.display(),
+                      widget.grade.value.display,
                       style: TextStyle(
                         fontWeight: YFontWeight.semibold,
                         color: simulate ? color.foregroundColor : textColor,
@@ -209,14 +209,14 @@ class _GradeContainerState extends State<_GradeContainer> {
                       ),
                       softWrap: false,
                     ),
-                    if (widget.grade.coefficient != 1)
+                    if (widget.grade.value.valueType != gradeValueType.string && widget.grade.value.coefficient != 1)
                       Positioned(
                           top: -YScale.s2p5,
                           right: -YScale.s2p5,
-                          child: bubble(widget.grade.coefficient.display(), true)),
-                    if (widget.grade.outOf != 20)
+                          child: bubble(widget.grade.value.coefficient.display(), true)),
+                    if (widget.grade.value.valueType != gradeValueType.string && widget.grade.value.outOf != 20)
                       Positioned(
-                          bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${widget.grade.outOf.display()}"))
+                          bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${widget.grade.value.outOf.display()}"))
                   ],
                 ),
               )),

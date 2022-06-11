@@ -9,14 +9,14 @@ class _EmailsProvider extends Provider {
 
   String? get _studentId => api.authModule.schoolAccount?.entityId;
 
+  Future<Response<Map<String, dynamic>>> getEmailContent(String id, bool received) async => await _request(api,
+      url: "eleves/$_studentId/messages/$id.awp?verbe=get&mode=${received ? 'destinataire' : 'expediteur'}");
+
   Future<Response<Map<String, dynamic>>> getEmails() async =>
       await _request(api, url: "eleves/$_studentId/messages.awp?verbe=getall&typeRecuperation=all");
 
   Future<Response<Map<String, dynamic>>> getRecipients() async =>
       await _request(api, url: "messagerie/contacts/professeurs.awp?verbe=get");
-
-  Future<Response<Map<String, dynamic>>> getEmailContent(String id, bool received) async => await _request(api,
-      url: "eleves/$_studentId/messages/$id.awp?verbe=get&mode=${received ? 'destinataire' : 'expediteur'}");
 
   Future<Response<Map<String, dynamic>>> sendEmail(Map<String, dynamic> body) async =>
       await _request(api, url: "eleves/$_studentId/messages.awp?verbe=post", body: body);
@@ -33,14 +33,14 @@ class _EmailsRepository extends EmailsRepository {
     // We get the emails as raw data.
     final res0 = await emailsProvider.getEmails();
     // If an error occured during the request, we return it.
-    if (res0.error != null) {
+    if (res0.hasError) {
       return Response(error: res0.error);
     }
 
     // We get the email recipients as raw data.
     final res1 = await emailsProvider.getRecipients();
     // If an error occured during the request, we return it.
-    if (res1.error != null) {
+    if (res1.hasError) {
       return Response(error: res1.error);
     }
 
@@ -142,7 +142,7 @@ class _EmailsRepository extends EmailsRepository {
   @override
   Future<Response<String>> getEmailContent(Email email, bool received) async {
     final res = await emailsProvider.getEmailContent(email.entityId, received);
-    if (res.error != null) {
+    if (res.hasError) {
       return Response(error: res.error);
     }
     try {
@@ -184,9 +184,9 @@ class _EmailsRepository extends EmailsRepository {
       }
     };
     final res = await emailsProvider.sendEmail(body);
-    if (res.error != null) {
+    if (res.hasError) {
       return Response(error: res.error);
     }
-    return const Response();
+    return Response();
   }
 }

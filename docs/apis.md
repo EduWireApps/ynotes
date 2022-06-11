@@ -116,7 +116,7 @@ abstract class CantineModule<R extends CantineRepository> extends Module<R> {
 
   @override
   Future<Response<void>> fetch() async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 
   @override
@@ -218,7 +218,7 @@ On peut donc s'occuper de `fetch`.
 @override
 Future<Response<void>> fetch() async {
   if (fetching) {
-    return const Response(error: "Already fetching");
+    return Response(error: "Already fetching");
   }
   fetching = true;
   notifyListeners();
@@ -228,7 +228,7 @@ Maintenant que nous annonçons la récupération des données, nous pouvons rée
 
 ```dart
 final res = await repository.get();
-if (res.error != null) return res;
+if (res.hasError) return res;
 final List<Repas> _repas = res.data!["repas"] ?? [];
 ```
 
@@ -245,7 +245,7 @@ await offline.writeTxn((isar) async {
 fetching = false;
 notifyListeners();
 Logger.log("CANTINE MODULE", "Fetch successful");
-return const Response();
+return Response();
 }
 ```
 
@@ -254,11 +254,11 @@ Il faut maintenant pouvoir ajouter un repas :
 ```dart
 Future<Response<void>> add(Repas repas) async {
   final res = await repository.add(repas);
-  if (res.error != null) return res;
+  if (res.hasError) return res;
   await offline.writeTxn((isar) async {
     await isar.repas.put(repas);
   });
-  return const Response();
+  return Response();
 }
 ```
 

@@ -9,15 +9,15 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R> {
           api: api,
         );
 
-  List<SchoolLifeTicket> get tickets => offline.schoolLifeTickets.where().findAllSync();
   List<SchoolLifeSanction> get sanctions => offline.schoolLifeSanctions.where().findAllSync();
+  List<SchoolLifeTicket> get tickets => offline.schoolLifeTickets.where().findAllSync();
 
   @override
   Future<Response<void>> fetch() async {
     fetching = true;
     notifyListeners();
     final res = await repository.get();
-    if (res.error != null) return res;
+    if (res.hasError) return res;
     final List<SchoolLifeTicket> _tickets = res.data!["tickets"] ?? [];
     final List<SchoolLifeSanction> _sanctions = res.data!["sanctions"] ?? [];
     await offline.writeTxn((isar) async {
@@ -28,7 +28,7 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R> {
     });
     fetching = false;
     notifyListeners();
-    return const Response();
+    return Response();
   }
 
   @override

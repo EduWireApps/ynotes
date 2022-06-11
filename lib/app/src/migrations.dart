@@ -41,7 +41,7 @@ Future<void> _fromV12ToV13() async {
     try {
       await file.delete();
     } catch (e) {
-      Logger.error(e);
+      Logger.error(e, stackHint:"Ng==");
     }
   }
   // There was an issue with new logs that can be corrupted.
@@ -103,7 +103,7 @@ Future<void> _fromV14ToV15() async {
       dir.deleteSync(recursive: true);
       await KVS.write(key: "fullReset0", value: "true");
     } catch (e) {
-      Logger.error(e);
+      Logger.error(e, stackHint:"Nw==");
     }
   }
 }

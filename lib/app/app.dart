@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:focus_detector/focus_detector.dart';
+import 'package:ynotes/core/src/api/apis/pronote/pronote.dart';
 import 'package:ynotes/core/utilities.dart';
 
 import 'package:ynotes/core/api.dart';

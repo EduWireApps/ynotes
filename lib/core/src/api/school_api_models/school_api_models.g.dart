@@ -15,27 +15,23 @@ extension GetGradeCollection on Isar {
 const GradeSchema = CollectionSchema(
   name: 'Grade',
   schema:
-      '{"name":"Grade","idName":"id","properties":[{"name":"classAverage","type":"Double"},{"name":"classMax","type":"Double"},{"name":"classMin","type":"Double"},{"name":"coefficient","type":"Double"},{"name":"custom","type":"Bool"},{"name":"date","type":"Long"},{"name":"entryDate","type":"Long"},{"name":"name","type":"String"},{"name":"outOf","type":"Double"},{"name":"realValue","type":"Double"},{"name":"significant","type":"Bool"},{"name":"type","type":"String"},{"name":"value","type":"Double"}],"indexes":[],"links":[{"name":"period","target":"Period"},{"name":"subject","target":"Subject"}]}',
+      '{"name":"Grade","idName":"id","properties":[{"name":"classAverage","type":"Double"},{"name":"classMax","type":"Double"},{"name":"classMin","type":"Double"},{"name":"custom","type":"Bool"},{"name":"date","type":"Long"},{"name":"entryDate","type":"Long"},{"name":"name","type":"String"},{"name":"realValue","type":"Double"},{"name":"type","type":"String"}],"indexes":[],"links":[{"name":"gradeValue","target":"GradeValue"},{"name":"period","target":"Period"},{"name":"subject","target":"Subject"}]}',
   idName: 'id',
   propertyIds: {
     'classAverage': 0,
     'classMax': 1,
     'classMin': 2,
-    'coefficient': 3,
-    'custom': 4,
-    'date': 5,
-    'entryDate': 6,
-    'name': 7,
-    'outOf': 8,
-    'realValue': 9,
-    'significant': 10,
-    'type': 11,
-    'value': 12
+    'custom': 3,
+    'date': 4,
+    'entryDate': 5,
+    'name': 6,
+    'realValue': 7,
+    'type': 8
   },
   listProperties: {},
   indexIds: {},
   indexValueTypes: {},
-  linkIds: {'period': 0, 'subject': 1},
+  linkIds: {'gradeValue': 0, 'period': 1, 'subject': 2},
   backlinkLinkNames: {},
   getId: _gradeGetId,
   setId: _gradeSetId,
@@ -63,7 +59,7 @@ void _gradeSetId(Grade object, int id) {
 }
 
 List<IsarLinkBase> _gradeGetLinks(Grade object) {
-  return [object.period, object.subject];
+  return [object.gradeValue, object.period, object.subject];
 }
 
 void _gradeSerializeNative(
@@ -80,28 +76,20 @@ void _gradeSerializeNative(
   final _classMax = value1;
   final value2 = object.classMin;
   final _classMin = value2;
-  final value3 = object.coefficient;
-  final _coefficient = value3;
-  final value4 = object.custom;
-  final _custom = value4;
-  final value5 = object.date;
-  final _date = value5;
-  final value6 = object.entryDate;
-  final _entryDate = value6;
-  final value7 = object.name;
-  final _name = IsarBinaryWriter.utf8Encoder.convert(value7);
+  final value3 = object.custom;
+  final _custom = value3;
+  final value4 = object.date;
+  final _date = value4;
+  final value5 = object.entryDate;
+  final _entryDate = value5;
+  final value6 = object.name;
+  final _name = IsarBinaryWriter.utf8Encoder.convert(value6);
   dynamicSize += (_name.length) as int;
-  final value8 = object.outOf;
-  final _outOf = value8;
-  final value9 = object.realValue;
-  final _realValue = value9;
-  final value10 = object.significant;
-  final _significant = value10;
-  final value11 = object.type;
-  final _type = IsarBinaryWriter.utf8Encoder.convert(value11);
+  final value7 = object.realValue;
+  final _realValue = value7;
+  final value8 = object.type;
+  final _type = IsarBinaryWriter.utf8Encoder.convert(value8);
   dynamicSize += (_type.length) as int;
-  final value12 = object.value;
-  final _value = value12;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -111,16 +99,12 @@ void _gradeSerializeNative(
   writer.writeDouble(offsets[0], _classAverage);
   writer.writeDouble(offsets[1], _classMax);
   writer.writeDouble(offsets[2], _classMin);
-  writer.writeDouble(offsets[3], _coefficient);
-  writer.writeBool(offsets[4], _custom);
-  writer.writeDateTime(offsets[5], _date);
-  writer.writeDateTime(offsets[6], _entryDate);
-  writer.writeBytes(offsets[7], _name);
-  writer.writeDouble(offsets[8], _outOf);
-  writer.writeDouble(offsets[9], _realValue);
-  writer.writeBool(offsets[10], _significant);
-  writer.writeBytes(offsets[11], _type);
-  writer.writeDouble(offsets[12], _value);
+  writer.writeBool(offsets[3], _custom);
+  writer.writeDateTime(offsets[4], _date);
+  writer.writeDateTime(offsets[5], _entryDate);
+  writer.writeBytes(offsets[6], _name);
+  writer.writeDouble(offsets[7], _realValue);
+  writer.writeBytes(offsets[8], _type);
 }
 
 Grade _gradeDeserializeNative(IsarCollection<Grade> collection, int id,
@@ -129,15 +113,11 @@ Grade _gradeDeserializeNative(IsarCollection<Grade> collection, int id,
     classAverage: reader.readDouble(offsets[0]),
     classMax: reader.readDouble(offsets[1]),
     classMin: reader.readDouble(offsets[2]),
-    coefficient: reader.readDouble(offsets[3]),
-    custom: reader.readBool(offsets[4]),
-    date: reader.readDateTime(offsets[5]),
-    entryDate: reader.readDateTime(offsets[6]),
-    name: reader.readString(offsets[7]),
-    outOf: reader.readDouble(offsets[8]),
-    significant: reader.readBool(offsets[10]),
-    type: reader.readString(offsets[11]),
-    value: reader.readDouble(offsets[12]),
+    custom: reader.readBool(offsets[3]),
+    date: reader.readDateTime(offsets[4]),
+    entryDate: reader.readDateTime(offsets[5]),
+    name: reader.readString(offsets[6]),
+    type: reader.readString(offsets[8]),
   );
   object.id = id;
   _gradeAttachLinks(collection, id, object);
@@ -156,25 +136,17 @@ P _gradeDeserializePropNative<P>(
     case 2:
       return (reader.readDouble(offset)) as P;
     case 3:
-      return (reader.readDouble(offset)) as P;
-    case 4:
       return (reader.readBool(offset)) as P;
+    case 4:
+      return (reader.readDateTime(offset)) as P;
     case 5:
       return (reader.readDateTime(offset)) as P;
     case 6:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 8:
-      return (reader.readDouble(offset)) as P;
-    case 9:
-      return (reader.readDouble(offset)) as P;
-    case 10:
-      return (reader.readBool(offset)) as P;
-    case 11:
       return (reader.readString(offset)) as P;
-    case 12:
-      return (reader.readDouble(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
   }
@@ -185,7 +157,6 @@ dynamic _gradeSerializeWeb(IsarCollection<Grade> collection, Grade object) {
   IsarNative.jsObjectSet(jsObj, 'classAverage', object.classAverage);
   IsarNative.jsObjectSet(jsObj, 'classMax', object.classMax);
   IsarNative.jsObjectSet(jsObj, 'classMin', object.classMin);
-  IsarNative.jsObjectSet(jsObj, 'coefficient', object.coefficient);
   IsarNative.jsObjectSet(jsObj, 'custom', object.custom);
   IsarNative.jsObjectSet(
       jsObj, 'date', object.date.toUtc().millisecondsSinceEpoch);
@@ -193,11 +164,8 @@ dynamic _gradeSerializeWeb(IsarCollection<Grade> collection, Grade object) {
       jsObj, 'entryDate', object.entryDate.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(jsObj, 'id', object.id);
   IsarNative.jsObjectSet(jsObj, 'name', object.name);
-  IsarNative.jsObjectSet(jsObj, 'outOf', object.outOf);
   IsarNative.jsObjectSet(jsObj, 'realValue', object.realValue);
-  IsarNative.jsObjectSet(jsObj, 'significant', object.significant);
   IsarNative.jsObjectSet(jsObj, 'type', object.type);
-  IsarNative.jsObjectSet(jsObj, 'value', object.value);
   return jsObj;
 }
 
@@ -209,8 +177,6 @@ Grade _gradeDeserializeWeb(IsarCollection<Grade> collection, dynamic jsObj) {
         IsarNative.jsObjectGet(jsObj, 'classMax') ?? double.negativeInfinity,
     classMin:
         IsarNative.jsObjectGet(jsObj, 'classMin') ?? double.negativeInfinity,
-    coefficient:
-        IsarNative.jsObjectGet(jsObj, 'coefficient') ?? double.negativeInfinity,
     custom: IsarNative.jsObjectGet(jsObj, 'custom') ?? false,
     date: IsarNative.jsObjectGet(jsObj, 'date') != null
         ? DateTime.fromMillisecondsSinceEpoch(
@@ -225,10 +191,7 @@ Grade _gradeDeserializeWeb(IsarCollection<Grade> collection, dynamic jsObj) {
             .toLocal()
         : DateTime.fromMillisecondsSinceEpoch(0),
     name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
-    outOf: IsarNative.jsObjectGet(jsObj, 'outOf') ?? double.negativeInfinity,
-    significant: IsarNative.jsObjectGet(jsObj, 'significant') ?? false,
     type: IsarNative.jsObjectGet(jsObj, 'type') ?? '',
-    value: IsarNative.jsObjectGet(jsObj, 'value') ?? double.negativeInfinity,
   );
   object.id = IsarNative.jsObjectGet(jsObj, 'id');
   _gradeAttachLinks(collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
@@ -245,9 +208,6 @@ P _gradeDeserializePropWeb<P>(Object jsObj, String propertyName) {
           double.negativeInfinity) as P;
     case 'classMin':
       return (IsarNative.jsObjectGet(jsObj, 'classMin') ??
-          double.negativeInfinity) as P;
-    case 'coefficient':
-      return (IsarNative.jsObjectGet(jsObj, 'coefficient') ??
           double.negativeInfinity) as P;
     case 'custom':
       return (IsarNative.jsObjectGet(jsObj, 'custom') ?? false) as P;
@@ -269,25 +229,18 @@ P _gradeDeserializePropWeb<P>(Object jsObj, String propertyName) {
       return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
     case 'name':
       return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
-    case 'outOf':
-      return (IsarNative.jsObjectGet(jsObj, 'outOf') ?? double.negativeInfinity)
-          as P;
     case 'realValue':
       return (IsarNative.jsObjectGet(jsObj, 'realValue') ??
           double.negativeInfinity) as P;
-    case 'significant':
-      return (IsarNative.jsObjectGet(jsObj, 'significant') ?? false) as P;
     case 'type':
       return (IsarNative.jsObjectGet(jsObj, 'type') ?? '') as P;
-    case 'value':
-      return (IsarNative.jsObjectGet(jsObj, 'value') ?? double.negativeInfinity)
-          as P;
     default:
       throw 'Illegal propertyName';
   }
 }
 
 void _gradeAttachLinks(IsarCollection col, int id, Grade object) {
+  object.gradeValue.attach(col, col.isar.gradeValues, 'gradeValue', id);
   object.period.attach(col, col.isar.periods, 'period', id);
   object.subject.attach(col, col.isar.subjects, 'subject', id);
 }
@@ -440,37 +393,6 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
       double lower, double upper) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'classMin',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> coefficientGreaterThan(
-      double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'coefficient',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> coefficientLessThan(
-      double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'coefficient',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> coefficientBetween(
-      double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'coefficient',
       lower: lower,
       includeLower: false,
       upper: upper,
@@ -738,37 +660,6 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> outOfGreaterThan(
-      double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'outOf',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> outOfLessThan(
-      double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'outOf',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> outOfBetween(
-      double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'outOf',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
   QueryBuilder<Grade, Grade, QAfterFilterCondition> realValueGreaterThan(
       double value) {
     return addFilterConditionInternal(FilterCondition(
@@ -797,15 +688,6 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
       includeLower: false,
       upper: upper,
       includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> significantEqualTo(
-      bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'significant',
-      value: value,
     ));
   }
 
@@ -909,40 +791,18 @@ extension GradeQueryFilter on QueryBuilder<Grade, Grade, QFilterCondition> {
       caseSensitive: caseSensitive,
     ));
   }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> valueGreaterThan(
-      double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'value',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> valueLessThan(
-      double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'value',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Grade, Grade, QAfterFilterCondition> valueBetween(
-      double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'value',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
 }
 
 extension GradeQueryLinks on QueryBuilder<Grade, Grade, QFilterCondition> {
+  QueryBuilder<Grade, Grade, QAfterFilterCondition> gradeValue(
+      FilterQuery<GradeValue> q) {
+    return linkInternal(
+      isar.gradeValues,
+      q,
+      'gradeValue',
+    );
+  }
+
   QueryBuilder<Grade, Grade, QAfterFilterCondition> period(
       FilterQuery<Period> q) {
     return linkInternal(
@@ -987,14 +847,6 @@ extension GradeQueryWhereSortBy on QueryBuilder<Grade, Grade, QSortBy> {
     return addSortByInternal('classMin', Sort.desc);
   }
 
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortByCoefficient() {
-    return addSortByInternal('coefficient', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortByCoefficientDesc() {
-    return addSortByInternal('coefficient', Sort.desc);
-  }
-
   QueryBuilder<Grade, Grade, QAfterSortBy> sortByCustom() {
     return addSortByInternal('custom', Sort.asc);
   }
@@ -1035,14 +887,6 @@ extension GradeQueryWhereSortBy on QueryBuilder<Grade, Grade, QSortBy> {
     return addSortByInternal('name', Sort.desc);
   }
 
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortByOutOf() {
-    return addSortByInternal('outOf', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortByOutOfDesc() {
-    return addSortByInternal('outOf', Sort.desc);
-  }
-
   QueryBuilder<Grade, Grade, QAfterSortBy> sortByRealValue() {
     return addSortByInternal('realValue', Sort.asc);
   }
@@ -1051,28 +895,12 @@ extension GradeQueryWhereSortBy on QueryBuilder<Grade, Grade, QSortBy> {
     return addSortByInternal('realValue', Sort.desc);
   }
 
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortBySignificant() {
-    return addSortByInternal('significant', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortBySignificantDesc() {
-    return addSortByInternal('significant', Sort.desc);
-  }
-
   QueryBuilder<Grade, Grade, QAfterSortBy> sortByType() {
     return addSortByInternal('type', Sort.asc);
   }
 
   QueryBuilder<Grade, Grade, QAfterSortBy> sortByTypeDesc() {
     return addSortByInternal('type', Sort.desc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortByValue() {
-    return addSortByInternal('value', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> sortByValueDesc() {
-    return addSortByInternal('value', Sort.desc);
   }
 }
 
@@ -1099,14 +927,6 @@ extension GradeQueryWhereSortThenBy on QueryBuilder<Grade, Grade, QSortThenBy> {
 
   QueryBuilder<Grade, Grade, QAfterSortBy> thenByClassMinDesc() {
     return addSortByInternal('classMin', Sort.desc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenByCoefficient() {
-    return addSortByInternal('coefficient', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenByCoefficientDesc() {
-    return addSortByInternal('coefficient', Sort.desc);
   }
 
   QueryBuilder<Grade, Grade, QAfterSortBy> thenByCustom() {
@@ -1149,14 +969,6 @@ extension GradeQueryWhereSortThenBy on QueryBuilder<Grade, Grade, QSortThenBy> {
     return addSortByInternal('name', Sort.desc);
   }
 
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenByOutOf() {
-    return addSortByInternal('outOf', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenByOutOfDesc() {
-    return addSortByInternal('outOf', Sort.desc);
-  }
-
   QueryBuilder<Grade, Grade, QAfterSortBy> thenByRealValue() {
     return addSortByInternal('realValue', Sort.asc);
   }
@@ -1165,28 +977,12 @@ extension GradeQueryWhereSortThenBy on QueryBuilder<Grade, Grade, QSortThenBy> {
     return addSortByInternal('realValue', Sort.desc);
   }
 
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenBySignificant() {
-    return addSortByInternal('significant', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenBySignificantDesc() {
-    return addSortByInternal('significant', Sort.desc);
-  }
-
   QueryBuilder<Grade, Grade, QAfterSortBy> thenByType() {
     return addSortByInternal('type', Sort.asc);
   }
 
   QueryBuilder<Grade, Grade, QAfterSortBy> thenByTypeDesc() {
     return addSortByInternal('type', Sort.desc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenByValue() {
-    return addSortByInternal('value', Sort.asc);
-  }
-
-  QueryBuilder<Grade, Grade, QAfterSortBy> thenByValueDesc() {
-    return addSortByInternal('value', Sort.desc);
   }
 }
 
@@ -1201,10 +997,6 @@ extension GradeQueryWhereDistinct on QueryBuilder<Grade, Grade, QDistinct> {
 
   QueryBuilder<Grade, Grade, QDistinct> distinctByClassMin() {
     return addDistinctByInternal('classMin');
-  }
-
-  QueryBuilder<Grade, Grade, QDistinct> distinctByCoefficient() {
-    return addDistinctByInternal('coefficient');
   }
 
   QueryBuilder<Grade, Grade, QDistinct> distinctByCustom() {
@@ -1228,25 +1020,13 @@ extension GradeQueryWhereDistinct on QueryBuilder<Grade, Grade, QDistinct> {
     return addDistinctByInternal('name', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Grade, Grade, QDistinct> distinctByOutOf() {
-    return addDistinctByInternal('outOf');
-  }
-
   QueryBuilder<Grade, Grade, QDistinct> distinctByRealValue() {
     return addDistinctByInternal('realValue');
-  }
-
-  QueryBuilder<Grade, Grade, QDistinct> distinctBySignificant() {
-    return addDistinctByInternal('significant');
   }
 
   QueryBuilder<Grade, Grade, QDistinct> distinctByType(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('type', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<Grade, Grade, QDistinct> distinctByValue() {
-    return addDistinctByInternal('value');
   }
 }
 
@@ -1261,10 +1041,6 @@ extension GradeQueryProperty on QueryBuilder<Grade, Grade, QQueryProperty> {
 
   QueryBuilder<Grade, double, QQueryOperations> classMinProperty() {
     return addPropertyNameInternal('classMin');
-  }
-
-  QueryBuilder<Grade, double, QQueryOperations> coefficientProperty() {
-    return addPropertyNameInternal('coefficient');
   }
 
   QueryBuilder<Grade, bool, QQueryOperations> customProperty() {
@@ -1287,24 +1063,922 @@ extension GradeQueryProperty on QueryBuilder<Grade, Grade, QQueryProperty> {
     return addPropertyNameInternal('name');
   }
 
-  QueryBuilder<Grade, double, QQueryOperations> outOfProperty() {
-    return addPropertyNameInternal('outOf');
-  }
-
   QueryBuilder<Grade, double, QQueryOperations> realValueProperty() {
     return addPropertyNameInternal('realValue');
-  }
-
-  QueryBuilder<Grade, bool, QQueryOperations> significantProperty() {
-    return addPropertyNameInternal('significant');
   }
 
   QueryBuilder<Grade, String, QQueryOperations> typeProperty() {
     return addPropertyNameInternal('type');
   }
+}
 
-  QueryBuilder<Grade, double, QQueryOperations> valueProperty() {
-    return addPropertyNameInternal('value');
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+
+extension GetGradeValueCollection on Isar {
+  IsarCollection<GradeValue> get gradeValues => getCollection();
+}
+
+const GradeValueSchema = CollectionSchema(
+  name: 'GradeValue',
+  schema:
+      '{"name":"GradeValue","idName":"id","properties":[{"name":"coefficient","type":"Double"},{"name":"display","type":"String"},{"name":"doubleValue","type":"Double"},{"name":"outOf","type":"Double"},{"name":"significant","type":"Bool"},{"name":"stringValue","type":"String"},{"name":"valueType","type":"Long"}],"indexes":[],"links":[]}',
+  idName: 'id',
+  propertyIds: {
+    'coefficient': 0,
+    'display': 1,
+    'doubleValue': 2,
+    'outOf': 3,
+    'significant': 4,
+    'stringValue': 5,
+    'valueType': 6
+  },
+  listProperties: {},
+  indexIds: {},
+  indexValueTypes: {},
+  linkIds: {},
+  backlinkLinkNames: {},
+  getId: _gradeValueGetId,
+  setId: _gradeValueSetId,
+  getLinks: _gradeValueGetLinks,
+  attachLinks: _gradeValueAttachLinks,
+  serializeNative: _gradeValueSerializeNative,
+  deserializeNative: _gradeValueDeserializeNative,
+  deserializePropNative: _gradeValueDeserializePropNative,
+  serializeWeb: _gradeValueSerializeWeb,
+  deserializeWeb: _gradeValueDeserializeWeb,
+  deserializePropWeb: _gradeValueDeserializePropWeb,
+  version: 3,
+);
+
+int? _gradeValueGetId(GradeValue object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
+  }
+}
+
+void _gradeValueSetId(GradeValue object, int id) {
+  object.id = id;
+}
+
+List<IsarLinkBase> _gradeValueGetLinks(GradeValue object) {
+  return [];
+}
+
+const _gradeValueGradeValueTypeConverter = GradeValueTypeConverter();
+
+void _gradeValueSerializeNative(
+    IsarCollection<GradeValue> collection,
+    IsarRawObject rawObj,
+    GradeValue object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.coefficient;
+  final _coefficient = value0;
+  final value1 = object.display;
+  final _display = IsarBinaryWriter.utf8Encoder.convert(value1);
+  dynamicSize += (_display.length) as int;
+  final value2 = object.doubleValue;
+  final _doubleValue = value2;
+  final value3 = object.outOf;
+  final _outOf = value3;
+  final value4 = object.significant;
+  final _significant = value4;
+  final value5 = object.stringValue;
+  IsarUint8List? _stringValue;
+  if (value5 != null) {
+    _stringValue = IsarBinaryWriter.utf8Encoder.convert(value5);
+  }
+  dynamicSize += (_stringValue?.length ?? 0) as int;
+  final value6 = _gradeValueGradeValueTypeConverter.toIsar(object.valueType);
+  final _valueType = value6;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeDouble(offsets[0], _coefficient);
+  writer.writeBytes(offsets[1], _display);
+  writer.writeDouble(offsets[2], _doubleValue);
+  writer.writeDouble(offsets[3], _outOf);
+  writer.writeBool(offsets[4], _significant);
+  writer.writeBytes(offsets[5], _stringValue);
+  writer.writeLong(offsets[6], _valueType);
+}
+
+GradeValue _gradeValueDeserializeNative(IsarCollection<GradeValue> collection,
+    int id, IsarBinaryReader reader, List<int> offsets) {
+  final object = GradeValue(
+    coefficient: reader.readDouble(offsets[0]),
+    doubleValue: reader.readDoubleOrNull(offsets[2]),
+    outOf: reader.readDouble(offsets[3]),
+    significant: reader.readBool(offsets[4]),
+    stringValue: reader.readStringOrNull(offsets[5]),
+    valueType: _gradeValueGradeValueTypeConverter
+        .fromIsar(reader.readLong(offsets[6])),
+  );
+  object.id = id;
+  return object;
+}
+
+P _gradeValueDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readDouble(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 3:
+      return (reader.readDouble(offset)) as P;
+    case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (_gradeValueGradeValueTypeConverter
+          .fromIsar(reader.readLong(offset))) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _gradeValueSerializeWeb(
+    IsarCollection<GradeValue> collection, GradeValue object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'coefficient', object.coefficient);
+  IsarNative.jsObjectSet(jsObj, 'display', object.display);
+  IsarNative.jsObjectSet(jsObj, 'doubleValue', object.doubleValue);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'outOf', object.outOf);
+  IsarNative.jsObjectSet(jsObj, 'significant', object.significant);
+  IsarNative.jsObjectSet(jsObj, 'stringValue', object.stringValue);
+  IsarNative.jsObjectSet(jsObj, 'valueType',
+      _gradeValueGradeValueTypeConverter.toIsar(object.valueType));
+  return jsObj;
+}
+
+GradeValue _gradeValueDeserializeWeb(
+    IsarCollection<GradeValue> collection, dynamic jsObj) {
+  final object = GradeValue(
+    coefficient:
+        IsarNative.jsObjectGet(jsObj, 'coefficient') ?? double.negativeInfinity,
+    doubleValue: IsarNative.jsObjectGet(jsObj, 'doubleValue'),
+    outOf: IsarNative.jsObjectGet(jsObj, 'outOf') ?? double.negativeInfinity,
+    significant: IsarNative.jsObjectGet(jsObj, 'significant') ?? false,
+    stringValue: IsarNative.jsObjectGet(jsObj, 'stringValue'),
+    valueType: _gradeValueGradeValueTypeConverter.fromIsar(
+        IsarNative.jsObjectGet(jsObj, 'valueType') ?? double.negativeInfinity),
+  );
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  return object;
+}
+
+P _gradeValueDeserializePropWeb<P>(Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'coefficient':
+      return (IsarNative.jsObjectGet(jsObj, 'coefficient') ??
+          double.negativeInfinity) as P;
+    case 'display':
+      return (IsarNative.jsObjectGet(jsObj, 'display') ?? '') as P;
+    case 'doubleValue':
+      return (IsarNative.jsObjectGet(jsObj, 'doubleValue')) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'outOf':
+      return (IsarNative.jsObjectGet(jsObj, 'outOf') ?? double.negativeInfinity)
+          as P;
+    case 'significant':
+      return (IsarNative.jsObjectGet(jsObj, 'significant') ?? false) as P;
+    case 'stringValue':
+      return (IsarNative.jsObjectGet(jsObj, 'stringValue')) as P;
+    case 'valueType':
+      return (_gradeValueGradeValueTypeConverter.fromIsar(
+          IsarNative.jsObjectGet(jsObj, 'valueType') ??
+              double.negativeInfinity)) as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _gradeValueAttachLinks(IsarCollection col, int id, GradeValue object) {}
+
+extension GradeValueQueryWhereSort
+    on QueryBuilder<GradeValue, GradeValue, QWhere> {
+  QueryBuilder<GradeValue, GradeValue, QAfterWhere> anyId() {
+    return addWhereClauseInternal(const IdWhereClause.any());
+  }
+}
+
+extension GradeValueQueryWhere
+    on QueryBuilder<GradeValue, GradeValue, QWhereClause> {
+  QueryBuilder<GradeValue, GradeValue, QAfterWhereClause> idEqualTo(int id) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: id,
+      includeLower: true,
+      upper: id,
+      includeUpper: true,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterWhereClause> idNotEqualTo(int id) {
+    if (whereSortInternal == Sort.asc) {
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      );
+    } else {
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
+      );
+    }
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterWhereClause> idGreaterThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterWhereClause> idLessThan(int id,
+      {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
+    );
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterWhereClause> idBetween(
+    int lowerId,
+    int upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerId,
+      includeLower: includeLower,
+      upper: upperId,
+      includeUpper: includeUpper,
+    ));
+  }
+}
+
+extension GradeValueQueryFilter
+    on QueryBuilder<GradeValue, GradeValue, QFilterCondition> {
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      coefficientGreaterThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'coefficient',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      coefficientLessThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'coefficient',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      coefficientBetween(double lower, double upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'coefficient',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> displayEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'display',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      displayGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'display',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> displayLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'display',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> displayBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'display',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> displayStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'display',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> displayEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'display',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> displayContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'display',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> displayMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'display',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      doubleValueIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'doubleValue',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      doubleValueGreaterThan(double? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'doubleValue',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      doubleValueLessThan(double? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'doubleValue',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      doubleValueBetween(double? lower, double? upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'doubleValue',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> idIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'id',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> idEqualTo(
+      int value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> idGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> idLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> idBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'id',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> outOfGreaterThan(
+      double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'outOf',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> outOfLessThan(
+      double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'outOf',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> outOfBetween(
+      double lower, double upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'outOf',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      significantEqualTo(bool value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'significant',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'stringValue',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'stringValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'stringValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'stringValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'stringValue',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'stringValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'stringValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'stringValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      stringValueMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'stringValue',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> valueTypeEqualTo(
+      gradeValueType value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'valueType',
+      value: _gradeValueGradeValueTypeConverter.toIsar(value),
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition>
+      valueTypeGreaterThan(
+    gradeValueType value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'valueType',
+      value: _gradeValueGradeValueTypeConverter.toIsar(value),
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> valueTypeLessThan(
+    gradeValueType value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'valueType',
+      value: _gradeValueGradeValueTypeConverter.toIsar(value),
+    ));
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterFilterCondition> valueTypeBetween(
+    gradeValueType lower,
+    gradeValueType upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'valueType',
+      lower: _gradeValueGradeValueTypeConverter.toIsar(lower),
+      includeLower: includeLower,
+      upper: _gradeValueGradeValueTypeConverter.toIsar(upper),
+      includeUpper: includeUpper,
+    ));
+  }
+}
+
+extension GradeValueQueryLinks
+    on QueryBuilder<GradeValue, GradeValue, QFilterCondition> {}
+
+extension GradeValueQueryWhereSortBy
+    on QueryBuilder<GradeValue, GradeValue, QSortBy> {
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByCoefficient() {
+    return addSortByInternal('coefficient', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByCoefficientDesc() {
+    return addSortByInternal('coefficient', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByDisplay() {
+    return addSortByInternal('display', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByDisplayDesc() {
+    return addSortByInternal('display', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByDoubleValue() {
+    return addSortByInternal('doubleValue', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByDoubleValueDesc() {
+    return addSortByInternal('doubleValue', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByOutOf() {
+    return addSortByInternal('outOf', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByOutOfDesc() {
+    return addSortByInternal('outOf', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortBySignificant() {
+    return addSortByInternal('significant', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortBySignificantDesc() {
+    return addSortByInternal('significant', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByStringValue() {
+    return addSortByInternal('stringValue', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByStringValueDesc() {
+    return addSortByInternal('stringValue', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByValueType() {
+    return addSortByInternal('valueType', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> sortByValueTypeDesc() {
+    return addSortByInternal('valueType', Sort.desc);
+  }
+}
+
+extension GradeValueQueryWhereSortThenBy
+    on QueryBuilder<GradeValue, GradeValue, QSortThenBy> {
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByCoefficient() {
+    return addSortByInternal('coefficient', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByCoefficientDesc() {
+    return addSortByInternal('coefficient', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByDisplay() {
+    return addSortByInternal('display', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByDisplayDesc() {
+    return addSortByInternal('display', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByDoubleValue() {
+    return addSortByInternal('doubleValue', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByDoubleValueDesc() {
+    return addSortByInternal('doubleValue', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByOutOf() {
+    return addSortByInternal('outOf', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByOutOfDesc() {
+    return addSortByInternal('outOf', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenBySignificant() {
+    return addSortByInternal('significant', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenBySignificantDesc() {
+    return addSortByInternal('significant', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByStringValue() {
+    return addSortByInternal('stringValue', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByStringValueDesc() {
+    return addSortByInternal('stringValue', Sort.desc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByValueType() {
+    return addSortByInternal('valueType', Sort.asc);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QAfterSortBy> thenByValueTypeDesc() {
+    return addSortByInternal('valueType', Sort.desc);
+  }
+}
+
+extension GradeValueQueryWhereDistinct
+    on QueryBuilder<GradeValue, GradeValue, QDistinct> {
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctByCoefficient() {
+    return addDistinctByInternal('coefficient');
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctByDisplay(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('display', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctByDoubleValue() {
+    return addDistinctByInternal('doubleValue');
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctById() {
+    return addDistinctByInternal('id');
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctByOutOf() {
+    return addDistinctByInternal('outOf');
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctBySignificant() {
+    return addDistinctByInternal('significant');
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctByStringValue(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('stringValue', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<GradeValue, GradeValue, QDistinct> distinctByValueType() {
+    return addDistinctByInternal('valueType');
+  }
+}
+
+extension GradeValueQueryProperty
+    on QueryBuilder<GradeValue, GradeValue, QQueryProperty> {
+  QueryBuilder<GradeValue, double, QQueryOperations> coefficientProperty() {
+    return addPropertyNameInternal('coefficient');
+  }
+
+  QueryBuilder<GradeValue, String, QQueryOperations> displayProperty() {
+    return addPropertyNameInternal('display');
+  }
+
+  QueryBuilder<GradeValue, double?, QQueryOperations> doubleValueProperty() {
+    return addPropertyNameInternal('doubleValue');
+  }
+
+  QueryBuilder<GradeValue, int?, QQueryOperations> idProperty() {
+    return addPropertyNameInternal('id');
+  }
+
+  QueryBuilder<GradeValue, double, QQueryOperations> outOfProperty() {
+    return addPropertyNameInternal('outOf');
+  }
+
+  QueryBuilder<GradeValue, bool, QQueryOperations> significantProperty() {
+    return addPropertyNameInternal('significant');
+  }
+
+  QueryBuilder<GradeValue, String?, QQueryOperations> stringValueProperty() {
+    return addPropertyNameInternal('stringValue');
+  }
+
+  QueryBuilder<GradeValue, gradeValueType, QQueryOperations>
+      valueTypeProperty() {
+    return addPropertyNameInternal('valueType');
   }
 }
 

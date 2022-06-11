@@ -1,16 +1,35 @@
 part of ecole_directe;
 
+String decodeContent(String str) => HtmlCharacterEntities.decode(utf8.decode(base64Decode(str)));
+
+String encodeContent(String str) => base64Encode(utf8.encode(HtmlCharacterEntities.encode(str,
+    characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
+
+List<X> getDifference<X>(List<X> x, List<X> y) {
+  final int lx = x.length;
+  final int ly = y.length;
+  if (lx == ly) {
+    return [];
+  }
+  final List<X> l1 = lx > ly ? x : y;
+  final List<X> l2 = lx > ly ? y : x;
+  return l1.toSet().difference(l2.toSet()).toList();
+}
+
+String parseHtml(String str) =>
+    html_parser.parse(str).documentElement!.text.replaceAll("\n\n", ". ").replaceAll("\n", "");
+
+String _decodeBody(http.Response res) => const Utf8Decoder().convert(res.bodyBytes);
+
 String _encodeBody(Map<String, dynamic>? body) {
   body ??= {};
   return "data=${jsonEncode(body)}";
 }
 
-String _decodeBody(http.Response res) => const Utf8Decoder().convert(res.bodyBytes);
-
 Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
     {required String url, Map<String, dynamic>? body, Map<String, String>? headers, bool auth = true}) async {
   if (auth && api.authModule.status == AuthStatus.unauthenticated) {
-    return const Response(error: "Not authenticated");
+    return Response(error: "Not authenticated");
   }
   return await handleNetworkError(() async {
     final String _body = _encodeBody(body);
@@ -35,22 +54,3 @@ Future<Response<Map<String, dynamic>>> _request(SchoolApi api,
     return Response(error: res.reasonPhrase ?? "Unknown error");
   });
 }
-
-String parseHtml(String str) =>
-    html_parser.parse(str).documentElement!.text.replaceAll("\n\n", ". ").replaceAll("\n", "");
-
-List<X> getDifference<X>(List<X> x, List<X> y) {
-  final int lx = x.length;
-  final int ly = y.length;
-  if (lx == ly) {
-    return [];
-  }
-  final List<X> l1 = lx > ly ? x : y;
-  final List<X> l2 = lx > ly ? y : x;
-  return l1.toSet().difference(l2.toSet()).toList();
-}
-
-String encodeContent(String str) => base64Encode(utf8.encode(HtmlCharacterEntities.encode(str,
-    characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
-
-String decodeContent(String str) => HtmlCharacterEntities.decode(utf8.decode(base64Decode(str)));

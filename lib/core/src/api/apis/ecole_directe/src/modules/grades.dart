@@ -20,7 +20,7 @@ class _GradesRepository extends Repository {
   @override
   Future<Response<Map<String, dynamic>>> get() async {
     final res = await gradesProvider.get();
-    if (res.error != null) return res;
+    if (res.hasError) return res;
 
     final List<dynamic> filteredPeriods = (res.data!["data"]["periodes"] as List<dynamic>)
         // Keep the space after "Relevé"
@@ -104,14 +104,26 @@ class _GradesRepository extends Repository {
     // When this setting is set to [false], all grades' coefficient are set to 0. To counter this,
     // we set the coefficient to 1 for all grades.
     final bool gradesCoefficientsEnabled = res.data!["data"]["parametrage"]["coefficientNote"] as bool;
-    final List<Grade> grades = res.data!["data"]["notes"].map<Grade>((e) {
+
+    final List<GradeValue> gradesValues = res.data!["data"]["notes"].map<GradeValue>((e) {
+      final bool isString = (e["valeur"] as String).toDouble() == null;
+      return GradeValue(
+        valueType: isString ? gradeValueType.string : gradeValueType.double,
+        coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
+        outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
+        doubleValue: isString ? null : (e["valeur"] as String).toDouble() ?? double.nan,
+        stringValue: isString ? e["valeur"] as String : null,
+        significant: !(e["nonSignificatif"] as bool),
+      );
+    }).toList();
+
+    final List<Grade> grades = res.data!["data"]["notes"].asMap().entries.map<Grade>((entry) {
+      final Map<String, dynamic> e = entry.value;
+      final int i = entry.key;
+
       Grade g = Grade(
         name: e["devoir"],
         type: e["typeDevoir"],
-        coefficient: gradesCoefficientsEnabled ? (e["coef"] as String).toDouble() ?? double.nan : 1,
-        outOf: (e["noteSur"] as String).toDouble() ?? double.nan,
-        value: (e["valeur"] as String).toDouble() ?? double.nan,
-        significant: !(e["nonSignificatif"] as bool),
         date: DateTime.parse(e["date"]),
         entryDate: DateTime.parse(e["dateSaisie"]),
         classAverage: (e["moyenneClasse"] as String).toDouble() ?? double.nan,
@@ -120,13 +132,11 @@ class _GradesRepository extends Repository {
       )
         ..subject.value =
             subjects.firstWhere((s) => s.entityId == e["codeMatiere"] && s.period.value!.entityId == e["codePeriode"])
-        ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"]);
+        ..period.value = periods.firstWhere((p) => p.entityId == e["codePeriode"])
+        ..gradeValue.value = gradesValues[i];
       return g;
     }).toList();
-    return Response(data: {
-      "periods": periods,
-      "subjects": subjects,
-      "grades": grades,
-    });
+
+    return Response(data: {"periods": periods, "subjects": subjects, "grades": grades, "gradesValues": gradesValues});
   }
 }

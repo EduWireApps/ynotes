@@ -27,7 +27,7 @@ class ApisUtilities {
         return false;
       }
     } catch (e) {
-      Logger.error(e, stackHint:"Nw==");
+      Logger.error(e, stackHint:"MjQ=");
       return false;
     }
   }

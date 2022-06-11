@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:ynotes/app/app.dart';
 import 'package:ynotes/core/controllers.dart';
 import 'package:ynotes/core/utilities.dart';
-import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -154,7 +154,7 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
       "qrCodeLogin": true,
       "mobileCasLogin": false,
     });
-    if (res.error != null) {
+    if (res.hasError) {
       YSnackbars.error(context, title: LoginContent.pronote.qrCode.error, message: res.error!);
       controller.reset();
       return;

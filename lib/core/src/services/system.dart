@@ -7,30 +7,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/app/app.dart';
-import 'package:ynotes/core/utilities.dart';
-
 import 'package:ynotes/core/services.dart';
+import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/packages/shared.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 
-class SystemServiceStore extends ChangeNotifier {
-  SystemServiceStore();
-
-  final int total = 3;
-  int current = 0;
-  String text = "";
-  bool initialized = false;
-
-  void _notify() {
-    notifyListeners();
-  }
-}
-
 class SystemService {
+  static final SystemServiceStore store = SystemServiceStore();
+
   const SystemService._();
 
-  static final SystemServiceStore store = SystemServiceStore();
+  static Future<void> exit(BuildContext context) async {
+    await schoolApi.reset(auth: true);
+    await LogsManager.reset();
+    await SettingsService.reset();
+    await KVS.deleteAll();
+    await KVS.write(key: "logsReset0", value: "true");
+    Phoenix.rebirth(context);
+  }
+
+  static Future<bool> handlePermission(BuildContext context,
+      {required Permission permission, required String name, bool request = true}) async {
+    final res = await _handlePermission(permission, name, first: request);
+    if (res.hasError) {
+      await YDialogs.showInfo(
+          context,
+          YInfoDialog(
+            title: "Permission refusée",
+            body: Text(res.error!, style: theme.texts.body1),
+            confirmLabel: "OK",
+          ));
+    }
+    return res.error == null;
+  }
 
   static Future<void> init({bool all = true, bool essential = false, bool loading = false}) async {
     if (all) {
@@ -67,39 +77,15 @@ class SystemService {
     }
   }
 
-  static Future<void> exit(BuildContext context) async {
-    await schoolApi.reset(auth: true);
-    await LogsManager.reset();
-    await SettingsService.reset();
-    await KVS.deleteAll();
-    await KVS.write(key: "logsReset0", value: "true");
-    Phoenix.rebirth(context);
-  }
-
-  static Future<bool> handlePermission(BuildContext context,
-      {required Permission permission, required String name, bool request = true}) async {
-    final res = await _handlePermission(permission, name, first: request);
-    if (res.error != null) {
-      await YDialogs.showInfo(
-          context,
-          YInfoDialog(
-            title: "Permission refusée",
-            body: Text(res.error!, style: theme.texts.body1),
-            confirmLabel: "OK",
-          ));
-    }
-    return res.error == null;
-  }
-
   static Future<Response<void>> _handlePermission(Permission permission, String name, {bool first = true}) async {
     if (!(!kIsWeb && (Platform.isAndroid || Platform.isIOS))) {
-      return const Response();
+      return Response();
     }
     final PermissionStatus status = await (first ? permission.status : permission.request());
     UIU.setSystemUIOverlayStyle();
     switch (status) {
       case PermissionStatus.granted:
-        return const Response();
+        return Response();
       case PermissionStatus.permanentlyDenied:
         return Response(
             error:
@@ -114,5 +100,18 @@ class SystemService {
                   "Vous avez refusé que yNotes ait accès à la permission \"$name\". Pour accéder à cette fonctionnalité, veuillez réessayer et accepter.");
         }
     }
+  }
+}
+
+class SystemServiceStore extends ChangeNotifier {
+  final int total = 3;
+
+  int current = 0;
+  String text = "";
+  bool initialized = false;
+  SystemServiceStore();
+
+  void _notify() {
+    notifyListeners();
   }
 }

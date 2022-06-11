@@ -1,23 +1,9 @@
 part of school_api;
 
-/// The status of the [DocumentsModule].
-///
-/// Available values: [idle], [error], [processing], [complete].
-enum DocumentsModuleStatus {
-  /// The module is doing nothing.
-  idle,
-
-  /// The module has encountered an error.
-  error,
-
-  /// The module can be either downloading or uploading a document.
-  processing,
-
-  /// The module has successfully completed the process.
-  complete
-}
-
 abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> {
+  double progress = 0.0;
+
+  DocumentsModuleStatus status = DocumentsModuleStatus.idle;
   DocumentsModule({required R repository, required SchoolApi api})
       : super(
           isSupported: api.modulesSupport.documents,
@@ -25,49 +11,25 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
           repository: repository,
           api: api,
         );
-
-  double progress = 0.0;
-  DocumentsModuleStatus status = DocumentsModuleStatus.idle;
   List<Document> get documents => offline.documents.where().findAllSync();
-
-  @override
-  Future<Response<void>> fetch({bool online = false}) async {
-    return const Response();
-  }
 
   Future<Response<void>> addDocuments(List<Document> documents) async {
     await offline.writeTxn((isar) async {
       await isar.documents.putAll(documents);
     });
     notifyListeners();
-    return const Response();
-  }
-
-  Future<Response<void>> removeDocuments(List<Document> documents) async {
-    await offline.writeTxn((isar) async {
-      await isar.documents.deleteAll(documents.map((e) => e.id!).toList());
-    });
-    notifyListeners();
-    return const Response();
-  }
-
-  Future<Response<void>> updateDocuments(List<Document> documents) async {
-    await offline.writeTxn((isar) async {
-      await isar.documents.putAll(documents);
-    });
-    notifyListeners();
-    return const Response();
+    return Response();
   }
 
   Future<Response<void>> download(Document document, {bool force = false}) async {
     if (status == DocumentsModuleStatus.processing) {
-      return const Response(error: "Already downloading");
+      return Response(error: "Already downloading");
     }
     if (!force && document.saved) {
-      return const Response(error: "Already downloaded");
+      return Response(error: "Already downloaded");
     }
     final res = repository.download(document);
-    if (res.error != null) return res;
+    if (res.hasError) return res;
     status = DocumentsModuleStatus.processing;
     progress = 0.0;
     notifyListeners();
@@ -112,12 +74,21 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
       case DocumentsModuleStatus.error:
         return Response(error: "$error");
       default:
-        return const Response();
+        return Response();
     }
   }
 
-  Future<Response<void>> upload(Document document) async {
-    return const Response();
+  @override
+  Future<Response<void>> fetch({bool online = false}) async {
+    return Response();
+  }
+
+  Future<Response<void>> removeDocuments(List<Document> documents) async {
+    await offline.writeTxn((isar) async {
+      await isar.documents.deleteAll(documents.map((e) => e.id!).toList());
+    });
+    notifyListeners();
+    return Response();
   }
 
   @override
@@ -127,4 +98,33 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
     });
     notifyListeners();
   }
+
+  Future<Response<void>> updateDocuments(List<Document> documents) async {
+    await offline.writeTxn((isar) async {
+      await isar.documents.putAll(documents);
+    });
+    notifyListeners();
+    return Response();
+  }
+
+  Future<Response<void>> upload(Document document) async {
+    return Response();
+  }
+}
+
+/// The status of the [DocumentsModule].
+///
+/// Available values: [idle], [error], [processing], [complete].
+enum DocumentsModuleStatus {
+  /// The module is doing nothing.
+  idle,
+
+  /// The module has encountered an error.
+  error,
+
+  /// The module can be either downloading or uploading a document.
+  processing,
+
+  /// The module has successfully completed the process.
+  complete
 }

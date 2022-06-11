@@ -20,6 +20,6 @@ class _DocumentsRepository extends DocumentsRepository {
 
   @override
   Future<Response<http.Request>> upload(Document document) async {
-    return const Response(error: "Not implemented");
+    return Response(error: "Not implemented");
   }
 }

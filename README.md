@@ -165,6 +165,7 @@ Les vues sont dans `/lib/ui`
 L'organisation des fichiers est néanmoins succeptible de changer.
 
 ### Précisions
+Nous utilisons [Visual Studio Code](https://code.visualstudio.com/) pour le développement et vous recommandons fortement d'utiliser cet IDE si vous souhaitez apporter des modifications à l'appplication nous avons ajouté des préréglages disponibles uniquement sur cet environnement de travail.
 
 N'utilisez pas de `print(text);` mais plutôt:
 

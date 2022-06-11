@@ -19,12 +19,12 @@ abstract class OSNotification {
 }
 
 class GradeNotification extends OSNotification {
-  GradeNotification({required Grade grade, required List<Subject> subjects})
+  GradeNotification({required Grade grade, required List<Subject> subjects}) 
+
       : super(
           id: grade.hashCode,
-          title:
-              "${grade.value.display()}/${grade.outOf.display()} coefficient ${grade.coefficient.display()} en ${grade.subject.value!.name}",
-          body: "Moyenne de la classe: ${grade.classAverage.display()}/${grade.outOf.display()}",
+          title:"${grade.value.display}/${grade.value.outOf.display()} coefficient ${grade.value.coefficient.display()} en ${grade.subject.value!.name}",
+          body: "Moyenne de la classe: ${grade.classAverage.display()}/${grade.value.outOf.display()}",
           details: NotificationDetails(
               android: AndroidNotificationDetails("yn", "ynotes_notifications",
                   importance: Importance.high, priority: Priority.high, color: _color, subText: "Nouvelle note")),
