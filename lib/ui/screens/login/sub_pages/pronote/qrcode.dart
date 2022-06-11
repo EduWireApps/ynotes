@@ -23,30 +23,6 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
   bool loaded = false;
 
   @override
-  void initState() {
-    super.initState();
-    handlePermission();
-  }
-
-  Future<void> handlePermission() async {
-    final String? res = await controller.handlePermission();
-    if (res == null) {
-      setState(() {
-        loaded = true;
-      });
-    } else {
-      await YDialogs.showInfo(
-          context,
-          YInfoDialog(
-            title: LoginContent.pronote.qrCode.permissionDenied,
-            body: Text(res, style: theme.texts.body1),
-            confirmLabel: "OK",
-          ));
-      Navigator.pop(context);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ChangeNotifierConsumer<QrLoginController>(
       controller: controller,
@@ -81,8 +57,10 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
                         key: GlobalKey(debugLabel: 'QR'),
                         onQRViewCreated: (QRViewController qrController) async {
                           this.qrController = qrController;
-                          qrController.scannedDataStream.listen((barCode) async {
-                            if (controller.status == QrStatus.initial && controller.isQrCodeValid(barCode)) {
+                          qrController.scannedDataStream
+                              .listen((barCode) async {
+                            if (controller.status == QrStatus.initial &&
+                                controller.isQrCodeValid(barCode)) {
                               await getCode();
                             }
                           });
@@ -136,11 +114,36 @@ class _LoginPronoteQrcodePageState extends State<LoginPronoteQrcodePage> {
     }
   }
 
+  Future<void> handlePermission() async {
+    final String? res = await controller.handlePermission();
+    if (res == null) {
+      setState(() {
+        loaded = true;
+      });
+    } else {
+      await YDialogs.showInfo(
+          context,
+          YInfoDialog(
+            title: LoginContent.pronote.qrCode.permissionDenied,
+            body: Text(res, style: theme.texts.body1),
+            confirmLabel: "OK",
+          ));
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handlePermission();
+  }
+
   Future<void> login(String code) async {
     final List<String>? decryptedData = controller.decrypt(code);
     if (decryptedData == null) {
       YSnackbars.error(context,
-          title: LoginContent.pronote.qrCode.error, message: LoginContent.pronote.qrCode.errorMessage);
+          title: LoginContent.pronote.qrCode.error,
+          message: LoginContent.pronote.qrCode.errorMessage);
       getCode();
       return;
     }

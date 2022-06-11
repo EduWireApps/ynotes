@@ -101,6 +101,7 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
       body: Column(
         children: [
           Expanded(
+         
             child: Stack(
               children: [
                 Opacity(
@@ -200,4 +201,6 @@ class _LoginPronoteUrlWebviewPageState extends State<LoginPronoteUrlWebviewPage>
       ),
     );
   }
+
+
 }

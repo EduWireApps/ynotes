@@ -1,3 +1,8 @@
+
+
+<p>⚠️ Par manque de temps nous ne pouvons plus maintenir le projet, des maintainers actifs seraient les bienvenus.</p>
+
+
 # yNotes
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
@@ -7,6 +12,9 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Vidéo de promotion pour la version 0.9.1](https://img.youtube.com/vi/BHQ5uG2zTS4/0.jpg)](https://www.youtube.com/watch?v=BHQ5uG2zTS4)
+
+
+
 
 # Introduction
 

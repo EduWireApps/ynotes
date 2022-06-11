@@ -38,7 +38,7 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       geolocationController!.addListener(() {
         if (geolocationController!.status == GeolocationStatus.error) {
           handleError();
@@ -67,6 +67,7 @@ class _LoginPronoteGeolocationResultsPageState extends State<LoginPronoteGeoloca
       controller: geolocationController!,
       builder: (context, controller, child) {
         return YPage(
+          scrollable: true,
             appBar: YAppBar(
               title: LoginContent.pronote.geolocation.results.title,
               bottom: controller.status == GeolocationStatus.loading ? const YLinearProgressBar() : null,

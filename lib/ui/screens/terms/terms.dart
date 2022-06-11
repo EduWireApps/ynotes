@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ynotes/core/utilities.dart';
@@ -14,6 +15,7 @@ class TermsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return YPage(
+      scrollable: true,
       appBar: const YAppBar(title: "Termes et conditions", removeLeading: true),
       body: Padding(
           padding: YPadding.p(YScale.s2),
@@ -42,6 +44,19 @@ class TermsPage extends StatelessWidget {
                   block: true,
                   size: YButtonSize.large),
               YVerticalSpacer(YScale.s2),
+              if (kDebugMode)
+                YButton(
+                  onPressed: () async {
+                    //reset KVS
+                    await KVS.deleteAll();
+                    Navigator.pushReplacementNamed(context, "/login");
+                  },
+                  text: "[DEV ONLY] Retour",
+                  block: true,
+                  color: YColor.danger,
+                ),
+              YVerticalSpacer(YScale.s2),
+              
               AppButtons.legalLinks
             ],
           )),

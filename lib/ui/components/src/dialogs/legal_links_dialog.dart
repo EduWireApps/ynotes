@@ -8,9 +8,9 @@ class _LegalLinksDialog extends StatelessWidget {
   static const List<_LegalLink> _legalLinks = [
     _LegalLink(
       text: "Politique de confidentialité",
-      url: "https://ynotes.fr/legal/CGUYNotes.pdf",
+      url: "https://ynotes.fr/legal/pdc.pdf",
     ),
-    _LegalLink(text: "Conditions d'utilisation", url: "https://ynotes.fr/legal/CGUYNotes.pdf")
+    _LegalLink(text: "Conditions d'utilisation", url: "https://ynotes.fr/legal/cgu.pdf")
   ];
 
   @override

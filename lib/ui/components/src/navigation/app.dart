@@ -38,7 +38,7 @@ class ZApp extends StatelessWidget {
                     removeLeading: _showDrawer,
                   );
                 }),
-                body: page.body,
+              body: page.body,
                 floatingButtons: page.floatingButtons,
                 navigationElements: page.navigationElements,
                 navigationInitialIndex: page.navigationInitialIndex,
