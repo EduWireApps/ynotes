@@ -6,7 +6,8 @@ part of logger;
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable, no_leading_underscores_for_local_identifiers, inference_failure_on_function_invocation
 
 extension GetLogCollection on Isar {
   IsarCollection<Log> get logs => getCollection();
@@ -33,7 +34,7 @@ const LogSchema = CollectionSchema(
   serializeWeb: _logSerializeWeb,
   deserializeWeb: _logDeserializeWeb,
   deserializePropWeb: _logDeserializePropWeb,
-  version: 3,
+  version: 4,
 );
 
 int? _logGetId(Log object) {
@@ -48,37 +49,32 @@ void _logSetId(Log object, int id) {
   object.id = id;
 }
 
-List<IsarLinkBase> _logGetLinks(Log object) {
+List<IsarLinkBase<dynamic>> _logGetLinks(Log object) {
   return [];
 }
 
-void _logSerializeNative(IsarCollection<Log> collection, IsarRawObject rawObj,
+void _logSerializeNative(IsarCollection<Log> collection, IsarCObject cObj,
     Log object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.category;
-  final _category = IsarBinaryWriter.utf8Encoder.convert(value0);
-  dynamicSize += (_category.length) as int;
-  final value1 = object.comment;
-  final _comment = IsarBinaryWriter.utf8Encoder.convert(value1);
-  dynamicSize += (_comment.length) as int;
-  final value2 = object.date;
-  final _date = value2;
-  final value3 = object.stacktrace;
-  IsarUint8List? _stacktrace;
-  if (value3 != null) {
-    _stacktrace = IsarBinaryWriter.utf8Encoder.convert(value3);
+  final category$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.category);
+  final comment$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.comment);
+  IsarUint8List? stacktrace$Bytes;
+  final stacktrace$Value = object.stacktrace;
+  if (stacktrace$Value != null) {
+    stacktrace$Bytes = IsarBinaryWriter.utf8Encoder.convert(stacktrace$Value);
   }
-  dynamicSize += (_stacktrace?.length ?? 0) as int;
-  final size = staticSize + dynamicSize;
+  final size = staticSize +
+      (category$Bytes.length) +
+      (comment$Bytes.length) +
+      (stacktrace$Bytes?.length ?? 0);
+  cObj.buffer = alloc(size);
+  cObj.buffer_length = size;
 
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
   final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeBytes(offsets[0], _category);
-  writer.writeBytes(offsets[1], _comment);
-  writer.writeDateTime(offsets[2], _date);
-  writer.writeBytes(offsets[3], _stacktrace);
+  writer.writeBytes(offsets[0], category$Bytes);
+  writer.writeBytes(offsets[1], comment$Bytes);
+  writer.writeDateTime(offsets[2], object.date);
+  writer.writeBytes(offsets[3], stacktrace$Bytes);
 }
 
 Log _logDeserializeNative(IsarCollection<Log> collection, int id,
@@ -110,7 +106,7 @@ P _logDeserializePropNative<P>(
   }
 }
 
-dynamic _logSerializeWeb(IsarCollection<Log> collection, Log object) {
+Object _logSerializeWeb(IsarCollection<Log> collection, Log object) {
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(jsObj, 'category', object.category);
   IsarNative.jsObjectSet(jsObj, 'comment', object.comment);
@@ -121,7 +117,7 @@ dynamic _logSerializeWeb(IsarCollection<Log> collection, Log object) {
   return jsObj;
 }
 
-Log _logDeserializeWeb(IsarCollection<Log> collection, dynamic jsObj) {
+Log _logDeserializeWeb(IsarCollection<Log> collection, Object jsObj) {
   final object = Log(
     category: IsarNative.jsObjectGet(jsObj, 'category') ?? '',
     comment: IsarNative.jsObjectGet(jsObj, 'comment') ?? '',
@@ -140,7 +136,7 @@ P _logDeserializePropWeb<P>(Object jsObj, String propertyName) {
     case 'date':
       return (IsarNative.jsObjectGet(jsObj, 'date') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'date'),
+                  IsarNative.jsObjectGet(jsObj, 'date') as int,
                   isUtc: true)
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
@@ -153,7 +149,7 @@ P _logDeserializePropWeb<P>(Object jsObj, String propertyName) {
   }
 }
 
-void _logAttachLinks(IsarCollection col, int id, Log object) {}
+void _logAttachLinks(IsarCollection<dynamic> col, int id, Log object) {}
 
 extension LogQueryWhereSort on QueryBuilder<Log, Log, QWhere> {
   QueryBuilder<Log, Log, QAfterWhere> anyId() {
@@ -221,8 +217,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'category',
       value: value,
       caseSensitive: caseSensitive,
@@ -234,8 +229,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'category',
       value: value,
@@ -248,8 +242,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'category',
       value: value,
@@ -278,8 +271,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
+    return addFilterConditionInternal(FilterCondition.startsWith(
       property: 'category',
       value: value,
       caseSensitive: caseSensitive,
@@ -290,8 +282,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
+    return addFilterConditionInternal(FilterCondition.endsWith(
       property: 'category',
       value: value,
       caseSensitive: caseSensitive,
@@ -300,8 +291,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
 
   QueryBuilder<Log, Log, QAfterFilterCondition> categoryContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
+    return addFilterConditionInternal(FilterCondition.contains(
       property: 'category',
       value: value,
       caseSensitive: caseSensitive,
@@ -310,10 +300,9 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
 
   QueryBuilder<Log, Log, QAfterFilterCondition> categoryMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
+    return addFilterConditionInternal(FilterCondition.matches(
       property: 'category',
-      value: pattern,
+      wildcard: pattern,
       caseSensitive: caseSensitive,
     ));
   }
@@ -322,8 +311,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'comment',
       value: value,
       caseSensitive: caseSensitive,
@@ -335,8 +323,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'comment',
       value: value,
@@ -349,8 +336,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'comment',
       value: value,
@@ -379,8 +365,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
+    return addFilterConditionInternal(FilterCondition.startsWith(
       property: 'comment',
       value: value,
       caseSensitive: caseSensitive,
@@ -391,8 +376,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
+    return addFilterConditionInternal(FilterCondition.endsWith(
       property: 'comment',
       value: value,
       caseSensitive: caseSensitive,
@@ -401,8 +385,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
 
   QueryBuilder<Log, Log, QAfterFilterCondition> commentContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
+    return addFilterConditionInternal(FilterCondition.contains(
       property: 'comment',
       value: value,
       caseSensitive: caseSensitive,
@@ -411,17 +394,15 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
 
   QueryBuilder<Log, Log, QAfterFilterCondition> commentMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
+    return addFilterConditionInternal(FilterCondition.matches(
       property: 'comment',
-      value: pattern,
+      wildcard: pattern,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Log, Log, QAfterFilterCondition> dateEqualTo(DateTime value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'date',
       value: value,
     ));
@@ -431,8 +412,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'date',
       value: value,
@@ -443,8 +423,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'date',
       value: value,
@@ -467,16 +446,13 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
   }
 
   QueryBuilder<Log, Log, QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'id',
-      value: null,
     ));
   }
 
   QueryBuilder<Log, Log, QAfterFilterCondition> idEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'id',
       value: value,
     ));
@@ -486,8 +462,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'id',
       value: value,
@@ -498,8 +473,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'id',
       value: value,
@@ -522,10 +496,8 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
   }
 
   QueryBuilder<Log, Log, QAfterFilterCondition> stacktraceIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'stacktrace',
-      value: null,
     ));
   }
 
@@ -533,8 +505,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'stacktrace',
       value: value,
       caseSensitive: caseSensitive,
@@ -546,8 +517,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'stacktrace',
       value: value,
@@ -560,8 +530,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'stacktrace',
       value: value,
@@ -590,8 +559,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
+    return addFilterConditionInternal(FilterCondition.startsWith(
       property: 'stacktrace',
       value: value,
       caseSensitive: caseSensitive,
@@ -602,8 +570,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
+    return addFilterConditionInternal(FilterCondition.endsWith(
       property: 'stacktrace',
       value: value,
       caseSensitive: caseSensitive,
@@ -612,8 +579,7 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
 
   QueryBuilder<Log, Log, QAfterFilterCondition> stacktraceContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
+    return addFilterConditionInternal(FilterCondition.contains(
       property: 'stacktrace',
       value: value,
       caseSensitive: caseSensitive,
@@ -623,10 +589,9 @@ extension LogQueryFilter on QueryBuilder<Log, Log, QFilterCondition> {
   QueryBuilder<Log, Log, QAfterFilterCondition> stacktraceMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
+    return addFilterConditionInternal(FilterCondition.matches(
       property: 'stacktrace',
-      value: pattern,
+      wildcard: pattern,
       caseSensitive: caseSensitive,
     ));
   }
@@ -657,14 +622,6 @@ extension LogQueryWhereSortBy on QueryBuilder<Log, Log, QSortBy> {
 
   QueryBuilder<Log, Log, QAfterSortBy> sortByDateDesc() {
     return addSortByInternal('date', Sort.desc);
-  }
-
-  QueryBuilder<Log, Log, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<Log, Log, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
   }
 
   QueryBuilder<Log, Log, QAfterSortBy> sortByStacktrace() {
@@ -731,10 +688,6 @@ extension LogQueryWhereDistinct on QueryBuilder<Log, Log, QDistinct> {
 
   QueryBuilder<Log, Log, QDistinct> distinctByDate() {
     return addDistinctByInternal('date');
-  }
-
-  QueryBuilder<Log, Log, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
   }
 
   QueryBuilder<Log, Log, QDistinct> distinctByStacktrace(

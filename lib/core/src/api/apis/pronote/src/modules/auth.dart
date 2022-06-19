@@ -12,6 +12,7 @@ class _AuthProvider extends Provider {
 
     if (safeMapGetter(data, ["listeRessources"]) != null) {
       String? name = safeMapGetter(data, ["L"]);
+      Logger.log("ACCOUNT INFO", data);
       bool isParentMainAccount = true;
       List<SchoolAccount> accounts = schoolAccounts(safeMapGetter(data, ["listeRessources"]));
 
@@ -116,9 +117,9 @@ class _AuthRepository extends AuthRepository {
     Map accountData = res.data!;
     AppAccount appAccount = authProvider.account(accountData)[0];
     List<SchoolAccount> accounts = authProvider.account(accountData)[1];
-      api.modulesAvailability.grades = true;
-      await api.modulesAvailability.save();
-      api.refreshModules();
+    api.modulesAvailability.grades = true;
+    await api.modulesAvailability.save();
+    api.refreshModules();
     final Map<String, dynamic> map = {"appAccount": appAccount, "schoolAccount": accounts[0]};
     return Response(data: map);
   }

@@ -90,7 +90,7 @@ class Grade extends _LinkedModel {
 
   @override
   void load() {
-    Offline.isar.writeTxnSync((isar) {
+    Offline.isar.writeTxnSync(() {
       subject.loadSync();
       period.loadSync();
 

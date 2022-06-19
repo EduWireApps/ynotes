@@ -26,6 +26,9 @@ class _GradeDetailsSheetState extends State<GradeDetailsSheet> {
     final grades = period.sortedGrades.where((grade) => widget.simulate ? true : !grade.custom).toList();
     final List<int> ids = grades.map<int>((g) => g.id!).toList();
     final int index = ids.indexOf(grade.id!);
+    if (!grade.value.significant) {
+      return 0;
+    }
     return schoolApi.gradesModule.calculateAverageFromGrades(grades.sublist(0, index + 1), bySubject: true) -
         schoolApi.gradesModule.calculateAverageFromGrades(grades.sublist(0, index), bySubject: true);
   }
@@ -36,6 +39,10 @@ class _GradeDetailsSheetState extends State<GradeDetailsSheet> {
 
     final List<int> ids = grades.map<int>((g) => g.id!).toList();
     final int index = ids.indexOf(grade.id!);
+
+    if (!grade.value.significant) {
+      return 0;
+    }
     return schoolApi.gradesModule.calculateAverageFromGrades(grades.sublist(0, index + 1)) -
         schoolApi.gradesModule.calculateAverageFromGrades(grades.sublist(0, index));
   }
@@ -96,9 +103,9 @@ class _Stats extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        container("dans la moyenne générale", impactOnOverallAverage),
+        container("point(s) dans la moyenne générale", impactOnOverallAverage),
         YHorizontalSpacer(YScale.s4),
-        container("dans la moyenne de la matière", impactOnSubjectAverage),
+        container("point(s) dans la moyenne de la matière", impactOnSubjectAverage),
       ],
     );
   }
@@ -232,7 +239,8 @@ class _GradeContainer extends StatelessWidget {
                 softWrap: false,
               ),
               if (grade.value.valueType == gradeValueType.double && grade.value.coefficient != 1)
-                Positioned(top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.value.coefficient.display(), true)),
+                Positioned(
+                    top: -YScale.s2p5, right: -YScale.s2p5, child: bubble(grade.value.coefficient.display(), true)),
               if (grade.value.valueType == gradeValueType.double && grade.value.outOf != 20)
                 Positioned(bottom: -YScale.s2p5, right: -YScale.s2p5, child: bubble("/${grade.value.outOf.display()}"))
             ],

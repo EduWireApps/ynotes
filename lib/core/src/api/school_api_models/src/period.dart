@@ -47,7 +47,7 @@ class Period extends _LinkedModel {
 
   @override
   void load() {
-    Offline.isar.writeTxnSync((isar) {
+    Offline.isar.writeTxnSync(() {
       grades.loadSync();
       subjects.loadSync();
     });

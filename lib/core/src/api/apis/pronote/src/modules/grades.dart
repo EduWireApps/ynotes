@@ -40,15 +40,19 @@ class _GradesRepository extends Repository {
       List<GradeValue> gradesValues = [];
       grades.addAll(res.data!);
       res.data!.forEach(((element) {
-        if (!periods.any((Period period) => period.id == element.period.value?.id)) {
+        if (!periods.any((Period period) => period.entityId == element.period.value?.entityId)) {
           periods.add(element.period.value!);
         }
-        if (!subjects.any((Subject subject) => subject.id == element.subject.value?.id)) {
+        if (!subjects.any((Subject subject) => subject.entityId == element.subject.value?.entityId)) {
           subjects.add(element.subject.value!);
         }
 
         gradesValues.add(element.gradeValue.value!);
       }));
+
+      subjects.forEach((subject) {
+        subject.period.value = periods.firstWhere((Period period) => period.entityId == subject.period.value?.entityId);
+      });
       return Response(data: {"periods": periods, "subjects": subjects, "grades": grades, "gradesValues": gradesValues});
     } catch (e) {
       return Response(error: e.toString());

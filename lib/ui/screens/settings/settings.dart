@@ -23,6 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return YPage(
+        scrollable: true,
         appBar: const YAppBar(title: "Paramètres"),
         body: ChangeNotifierConsumer<Settings>(
             controller: SettingsService.settings,
@@ -31,30 +32,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     YSettingsTile(
                         title: "Compte",
                         leading: Icons.account_circle_rounded,
-                        onTap: () =>
-                            Navigator.pushNamed(context, "/settings/account")),
+                        onTap: () => Navigator.pushNamed(context, "/settings/account")),
                     YSettingsTile(
                       title: "Notifications",
                       leading: Icons.notifications_rounded,
-                      onTap: () => Navigator.pushNamed(
-                          context, "/settings/notifications"),
+                      onTap: () => Navigator.pushNamed(context, "/settings/notifications"),
                       enabled: false,
-                      disabledOnTap: () => YSnackbars.info(context,
-                          message:
-                              "Notifications indisponibles pour le moment"),
+                      disabledOnTap: () =>
+                          YSnackbars.info(context, message: "Notifications indisponibles pour le moment"),
                     ),
                     YSettingsTile(
                         title: "Assistance",
                         leading: Icons.support_rounded,
-                        onTap: () =>
-                            Navigator.pushNamed(context, "/settings/support")),
+                        onTap: () => Navigator.pushNamed(context, "/settings/support")),
                   ]),
                   YSettingsSection(title: "Divers", tiles: [
                     const ThemeSwitcherTile(),
                     YSettingsTile.switchTile(
                       title: "Economiseur de batterie",
-                      subtitle:
-                          "Réduit les interactions réseaux, désactive les notifications.",
+                      subtitle: "Réduit les interactions réseaux, désactive les notifications.",
                       switchValue: settings.global.batterySaver,
                       onSwitchValueChanged: (bool value) async {
                         settings.global.batterySaver = value;
@@ -75,8 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     YSettingsTile(
                       title: "Donateurs",
                       leading: FontAwesomeIcons.handHoldingUsd,
-                      onTap: () =>
-                          Navigator.pushNamed(context, "/settings/donors"),
+                      onTap: () => Navigator.pushNamed(context, "/settings/donors"),
                     ),
                   ]),
                   if (!kReleaseMode)
@@ -85,25 +80,25 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: "Send notification 0",
                           onTap: () async {
                             await NotificationService.show(GradeNotification(
-                                grade: schoolApi.gradesModule.grades.last,
-                                subjects: schoolApi.gradesModule.subjects));
+                                grade: schoolApi.gradesModule.grades.last, subjects: schoolApi.gradesModule.subjects));
                           }),
-                      YSettingsTile(
-                          title: "Open error page",
-                          onTap: () => Navigator.pushNamed(context, "")),
+                      YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, "")),
                       YSettingsTile(
                           title: "Clear subject filters",
                           onTap: () {
-                            Offline.isar.writeTxnSync(
-                                (isar) => isar.subjectsFilters.clearSync());
+                            Offline.isar.writeTxnSync(() => Offline.isar.subjectsFilters.clearSync());
+                          }),
+                      YSettingsTile(
+                          title: "Clear all",
+                          onTap: ()  async{
+                           await Offline.isar.writeTxn(() => Offline.isar.clear());
                           }),
                       YSettingsTile(
                           title: "Secure Logger",
                           subtitle: "Print secure logger categories",
                           onTap: () async {
                             Logger.log("Test", "test");
-                            Logger.log("SECURE LOGGER",
-                                "Categories: ${LogsManager.categories()}");
+                            Logger.log("SECURE LOGGER", "Categories: ${LogsManager.categories()}");
                           }),
                     ])
                 ])));

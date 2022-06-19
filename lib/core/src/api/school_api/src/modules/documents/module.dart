@@ -14,8 +14,8 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
   List<Document> get documents => offline.documents.where().findAllSync();
 
   Future<Response<void>> addDocuments(List<Document> documents) async {
-    await offline.writeTxn((isar) async {
-      await isar.documents.putAll(documents);
+    await offline.writeTxn(() async {
+      await offline.documents.putAll(documents);
     });
     notifyListeners();
     return Response();
@@ -84,8 +84,8 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
   }
 
   Future<Response<void>> removeDocuments(List<Document> documents) async {
-    await offline.writeTxn((isar) async {
-      await isar.documents.deleteAll(documents.map((e) => e.id!).toList());
+    await offline.writeTxn(() async {
+      await offline.documents.deleteAll(documents.map((e) => e.id!).toList());
     });
     notifyListeners();
     return Response();
@@ -93,15 +93,15 @@ abstract class DocumentsModule<R extends DocumentsRepository> extends Module<R> 
 
   @override
   Future<void> reset() async {
-    await offline.writeTxn((isar) async {
-      await isar.documents.clear();
+    await offline.writeTxn(() async {
+      await offline.documents.clear();
     });
     notifyListeners();
   }
 
   Future<Response<void>> updateDocuments(List<Document> documents) async {
-    await offline.writeTxn((isar) async {
-      await isar.documents.putAll(documents);
+    await offline.writeTxn(() async {
+      await offline.documents.putAll(documents);
     });
     notifyListeners();
     return Response();

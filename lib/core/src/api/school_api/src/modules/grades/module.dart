@@ -70,8 +70,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   /// Adds a custom [grade].
   Future<Response<void>> addCustomGrade(Grade grade) async {
     if (!grade.custom) return Response(error: "Grade is not custom");
-    await offline.writeTxn((isar) async {
-      await isar.grades.put(grade);
+    await offline.writeTxn(() async {
+      await offline.grades.put(grade);
     });
     notifyListeners();
     return Response();
@@ -79,9 +79,9 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// Adds a [filter] to [customFilters].
   Future<Response<void>> addFilter(SubjectsFilter filter) async {
-    await offline.writeTxn((isar) async {
+    await offline.writeTxn(() async {
       // await isar.subjects.putAll(filter.subjects.toList());
-      await isar.subjectsFilters.put(filter);
+      await offline.subjectsFilters.put(filter);
       await filter.subjects.save();
     });
     notifyListeners();
@@ -155,8 +155,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         notifyListeners();
       }
       final List<Period> __periods = res.data!["periods"] ?? [];
+
       final List<Subject> __subjects = res.data!["subjects"] ?? [];
       final List<GradeValue> __gradesValues = res.data!["gradesValues"] ?? [];
+
       // If a subject already exists, we only keep its color so that it doesn't
       // get updated on each [fetch].
       for (final __subject in __subjects) {
@@ -181,11 +183,11 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       // 4. We store all the data that comes from the API
       // 5. We save the custom grades
       // 6. We save the links of all grades
-      await offline.writeTxn((isar) async {
+      await offline.writeTxn(() async {
         // STEP 1
-        final customGrades = await isar.grades.filter().customEqualTo(true).findAll();
+        final customGrades = await offline.grades.filter().customEqualTo(true).findAll();
         // STEP 1.5
-        final filters = await isar.subjectsFilters.where().findAll();
+        final filters = await offline.subjectsFilters.where().findAll();
         /*for (final filter in filters) {
           await filter.subjects.load();
           final List<String> subjectsIds = filter.subjects.map((subject) => subject.entityId).toSet().toList();
@@ -211,33 +213,36 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
         }
 */
         // STEP 3
-        await isar.periods.clear();
-        await isar.gradeValues.clear();
-        await isar.subjects.clear();
-        await isar.grades.clear();
-        await isar.subjectsFilters.clear();
+        await offline.periods.clear();
+        await offline.gradeValues.clear();
+        await offline.subjects.clear();
+        await offline.grades.clear();
+        await offline.subjectsFilters.clear();
 
         // STEP 4
-        await isar.periods.putAll(__periods);
-        await isar.subjects.putAll(__subjects);
-        await isar.gradeValues.putAll(__gradesValues);
+        await offline.periods.putAll(__periods);
+        await offline.subjects.putAll(__subjects);
+        await offline.gradeValues.putAll(__gradesValues);
 
         // TODO: fix this (maybe it's shadow cloning ???)
         // await isar.gradeValues.putAll(__grades.map((e) => e.gradeValue.value!).toList());
-        await isar.grades.putAll(__grades);
+        await offline.grades.putAll(__grades);
 
         // STEP 5
-        await isar.grades.putAll(customGrades);
+        await offline.grades.putAll(customGrades);
         /*await Future.forEach(customGrades, (Grade element) async {
           await isar.gradeValues.put(element.gradeValue.value!);
         });*/
-        await isar.subjectsFilters.putAll(filters);
+        await offline.subjectsFilters.putAll(filters);
 
         // STEP 6
         await Future.forEach(__subjects, (Subject subject) async {
           await subject.period.save();
         });
         await Future.forEach(__grades, (Grade grade) async {
+          grade.period.value = __periods.firstWhere((element) => element.entityId == grade.period.value!.entityId);
+          grade.subject.value = __subjects.firstWhere((element) => element.entityId == grade.subject.value!.entityId);
+
           await grade.period.save();
           await grade.subject.save();
 
@@ -269,8 +274,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
   /// Removes a custom [grade].
   Future<Response<void>> removeCustomGrade(Grade grade) async {
     if (!grade.custom) return Response(error: "Grade is not custom");
-    await offline.writeTxn((isar) async {
-      await isar.grades.delete(grade.id!);
+    await offline.writeTxn(() async {
+      await offline.grades.delete(grade.id!);
     });
     notifyListeners();
     return Response();
@@ -278,8 +283,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   /// Removes a [filter] from [customFilters].
   Future<Response<void>> removeFilter(SubjectsFilter filter) async {
-    await offline.writeTxn((isar) async {
-      await isar.subjectsFilters.delete(filter.id!);
+    await offline.writeTxn(() async {
+      await offline.subjectsFilters.delete(filter.id!);
     });
     if (filter.entityId == currentFilter.entityId) {
       await setCurrentFilter(_defaultFilters.first);
@@ -290,10 +295,10 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
 
   @override
   Future<void> reset() async {
-    await offline.writeTxn((isar) async {
-      await isar.grades.clear();
-      await isar.periods.clear();
-      await isar.subjects.clear();
+    await offline.writeTxn(() async {
+      await offline.grades.clear();
+      await offline.periods.clear();
+      await offline.subjects.clear();
     });
     _Storage.values.currentPeriodId = null;
     _Storage.values.currentFilterId = null;
@@ -361,8 +366,8 @@ abstract class GradesModule<R extends Repository> extends Module<R> {
       e.color = subject.color;
       return e;
     }).toList();
-    await offline.writeTxn((isar) async {
-      await isar.subjects.putAll([subject, ..._subjects]);
+    await offline.writeTxn(() async {
+      await offline.subjects.putAll([subject, ..._subjects]);
     });
     notifyListeners();
   }

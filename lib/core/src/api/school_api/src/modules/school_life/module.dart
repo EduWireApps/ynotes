@@ -20,7 +20,7 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R> {
     if (res.hasError) return res;
     final List<SchoolLifeTicket> _tickets = res.data!["tickets"] ?? [];
     final List<SchoolLifeSanction> _sanctions = res.data!["sanctions"] ?? [];
-    await offline.writeTxn((isar) async {
+    await offline.writeTxn(() async {
       await offline.schoolLifeTickets.clear();
       await offline.schoolLifeSanctions.clear();
       await offline.schoolLifeTickets.putAll(_tickets);
@@ -33,9 +33,9 @@ abstract class SchoolLifeModule<R extends Repository> extends Module<R> {
 
   @override
   Future<void> reset() async {
-    await offline.writeTxn((isar) async {
-      await isar.schoolLifeTickets.clear();
-      await isar.schoolLifeSanctions.clear();
+    await offline.writeTxn(() async {
+      await offline.schoolLifeTickets.clear();
+      await offline.schoolLifeSanctions.clear();
     });
     notifyListeners();
   }
