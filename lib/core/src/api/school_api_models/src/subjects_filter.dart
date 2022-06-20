@@ -25,7 +25,7 @@ class SubjectsFilter extends _LinkedModel {
 
   @override
   void load() {
-    Offline.isar.writeTxnSync((isar) {
+    Offline.isar.writeTxnSync(() {
       subjects.loadSync();
     });
     for (final subject in subjects) {

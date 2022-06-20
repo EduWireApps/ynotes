@@ -24,21 +24,21 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
     if (__emailsReceived.length > emailsReceived.length) {
       final List<Email> newEmails = __emailsReceived.sublist(emailsReceived.length);
       // TODO: foreach: trigger notifications
-      await offline.writeTxn((isar) async {
-        await isar.emails.putAll(newEmails);
+      await offline.writeTxn(() async {
+        await offline.emails.putAll(newEmails);
       });
     }
     final List<Email> __emailsSent = res.data!["emailsSent"] ?? [];
     if (__emailsSent.length > emailsSent.length) {
       final List<Email> newEmails = __emailsSent.sublist(emailsSent.length);
-      await offline.writeTxn((isar) async {
-        await isar.emails.putAll(newEmails);
+      await offline.writeTxn(() async {
+        await offline.emails.putAll(newEmails);
       });
     }
     final List<Recipient> __recipients = res.data!["recipients"] ?? [];
-    await offline.writeTxn((isar) async {
-      await isar.recipients.clear();
-      await isar.recipients.putAll(__recipients);
+    await offline.writeTxn(() async {
+      await offline.recipients.clear();
+      await offline.recipients.putAll(__recipients);
     });
     fetching = false;
     notifyListeners();
@@ -52,8 +52,8 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
     if (res.hasError) return res;
     email.read = true;
     email.content = res.data!;
-    await offline.writeTxn((isar) async {
-      await isar.emails.put(email);
+    await offline.writeTxn(() async {
+      await offline.emails.put(email);
     });
     notifyListeners();
     return Response();
@@ -61,9 +61,9 @@ abstract class EmailsModule<R extends EmailsRepository> extends Module<R> {
 
   @override
   Future<void> reset() async {
-    await offline.writeTxn((isar) async {
-      await isar.emails.clear();
-      await isar.recipients.clear();
+    await offline.writeTxn(() async {
+      await offline.emails.clear();
+      await offline.recipients.clear();
     });
     notifyListeners();
   }

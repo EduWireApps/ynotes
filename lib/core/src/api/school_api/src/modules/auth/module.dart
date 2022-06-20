@@ -80,10 +80,10 @@ abstract class AuthModule<R extends AuthRepository> extends Module<R> {
       notifyListeners();
       final AppAccount account = res.data!["appAccount"];
       final SchoolAccount schoolAccount = res.data!["schoolAccount"];
-      await offline.writeTxn((isar) async {
-        await isar.appAccounts.put(account);
+      await offline.writeTxn(() async {
+        await offline.appAccounts.put(account);
         await account.accounts.save();
-        await isar.schoolAccounts.put(schoolAccount);
+        await offline.schoolAccounts.put(schoolAccount);
       });
       _Storage.values.appAccountId = account.entityId;
       _Storage.values.schoolAccountId = schoolAccount.entityId;

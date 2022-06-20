@@ -282,7 +282,7 @@ class PronotePeriod {
       classAverage: classAverage,
       overallAverage: overallAverage,
       name: name,
-      entityId: id,
+      entityId: (name + start.toIso8601String() + end.toIso8601String()).hashCode.toString(),
       minAverage: double.nan,
       maxAverage: double.nan,
       startDate: start,
@@ -318,6 +318,8 @@ class PronotePeriod {
   }
 
   Subject getRelatedSubject(List rawSubjects, subjectId) {
+
+
     Map data = rawSubjects.firstWhere((element) => element["N"] == subjectId);
     final colors = List.from(AppColors.colors);
     final Random random = Random();
@@ -330,10 +332,9 @@ class PronotePeriod {
 
       colors.remove(color);
     }
-
     return Subject(
       color: color,
-      entityId: subjectId,
+      entityId: (data["L"] + toPeriod.entityId).hashCode.toString(),
       name: data["L"],
       classAverage: double.tryParse(safeMapGetter(data, ["moyClasse", "V"])) ?? double.nan,
       maxAverage: double.tryParse(safeMapGetter(data, ["moyMin", "V"])) ?? double.nan,
@@ -343,7 +344,8 @@ class PronotePeriod {
       /// To do retrieve coefficients
       teachers: "",
       average: double.tryParse(safeMapGetter(data, ["moyEleve", "V"])) ?? double.nan,
-    );
+      
+    )..period.value = toPeriod;
   }
 
   Future<Response<List<Grade>>> grades() async {
@@ -393,7 +395,6 @@ class PronotePeriod {
           ..subject.value = getRelatedSubject(rawDisciplines, safeMapGetter(element, ["service", "V", "N"]))
           ..period.value = toPeriod
           ..gradeValue.value = value;
-
         list.add(g);
       });
 
@@ -418,7 +419,7 @@ class PronotePeriod {
     if (gradeType(value) == gradeValueType.string) {
       return gradeTranslate[int.parse(value[1]) - 1];
     } else {
-      return value;
+      return value.replaceAll(",", ".");
     }
   }
 
@@ -434,7 +435,7 @@ class PronotePeriod {
   }
 
   bool significant(String grade) {
-    List<String> unsignificantGrades = ["Dispensé", "Inapte", "Non rendu", "Non noté"];
+    List<String> unsignificantGrades = ["Absent","Dispensé", "Inapte", "Non rendu", "Non noté"];
 
     if (unsignificantGrades.contains(grade)) {
       return false;

@@ -37,8 +37,8 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R> {
       for (final h in __homework) {
         // TODO: check if homework property has changed, except id, content and pinned
         if (!ids.contains(h.entityId)) {
-          await offline.writeTxn((isar) async {
-            await isar.homeworks.put(h);
+          await offline.writeTxn(() async {
+            await offline.homeworks.put(h);
           });
         }
       }
@@ -59,8 +59,8 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R> {
             ..clear()
             ..addAll(_h.documents);
         } else {
-          await offline.writeTxn((isar) async {
-            await isar.homeworks.put(_h);
+          await offline.writeTxn(() async {
+            await offline.homeworks.put(_h);
           });
         }
       }
@@ -72,8 +72,8 @@ abstract class HomeworkModule<R extends HomeworkRepository> extends Module<R> {
 
   @override
   Future<void> reset() async {
-    await offline.writeTxn((isar) async {
-      await isar.homeworks.clear();
+    await offline.writeTxn(() async {
+      await offline.homeworks.clear();
     });
     notifyListeners();
   }

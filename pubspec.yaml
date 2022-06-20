@@ -41,8 +41,8 @@ dependencies:
   html_unescape: ^2.0.0
   http: ^0.13.4
   intl: ^0.17.0
-  isar: ^2.1.4
-  isar_flutter_libs: ^2.1.4 # contains the binaries
+  isar: ^3.0.0-dev.1
+  isar_flutter_libs: ^3.0.0-dev.1
   json_annotation: ^4.4.0
   latlong2: ^0.8.1
   material_design_icons_flutter: ^5.0.6595
@@ -73,7 +73,7 @@ dev_dependencies:
   flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
-  isar_generator: ^2.1.4
+  isar_generator: ^3.0.0-dev.1
   json_serializable: ^6.1.4
 
 flutter_icons:

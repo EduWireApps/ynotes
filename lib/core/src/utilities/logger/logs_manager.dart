@@ -12,8 +12,8 @@ class LogsManager {
 
   /// Adds logs to the logs manager.
   static Future<void> add(List<Log> _logs) async {
-    await _isar?.writeTxn((isar) async {
-      isar.logs.putAll(_logs);
+    await _isar?.writeTxn(() async {
+      _isar?.logs.putAll(_logs);
     });
   }
 
@@ -34,13 +34,13 @@ class LogsManager {
     );
     final List<Log> oldLogs =
         await _isar!.logs.filter().dateGreaterThan(DateTime.now().subtract(const Duration(days: 7))).findAll();
-    _isar!.writeTxnSync((isar) => _isar!.logs.deleteAllSync(oldLogs.map((e) => e.id!).toList()));
+    _isar!.writeTxnSync(() => _isar!.logs.deleteAllSync(oldLogs.map((e) => e.id!).toList()));
   }
 
   /// Resets the logs manager.
   static Future<void> reset() async {
-    await _isar?.writeTxn((isar) async {
-      await isar.clear();
+    await _isar?.writeTxn(() async {
+      await _isar?.clear();
     });
     await _isar?.close();
     await init();
