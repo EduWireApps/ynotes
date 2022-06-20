@@ -43,11 +43,13 @@ class PronoteClient {
     }
 
     loginWay = _loginWay();
+    
     isCas = loginWay != PronoteLoginWay.standardLogin;
     communication = Communication(this);
   }
   init() async {
     try {
+      Logger.log("PRONOTE", "Login way : " + loginWay.toString());
       Response<List<Object>> communicationInitReq = await communication.init();
       if (communicationInitReq.hasError) return Response(error: "Error while initing");
       List communicationInitData = communicationInitReq.data!;
@@ -83,15 +85,13 @@ class PronoteClient {
 
   Future<Response<Map>> login() async {
     try {
-      if (isCas) {
-        username = attributes['e'];
-        password = attributes['f'];
-      }
+      Logger.logWrapped("Attributes", "", attributes.toString());
+
       Map indentJson = {
         "genreConnexion": 0,
         "genreEspace": int.parse(attributes['a']),
         "identifiant": username,
-        "pourENT": isCas,
+        "pourENT": false,
         "enConnexionAuto": false,
         "demandeConnexionAuto": false,
         "enConnexionAppliMobile": loginWay == PronoteLoginWay.casLogin,
@@ -113,37 +113,29 @@ class PronoteClient {
       e.setAesIV(communication.encryption.aesIV);
       dynamic motdepasse;
 
-      if (isCas) {
-        List<int> encoded = utf8.encode(password);
-        motdepasse = sha256.convert(encoded).bytes;
-        motdepasse = hex.encode(motdepasse);
-        motdepasse = motdepasse.toString().toUpperCase();
-        e.aesKey = Key.fromBase16(hex.encode(md5.convert(utf8.encode(motdepasse)).bytes));
-      } else {
-        var u = username;
-        var p = password;
+      var u = username;
+      var p = password;
 
-        //Convert credentials to lowercase if needed (API returns 1)
-        if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog'] != 0) {
-          Logger.log("PRONOTE", "LOWER CASE ID");
-          Logger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompLog'].toString());
-          u = u.toString().toLowerCase();
-        }
-
-        if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
-          Logger.log("PRONOTE", "LOWER CASE PASSWORD");
-          Logger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompMdp'].toString());
-          p = p.toString().toLowerCase();
-        }
-
-        var alea = idr['donneesSec']['donnees']['alea'];
-        Logger.log("PRONOTE", alea);
-        List<int> encoded = utf8.encode((alea ?? "") + p);
-        motdepasse = sha256.convert(encoded);
-        motdepasse = hex.encode(motdepasse.bytes);
-        motdepasse = motdepasse.toString().toUpperCase();
-        e.aesKey = Key(Uint8List.fromList(md5.convert(utf8.encode(u + motdepasse)).bytes));
+      //Convert credentials to lowercase if needed (API returns 1)
+      if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog'] != 0) {
+        Logger.log("PRONOTE", "LOWER CASE ID");
+        Logger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompLog'].toString());
+        u = u.toString().toLowerCase();
       }
+
+      if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
+        Logger.log("PRONOTE", "LOWER CASE PASSWORD");
+        Logger.log("PRONOTE", idr['donneesSec']['donnees']['modeCompMdp'].toString());
+        p = p.toString().toLowerCase();
+      }
+
+      var alea = idr['donneesSec']['donnees']['alea'];
+      Logger.log("PRONOTE", alea);
+      List<int> encoded = utf8.encode((alea ?? "") + p);
+      motdepasse = sha256.convert(encoded);
+      motdepasse = hex.encode(motdepasse.bytes);
+      motdepasse = motdepasse.toString().toUpperCase();
+      e.aesKey = Key(Uint8List.fromList(md5.convert(utf8.encode(u + motdepasse)).bytes));
 
       Response<String> resRawChallenge = e.aesDecrypt(hex.decode(challenge));
       if (resRawChallenge.hasError) {
@@ -236,7 +228,6 @@ class PronoteClient {
         assignedColors = per._client.assignedColors;
         toReturn.add(per);
       });
-      print(toReturn.map((e) => e.name));
       return Response(data: toReturn);
     } catch (e) {
       Logger.error(e, stackHint: "MTE=");

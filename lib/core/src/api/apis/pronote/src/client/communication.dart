@@ -117,6 +117,7 @@ class Communication {
       Logger.error(e, stackHint: "MTc=");
       return Response(error: PronoteContent.loginErrors.unexpectedError + " (fonction paramètres)");
     }
+    Logger.log("PRONOTE", "FonctionParameteres request succeeded");
     return Response(data: [attributes, initialResponse.data]);
   }
 

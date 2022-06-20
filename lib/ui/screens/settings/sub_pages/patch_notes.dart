@@ -34,6 +34,7 @@ class _SettingsPatchNotesPageState extends State<SettingsPatchNotesPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Notes de mise à jour"),
+        scrollable: true,
         body: Padding(
           padding: YPadding.p(YScale.s4),
           child: Column(
