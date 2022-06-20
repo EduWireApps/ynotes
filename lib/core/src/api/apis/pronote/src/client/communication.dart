@@ -77,11 +77,10 @@ class Communication {
   Future<Response<List<Object>>> init() async {
     var headers = {
       'connection': 'keep-alive',
-      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0'
     };
 
     final String url = "$urlRoot/$urlPath?fd=${client.isCas ? '1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335' : 1}";
-
     Logger.log("PRONOTE", "Url is $url");
 
     final response = await req.Requests.get(url, headers: headers);
@@ -131,6 +130,7 @@ class Communication {
       if (html.contains("IP")) {
         return Response(error: PronoteContent.loginErrors.ipSuspended);
       } else {
+        Logger.logWrapped("HTML ERROR", PronoteContent.loginErrors.unexpectedError + " (HTML)", html.toString());
         return Response(error: PronoteContent.loginErrors.unexpectedError + " (HTML)");
       }
     }

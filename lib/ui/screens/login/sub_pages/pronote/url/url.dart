@@ -113,6 +113,7 @@ class _LoginPronoteUrlPageState extends State<LoginPronoteUrlPage> {
             if (res != null) {
               final res0 = await schoolApi.authModule.login(username: res["login"], password: res["mdp"], parameters: {
                 "url": response.url,
+                "loginWay": "cas",
                 "mobileCasLogin": true,
               });
               if (res0.hasError) {

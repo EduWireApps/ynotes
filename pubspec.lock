@@ -1007,7 +1007,7 @@ packages:
       name: qr_code_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.1"
+    version: "1.0.0"
   quiver:
     dependency: transitive
     description:

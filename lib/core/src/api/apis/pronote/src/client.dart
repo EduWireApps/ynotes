@@ -100,6 +100,7 @@ class PronoteClient {
         "uuidAppliMobile": SettingsService.settings.global.uuid,
         "loginTokenSAV": ""
       };
+      Logger.log("PRONOTE", "Start identification");
 
       Response identificationResponse = await communication.post("Identification", data: {'donnees': indentJson});
 
