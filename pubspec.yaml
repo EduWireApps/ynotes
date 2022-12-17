@@ -25,10 +25,6 @@ dependencies:
   dotted_line: ^3.0.0
   encrypt: ^5.0.0
   expandable: ^5.0.1
-  ext_storage:
-    git:
-      ref: master
-      url: "https://github.com/GitJournal/ext_storage"
   fl_chart: ^0.40.2
   flare_flutter: ^3.0.0
   flutter:

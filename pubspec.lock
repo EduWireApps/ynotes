@@ -358,15 +358,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.1"
-  ext_storage:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: "98faf095ed6786a0bb0db26cb2f3966513f3f7aa"
-      url: "https://github.com/GitJournal/ext_storage"
-    source: git
-    version: "1.0.3"
   fading_edge_scrollview:
     dependency: transitive
     description:
