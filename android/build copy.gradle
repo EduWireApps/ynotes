@@ -1,28 +1,35 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
-    repositories {
+   ext.kotlin_version = '1.7.21'               // or latest
+   
+   repositories {
         google()
-        mavenCentral()
+        jcenter()
     }
 
     dependencies {
-         classpath 'com.google.gms:google-services:4.3.13'
-
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:4.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+      
     }
 }
 
 allprojects {
     repositories {
         google()
-        mavenCentral()
+        jcenter()
+        maven {
+            url "https://storage.googleapis.com/snap-kit-build/maven"
+        }
         maven {
            // [required] background_fetch
            url "${project(':background_fetch').projectDir}/libs"
         }
         
     }
+    tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:-options' 
+}
 }
 
 rootProject.buildDir = '../build'
