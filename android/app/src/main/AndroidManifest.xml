@@ -82,7 +82,8 @@
         <receiver android:name="io.flutter.plugins.androidalarmmanager.AlarmBroadcastReceiver"
             android:exported="false" />
         <receiver android:name="io.flutter.plugins.androidalarmmanager.RebootBroadcastReceiver"
-            android:enabled="false">
+            android:enabled="false" android:exported="false">
+
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
