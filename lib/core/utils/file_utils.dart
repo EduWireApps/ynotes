@@ -68,11 +68,12 @@ class FileAppUtil {
       List file = [];
 
       if (!kIsWeb && (Platform.isLinux || Platform.isWindows || await Permission.storage.request().isGranted)) {
+        await FolderAppUtil.createDirectory(path);
         try {
           file = Directory(path).listSync();
         } catch (e) {
           CustomLogger.log("FILE UTILS", "An error occured while getting the file list");
-          CustomLogger.error(e, stackHint:"MjU=");
+          CustomLogger.error(e, stackHint: "MjU=");
         }
         //use your folder name insted of resume.
         List<FileInfo> listFiles = [];
@@ -83,7 +84,7 @@ class FileAppUtil {
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
             CustomLogger.log("FILE UTILS", "An error occured while adding file to list");
-            CustomLogger.error(e, stackHint:"MjY=");
+            CustomLogger.error(e, stackHint: "MjY=");
           }
         });
 
@@ -106,8 +107,9 @@ class FileAppUtil {
         return null;
       }
     } catch (e) {
-      CustomLogger.error(e, stackHint:"Mjc=");
+      CustomLogger.error(e, stackHint: "Mjc=");
     }
+    return null;
   }
 
   static Future<String> loadAsset(path) async {
@@ -129,7 +131,7 @@ class FileAppUtil {
       await OpenFile.open(path!);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while opening file");
-      CustomLogger.error(e, stackHint:"Mjg=");
+      CustomLogger.error(e, stackHint: "Mjg=");
     }
   }
 
@@ -150,7 +152,7 @@ class FileAppUtil {
       await file.writeAsString(data, mode: FileMode.write);
     } catch (e) {
       CustomLogger.log("FILE UTILS", "An error occured while writing $fileName²");
-      CustomLogger.error(e, stackHint:"Mjk=");
+      CustomLogger.error(e, stackHint: "Mjk=");
     }
   }
 }

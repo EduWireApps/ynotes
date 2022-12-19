@@ -47,7 +47,7 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   geolocator: ^7.0.3
   google_fonts: ^2.1.0
-  hive: ^2.0.5
+  hive: ^2.2.3
   hive_flutter: ^1.1.0
   html_character_entities: ^1.0.0+1
   html_editor_enhanced: ^1.8.0

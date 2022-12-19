@@ -16,10 +16,10 @@ class GradesUtils {
         double _average = disciplineAverage(discipline);
         if (!_average.isNaN) {
           weightSum += double.parse((discipline.weight ?? "1").replaceAll(',', '.'));
-          averages.add(_average);
+          averages.add(_average * weightSum);
         }
       } catch (e) {
-        CustomLogger.error(e, stackHint:"Mzk=");
+        CustomLogger.error(e, stackHint: "Mzk=");
       }
     });
 
