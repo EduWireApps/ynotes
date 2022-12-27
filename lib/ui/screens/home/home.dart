@@ -8,6 +8,7 @@ import 'package:ynotes/core/utils/controller_consumer.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/NEW/navigation/app.dart';
+import 'package:ynotes/ui/screens/home/widgets/end_of_support.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
@@ -97,6 +98,6 @@ class _HomePageState extends State<HomePage> {
             ),
             onRefresh: onRefresh,
             body: Column(
-                mainAxisSize: MainAxisSize.max, children: const [CountDown(), GradesSection(), HomeworkSection()])));
+                mainAxisSize: MainAxisSize.max, children: const [EndOfSupportBanner(), CountDown(), GradesSection(), HomeworkSection()])));
   }
 }
