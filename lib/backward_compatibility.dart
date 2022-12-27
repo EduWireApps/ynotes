@@ -6,8 +6,7 @@ import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 /// A function that migrates things from an implementation to another
 Future<void> backwardCompatibility() async {
-  await _fromV12ToV13();
-  await _fromV13ToV14();
+  
 }
 
 Future<void> _fromV12ToV13() async {

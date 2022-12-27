@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shake_flutter/models/shake_file.dart';
+import 'package:shake_flutter/models/shake_report_configuration.dart';
 import 'package:shake_flutter/shake_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -78,6 +79,13 @@ class BugReportUtils {
     return jsonEncode(finalMap);
   }
 
+  static Future<void> silentReport(String data) async {
+    final Future<void> future = prepareReportData();
+    await future;
+    Shake.silentReport(
+        configuration: ShakeReportConfiguration(), description: data);
+  }
+
   /// Opens the report widget
   static Future<void> report() async {
     if (AppConfig.shake.isSupported) {
@@ -86,7 +94,6 @@ class BugReportUtils {
           AppConfig.navigatorKey.currentContext!,
           future: future);
       await future;
-      Shake.show();
     } else {
       final bool res = await YDialogs.getChoice(
           AppConfig.navigatorKey.currentContext!,

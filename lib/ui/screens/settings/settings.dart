@@ -26,6 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return YPage(
         appBar: const YAppBar(title: "Paramètres"),
+        scrollable: true,
         body: ControllerConsumer<ApplicationSystem>(
             controller: appSys,
             builder: (context, controller, _) => YSettingsSections(sections: [
