@@ -32,7 +32,16 @@ class GradesController extends ChangeNotifier {
   }
 
   double get average => _average;
-
+  double? get realAverage => double.tryParse(disciplines()!
+          .where((i) => i.periodName == _period)
+          .first
+          .generalAverage
+          ?.replaceAll(",", ".") ??
+      "");
+  bool get alarmingDelta =>
+      !isSimulating &&
+      realAverage != null &&
+      (realAverage! - average).abs() > 0.1;
   String? get bestAverage => _bestAverage;
 
   bool get isSimulating => _isSimulating;
@@ -60,7 +69,8 @@ class GradesController extends ChangeNotifier {
   }
 
   List<Discipline>? disciplines({bool showAll = false}) => isSimulating
-      ? _filterDisciplinesForPeriod(simulationMerge(_disciplines ?? []), showAll: showAll)
+      ? _filterDisciplinesForPeriod(simulationMerge(_disciplines ?? []),
+          showAll: showAll)
       : _filterDisciplinesForPeriod(_disciplines, showAll: showAll);
 
   String gradeHash(Grade grade) {
@@ -70,8 +80,12 @@ class GradesController extends ChangeNotifier {
   }
 
   //Get school periods;
-  Future<void> refresh({bool force = false, bool refreshFromOffline = false}) async {
-    CustomLogger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
+  Future<void> refresh(
+      {bool force = false, bool refreshFromOffline = false}) async {
+    CustomLogger.log(
+        "GRADES",
+        "Refreshing grades " +
+            (refreshFromOffline ? "from offline" : "online"));
     if (isSimulating && force) {
       isSimulating = false;
     }
@@ -150,12 +164,17 @@ class GradesController extends ChangeNotifier {
         .toList());
     CustomLogger.log("GRADES", "Merging");
     for (var discipline in _simulatedDisciplines) {
-      discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
-          element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
+      discipline.gradesList!.removeWhere((_grade) => _removedGrades.any(
+          (element) =>
+              element!.date == _grade.date &&
+              element.value == _grade.value &&
+              element.testName == _grade.testName));
       if (_addedGrades.any((_grade) =>
-          _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode)) {
+          _grade.periodName == discipline.periodName &&
+          _grade.disciplineCode == discipline.disciplineCode)) {
         discipline.gradesList!.addAll(_addedGrades.where((_grade) =>
-            _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode));
+            _grade.periodName == discipline.periodName &&
+            _grade.disciplineCode == discipline.disciplineCode));
       }
     }
 
@@ -188,7 +207,8 @@ class GradesController extends ChangeNotifier {
 
   //Removed "real" grades
   ///Get the corresponding disciplines and responding to the filter chosen
-  List<Discipline>? _filterDisciplinesForPeriod(List<Discipline>? li, {bool showAll = false}) {
+  List<Discipline>? _filterDisciplinesForPeriod(List<Discipline>? li,
+      {bool showAll = false}) {
     if (showAll == true) {
       return li;
     }
@@ -250,7 +270,8 @@ class GradesController extends ChangeNotifier {
             if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (f.disciplineName!.contains(test) &&
-                      !blackList.any((element) => f.disciplineName!.contains(element))) {
+                      !blackList.any(
+                          (element) => f.disciplineName!.contains(element))) {
                     return true;
                   } else {
                     return false;
@@ -282,7 +303,10 @@ class GradesController extends ChangeNotifier {
   }
 
   _refreshPeriods() async {
-    List<Period> temp = disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
+    List<Period> temp = disciplines(showAll: true)
+            ?.map((e) => Period(e.periodName, e.periodCode))
+            .toList() ??
+        [];
     final ids = temp.map((e) => e.name).toSet();
     temp.retainWhere((x) => ids.remove(x.name));
     List<Period> unicalPeriods = temp.toSet().toList();
@@ -297,7 +321,8 @@ class GradesController extends ChangeNotifier {
     for (Discipline f in disciplines()!.where((i) => i.periodName == _period)) {
       if (appSys.settings.system.chosenParser == 1) {
         if (f.generalAverage != null) {
-          double? _temp = double.tryParse(f.generalAverage!.replaceAll(",", "."));
+          double? _temp =
+              double.tryParse(f.generalAverage!.replaceAll(",", "."));
           if (temp != null && !temp.isNaN) {
             temp = _temp;
             notifyListeners();
@@ -306,7 +331,9 @@ class GradesController extends ChangeNotifier {
         }
       }
       try {
-        double? _average = f.getAverage().isNaN ? (double.tryParse(f.average ?? "")) : f.getAverage();
+        double? _average = f.getAverage().isNaN
+            ? (double.tryParse(f.average ?? ""))
+            : f.getAverage();
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
@@ -319,6 +346,9 @@ class GradesController extends ChangeNotifier {
     for (var element in averages) {
       sum += element;
     }
+    CustomLogger.log("AV1", averages);
+
+    CustomLogger.log("AV2", sum);
     _average = temp ?? (sum / averages.length);
     notifyListeners();
   }
@@ -326,9 +356,11 @@ class GradesController extends ChangeNotifier {
   void _setBestAverage() {
     try {
       if (disciplines()!.last.maxClassGeneralAverage != null) {
-        double? value = double.tryParse(disciplines()!.last.maxClassGeneralAverage!.replaceAll(",", "."));
+        double? value = double.tryParse(
+            disciplines()!.last.maxClassGeneralAverage!.replaceAll(",", "."));
         if (value != null) {
-          _bestAverage = value >= average ? value.toString() : average.toStringAsFixed(2);
+          _bestAverage =
+              value >= average ? value.toString() : average.toStringAsFixed(2);
         } else {
           _bestAverage = "-";
         }
@@ -343,7 +375,11 @@ class GradesController extends ChangeNotifier {
 
   void _setDefaultPeriod() {
     if (_disciplines != null && _disciplines!.isNotEmpty && _period == "") {
-      _period = (_disciplines ?? []).lastWhere((list) => list.gradesList!.isNotEmpty).gradesList!.last.periodName;
+      _period = (_disciplines ?? [])
+          .lastWhere((list) => list.gradesList!.isNotEmpty)
+          .gradesList!
+          .last
+          .periodName;
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 
 part 'models.g.dart';
 
@@ -99,20 +100,50 @@ class Discipline {
 
     for (var grade in gradesList!) {
       if (!grade.notSignificant! &&
-          (!grade.letters! || grade.countAsZero!) &&
-          grade.periodName == periodName) {
-        counter += double.parse(grade.weight!);
+          (!grade.letters! || grade.countAsZero!) ) {
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
         final double? value =
             double.tryParse(gradeStringValue.replaceAll(',', '.'));
         if (value != null) {
-          average += value *
-              20 /
-              double.parse(grade.scale!.replaceAll(',', '.')) *
-              double.parse(grade.weight!.replaceAll(',', '.'));
+          // A pronote weird option to add only the bonus point above the average
+          // Weight is not added to counter in that case
+          if (grade.bonus) {
+            CustomLogger.log("TES1T", (grade.testName ?? "") + "_");
+
+            double delta =
+                (value * 20 / double.parse(grade.scale!.replaceAll(',', '.'))) -
+                    10;
+
+            if (delta > 0) {
+              average +=
+                  delta * double.parse(grade.weight!.replaceAll(',', '.'));
+            }
+          } else {
+            CustomLogger.log("TEST", (grade.testName ?? "") + "_");
+
+            average += value *
+                20 /
+                double.parse(grade.scale!.replaceAll(',', '.')) *
+                double.parse(grade.weight!.replaceAll(',', '.'));
+
+            counter += double.parse(grade.weight!);
+          }
         }
       }
     }
+    CustomLogger.log("TMPDISC", {
+      "name": this.disciplineName,
+      "length": gradesList
+          ?.where((element) => element.disciplineName == disciplineName)
+          .length,
+      "gradesBonus":
+          gradesList?.where((element) => element.bonus == true).toList().length,
+      "periodName": periodName,
+      "periodCode": periodCode,
+      "givenavg": this.average,
+      "counter": counter,
+      "avg": double.parse((average / counter).toStringAsFixed(2))
+    });
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
@@ -178,6 +209,8 @@ class Grade {
 
   @HiveField(21)
   final bool optional;
+  @HiveField(22)
+  final bool bonus;
   Grade(
       {this.max,
       this.min,
@@ -198,7 +231,8 @@ class Grade {
       this.periodName,
       this.simulated = false,
       this.countAsZero = false,
-      this.optional = false});
+      this.optional = false,
+      this.bonus = false});
 
   factory Grade.fromEcoleDirecteJson(
       Map<String, dynamic> json, String? nomPeriode) {

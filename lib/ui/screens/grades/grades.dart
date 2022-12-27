@@ -14,6 +14,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 import 'widgets/grades_group.dart';
 import 'widgets/simulator_modal_bottom_sheet.dart';
 import 'package:ynotes_packages/components.dart' hide YPage;
@@ -372,7 +373,7 @@ class _GradesPageState extends State<GradesPage> with LayoutMixin {
                                       disciplinesList.periodName ==
                                       model.period);
                             } catch (e) {
-                              CustomLogger.error(e, stackHint:"NA==");
+                              CustomLogger.error(e, stackHint: "NA==");
                             }
 
                             //If everything is ok, show stuff
@@ -464,17 +465,47 @@ class _GradesPageState extends State<GradesPage> with LayoutMixin {
             width: screenSize.size.width / 5 * 0.3,
           ),
           Expanded(
-            child: Wrap(
-              direction: Axis.horizontal,
-              alignment: largeScreen ? WrapAlignment.end : WrapAlignment.start,
-              runSpacing: screenSize.size.height / 10 * 0.1,
-              spacing: screenSize.size.width / 5 * 0.1,
+            child: Column(
               children: [
-                buildAverageContainer(
-                    "MAX", discipline?.maxClassGeneralAverage ?? "N/A"),
-                buildAverageContainer(
-                    "CLASSE", discipline?.classGeneralAverage ?? "N/A"),
-                buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
+                if (model.alarmingDelta)
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          child: Icon(
+                            MdiIcons.alert,
+                            color: theme.colors.warning.backgroundColor,
+                            size: 20,
+                          ),
+                        ),
+                        WidgetSpan(child: YHorizontalSpacer(YScale.s0p5)),
+                        TextSpan(
+                          text:
+                              "La moyenne auto-calculée diffère de la moyenne officielle (${model.realAverage})",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              fontWeight: FontWeight.bold,
+                              color: ThemeUtils.textColor()),
+                        ),
+                      ],
+                    ),
+                  ),
+                YVerticalSpacer(YScale.s1p5),
+                Wrap(
+                  direction: Axis.horizontal,
+                  alignment:
+                      largeScreen ? WrapAlignment.end : WrapAlignment.start,
+                  runSpacing: screenSize.size.height / 10 * 0.1,
+                  spacing: screenSize.size.width / 5 * 0.1,
+                  children: [
+                    buildAverageContainer(
+                        "MAX", discipline?.maxClassGeneralAverage ?? "N/A"),
+                    buildAverageContainer(
+                        "CLASSE", discipline?.classGeneralAverage ?? "N/A"),
+                    buildAverageContainer(
+                        "RANG", discipline?.generalRank ?? "N/A"),
+                  ],
+                ),
               ],
             ),
           ),
