@@ -16,11 +16,16 @@ const List<String> _texts = [
   "Temps calme",
   "Pas de cours, on révise ?",
   "C'est la sieste (ou pas)",
+  "Je suis sûr qu'il reste des devoirs",
   "Il n'y a jamais vraiment rien à faire",
+  "Il est temps de commencer ce joli DM",
   "Il fait beau dehors ?",
+  "Ca tombe bien, ce livre ne se finira pas tout seul !"
   "Flûte, le cours de maths est fini",
   "Après l'effort le réconfort",
-  "Alors, ça se la coule douce ?"
+  "Alors, ça se la coule douce ?",
+  "Prenons de l'avance sur la semaine prochaine !",
+  "Il est temps de reprendre la lecture !"
 ];
 const List<String> _emojis = ["😊", "😎", "😴", "👌", "🌞", "📚", "💪", "💤"];
 Random get _random => Random();
