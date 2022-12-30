@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 grade: schoolApi.gradesModule.grades.last, subjects: schoolApi.gradesModule.subjects));
                           }),
                       YSettingsTile(title: "Open error page", onTap: () => Navigator.pushNamed(context, "")),
-                      YSettingsTile(
+                      /*    YSettingsTile(
                           title: "Clear subject filters",
                           onTap: () {
                             Offline.isar.writeTxnSync(() => Offline.isar.subjectsFilters.clearSync());
@@ -92,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: "Clear all",
                           onTap: ()  async{
                            await Offline.isar.writeTxn(() => Offline.isar.clear());
-                          }),
+                          }), */
                       YSettingsTile(
                           title: "Secure Logger",
                           subtitle: "Print secure logger categories",

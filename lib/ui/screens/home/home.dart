@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/app/app.dart';
 import 'package:ynotes/ui/components/components.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/ui/screens/home/widgets/end_of_support.dart';
 import 'package:ynotes/ui/screens/home/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
 
@@ -85,10 +87,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             onRefresh: onRefresh,
-            body: Column(mainAxisSize: MainAxisSize.max, children: [
-              /*CountDown(),*/
-              if (schoolApi.gradesModule.isEnabled) const GradesSection(),
-              // if (schoolApi.homeworkModule.isEnabled) const HomeworkSection()
-            ])));
+            body: Column(
+                mainAxisSize: MainAxisSize.max, children: const [EndOfSupportBanner(), /*CountDown()*/ GradesSection(),/* HomeworkSection()*/])));
   }
 }

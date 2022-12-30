@@ -1,0 +1,45 @@
+buildscript {
+   ext.kotlin_version = '1.7.21'               // or latest
+   
+   repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+      
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven {
+            url "https://storage.googleapis.com/snap-kit-build/maven"
+        }
+        maven {
+           // [required] background_fetch
+           url "${project(':background_fetch').projectDir}/libs"
+        }
+        
+    }
+    tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:-options' 
+}
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
