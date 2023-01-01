@@ -5,8 +5,6 @@ import 'package:ynotes/core/utilities.dart';
 import 'package:ynotes/ui/components/components.dart';
 import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/settings.dart';
-import 'package:ynotes_packages/theme.dart';
-import 'package:ynotes_packages/utilities.dart';
 
 class SettingsSupportPage extends StatefulWidget {
   const SettingsSupportPage({Key? key}) : super(key: key);
@@ -45,7 +43,8 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
                         YSettingsTile(
                             title: "Logs",
                             leading: MdiIcons.file,
-                            onTap: () => Navigator.pushNamed(context, "/settings/logs")),
+                            onTap: () =>
+                                Navigator.pushNamed(context, "/settings/logs")),
                       ]),
                     ])
                   ],

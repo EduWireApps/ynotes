@@ -1,19 +1,17 @@
 part of pronote_controllers;
 
-/// The status of the controller
-enum QrStatus { initial, loading, success, error }
-
 /// A class that handles the QR code method for Pronote login
 class QrLoginController extends ChangeNotifier {
+  QrStatus _status = QrStatus.initial;
+
+  /// The loginData extracted from the QR code
+  Map<dynamic, dynamic>? _loginData;
+
   /// A class that handles the QR code method for Pronote login
   QrLoginController();
 
   /// The controller status
   QrStatus get status => _status;
-  QrStatus _status = QrStatus.initial;
-
-  /// The loginData extracted from the QR code
-  Map<dynamic, dynamic>? _loginData;
 
   /// The url extracted from the [_loginData]
   String get url => _loginData?["url"];
@@ -36,6 +34,7 @@ class QrLoginController extends ChangeNotifier {
     if (status.isPermanentlyDenied) {
       return "Vous avez bloqué l'accès à la caméra de façon permanente pour yNotes. Pour accéder à cette fonctionnalité, veuillez la modifier dans les paramètres de votre téléphone.";
     }
+    return null;
   }
 
   /// Check if the Qr code is valid for the connection.
@@ -95,3 +94,6 @@ class QrLoginController extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+/// The status of the controller
+enum QrStatus { initial, loading, success, error }

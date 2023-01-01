@@ -20,8 +20,8 @@ class _Login {
   final dialogBody =
       "Si ton service scolaire n'apparait pas dans la liste, c'est que yNotes ne le prend pas en charge. Tu sais coder ? Prend contact avec nous sur Github ou Discord pour en apprendre plus sur l'implémentation des services et peut-être même participer à l'implémentation du tien.";
   final learnMore = "Consulter le site officiel.";
-  final endOfSupport =
-      "Nous ne fournissons plus de support pour l'application. Tenez vous informé sur le site officiel de yNotes pour en savoir plus.";
+  final endOfSupportFlag =
+      "Cette application n'est pas maintenue. Cliquez pour en savoir plus.";
 }
 
 class _EcoleDirecte {
