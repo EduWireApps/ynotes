@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/bugreport_utils.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
@@ -36,7 +37,7 @@ class HiveBoxProvider {
         }
       } catch (e) {
         CustomLogger.log("OFFLINE", "An error occured while initiating Hive");
-        CustomLogger.error(e, stackHint:"NDM=");
+        CustomLogger.error(e, stackHint: "NDM=");
       }
       registerAdapters();
     }
@@ -107,7 +108,7 @@ class Offline {
       await init();
     } catch (e) {
       CustomLogger.log("OFFLINE", "Failed to clear all db");
-      CustomLogger.error(e, stackHint:"NDQ=");
+      CustomLogger.error(e, stackHint: "NDQ=");
     }
   }
 
@@ -130,23 +131,25 @@ class Offline {
 
     try {
       offlineBox = await safeBoxOpen(offlineCacheBoxName);
-      homeworkDoneBox = await appSys.hiveBoxProvider.openBox(doneHomeworkBoxName);
+      homeworkDoneBox =
+          await appSys.hiveBoxProvider.openBox(doneHomeworkBoxName);
       homeworkBox = await appSys.hiveBoxProvider.openBox(homeworkBoxName);
-      pinnedHomeworkBox = await appSys.hiveBoxProvider.openBox(pinnedHomeworkBoxName);
+      pinnedHomeworkBox =
+          await appSys.hiveBoxProvider.openBox(pinnedHomeworkBoxName);
       agendaBox = await appSys.hiveBoxProvider.openBox(agendaBoxName);
       mailsBox = await appSys.hiveBoxProvider.openBox<Mail>(mailsBoxName);
-
       CustomLogger.log("OFFLINE", "All boxes opened");
     } catch (e) {
       CustomLogger.log("OFFLINE", "An error occured while opening boxes");
-      CustomLogger.error(e, stackHint:"NDU=");
+      CustomLogger.error(e, stackHint: "NDU=");
     }
   }
 
   //Refresh lists when needed
   safeBoxOpen(String boxName) async {
     try {
-      Box box = await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
+      Box box =
+          await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
         final String errorMessage = "Error while opening $boxName";
         CustomLogger.error("OFFLINE: $errorMessage");
         throw (errorMessage);
@@ -155,7 +158,7 @@ class Offline {
       return box;
     } catch (e) {
       CustomLogger.log("OFFLINE", "An error occurend while opening $boxName");
-      CustomLogger.error(e, stackHint:"NDY=");
+      CustomLogger.error(e, stackHint: "NDY=");
       if (boxName.contains("offlineData")) {
         await appSys.hiveBoxProvider.deleteBox(boxName);
       }

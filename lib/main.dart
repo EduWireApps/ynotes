@@ -28,7 +28,6 @@ import 'package:ynotes_packages/theme.dart';
 Future<void> main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
-  await backwardCompatibility();
   theme = YCurrentTheme(currentTheme: 1, themes: themes); // TODO: rework how theme integrates in the app
 
   appSys = ApplicationSystem();

@@ -12,64 +12,21 @@ import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/core/utils/ui.dart';
 import 'package:ynotes/globals.dart';
 
-/// The status of the controller
-enum QrStatus { initial, loading, success, error }
-
 /// A class that handles the QR code method for Pronote login
 class QrLoginController extends ChangeNotifier {
-  /// A class that handles the QR code method for Pronote login
-  QrLoginController();
-
-  /// The controller status
-  QrStatus get status => _status;
   QrStatus _status = QrStatus.initial;
 
   /// The loginData extracted from the QR code
   Map<dynamic, dynamic>? _loginData;
 
+  /// A class that handles the QR code method for Pronote login
+  QrLoginController();
+
+  /// The controller status
+  QrStatus get status => _status;
+
   /// The url extracted from the [_loginData]
   String get url => _loginData?["url"];
-
-  /// Handles camera permissions
-  Future<String?> handlePermission() async {
-    final status = await Permission.camera.status;
-    if (status.isGranted) {
-      return null;
-    }
-    if (status.isDenied) {
-      final res = await Permission.camera.request();
-      UIUtils.setSystemUIOverlayStyle();
-      if (res.isGranted) {
-        return null;
-      } else {
-        return "Vous avez refusé l'accès à la caméra pour yNotes. Cette fonctionnalité repose sur la caméra, veuillez réessayer et accepter.";
-      }
-    }
-    if (status.isPermanentlyDenied) {
-      return "Vous avez bloqué l'accès à la caméra de façon permanente pour yNotes. Pour accéder à cette fonctionnalité, veuillez la modifier dans les paramètres de votre téléphone.";
-    }
-  }
-
-  /// Check if the Qr code is valid for the connection.
-  bool isQrCodeValid(Barcode barCode) {
-    try {
-      Map? raw = jsonDecode(barCode.code);
-      if (raw != null) {
-        if (mapGet(raw, ["jeton"]) != null && mapGet(raw, ["login"]) != null && mapGet(raw, ["url"]) != null) {
-          _status = QrStatus.loading;
-          _loginData = raw;
-          notifyListeners();
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
 
   /// Decrypts the [_loginData] with the pin code set on the Pronote website/app
   List<String>? decrypt(String code) {
@@ -91,7 +48,50 @@ class QrLoginController extends ChangeNotifier {
       _status = QrStatus.error;
       notifyListeners();
       CustomLogger.log("LOGIN", "(QR Code) An error occured with the PIN");
-      CustomLogger.error(e, stackHint:"MzY=");
+      CustomLogger.error(e, stackHint: "MzY=");
+    }
+    return null;
+  }
+
+  /// Handles camera permissions
+  Future<String?> handlePermission() async {
+    final status = await Permission.camera.status;
+    if (status.isGranted) {
+      return null;
+    }
+    if (status.isDenied) {
+      final res = await Permission.camera.request();
+      UIUtils.setSystemUIOverlayStyle();
+      if (res.isGranted) {
+        return null;
+      } else {
+        return "Vous avez refusé l'accès à la caméra pour yNotes. Cette fonctionnalité repose sur la caméra, veuillez réessayer et accepter.";
+      }
+    }
+    if (status.isPermanentlyDenied) {
+      return "Vous avez bloqué l'accès à la caméra de façon permanente pour yNotes. Pour accéder à cette fonctionnalité, veuillez la modifier dans les paramètres de votre téléphone.";
+    }
+    return null;
+  }
+
+  /// Check if the Qr code is valid for the connection.
+  bool isQrCodeValid(Barcode barCode) {
+    try {
+      Map? raw = barCode.code != null ? jsonDecode(barCode.code!) : null;
+      if (raw != null) {
+        if (mapGet(raw, ["jeton"]) != null && mapGet(raw, ["login"]) != null && mapGet(raw, ["url"]) != null) {
+          _status = QrStatus.loading;
+          _loginData = raw;
+          notifyListeners();
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
     }
   }
 
@@ -102,3 +102,6 @@ class QrLoginController extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+/// The status of the controller
+enum QrStatus { initial, loading, success, error }

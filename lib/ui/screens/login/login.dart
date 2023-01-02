@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/ui/components/NEW/dialogs/dialogs.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/login/content/login_content.dart';
 import 'package:ynotes/ui/screens/login/widgets/widgets.dart';
 import 'package:ynotes_packages/components.dart';
@@ -11,7 +14,8 @@ class LoginPage extends StatelessWidget {
   // This is only temporary and should be stored in the [API] class
   static final List<SchoolServiceBox> _services = [
     SchoolServiceBox(
-        image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
+        image: const AssetImage(
+            'assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
         imageColor: theme.colors.foregroundColor,
         name: 'Ecole Directe',
         route: '/login/ecoledirecte',
@@ -33,26 +37,36 @@ class LoginPage extends StatelessWidget {
       backButton: false,
       subtitle: LoginContent.login.subtitle,
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.xl),
-            padding: EdgeInsets.symmetric(vertical: YScale.s1p5, horizontal: YScale.s6),
-            child: Column(
-              children: [
-                Text(
-                  LoginContent.login.endOfSupport,
-                  style: theme.texts.body1.copyWith(color: theme.colors.danger.foregroundColor),
-                  textAlign: TextAlign.justify,
-                ),
-                YButton(
-                  text: LoginContent.login.learnMore,
-                  variant: YButtonVariant.text,
-                  onPressed: () async {
-                    launch("https://ynotes.fr");
-                  },
-                ),
-              ],
-            )),
+        InkWell(
+          onTap: () {
+            launchUrl(Uri.parse("https://ynotes.fr"));
+          },
+          child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: theme.colors.danger.backgroundColor,
+                  borderRadius: YBorderRadius.xl),
+              padding: EdgeInsets.symmetric(
+                  vertical: YScale.s1p5, horizontal: YScale.s6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    MdiIcons.alertDecagram,
+                    color: theme.colors.backgroundColor,
+                  ),
+                  YHorizontalSpacer(YScale.s2),
+                  Flexible(
+                    child: Text(
+                      LoginContent.login.endOfSupportFlag,
+                      style: theme.texts.body1
+                          .copyWith(color: theme.colors.danger.foregroundColor),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
+              )),
+        ),
         YVerticalSpacer(YScale.s2),
         ...spacedChildren(_services),
         Padding(
@@ -65,7 +79,8 @@ class LoginPage extends StatelessWidget {
                   context,
                   YInfoDialog(
                     title: LoginContent.login.missingService,
-                    body: Text(LoginContent.login.dialogBody, style: theme.texts.body1),
+                    body: Text(LoginContent.login.dialogBody,
+                        style: theme.texts.body1),
                     confirmLabel: "OK",
                   ));
             },

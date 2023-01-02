@@ -33,21 +33,18 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
                           child: Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                  color: theme.colors.danger.backgroundColor, borderRadius: YBorderRadius.xl),
-                              padding: EdgeInsets.symmetric(vertical: YScale.s1p5, horizontal: YScale.s6),
+                                  color: theme.colors.danger.backgroundColor,
+                                  borderRadius: YBorderRadius.xl),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: YScale.s1p5, horizontal: YScale.s6),
                               child: Column(
                                 children: [
                                   Text(
-                                    LoginContent.login.endOfSupport,
-                                    style: theme.texts.body1.copyWith(color: theme.colors.danger.foregroundColor),
+                                    LoginContent.login.endOfSupportFlag,
+                                    style: theme.texts.body1.copyWith(
+                                        color: theme
+                                            .colors.danger.foregroundColor),
                                     textAlign: TextAlign.justify,
-                                  ),
-                                  YButton(
-                                    text: LoginContent.login.learnMore,
-                                    variant: YButtonVariant.text,
-                                    onPressed: () async {
-                                      launch("https://ynotes.fr");
-                                    },
                                   ),
                                 ],
                               )),
@@ -55,7 +52,8 @@ class _SettingsSupportPageState extends State<SettingsSupportPage> {
                         YSettingsTile(
                             title: "Logs",
                             leading: MdiIcons.file,
-                            onTap: () => Navigator.pushNamed(context, "/settings/logs")),
+                            onTap: () =>
+                                Navigator.pushNamed(context, "/settings/logs")),
                       ]),
                     ])
                   ],
