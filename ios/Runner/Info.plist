@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>yNotes needs access to your location in order to locate schools around you and to get their Pronote URL addresses.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.transistorsoft.fetch</string>
@@ -37,10 +39,10 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
-
 	<key>NSCameraUsageDescription</key>
 	<string>yNotes needs access to your camera to scan Pronote QR Codes.</string>
-	
+	<key>NSMicrophoneUsageDescription</key>
+	<string>yNotes will not require access to your microphone.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>yNotes needs access to your calendar to schedule reminders or events notifications.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
