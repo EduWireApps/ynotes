@@ -14,9 +14,9 @@ import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
+import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/core/utils/logging_utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
-import 'package:ynotes/core/utils/kvs.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
 
@@ -133,7 +133,8 @@ class Communication {
 
     var headers = {
       'connection': 'keep-alive',
-      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
+      'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36 RuxitSynthetic/1.0 v6886653584872488035 t8141814394349842256 ath1fb31b7a altpriv cvcv=2 cexpw=1 smf=0'
     };
 
     String url = rootSite +
@@ -511,7 +512,7 @@ class PronoteClient {
       if (url != null) CustomLogger.log("PRONOTE", url);
       return url;
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MTM=");
+      CustomLogger.error(e, stackHint: "MTM=");
     }
   }
 
@@ -723,7 +724,7 @@ class PronoteClient {
       var response = await communication!.post('SaisieActualites', data: data);
       CustomLogger.log("PRONOTE", response);
     } catch (e) {
-      CustomLogger.error(e, stackHint:"MTU=");
+      CustomLogger.error(e, stackHint: "MTU=");
     }
   }
 
@@ -859,7 +860,7 @@ class PronoteClient {
               stepsLogger.add("❌ Failed to register UserInfos");
 
               CustomLogger.log("PRONOTE", "Failed to register UserInfos");
-              CustomLogger.error(e, stackHint:"MTY=");
+              CustomLogger.error(e, stackHint: "MTY=");
             }
           } catch (e) {
             stepsLogger.add("ⓘ Using old api ");

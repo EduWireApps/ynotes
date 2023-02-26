@@ -29,7 +29,6 @@ class EcoleDirecteEndpoints {
 
 class Endpoint {
   final String definition;
-
   Endpoint(this.definition);
 
   String getUrl({List? optionalParameters}) {
@@ -38,9 +37,9 @@ class Endpoint {
       for (int index = 0; index < optionalParameters.length; index++) {
         temp = temp.replaceAll("%$index", optionalParameters[index]);
       }
-      return temp;
+      return temp + ("");
     } else {
-      return definition;
+      return definition + ("");
     }
   }
 }

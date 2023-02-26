@@ -64,6 +64,7 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
         }
     }
   }
+  return null;
 }
 
 ///The ecole directe api extended from the apiManager.dart API class
@@ -191,8 +192,13 @@ class APIEcoleDirecte extends API {
     password = encodeData(password);
 
     var url = methods.endpoints.login;
-    Map<String, String> headers = {"Content-type": "text/plain"};
-    String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
+    Map<String, String> headers = {
+      "Content-type": "text/plain",
+      "user-agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36 RuxitSynthetic/1.0 v6886653584872488035 t8141814394349842256 ath1fb31b7a altpriv cvcv=2 cexpw=1 smf=0"
+    };
+    String data = 'data={"uuid":"", "identifiant": "$username", "motdepasse": "$password", "isReLogin": false}';
+
     //encode Map to JSON
     var body = data;
     var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
@@ -302,6 +308,7 @@ class APIEcoleDirecte extends API {
     } catch (e) {
       CustomLogger.log("ED", "error during the mail reading $e");
     }
+    return null;
   }
 
   @override

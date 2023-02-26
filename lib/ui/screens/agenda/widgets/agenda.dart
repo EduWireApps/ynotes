@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
@@ -11,6 +10,9 @@ import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/screens/agenda/agenda.dart';
+import 'package:ynotes_packages/components.dart';
+import 'package:ynotes_packages/theme.dart';
+import 'package:ynotes_packages/utilities.dart';
 
 import 'agenda_grid.dart';
 import 'buttons.dart';
@@ -34,7 +36,7 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting current lesson");
         CustomLogger.log("AGENDA", "Lessons: $lessons");
-        CustomLogger.error(e, stackHint:"Ng==");
+        CustomLogger.error(e, stackHint: "Ng==");
       }
 
       return lesson;
@@ -62,7 +64,7 @@ getNextLesson(List<Lesson>? lessons) {
         lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
         CustomLogger.log("AGENDA", "An error occured while getting the current lesson");
-        CustomLogger.error(e, stackHint:"Nw==");
+        CustomLogger.error(e, stackHint: "Nw==");
       }
 
       return lesson;
@@ -145,29 +147,16 @@ class _AgendaState extends State<Agenda> {
                                                   color: ThemeUtils.textColor(),
                                                   fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                             ),
-                                            Container(
-                                              margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                                              width: 80,
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(18.0),
-                                                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                                ),
+                                            ConstrainedBox(
+                                              constraints: BoxConstraints(minWidth: YScale.s32),
+                                              child: YButton(
                                                 onPressed: () async {
                                                   //Reload list
                                                   await refreshAgendaFuture(force: true);
                                                 },
-                                                child: !(snapshot.connectionState == ConnectionState.waiting)
-                                                    ? Text("Recharger",
-                                                        style: TextStyle(
-                                                          fontFamily: "Asap",
-                                                          color: ThemeUtils.textColor(),
-                                                        ))
-                                                    : FittedBox(
-                                                        child: SpinKitThreeBounce(
-                                                            color: Theme.of(context).primaryColorDark,
-                                                            size: screenSize.size.height / 10 * 1.8)),
+                                                text: "Rafraîchir".toUpperCase(),
+                                                color: YColor.secondary,
+                                                isLoading: snapshot.connectionState == ConnectionState.waiting,
                                               ),
                                             )
                                           ],
