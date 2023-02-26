@@ -56,7 +56,7 @@ class _YDrawerState extends State<YDrawer> {
       child: Container(
         color: backgroundColor,
         child: SafeArea(
-          child: YShadowScrollContainer(color: backgroundColor, children: [
+          child: ListView(padding: EdgeInsets.zero, children: [
             const AccountHeader(),
             ListView.builder(
                 shrinkWrap: true,

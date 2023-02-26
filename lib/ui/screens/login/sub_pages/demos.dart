@@ -17,7 +17,7 @@ class LoginDemosPage extends StatefulWidget {
 
 class _LoginDemosPageState extends State<LoginDemosPage> {
   late final List<_DemoServiceBox> _demos = [
-    _DemoServiceBox(
+    /*_DemoServiceBox(
       image: const AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'),
       imageColor: theme.colors.foregroundColor,
       name: 'Ecole Directe',
@@ -28,10 +28,10 @@ class _LoginDemosPageState extends State<LoginDemosPage> {
           "demo": true,
         });
       }),
-    ),
+    ),*/
     _DemoServiceBox(
         image: const AssetImage('assets/images/icons/pronote/PronoteIcon.png'),
-        name: 'Pronote',
+        name: 'Pronote (demo)',
         parser: 1,
         disabled: !_canNavigate,
         onTap: _onTap(
@@ -133,6 +133,7 @@ class __DemoServiceBoxState extends State<_DemoServiceBox> {
               await widget.onTap();
               Navigator.pushReplacementNamed(context, "/terms");
             },
+      
     );
   }
 }

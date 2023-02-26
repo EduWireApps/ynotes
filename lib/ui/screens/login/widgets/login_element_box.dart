@@ -3,6 +3,18 @@ import 'package:ynotes_packages/components.dart';
 import 'package:ynotes_packages/theme.dart';
 import 'package:ynotes_packages/utilities.dart';
 
+/// Returns a list of vertically spaced widgets.
+List<Widget> spacedChildren(List<Widget> elements) {
+  List<Widget> _els = [];
+  final int _length = elements.length;
+
+  for (int i = 0; i < _length + _length - 1; i++) {
+    _els.add(i % 2 == 0 ? elements[i ~/ 2] : YVerticalSpacer(YScale.s2));
+  }
+
+  return _els;
+}
+
 class LoginElementBox extends StatelessWidget {
   final List<Widget> children;
   final VoidCallback? onTap;
@@ -14,6 +26,9 @@ class LoginElementBox extends StatelessWidget {
     return InkWell(
       borderRadius: YBorderRadius.xl,
       onTap: onTap,
+      onLongPress: () {
+        Navigator.pushNamed(context, "/login/demos");
+      },
       child: Ink(
         decoration: BoxDecoration(
           color: theme.colors.backgroundLightColor,
@@ -26,16 +41,4 @@ class LoginElementBox extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Returns a list of vertically spaced widgets.
-List<Widget> spacedChildren(List<Widget> elements) {
-  List<Widget> _els = [];
-  final int _length = elements.length;
-
-  for (int i = 0; i < _length + _length - 1; i++) {
-    _els.add(i % 2 == 0 ? elements[i ~/ 2] : YVerticalSpacer(YScale.s2));
-  }
-
-  return _els;
 }
