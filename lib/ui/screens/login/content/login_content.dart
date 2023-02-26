@@ -29,5 +29,5 @@ class _EcoleDirecte {
 }
 
 class _Demos {
-  final subtitle = "Choisis ton service scolaire";
+  final subtitle = "Services de démonstration disponibles :";
 }
